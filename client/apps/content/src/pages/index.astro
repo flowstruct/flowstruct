@@ -1,0 +1,74 @@
+---
+import type {Program} from "../types";
+import Layout from "../layouts/Layout.astro";
+import VisitedStudyPlanCard from "../components/VisitedStudyPlanCard.astro";
+import StudyPlanSearchBar from "../components/StudyPlanSearchBar.astro";
+import AboutDialog from "../components/AboutDialog.astro";
+import AllProgramsDialog from "../components/AllProgramsDialog.astro";
+import {api} from "../utils/api";
+
+const programs = await api<Program[]>('/programs');
+
+const date = new Date();
+---
+
+<Layout title="Flowstruct">
+    <div class="flex flex-col gap-6 p-6 min-h-screen border text-gray-800">
+        <header class="flex items-center gap-6 pb-6 w-full justify-center relative">
+            <AboutDialog/>
+        </header>
+
+        <div class="flex flex-col gap-6 items-center my-auto">
+            <header class="space-y-2 text-center mb-6">
+                <h1 class="text-6xl md:text-8xl font-bold">Flowstruct</h1>
+                <h3>An Interactive Study Plan Visualizer</h3>
+            </header>
+
+            <div class="flex flex-col-reverse gap-2  md:flex-row">
+                <StudyPlanSearchBar programs={programs}/>
+
+                <AllProgramsDialog programs={programs}/>
+            </div>
+
+            <VisitedStudyPlanCard/>
+        </div>
+
+        <footer class="w-full text-xs text-center opacity-60 mt-auto">
+            <p>Powered by Flowstruct &bull; © {date.getFullYear()}</p>
+        </footer>
+    </div>
+</Layout>
+
+<script>
+    import {
+        createIcons,
+        LibraryBig,
+        ChevronDown,
+        ChevronLeft,
+        ArrowRight,
+        ChevronRight,
+        History,
+        Moon,
+        Home,
+        CircleHelp,
+        Search,
+        X
+    } from "lucide";
+
+    createIcons({
+        icons: {
+            LibraryBig,
+            ChevronDown,
+            ChevronLeft,
+            ArrowRight,
+            ChevronRight,
+            History,
+            Moon,
+            Home,
+            CircleHelp,
+            Search,
+            X
+        }
+    });
+</script>
+

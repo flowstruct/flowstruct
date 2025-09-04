@@ -1,0 +1,8 @@
+{
+  "name": "@flowstruct/shared-types",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "echo \"shared-types: no tests defined\" && exit 0"
+  }
+}

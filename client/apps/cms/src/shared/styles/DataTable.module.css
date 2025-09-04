@@ -1,0 +1,22 @@
+.wrapper {
+  border: 1px solid var(--mantine-color-gray-3);
+  border-radius: var(--mantine-radius-default);
+  overflow: hidden;
+}
+
+.thead {
+  background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6));
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tbody {
+  background-color: var(--mantine-color-white);
+}
+
+.tfoot {
+  background-color: var(--mantine-color-white);
+}

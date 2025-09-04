@@ -1,0 +1,19 @@
+.title {
+    font-weight: 900;
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.logoContainer {
+    margin-bottom: 1rem;
+}
+
+.button {
+    font-weight: 600;
+    transition: all 0.2s ease;
+    box-shadow: var(--mantine-shadow-md);
+}

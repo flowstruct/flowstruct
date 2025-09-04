@@ -1,0 +1,120 @@
+---
+import type {Section} from "../types";
+
+type Props = {
+    sections: Section[];
+}
+
+const {sections} = Astro.props;
+---
+
+<div id="course-filter" class="flex flex-col md:flex-row gap-2">
+    <div class="relative flex items-center">
+        <select id="section-select" class="border h-full w-full md:w-96 p-4 pl-5 pr-14 rounded-xl appearance-none">
+            <option value="all" data-section-courses="[]">All Compulsory Sections</option>
+            {sections
+                .filter((sec: Section) => sec.type === 'Requirement')
+                .map((section: Section) => (
+                        <option value={section.id} data-section-courses={JSON.stringify(section.courses)}>
+                            {section.name
+                                ? `${section.name}`
+                                : `${section.level} ${section.type}s`
+                            } ({section.requiredCreditHours} Cr.)
+                        </option>
+                ))}
+        </select>
+        <i data-lucide="chevron-down" class="transition-all duration-300 absolute right-5 pointer-events-none "></i>
+    </div>
+
+    <div class="flex gap-2 w-full relative items-center">
+        <i data-lucide="search" class="absolute left-5 text-gray-400"/>
+        <input
+                id="course-search-bar"
+                type="text"
+                class="w-full z-10 bg-transparent p-4 focus:outline-none focus:ring-2
+                              focus:ring-blue-500/20 focus:border-blue-500/30 px-14 border rounded-xl"
+                placeholder="Search a course..."
+                autocomplete="off"
+        />
+        <p id="results-count" class="hidden text-sm absolute right-14 bg-white p-2 z-10 text-gray-500" />
+
+        <button
+                id="clear-search-bar"
+                class="hidden z-20 absolute right-5 bg-white rounded transition-all text-gray-400 hover:text-gray-800"
+        >
+            <i data-lucide="x"/>
+        </button>
+    </div>
+</div>
+
+<script>
+    const courseFilter = document.getElementById("course-filter");
+    const searchBar = courseFilter?.querySelector("#course-search-bar") as HTMLInputElement;
+    const clearButton = courseFilter?.querySelector("#clear-search-bar") as HTMLButtonElement;
+    const sectionCombobox = courseFilter?.querySelector("#section-select") as HTMLSelectElement;
+    const courseCards = document.querySelectorAll("course-card") as NodeListOf<HTMLElement>;
+    const resultsCount = courseFilter?.querySelector('#results-count') as HTMLElement;
+
+    sectionCombobox?.addEventListener('change', (e) => {
+        const target = e.target as HTMLSelectElement;
+        const selectedOption = target.selectedOptions[0];
+        const sectionCourses = new Set(JSON.parse(selectedOption.dataset.sectionCourses || '[]'));
+
+        searchBar.value = "";
+        clearButton.classList.add('hidden');
+        resultsCount.classList.add('hidden');
+
+        if (sectionCourses.size === 0) {
+            courseCards.forEach(card => card.classList.remove('opacity-25', 'shadow'));
+            return;
+        }
+
+        courseCards.forEach(card => {
+            if (sectionCourses.has(parseInt(card.id))) {
+                card.classList.remove('opacity-25', 'shadow');
+            } else {
+                card.classList.add('opacity-25', 'shadow');
+            }
+        });
+    });
+
+    let debounceTimeout: number;
+
+    searchBar?.addEventListener("input", () => {
+        clearTimeout(debounceTimeout);
+
+        debounceTimeout = setTimeout(() => {
+            sectionCombobox.selectedIndex = 0;
+            const query = searchBar.value.toUpperCase();
+
+            clearButton.classList.toggle('hidden', !(query.length > 0));
+            resultsCount.classList.toggle('hidden', !(query.length > 0));
+
+            const queryWords = query.split(/\s+/);
+            let totalQueryMatches = 0;
+
+            courseCards.forEach(card => {
+                const course = JSON.parse(card.dataset.course || '{}');
+                const codeAndName = `${course.code} ${course.name}`.toUpperCase();
+                const isMatch = queryWords.every(word => codeAndName.includes(word));
+
+                card.classList.toggle("opacity-25", !isMatch);
+                card.classList.toggle("pointer-events-none", !isMatch);
+                card.classList.toggle("shadow", !isMatch);
+
+                if (isMatch) totalQueryMatches++;
+            });
+
+            resultsCount.textContent = `${totalQueryMatches} result${totalQueryMatches !== 1 ? 's' : ''}`;
+        }, 250);
+    });
+
+    clearButton?.addEventListener("click", () => {
+        searchBar.value = "";
+
+        resultsCount.textContent = '';
+        clearButton.classList.add("hidden");
+
+        courseCards.forEach(card => card.classList.remove("opacity-25", "shadow"));
+    });
+</script>

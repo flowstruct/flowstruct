@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/flowstruct
+    username: flowstruct
+    password: flowstruct
+  flyway:
+    user: flowstruct
+    password: flowstruct
+    locations: "classpath:db/migration,classpath:dev/db/migration"
+  config:
+    activate:
+      on-profile: dev
+
+logging:
+  level:
+    org:
+      springframework: DEBUG
+
+cors:
+  allowed-origins: http://localhost:5173
+
+secure: false
+
+api:
+  key: super-secret-api-key

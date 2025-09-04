@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: flowstruct-api
+  datasource:
+    url: jdbc:postgresql://database/${DB_NAME:flowstruct}
+    username: ${DB_USER:flowstruct}
+    password: ${DB_PASSWORD:flowstruct}
+  flyway:
+    clean-disabled: true
+    baseline-on-migrate: true
+    baseline-description: "init"
+    baseline-version: 0
+    user: ${DB_USER:flowstruct}
+    password: ${DB_PASSWORD:flowstruct}
+
+jwt:
+  cookie:
+    expiry: 1800
+
+server:
+  forward-headers-strategy: native
+
+cors:
+  allowed-origins: http://localhost:3000/cms
+
+secure: true
+
+api:
+  key: ${API_KEY:super-secret-api-key}

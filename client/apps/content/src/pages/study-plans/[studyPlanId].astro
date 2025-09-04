@@ -1,0 +1,107 @@
+---
+import CourseDialog from '../../components/CourseDialog.astro';
+import StudyPlanGrid from '../../components/StudyPlanGrid.astro';
+import type { Program, StudyPlan } from '../../types';
+import Layout from '../../layouts/Layout.astro';
+import AboutDialog from '../../components/AboutDialog.astro';
+import { api } from '../../utils/api';
+
+const { studyPlanId } = Astro.params;
+
+let studyPlan: StudyPlan | undefined;
+
+try {
+  studyPlan = await api<StudyPlan>(`study-plans/${studyPlanId}/approved`);
+} catch {
+  return Astro.redirect('/404');
+}
+
+const program = await api<Program>(`/programs/${studyPlan.program}`);
+
+const { track, year } = studyPlan;
+---
+
+<Layout title={`${program.name} ${year}/${year + 1} ${track ? ` - ${track}` : ''} Study Plan`}>
+  <div class="space-y-6 p-6 border min-h-screen">
+    <section class="flex flex-col-reverse md:flex-row md:justify-between gap-6 md:items-center">
+      <header class="space-y-2 text-center md:text-left">
+        <h1 class="text-3xl font-bold">{program.degree} {program.name}</h1>
+        <h2 class="opacity-60">
+          Study Plan {year} / {year + 1}
+          {track ? ` - ${track}` : ''}
+        </h2>
+      </header>
+
+      <header class="flex gap-6 md:p-0 relative justify-center">
+        <a href="/" class="flex gap-3 items-center group text-gray-600 hover:text-blue-600 transition-all">
+          <i data-lucide="home" class="group-hover:scale-110 transition-all duration-200 size-5" />
+          Home
+        </a>
+
+        <AboutDialog />
+      </header>
+    </section>
+
+    <StudyPlanGrid studyPlan={studyPlan} />
+  </div>
+
+  <CourseDialog />
+</Layout>
+
+<script>
+  import {
+    createIcons,
+    MoveRight,
+    MoveLeft,
+    Info,
+    ChevronLast,
+    ChevronFirst,
+    ChevronDown,
+    Search,
+    X,
+    ChevronLeft,
+    List,
+    Home,
+    CircleHelp,
+    Moon,
+  } from 'lucide';
+
+  createIcons({
+    icons: {
+      MoveRight,
+      MoveLeft,
+      Info,
+      ChevronLast,
+      ChevronFirst,
+      ChevronDown,
+      Search,
+      X,
+      ChevronLeft,
+      List,
+      Home,
+      CircleHelp,
+      Moon,
+    },
+  });
+
+  if (!localStorage.getItem('lastVisited')) {
+    const dialog = document.getElementById('about-dialog') as HTMLDialogElement;
+
+    dialog.showModal();
+    requestAnimationFrame(() => {
+      dialog.style.opacity = '1';
+      dialog.style.transform = 'scale(1)';
+    });
+  }
+
+  const url = window.location.pathname;
+  const match = url.match(/study-plans\/(\d+)/);
+  const studyPlanId = match ? match[1] : null;
+
+  if (studyPlanId) {
+    localStorage.setItem('lastVisited', JSON.stringify({
+      id: studyPlanId,
+      timestamp: new Date().toISOString(),
+    }));
+  }
+</script>

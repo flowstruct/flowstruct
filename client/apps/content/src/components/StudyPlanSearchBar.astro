@@ -1,0 +1,116 @@
+
+<div id="study-plan-filter" class=" w-full md:w-96 relative">
+    <div class="flex gap-2 relative items-center">
+        <i data-lucide="search" class="z-10 absolute left-5 text-gray-400"></i>
+        <input id="search-bar"
+               type="text"
+               class="w-full z-10 bg-transparent p-4 px-14 border rounded-t-xl rounded-b-xl bg-gray-50 focus:outline-none focus:ring-2
+                              focus:ring-blue-500/20 focus:border-blue-500/30"
+               placeholder="Search a study plan..."
+               autocomplete="off"
+        />
+        <button id="clear-search-bar"
+                class="hidden z-20 absolute right-5 rounded transition-all text-gray-400 hover:text-gray-800"
+        >
+            <i data-lucide="x" />
+        </button>
+    </div>
+    <div id="search-results-container"
+         class="duration-200 opacity-0 pointer-events-none scale-95 shadow-lg mt-2 z-10 overflow-hidden absolute bg-white border rounded-xl w-full">
+        <div id="no-results-message" class="text-center opacity-60 p-4 text-sm hidden">No study plans found</div>
+        <ul id="search-results-list" class="max-h-96 overflow-auto divide-y"/>
+        <div id="results-count" class="text-center border-t p-2 opacity-60 text-sm hidden"/>
+    </div>
+</div>
+
+<script>
+    import type {Program, StudyPlanSummary} from "../types";
+    import {ArrowRight, createElement} from "lucide";
+
+    const studyPlanFilter = document.getElementById('study-plan-filter');
+    const searchBar = studyPlanFilter?.querySelector('#search-bar') as HTMLInputElement;
+    const clearButton = studyPlanFilter?.querySelector('#clear-search-bar') as HTMLButtonElement;
+    const searchResultsContainer = studyPlanFilter?.querySelector('#search-results-container') as HTMLElement;
+    const searchResultsList = searchResultsContainer?.querySelector('#search-results-list') as HTMLUListElement;
+    const studyPlans = document.querySelectorAll('[data-study-plan]');
+
+    let debounceTimeout: number;
+
+    searchBar.addEventListener("input", () => {
+        clearTimeout(debounceTimeout);
+
+        debounceTimeout = setTimeout(() => {
+            const query = searchBar.value.toUpperCase();
+
+            clearButton.classList.toggle('hidden', !(query.length > 0));
+            searchResultsContainer.classList.toggle('opacity-0', !(query.length > 0));
+            searchResultsContainer.classList.toggle('scale-95', !(query.length > 0));
+            searchResultsContainer.classList.toggle('pointer-events-none', !(query.length > 0));
+
+            if (!searchResultsList) return;
+            if (!query.length) return;
+
+            searchResultsList.innerHTML = '';
+
+            const queryWords = query.split(/\s+/);
+
+            studyPlans.forEach(studyPlan => {
+                const studyPlanData: StudyPlanSummary = JSON.parse(studyPlan.dataset.studyPlan || '{}');
+                const programData: Program = JSON.parse(studyPlan.closest('program-accordion')?.dataset.program || '{}');
+                const fullName = `${programData.name} ${programData.code} ${studyPlanData.year} ${studyPlanData.track}`.toUpperCase();
+
+                const isMatch = queryWords.every(word => fullName.includes(word));
+                if (!isMatch) return;
+
+                const result = document.createElement('a');
+                result.href = `/study-plans/${studyPlanData.id}`;
+                result.classList.add('p-4', 'flex', 'gap-2', 'justify-between', 'group', 'items-center', 'select-none', 'hover:bg-blue-50', 'active:bg-blue-100', 'transition-all', 'cursor-pointer');
+
+                const header = document.createElement('div');
+                result.classList.add('space-y-1');
+
+                const title = document.createElement('h1');
+                title.classList.add('font-semibold');
+
+                const chevronRight = createElement(ArrowRight);
+                title.textContent = `${programData.degree} ${programData.name}`;
+
+                chevronRight.classList.add('group-hover:text-blue-500', 'duration-200', 'size-5');
+
+                const description = document.createElement('p');
+                description.classList.add('opacity-60', 'text-sm');
+                description.textContent = `Study Plan ${studyPlanData.year} / ${studyPlanData.year + 1} ${studyPlanData.track ? `- ${studyPlanData.track}` : ''}`;
+
+                header.appendChild(title);
+                header.appendChild(description);
+
+                result.appendChild(header);
+                result.appendChild(chevronRight);
+
+                searchResultsList.appendChild(result);
+            });
+
+            const totalQueryMatches = searchResultsList.children.length;
+
+            const resultsCount = searchResultsContainer?.querySelector('#results-count');
+            if (!resultsCount) return;
+
+            resultsCount.classList.toggle('hidden', !(totalQueryMatches > 0));
+            resultsCount.textContent = `${totalQueryMatches} result${totalQueryMatches > 1 ? 's' : ''}`;
+
+            const noResultsMessage = searchResultsContainer.querySelector('#no-results-message');
+            noResultsMessage?.classList.toggle('hidden', totalQueryMatches > 0);
+        }, 400);
+    });
+
+    clearButton.addEventListener("click", () => {
+        searchBar.value = "";
+
+        clearButton.classList.add("hidden");
+        searchBar.classList.add("rounded-b-xl");
+        searchResultsContainer.classList.add("opacity-0", "scale-95", "pointer-events-none");
+
+        if (!searchResultsList) return;
+    });
+
+</script>

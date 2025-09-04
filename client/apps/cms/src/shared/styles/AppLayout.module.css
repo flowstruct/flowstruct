@@ -1,0 +1,29 @@
+.root {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.header {
+    top: 0;
+    z-index: 100;
+    background-color: var(--mantine-color-gray-0);
+    border-bottom: 1px solid var(--mantine-color-gray-3);
+}
+
+.content {
+    flex: 1;
+    padding: var(--mantine-spacing-lg);
+}
+
+.user {
+    padding: var(--mantine-spacing-xs);
+    color: var(--mantine-color-black);
+    border-radius: var(--mantine-radius-default);
+    transition: background-color 100ms ease;
+}
+
+.userActive {
+    background-color: var(--mantine-color-white);
+}

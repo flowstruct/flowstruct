@@ -1,0 +1,64 @@
+# Build outputs
+target/
+*.jar
+*.war
+*.ear
+
+# IDE files
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.settings/
+.project
+.classpath
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Docker files (don't copy into container)
+Dockerfile
+.dockerignore
+compose.yaml
+docker-compose.deploy.yaml
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Node modules (if you have frontend assets)
+node_modules
+**/node_modules
+
+# Maven wrapper jar (optional - you might want to keep this)
+# .mvn/wrapper/maven-wrapper.jar
+
+# Application specific
+*.properties.local
+application-local.yml
+application-local.yaml
+
+# Testing
+coverage/
+*.coverage
+
+# Documentation
+README.md
+*.md
+docs/
+
+# CI/CD files
+.github/
+.gitlab-ci.yml
+Jenkinsfile

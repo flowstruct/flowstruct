@@ -1,0 +1,69 @@
+
+<div class="sticky flex top-0 z-30 py-2 w-fit mx-auto rounded-full">
+    <div class="flex border rounded-full bg-white/80 backdrop-blur-sm shadow-sm transition-all">
+        <p id="left-navigator"
+           class="hover:bg-gray-100/80 active:bg-gray-200 rounded-l-full p-1 px-10 lg:px-14 transition-all my-auto opacity-50 flex gap-2 hover:opacity-100 cursor-pointer select-none">
+            <i data-lucide="move-left" class="size-5 lg:size-fit" />
+        </p>
+
+        <p id="right-navigator"
+           class="hover:bg-gray-100/80 active:bg-gray-200 rounded-r-full p-1 px-10 lg:px-14 my-auto opacity-50 flex gap-2 hover:opacity-100 transition-all cursor-pointer select-none">
+            <i data-lucide="move-right" class="size-5 lg:size-fit" />
+        </p>
+    </div>
+</div>
+
+<script>
+    const coursesGrid = document.getElementById("courses-grid");
+    const leftNavigator = document.getElementById('left-navigator');
+    const rightNavigator = document.getElementById('right-navigator');
+    const leftHiddenGradient = document.getElementById('left-hidden-gradient');
+    const rightHiddenGradient = document.getElementById('right-hidden-gradient');
+
+    function updateHiddenGradients() {
+        if (!coursesGrid || !leftNavigator || !rightNavigator || !leftHiddenGradient || !rightHiddenGradient) return;
+
+        const hiddenLeft = coursesGrid.scrollLeft;
+        const hiddenRight = coursesGrid.scrollWidth - coursesGrid.clientWidth - coursesGrid.scrollLeft;
+
+        if (hiddenLeft <= 0) {
+            leftNavigator.classList.add('opacity-50', 'pointer-events-none');
+        } else {
+            leftNavigator.classList.remove('opacity-50', 'pointer-events-none');
+        }
+
+        if (hiddenRight <= 0) {
+            rightNavigator.classList.add('opacity-50', 'pointer-events-none');
+        } else {
+            rightNavigator.classList.remove('opacity-50', 'pointer-events-none');
+        }
+
+        leftHiddenGradient.style.display = hiddenLeft <= 0 ? 'none' : 'flex';
+        rightHiddenGradient.style.display = hiddenRight <= 0 ? 'none' : 'flex';
+    }
+
+    leftNavigator?.addEventListener('click', () => {
+        if (!coursesGrid) return;
+        coursesGrid.scrollBy({
+            left: -coursesGrid.clientWidth * 0.6,
+            behavior: 'smooth'
+        });
+    });
+
+    rightNavigator?.addEventListener('click', () => {
+        if (!coursesGrid) return;
+        coursesGrid.scrollBy({
+            left: coursesGrid.clientWidth * 0.6,
+            behavior: 'smooth'
+        });
+    });
+
+    const resizeObserver = new ResizeObserver(() => updateHiddenGradients);
+
+    if (coursesGrid) {
+        resizeObserver.observe(coursesGrid);
+        coursesGrid.addEventListener('scroll', updateHiddenGradients);
+    }
+
+    updateHiddenGradients();
+</script>

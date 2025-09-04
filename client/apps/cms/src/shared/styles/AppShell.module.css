@@ -1,0 +1,14 @@
+.main {
+  background: var(--mantine-color-gray-0);
+}
+
+.header {
+  box-shadow: var(--mantine-shadow-sm);
+  padding-left: var(--mantine-spacing-lg);
+  padding-right: var(--mantine-spacing-lg);
+}
+
+.navbar {
+  box-shadow: var(--mantine-shadow-sm);
+  padding: var(--mantine-spacing-lg);
+}

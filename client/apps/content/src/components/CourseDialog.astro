@@ -1,0 +1,188 @@
+
+<dialog id="course-dialog"
+        class="w-full max-w-3xl p-0 rounded-2xl shadow-2xl backdrop:bg-gray-950/20
+               opacity-0 scale-95 transition-all duration-200">
+    <div class="relative">
+        <header class="sticky top-0 bg-white/80 backdrop-blur-sm p-6 pb-4 border-b">
+            <div class="flex items-center justify-between">
+                <div class="space-y-1">
+                    <h1 class="text-xl font-semibold text-gray-800">Course Details</h1>
+                    <p class="text-sm text-gray-500">Consult your academic advisor for additional details.</p>
+                </div>
+                <button id="course-dialog-close"
+                        class="p-1.5 hover:bg-gray-100 rounded-full transition-all mb-auto text-gray-500
+                               hover:text-gray-700 active:bg-gray-200">
+                    <i data-lucide="x" class="size-5"/>
+                </button>
+            </div>
+        </header>
+
+        <div class="course-dialog-content p-6">
+            <div class="flex flex-col lg:flex-row gap-6 lg:items-center">
+                <div class="flex-1 space-y-6">
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="space-y-1">
+                            <span class="text-sm text-gray-500">Code</span>
+                            <p id="course-code" class="font-semibold text-gray-800"></p>
+                        </div>
+
+                        <div class="space-y-1">
+                            <span class="text-sm text-gray-500">Name</span>
+                            <p id="course-name" class="font-semibold text-gray-800"></p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-6 pt-4 border-t">
+                        <div class="space-y-1">
+                            <span class="text-sm text-gray-500">Credit Hours</span>
+                            <p class="font-semibold text-gray-800">
+                                <span id="course-credits"></span> Cr.
+                            </p>
+                        </div>
+                        <div class="space-y-1">
+                            <span class="text-sm text-gray-500">ECTS</span>
+                            <p class="font-semibold text-gray-800">
+                                <span id="course-ects"></span> Cr.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t">
+                        <span class="text-sm text-gray-500">Teaching Method</span>
+                        <div class="flex gap-2 mt-2">
+                            {['F2F: Face-to-face', 'BLD: Blended', 'OL: Online'].map((method, i) => (
+                                    <span id={`${method.split(':')[0].toLowerCase()}-chip`}
+                                          class="px-3 py-1.5 rounded-lg text-sm transition-all duration-200
+                                             bg-gray-100 text-gray-500">
+                                    {method}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:w-72">
+                    <div class="rounded-xl border overflow-hidden bg-gray-50">
+                        <div class="p-4 text-center">
+                            <h3 class="font-medium text-gray-800">Contact Hours</h3>
+                        </div>
+
+                        <div class="bg-white p-4 space-y-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="text-center p-3 rounded-lg bg-gray-50">
+                                    <p class="text-sm text-gray-500 mb-1">Lecture</p>
+                                    <p id="course-lecture" class="font-semibold text-gray-800"></p>
+                                </div>
+
+                                <div class="text-center p-3 rounded-lg bg-gray-50">
+                                    <p class="text-sm text-gray-500 mb-1">Practical</p>
+                                    <p id="course-practical" class="font-semibold text-gray-800"></p>
+                                </div>
+                            </div>
+
+                            <div class="pt-3 text-center border-t">
+                                <p class="text-sm text-gray-500 mb-1">Total Hours/Week</p>
+                                <p class="font-semibold text-gray-800">
+                                    <span id="course-total"></span> Hrs
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</dialog>
+
+<style>
+    dialog::backdrop {
+        background: rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(4px);
+    }
+</style>
+
+<script>
+    import {
+        createIcons,
+        ArrowBigRightDash,
+        ArrowBigLeftDash,
+        ArrowBigLeft,
+        ArrowBigUp,
+        ChevronLeft,
+        MousePointerClick,
+        Sparkles,
+        Lightbulb,
+        CheckCircle2,
+        X
+    } from "lucide";
+
+    createIcons({
+        icons: {
+            ArrowBigRightDash,
+            ArrowBigLeftDash,
+            ArrowBigLeft,
+            ArrowBigUp,
+            ChevronLeft,
+            MousePointerClick,
+            Sparkles,
+            Lightbulb,
+            CheckCircle2,
+            X
+        }
+    });
+
+    const dialog = document.getElementById('course-dialog') as HTMLDialogElement;
+    const closeButton = dialog.querySelector('#course-dialog-close');
+
+    const closeDialog = () => {
+        dialog.style.opacity = '0';
+        dialog.style.transform = 'scale(95%)';
+        setTimeout(() => dialog.close(), 200);
+    };
+
+    closeButton?.addEventListener('click', closeDialog);
+
+    dialog.addEventListener('click', (e) => {
+        if (e.target === dialog) closeDialog();
+    });
+
+    dialog.addEventListener('cancel', (e) => {
+        e.preventDefault();
+        closeDialog();
+    });
+
+    declare global {
+        interface Window {
+            showCourseDialog: (course: any) => void;
+        }
+    }
+
+    window.showCourseDialog = (course: any) => {
+        const content = dialog.querySelector('.course-dialog-content') as HTMLElement;
+
+        const chips = ['f2f', 'bld', 'ol'];
+        chips.forEach(chip => {
+            const element = content.querySelector(`#${chip}-chip`) as HTMLElement;
+            element.className = 'px-3 py-1.5 rounded-lg text-sm transition-all duration-200 bg-gray-100 text-gray-500';
+        });
+
+        const activeChip = content.querySelector(`#${course.type.toLowerCase()}-chip`) as HTMLElement;
+        if (activeChip) {
+            activeChip.className = 'px-3 py-1.5 rounded-lg text-sm transition-all duration-200 bg-blue-100 text-blue-700 font-medium';
+        }
+
+        content.querySelector('#course-code')!.textContent = course.code;
+        content.querySelector('#course-name')!.textContent = course.name;
+        content.querySelector('#course-credits')!.textContent = course.creditHours;
+        content.querySelector('#course-ects')!.textContent = course.ects;
+        content.querySelector('#course-lecture')!.textContent = `${course.lectureHours} Hr.`;
+        content.querySelector('#course-practical')!.textContent = `${course.practicalHours} Hr.`;
+        content.querySelector('#course-total')!.textContent = course.lectureHours + course.practicalHours;
+
+        dialog.showModal();
+        requestAnimationFrame(() => {
+            dialog.style.opacity = '1';
+            dialog.style.transform = 'scale(1)';
+        });
+    };
+</script>

@@ -1,0 +1,26 @@
+{
+  "name": "content",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "lint": "eslint \"src/**/*.{ts,tsx,astro,js,jsx,md}\"",
+    "format": "prettier --write \"./**/*.{ts,tsx,astro,js,jsx,md,css}\"",
+    "test": "echo \"content: no tests defined\" && exit 0"
+  },
+  "dependencies": {
+    "@astrojs/node": "^9.4.3",
+    "@astrojs/tailwind": "^6.0.2",
+    "astro": "^5.7.10",
+    "lucide": "^0.468.0",
+    "tailwindcss": "^3.4.16",
+    "@flowstruct/api-client": "workspace:*"
+  },
+  "devDependencies": {
+    "@flowstruct/shared-types": "workspace:*",
+    "@types/node": "^22.12.0"
+  }
+}

@@ -1,0 +1,161 @@
+
+<!-- About Dialog Button -->
+<button id="about-button"
+        class="flex gap-3 items-center group text-gray-600 hover:text-blue-600 transition-all">
+    <i data-lucide="circle-help" class="group-hover:scale-110 transition-all duration-200 size-5"/>
+    <span class="group-hover:translate-x-0.5 transition-all duration-200">About</span>
+</button>
+
+<!-- About Dialog -->
+<dialog id="about-dialog"
+        class="w-full max-w-xl p-0 rounded-2xl shadow-2xl backdrop:bg-gray-950/20
+               opacity-0 scale-95 transition-all duration-200">
+    <div class="relative">
+        <!-- Header -->
+        <header class="sticky top-0 bg-white/80 backdrop-blur-sm p-6 pb-4 border-b">
+            <div class="flex items-center justify-between">
+                <div class="space-y-1">
+                    <h1 class="text-xl font-semibold text-gray-800">How to Use This Page</h1>
+                    <p class="text-sm text-gray-500">Brief overview of the main features.</p>
+                </div>
+                <button id="close-about-dialog"
+                        class="p-1.5 hover:bg-gray-100 rounded-full transition-all mb-auto text-gray-500
+                               hover:text-gray-700 active:bg-gray-200">
+                    <i data-lucide="x" class="size-5"/>
+                </button>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <div class="p-6 space-y-8 overflow-y-auto max-h-[70vh]">
+            <section class="space-y-4">
+                <p class="flex gap-4 font-semibold items-center text-lg text-gray-800">
+                    <i data-lucide="mouse-pointer-click" class="text-blue-600"/>
+                    Click a course to highlight its...
+                </p>
+
+                <div class="space-y-2">
+                    <div class="flex gap-3 items-center hover:bg-yellow-50 p-3 group rounded-xl
+                                border border-transparent hover:border-yellow-200 transition-all">
+                        <div class="rounded-lg shadow-sm group-hover:shadow-xl transition-all p-2
+                                  bg-yellow-200 flex w-fit gap-2 items-center">
+                            <i data-lucide="arrow-big-left-dash" class="size-5"/>
+                        </div>
+                        <p class="text-sm text-gray-600">Prerequisite Sequence (Yellow)</p>
+                    </div>
+                    <div class="flex gap-3 items-center hover:bg-orange-50 p-3 group rounded-xl
+                                border border-transparent hover:border-orange-200 transition-all">
+                        <div class="rounded-lg shadow-sm group-hover:shadow-xl transition-all p-2
+                                  bg-orange-300 flex w-fit gap-2 items-center">
+                            <i data-lucide="arrow-big-left" class="size-5"/>
+                        </div>
+                        <p class="text-sm text-gray-600">Prerequisite (Orange)</p>
+                    </div>
+                    <div class="flex gap-3 items-center hover:bg-gray-50 p-3 group rounded-xl
+                                border border-transparent hover:border-gray-200 transition-all">
+                        <div class="rounded-lg shadow-sm group-hover:shadow-xl transition-all p-2
+                                  bg-gray-400 flex w-fit text-white gap-2 items-center">
+                            <i data-lucide="arrow-big-up" class="size-5"/>
+                        </div>
+                        <p class="text-sm text-gray-600">Corequisite (Gray)</p>
+                    </div>
+                    <div class="flex gap-3 items-center hover:bg-sky-50 p-3 group rounded-xl
+                                border border-transparent hover:border-sky-200 transition-all">
+                        <div class="rounded-lg shadow-sm group-hover:shadow-xl transition-all p-2
+                                  bg-sky-800 flex w-fit gap-2 items-center">
+                            <i data-lucide="arrow-big-left-dash" class="text-white size-5" />
+                        </div>
+                        <p class="text-sm text-gray-600">Postrequisite Sequence (Dark Blue)</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="space-y-4">
+                <p class="flex gap-4 pb-2 font-semibold items-center text-lg text-gray-800">
+                    <i data-lucide="sparkles" class="text-blue-600"/>
+                    Extra Features
+                </p>
+                <ul class="list-none space-y-3">
+                    {['Search courses by code or name using the search bar',
+                        'Filter courses by section using the dropdown menu',
+                        'Click the info button on any course for additional details'].map(feature => (
+                            <li class="flex items-start gap-3 pl-4">
+                                <i data-lucide="circle-check" class="size-5 text-green-500 shrink-0 mt-0.5"/>
+                                <span class="text-sm text-gray-600">{feature}</span>
+                            </li>
+                    ))}
+                </ul>
+            </section>
+
+            <div class="flex items-center gap-3 bg-blue-50 p-4 rounded-xl text-blue-700 border border-blue-100">
+                <i data-lucide="lightbulb" class="size-6 text-blue-500"/>
+                <p class="text-sm">Pro tip: The course grid is arranged from foundational (left) to advanced (right) courses!</p>
+            </div>
+        </div>
+    </div>
+</dialog>
+
+<style>
+    dialog::backdrop {
+        background: rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(4px);
+    }
+</style>
+
+<script>
+    import {
+        createIcons,
+        ArrowBigRightDash,
+        ArrowBigLeftDash,
+        ArrowBigLeft,
+        ArrowBigUp,
+        ChevronLeft,
+        MousePointerClick,
+        Sparkles,
+        Lightbulb,
+CircleCheck,
+    } from "lucide";
+
+    createIcons({
+        icons: {
+            ArrowBigRightDash,
+            ArrowBigLeftDash,
+            ArrowBigLeft,
+            ArrowBigUp,
+            ChevronLeft,
+            MousePointerClick,
+            Sparkles,
+            Lightbulb,
+            CircleCheck
+        }
+    });
+
+    const dialog = document.getElementById('about-dialog') as HTMLDialogElement;
+    const aboutButton = document.getElementById('about-button') as HTMLButtonElement;
+    const closeButton = dialog.querySelector('#close-about-dialog') as HTMLButtonElement;
+
+    const closeDialog = () => {
+        dialog.style.opacity = '0';
+        dialog.style.transform = 'scale(95%)';
+        setTimeout(() => dialog.close(), 200);
+    };
+
+    closeButton?.addEventListener('click', closeDialog);
+
+    dialog.addEventListener('click', (e) => {
+        if (e.target === dialog) closeDialog();
+    });
+
+    dialog.addEventListener('cancel', (e) => {
+        e.preventDefault();
+        closeDialog();
+    });
+
+    aboutButton?.addEventListener('click', () => {
+        dialog.showModal();
+        requestAnimationFrame(() => {
+            dialog.style.opacity = '1';
+            dialog.style.transform = 'scale(1)';
+        });
+    })
+</script>   

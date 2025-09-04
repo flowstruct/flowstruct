@@ -1,0 +1,11 @@
+spring:
+  config:
+    activate:
+      on-profile: staging
+  flyway:
+    locations: "classpath:db/migration,classpath:dev/db/migration"
+
+logging:
+  level:
+    org:
+      springframework: DEBUG

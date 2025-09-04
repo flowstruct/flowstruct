@@ -1,0 +1,153 @@
+---
+import type { Course, StudyPlan } from '../types';
+import NavigationControls from './NavigationControls.astro';
+import CourseFilter from './CourseFilter.astro';
+import { api } from '../utils/api';
+import { getPlacementFromTermIndex } from '../utils/getPlacementFromTermIndex';
+import CourseCard from './CourseCard.astro';
+import { createCourseGridCellMap } from '../utils/createCourseGridMap';
+import { buildCoursesGraph } from '../utils/createCoursesGraph';
+
+interface Props {
+  studyPlan: StudyPlan;
+}
+type YearIndexBucket = { year: number; terms: number[] };
+
+const { studyPlan } = Astro.props;
+
+const coursesGraph = buildCoursesGraph(studyPlan);
+
+const courses = await api<Record<number, Course>>(
+  `/study-plans/${Astro.params.studyPlanId}/courses/detailed`,
+);
+
+const semesterTypes = ['First', 'Second', 'Summer'] as const;
+
+const {
+  courseGridMap,
+  gridWidth,
+  gridHeight,
+  filteredTermIndices,
+  coursesByTermIndex,
+} = createCourseGridCellMap(studyPlan);
+
+const totalCredits = new Map<number, number>();
+filteredTermIndices.forEach(termIndex => {
+  const sum = coursesByTermIndex.get(termIndex)!.reduce((acc, id) => acc + (courses[id]?.creditHours || 0), 0);
+  totalCredits.set(termIndex, sum);
+});
+
+const yearIndexBuckets: YearIndexBucket[] = Array.from(filteredTermIndices
+  .reduce(
+    (acc, termIndex) => {
+      const year = Math.floor(termIndex / 3);
+      if (!acc.has(year)) acc.set(year, []);
+      acc.get(year)!.push(termIndex);
+      return acc;
+    },
+    new Map<number, number[]>(),
+  ))
+  .map(([year, terms]) => ({
+      year,
+      terms: terms.sort((a, b) => a - b),
+    }),
+  );
+---
+
+<div class="space-y-2 relative">
+  <CourseFilter sections={studyPlan.sections} />
+
+  <NavigationControls />
+
+  <div class="relative flex justify-center">
+    <div
+      id="left-hidden-gradient"
+      class="pointer-events-none absolute left-0 z-20 w-8 sm:w-5 h-full bg-gradient-to-r from-white"
+    ></div>
+    <div
+      id="right-hidden-gradient"
+      class="pointer-events-none absolute right-0 z-20 w-8 sm:w-5 h-full bg-gradient-to-l from-white"
+    ></div>
+
+    <div class="overflow-auto w-fit px-0.5" id="courses-grid">
+      <div
+        class="grid grid-rows-2 gap-2"
+        style={{
+          gridTemplateColumns: `repeat(${gridWidth})`,
+        }}
+      >
+        {yearIndexBuckets.map((yearIndexBucket) => {
+          const year = studyPlan.year + yearIndexBucket.year;
+          return (
+            <div
+              class="text-xs opacity-60 row-start-1 text-center select-none whitespace-nowrap"
+              style={{
+                gridColumn: `span ${yearIndexBucket.terms.length}`,
+              }}
+            >
+              {year} / {year + 1}
+            </div>
+          );
+        })}
+
+        {filteredTermIndices.map((termIndex) => {
+          const { semester } = getPlacementFromTermIndex(termIndex);
+          const semesterName = semesterTypes[semester - 1];
+          return (
+            <div class="w-[8rem] row-start-2 lg:w-40 text-xs opacity-60 text-center select-none whitespace-nowrap">
+              {semesterName}
+              - {totalCredits.get(termIndex)} Cr.
+            </div>
+          );
+        })}
+      </div>
+
+      <div
+        class="mt-2 grid gap-2"
+        style={{
+          gridTemplateColumns: `repeat(${gridWidth})`,
+          gridTemplateRows: `repeat(${gridHeight})`,
+        }}
+      >
+        {Array.from(courseGridMap.entries()).map(([courseId, gridCell]) => {
+          const course = courses[courseId];
+          return (
+            <div
+              class="min-h-[6.9rem] lg:min-h-[8.6rem] w-[8rem] lg:w-40"
+              style={{
+                gridColumn: `${gridCell.column}`,
+                gridRow: `${gridCell.row} / span ${gridCell.span}`,
+              }}
+            >
+              <CourseCard
+                course={course}
+                prerequisites={studyPlan.coursePrerequisites[course.id] ?? {}}
+                corequisites={studyPlan.courseCorequisites[course.id] ?? []}
+                sequences={coursesGraph.get(course.id) ?? {
+                  prerequisiteSequence: new Set(),
+                  postrequisiteSequence: new Set(),
+                }}
+              />
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  </div>
+
+  <p class="text-center opacity-40 text-sm">
+    Remedial courses are not included
+  </p>
+</div>
+
+<style>
+    #courses-grid {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+        scroll-behavior: smooth;
+    }
+
+    #courses-grid::-webkit-scrollbar {
+        display: none;
+    }
+</style>

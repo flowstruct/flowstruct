@@ -1,0 +1,16 @@
+.warning {
+  font-size: var(--mantine-font-size-xs);
+  font-weight: 600;
+  color: var(--mantine-color-red-7);
+}
+
+.option {
+  &[data-combobox-disabled] {
+    opacity: 1;
+  }
+}
+
+.option[data-combobox-disabled] .label {
+  opacity: 0.5;
+  margin-bottom: 0.25rem;
+}

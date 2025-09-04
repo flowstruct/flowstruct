@@ -1,0 +1,47 @@
+<section id="last-visited-container" class="flex flex-col gap-2 items-center">
+    <div class="flex gap-2 opacity-60 items-center text-xs">
+        <i data-lucide="history" class="icon-history size-4" aria-label="History Icon"></i>
+        <h3 id="last-visited-duration">No Study Plan History</h3>
+    </div>
+
+    <a id="last-visited-card"
+       class="hover:bg-blue-50 hover:border-blue-200 hover:drop-shadow-md
+               active:bg-blue-100 duration-200 p-4 px-5 pb-5 flex flex-col justify-between space-y-2 border bg-gray-100 w-60 h-40 rounded-xl transition-all select-none cursor-pointer"
+       style="display: none"
+    >
+        <header class="space-y-1">
+            <h1 id="program-name" class="program-name font-semibold line-clamp-2"></h1>
+            <h3 id="year" class="study-plan-year opacity-60 text-xs"></h3>
+            <p id="track" class="study-plan-track opacity-60 text-xs line-clamp-1"></p>
+        </header>
+
+        <footer class="w-full flex gap-2 items-center justify-center group hover:scale-110 transition-all">
+            <p class="mb-0.5">Visit</p>
+            <i data-lucide="arrow-right" class="size-5" aria-label="Visit Arrow Icon"></i>
+        </footer>
+    </a>
+</section>
+
+<script>
+    import {formatTimeAgo} from "../utils/formatTimeAgo";
+
+    const lastVisitedContainer = document.getElementById('last-visited-container');
+    const lastVisitedCard = lastVisitedContainer?.querySelector('#last-visited-card') as HTMLAnchorElement;
+    const lastVisitedDuration = lastVisitedContainer?.querySelector('#last-visited-duration');
+    const storedLastVisitedData = JSON.parse(localStorage.getItem('lastVisited') || '{}');
+    const initialStudyPlanElement = document.querySelector(`study-plan-chip[id="${storedLastVisitedData.id}"]`) as HTMLElement;
+    const initialStudyPlanProgramElement = initialStudyPlanElement.closest('program-accordion') as HTMLElement;
+
+    if (initialStudyPlanElement && storedLastVisitedData) {
+        const studyPlan = JSON.parse(initialStudyPlanElement.dataset.studyPlan || '{}');
+        const program = JSON.parse(initialStudyPlanProgramElement.dataset.program || '{}');
+
+        lastVisitedDuration!.textContent = `Last Visited: ${formatTimeAgo(new Date(storedLastVisitedData.timestamp))}`;
+        lastVisitedCard!.href = `/study-plans/${studyPlan.id}`;
+        lastVisitedCard!.querySelector('#program-name')!.textContent = `${program.degree} ${program.name}`;
+        lastVisitedCard!.querySelector('#year')!.textContent = `Study Plan ${studyPlan.year} / ${studyPlan.year + 1}`;
+        lastVisitedCard!.querySelector('#track')!.textContent = studyPlan.track;
+
+        lastVisitedCard!.style.display = 'flex';
+    }
+</script>
