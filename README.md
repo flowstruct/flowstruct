@@ -19,7 +19,6 @@ Down with the long, complicated PDFs!
 
 → Try out the [Demo](https://gjuplans.com/study-plans/1)
 
----
 
 ## Features
 
@@ -52,7 +51,6 @@ Automatic prerequisite validation checks when moving, adding, or removing course
 - Built-in RBAC with specific privileges to streamline workflows (Editor, Publisher, Guest, Admin)
 - Content pages automatically calculate their indirect pre/postrequisites, you only define direct prerequisites
 
----
 
 ## Quick Start (Coming Soon)
 
@@ -63,7 +61,6 @@ production-ready stack with one command:
 docker compose up -d
 ```
 
----
 
 ## Setup
 
