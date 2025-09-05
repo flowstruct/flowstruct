@@ -13,6 +13,15 @@ spring:
     user: ${DB_USER:flowstruct}
     password: ${DB_PASSWORD:flowstruct}
 
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: health
+
 jwt:
   cookie:
     expiry: 1800
