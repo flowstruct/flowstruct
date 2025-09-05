@@ -16,9 +16,6 @@ logging:
     org:
       springframework: DEBUG
 
-cors:
-  allowed-origins: http://localhost:5173
-
 secure: false
 
 api:

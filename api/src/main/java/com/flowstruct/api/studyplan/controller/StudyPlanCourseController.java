@@ -16,7 +16,7 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/study-plans/{studyPlanId}/courses")
+@RequestMapping("/api/study-plans/{studyPlanId}/courses")
 public class StudyPlanCourseController {
     private final StudyPlanCourseService studyPlanCourseService;
     private final StudyPlanCourseManagerService studyPlanCourseManagerService;

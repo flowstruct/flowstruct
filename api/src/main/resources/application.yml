@@ -20,9 +20,6 @@ jwt:
 server:
   forward-headers-strategy: native
 
-cors:
-  allowed-origins: http://localhost:3000/cms
-
 secure: true
 
 api:

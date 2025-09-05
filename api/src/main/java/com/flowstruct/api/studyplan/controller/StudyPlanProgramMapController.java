@@ -13,7 +13,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/study-plans/{studyPlanId}/course-placements")
+@RequestMapping("/api/study-plans/{studyPlanId}/course-placements")
 public class StudyPlanProgramMapController {
     private final StudyPlanCoursePlacementService studyPlanCoursePlacementService;
 

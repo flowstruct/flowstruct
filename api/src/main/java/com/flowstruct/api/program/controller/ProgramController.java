@@ -14,7 +14,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/programs")
+@RequestMapping("/api/programs")
 public class ProgramController {
     private final ProgramService programService;
     private final ProgramManagerService programManagerService;

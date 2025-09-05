@@ -1,8 +1,7 @@
-const API_DOMAIN = 'http://localhost:8080';
 const API_KEY = 'super-secret-api-key';
 
 export const api = async <T>(endpoint: string) => {
-  const url = `${API_DOMAIN}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
+  const url = `http://localhost:8080/api${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
 
   const response = await fetch(url, {
     headers: {

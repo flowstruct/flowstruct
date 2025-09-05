@@ -1,7 +1,5 @@
 import { ErrorObject } from '@/shared/types.ts';
 
-const API_URL = 'http://localhost:8080';
-
 type RequestOptions = {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
   body?: unknown;
@@ -20,7 +18,7 @@ export const api = {
     const searchParams = new URLSearchParams();
     Object.entries(params)?.forEach(([param, value]) => searchParams.append(param, String(value)));
 
-    const url = `${API_URL}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}${searchParams.size ? `?${searchParams}` : ''}`;
+    const url = `/api${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}${searchParams.size ? `?${searchParams}` : ''}`;
 
     if (body && !headers['Content-Type']) {
       headers['Content-Type'] = 'application/json';

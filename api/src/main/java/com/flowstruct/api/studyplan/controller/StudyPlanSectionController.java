@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/study-plans/{studyPlanId}/sections")
+@RequestMapping("/api/study-plans/{studyPlanId}/sections")
 public class StudyPlanSectionController {
     private final StudyPlanSectionService studyPlanSectionService;
 
