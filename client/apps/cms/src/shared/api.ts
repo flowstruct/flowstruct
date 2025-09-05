@@ -37,11 +37,6 @@ export const api = {
 
     if (!response.ok) {
       if (response.status === 401) {
-        if (!endpoint.includes('/me')) {
-          window.location.href = '/login';
-          return new Promise<never>(() => {});
-        }
-
         throw {
           statusCode: 401,
           messages: ['Authentication required. Please log in.'],

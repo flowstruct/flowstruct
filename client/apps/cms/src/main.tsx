@@ -112,12 +112,33 @@ const queryClient = new QueryClient({
       }
     },
     onError: (error, _variables, _context, mutation) => {
+      const errorObject = error as unknown as ErrorObject;
+
+      if (errorObject.statusCode === 401) {
+        queryClient.clear();
+
+        notifications.show({
+          title: 'Session Expired',
+          message: 'Please log in again.',
+          color: 'red',
+          icon: <X size={18} />,
+          withBorder: true,
+          autoClose: 4000,
+        });
+
+        router.navigate({
+          to: '/login',
+          search: { redirect: window.location.pathname }
+        });
+
+        return;
+      }
+
       queryClient.invalidateQueries();
 
-      const errorObject = error as unknown as ErrorObject;
-      const successMessage = mutation.meta?.successMessage;
+      const loadingNotification = mutation.meta?.successMessage;
 
-      if (successMessage) {
+      if (loadingNotification) {
         notifications.update({
           id: `mutation-${mutation.mutationId}`,
           title: 'Error',

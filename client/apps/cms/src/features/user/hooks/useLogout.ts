@@ -13,9 +13,7 @@ export const useLogout = () => {
   return useAppMutation({
     mutationFn: logoutUser,
     onSuccess: () => {
-      queryClient.cancelQueries().then(() => {
-        queryClient.clear();
-      });
+      queryClient.clear();
 
       navigate({ to: '/login', search: { redirect: '/' } }).then(() => {});
     },
