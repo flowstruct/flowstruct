@@ -3,6 +3,8 @@ target/
 *.jar
 *.war
 *.ear
+api/src/main/resources/cms/
+dist/
 
 # IDE files
 .idea/

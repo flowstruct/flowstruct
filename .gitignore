@@ -88,6 +88,7 @@ packages/api-client/dist/
 # ──────────────────────────────────────────────────────────
 # Gradle build
 api/build/
+api/src/main/resources/cms/
 api/.gradle/
 # Maven build
 api/target/

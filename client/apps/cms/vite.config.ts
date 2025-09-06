@@ -13,6 +13,8 @@ export default defineConfig({
     },
   },
 
+  base: '/cms/',
+
   server: {
     proxy: {
       '/api': {

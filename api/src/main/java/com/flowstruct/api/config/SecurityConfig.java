@@ -6,7 +6,6 @@ import com.flowstruct.api.auth.filter.SiteGeneratorFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
@@ -36,49 +35,21 @@ public class SecurityConfig {
     private final AppAccessDeniedHandler accessDeniedHandler;
 
     @Bean
-    @Profile("dev")
     public SecurityFilterChain devSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .anonymous(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
-                .httpBasic(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(request -> request
-                        .requestMatchers(
-                                "/users/login",
-                                "/users/logout",
-                                "/error"
-                        )
-                        .permitAll()
-                        .anyRequest()
-                        .authenticated()
-                )
-                .exceptionHandling(exceptions ->
-                        exceptions.accessDeniedHandler(accessDeniedHandler)
-                                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
-                )
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-                .addFilterBefore(siteGeneratorFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();
-    }
 
-    @Bean
-    @Profile({"prod", "staging"})
-    public SecurityFilterChain prodSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        return httpSecurity
-                .requiresChannel(channel -> channel.anyRequest().requiresSecure())
-                .csrf(AbstractHttpConfigurer::disable)
-                .anonymous(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults())
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(
-                                "/users/login",
-                                "/users/logout",
-                                "/error"
+                                "/api/users/login",
+                                "/api/users/logout",
+                                "/error",
+                                "/actuator/health",
+                                "/cms",
+                                "/cms/**"
                         )
                         .permitAll()
                         .anyRequest()

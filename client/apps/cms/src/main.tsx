@@ -181,6 +181,7 @@ const queryClient = new QueryClient({
 
 export const router = createRouter({
   routeTree,
+  basepath: import.meta.env.BASE_URL,
   context: { queryClient, isAuthenticated: undefined! },
   defaultPreload: 'intent',
   defaultPreloadStaleTime: 0,
