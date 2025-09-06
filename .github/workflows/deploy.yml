@@ -1,0 +1,64 @@
+name: Build & Push Docker Images
+
+on:
+  push:
+    branches:
+      - feat/docker
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build & Push API
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./api/Dockerfile
+          push: true
+          build-args: |
+            SPRING_PROFILES_ACTIVE=prod
+            DB_NAME=flowstruct
+            DB_USER=flowstruct
+            DB_PASSWORD=flowstruct
+            API_KEY=flowstruct-api-key
+            SECURE=true
+            DOMAIN=flowstruct.com
+          tags: ghcr.io/${{ github.event.repository.name }}/api:latest
+
+      - name: Build & Push CMS
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./client/apps/cms/Dockerfile
+          push: true
+          build-args: |
+            RUNTIME_ENV_VAR_PREFIX=_RUNTIME
+            RUNTIME_DOMAIN=flowstruct.com
+            VITE_SECURE=true
+          tags: ghcr.io/${{ github.event.repository.name }}/cms:latest
+
+      - name: Build & Push Content
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./client/apps/content/Dockerfile
+          push: true
+          build-args: |
+            DOMAIN=flowstruct.com
+            API_KEY=flowstruct-api-key
+            SECURE=true
+          tags: ghcr.io/${{ github.event.repository.name }}/content:latest

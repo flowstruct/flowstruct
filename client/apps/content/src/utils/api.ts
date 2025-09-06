@@ -1,4 +1,4 @@
-const API_KEY = 'super-secret-api-key';
+const API_KEY = process.env.API_KEY || 'super-secret-api-key';
 
 export const api = async <T>(endpoint: string) => {
   const url = `http://localhost:8080/api${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;

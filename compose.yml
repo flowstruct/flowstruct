@@ -1,0 +1,28 @@
+services:
+  app:
+    image: ghcr.io/flowstruct/flowstruct:latest
+    ports:
+      - "3000:3000"
+    depends_on:
+      - database
+    environment:
+      - TRUST_PROXY
+      - PUID
+      - PGID
+      - DB_NAME
+      - DB_USER
+      - DB_PASSWORD
+    restart: always
+
+  database:
+    image: postgres:16.9-alpine
+    environment:
+      POSTGRES_DB: ${DB_NAME:-flowstruct}
+      POSTGRES_USER: ${DB_USER:-flowstruct}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-flowstruct}
+    volumes:
+      - app_data:/var/lib/postgresql/data
+    restart: always
+
+volumes:
+  app_data:

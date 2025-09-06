@@ -1,0 +1,9 @@
+:3000 {
+    reverse_proxy /api/* http://localhost:8080
+    reverse_proxy /api http://localhost:8080
+
+    reverse_proxy /cms/* http://localhost:8080
+    reverse_proxy /cms http://localhost:8080
+
+    reverse_proxy http://localhost:4321
+}
