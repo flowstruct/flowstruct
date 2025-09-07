@@ -13,8 +13,8 @@
   <img src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg" alt="Contributions welcome">
 </p>
 
-Flowstruct is a university curriculum CMS that turns complex course dependencies into interactive, easy-to-read pages.
-Down with the long, complicated PDFs!
+Flowstruct is a self-hosted visualization tool that transforms university course catalogs into interactive flowsheets, making curriculum structures beautifully clear and navigable. 
+Click any course to instantly see its full prerequisite chain and what it unlocks. Down with the long, complicated PDFs! 
 <br/>
 
 → Try out the [Demo](https://gjuplans.com/study-plans/1)
