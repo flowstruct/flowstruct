@@ -1,7 +1,6 @@
 {
   "name": "flowsturct-client",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.1.0",
   "main": "index.js",
   "scripts": {
     "start:cms": "pnpm --filter cms dev",
@@ -17,8 +16,7 @@
     "prettier": "^3.5.3",
     "typescript": "^5.8.3"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Flowstruct",
+  "license": "MIT",
   "packageManager": "pnpm@10.15.1"
 }
