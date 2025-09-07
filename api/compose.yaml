@@ -6,9 +6,9 @@ services:
       POSTGRES_USER: flowstruct
       POSTGRES_PASSWORD: flowstruct
     volumes:
-      - pg_data:/var/lib/postgresql/data
+      - dev_app_data:/var/lib/postgresql/data
     ports:
       - "5433:5432"
 
 volumes:
-  pg_data:
+  dev_app_data:
