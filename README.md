@@ -69,6 +69,13 @@ The application is accessible through the following URLs:
 | CMS     | [http://localhost:3000/cms](http://localhost:5173) |
 | API     | [http://localhost:3000/api](http://localhost:8080) |
 
+#### CMS login  
+
+An **admin account** is available for accessing the CMS:  
+
+- **Username:** `flowstruct`  
+- **Password:** `flowstruct`  
+
 That's all. Have fun with Flowstruct! 🌊
 
 ## ⚙️ Configuration
