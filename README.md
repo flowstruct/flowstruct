@@ -19,10 +19,9 @@ Down with the long, complicated PDFs!
 
 → Try out the [Demo](https://gjuplans.com/study-plans/1)
 
+## ✨ Features
 
-## Features
-
-### Curriculum Visualization (Content Pages)
+### Curriculum visualization (content pages)
 
 Generate dynamic pages that highlight course dependency chains (automatically) with clear visual markers:
 
@@ -45,72 +44,39 @@ Automatic prerequisite validation checks when moving, adding, or removing course
 
 ![CMS Demo 2](/assets/cms-demo-2.png)
 
-### Additional Features
+### Additional features
 
 - Easily rollback content changes (changes are not shown publicly unless approved by a publisher)
 - Built-in RBAC with specific privileges to streamline workflows (Editor, Publisher, Guest, Admin)
 - Content pages automatically calculate their indirect pre/postrequisites, you only define direct prerequisites
 
-
-## Quick Start (Coming Soon)
-
-We’re working on a single `docker-compose.yml` that will let you run the full
-production-ready stack with one command:
-
-```bash
-docker compose up -d
-```
-
-
-## Setup
+## ⌨️ Getting Started
 
 > **IMPORTANT!** Flowstruct is currently in beta, expect breaking changes before v1.0
 
-### Prerequisites
+### Installation (using Docker)
 
-- Node.js (v20)
-- Java 20
-- PostgreSQL 16.9 (local install or via Docker)
+1. Download the `compose.yml` file
+2. Run `docker compose up -d`
 
-### Getting Started
+### Accessing the application
 
-Flowstruct consists of two frontends (Content, CMS) and a backend + database.
-In production, the CMS is built and statically served,
-while the content uses server-side rendering (SSR) via a Node.js runtime to serve the content pages.
-The backend requires a Java runtime to serve responses to both frontends.
+The application is accessible through the following URLs:
 
-### Backend
+| Service | URL                                                |
+|---------|----------------------------------------------------|
+| Content | [http://localhost:3000](http://localhost:4321)     |
+| CMS     | [http://localhost:3000/cms](http://localhost:5173) |
+| API     | [http://localhost:3000/api](http://localhost:8080) |
 
-The backend is a Spring Boot application that connects to a PostgreSQL database (on port 5433).
+That's all. Have fun with Flowstruct! 🌊
 
-> Use ``Docker`` for running the database, as it makes it easy to wipe volumes if you’re planning schema-level
-> changes.
+## ⚙️ Configuration
 
-1. Navigate to the ``api`` folder
-2. Run ``docker compose up -d`` to start the database
-3. Configure Spring Boot to use the ``dev`` profile
-4. Run `` mvn spring-boot:run`` to start the backend
+Flowstruct can be configured using the following environment variables:
 
-### Frontend (CMS)
-
-The CMS is built using React + Vite and written in TypeScript
-
-1. Navigate to the ``client`` folder
-2. Run ``pnpm install`` to install dependencies (across both frontends)
-3. Run ```pnpm start:cms``` to start the CMS
-
-### Frontend (Content)
-
-The content uses server-side rendering (SSR) via a Node.js runtime to serve the content pages.
-
-1. Navigate to the ``client`` folder
-2. Run ``pnpm install`` (if you haven't already from before)
-3. Run ```pnpm start:content``` to start the content server
-
-### Access the Application
-
-| Service | URL                                            |
-|---------|------------------------------------------------|
-| Content | [http://localhost:4321](http://localhost:4321) |
-| CMS     | [http://localhost:5173](http://localhost:5173) |
-| API     | [http://localhost:8080](http://localhost:8080) |
+| Variable                               | Default Value | Description                                                                                                                                                                                                                                                                                                                                                      |
+|----------------------------------------|---------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `TRUST_PROXY`                          | `false`       | Whether Flowstruct is behind a reverse proxy.                                                                                                                                                                                                                                                                                                                    |
+| `PUID` and `PGID`                      | `1000`        | The user and group ID of the user who should run Docker inside the Docker container and owns the files that are mounted with the volume. You can get the PUID and GUID of your user on your host machine by using the command id. For more information see [this article](https://docs.linuxserver.io/general/understanding-puid-and-pgid/#using-the-variables). |
+| `DB_NAME`, `DB_USER` and `DB_PASSWORD` | `flowstruct`  | Name, user, and password to the PostgreSQL database.                                                                                                                                                                                                                                                                                                             |
