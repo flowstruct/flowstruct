@@ -49,6 +49,8 @@ else
     echo "  ⚠️  Warning: /app/content/server/entry.mjs not found"
 fi
 
+TRUST_PROXY=${TRUST_PROXY:-false}
+
 echo "  Starting reverse proxy service..."
 if [ "$TRUST_PROXY" = "true" ]; then
     caddy run --adapter caddyfile --config /app/reverse-proxy/Caddyfile.trust-proxy &
