@@ -1,10 +1,3 @@
-INSERT INTO "user" (username, email, role, password)
-VALUES ('Editor', 'editor@flowstruct.com', 'EDITOR', '$2a$10$TCNE9WTfPSl3MCfwu180a.M7BY8WOGJJGbDZT.UvPqoIVeTNVms7m'),
-       ('Approver', 'approver@flowstruct.com', 'APPROVER',
-        '$2a$10$TCNE9WTfPSl3MCfwu180a.M7BY8WOGJJGbDZT.UvPqoIVeTNVms7m'),
-       ('Guest', 'guest@flowstruct.com', 'GUEST', '$2a$10$TCNE9WTfPSl3MCfwu180a.M7BY8WOGJJGbDZT.UvPqoIVeTNVms7m'),
-       ('Admin', 'admin@flowstruct.com', 'ADMIN', '$2a$10$TCNE9WTfPSl3MCfwu180a.M7BY8WOGJJGbDZT.UvPqoIVeTNVms7m');
-
 INSERT INTO course (code, name, credit_hours, ects, lecture_hours, practical_hours, type, is_remedial)
 VALUES ('BE302', 'Business Entrepreneurship', 3, 3, 3, 0, 'OL', false),
        ('TW303', 'Technical and Workplace Writing', 3, 3, 3, 0, 'OL', false),

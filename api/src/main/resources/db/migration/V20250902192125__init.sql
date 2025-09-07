@@ -120,3 +120,6 @@ CREATE TABLE course_placement
     PRIMARY KEY (study_plan, course),
     FOREIGN KEY (course) REFERENCES course (id)
 );
+
+INSERT INTO "user" (username, email, role, password)
+VALUES ('flowstruct', 'admin@flowstruct.com', 'ADMIN', '$2a$12$Pny61LESAXFDjnkgczhJ8eIC3HbEnlQyvW8FQ5mpoJc5ODks1zG.i');
