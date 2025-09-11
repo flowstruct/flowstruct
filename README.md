@@ -1,4 +1,4 @@
-# <div align="center"><img src="/assets/logo.svg" width="100"><br/>Flowstruct</div>
+# <div align="center"><img src="/assets/logo.png" width="100"><br/>Flowstruct</div>
 
 <p align="center">
   <a href="https://github.com/flowstruct/flowstruct/releases">
