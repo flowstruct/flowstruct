@@ -38,13 +38,14 @@
 }
 
 .header {
-  font-size: var(--mantine-font-size-sm);
+  font-size: var(--mantine-font-size-md);
   margin-top: -0.25rem;
 }
 
 .code {
   font-size: var(--mantine-font-size-sm);
   font-weight: var(--mantine-h6-font-weight);
+  color: var(--mantine-color-dimmed);
   margin-bottom: 0.25rem;
   margin-top: 0;
 }

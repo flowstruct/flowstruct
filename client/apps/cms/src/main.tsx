@@ -13,13 +13,18 @@ import {
   QueryClientProvider,
   QueryKey,
 } from '@tanstack/react-query';
-import { createTheme, LoadingOverlay, MantineColorsTuple, MantineProvider } from '@mantine/core';
+import {
+  createTheme,
+  LoadingOverlay,
+  MantineColorsTuple,
+  MantineProvider,
+  rem,
+} from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
 import { notifications, Notifications } from '@mantine/notifications';
 import navigationProgressClasses from '@/shared/styles/NavigationProgress.module.css';
 import { NavigationProgress } from '@mantine/nprogress';
 import { NotFoundPage } from '@/shared/components/NotFoundPage.tsx';
-import themeClasses from './theme.module.css';
 import { Check, Loader, X } from 'lucide-react';
 import { ErrorObject } from '@/shared/types.ts';
 
@@ -128,7 +133,7 @@ const queryClient = new QueryClient({
 
         router.navigate({
           to: '/login',
-          search: { redirect: window.location.pathname }
+          search: { redirect: window.location.pathname },
         });
 
         return;
@@ -212,25 +217,38 @@ const gjuColors: MantineColorsTuple = [
 ];
 
 const theme = createTheme({
-  fontFamily: 'Helvetica',
+  fontFamily: 'Inter',
   primaryColor: 'gju',
   colors: {
     gju: gjuColors,
   },
-  activeClassName: themeClasses.active,
-  defaultRadius: 'sm',
+  spacing: {
+    1: rem(4),
+    2: rem(8),
+    3: rem(12),
+    4: rem(16),
+    5: rem(20),
+    6: rem(24),
+    7: rem(28),
+    8: rem(32),
+  },
+  radius: {
+    1: rem(4),
+    2: rem(8),
+  },
+  defaultRadius: 'xs',
 });
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <MantineProvider theme={theme}>
-        <NavigationProgress className={navigationProgressClasses.progress} />
-        <ModalsProvider>
+    <MantineProvider theme={theme}>
+      <NavigationProgress className={navigationProgressClasses.progress} />
+      <ModalsProvider>
+        <QueryClientProvider client={queryClient}>
           <RouterProvider router={router} context={{ queryClient }} />
-        </ModalsProvider>
-        <Notifications />
-      </MantineProvider>
-    </QueryClientProvider>
+        </QueryClientProvider>
+      </ModalsProvider>
+      <Notifications />
+    </MantineProvider>
   </StrictMode>
 );

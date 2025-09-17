@@ -1,4 +1,4 @@
-import { Alert } from '@mantine/core';
+import { Alert, Text, Group } from '@mantine/core';
 import { Archive } from 'lucide-react';
 import { StudyPlan } from '../types';
 import { useUserList } from '@/features/user/hooks/useUserList';
@@ -20,8 +20,11 @@ export function ArchiveAlert({ studyPlan }: Props) {
 
   return (
     <Alert color="orange" icon={<Archive />} autoContrast>
-      This study plan was archived {archiver ? `by ${archiver.username} ` : ''}on {archiveDate}. It
-      is no longer visible to students.
+      <Group gap={8}><div>yes</div><div>no</div></Group>
+      <Text>
+        This study plan was archived {archiver ? `by ${archiver.username} ` : ''}on {archiveDate}. It
+        is no longer visible to students.
+      </Text>
     </Alert>
   );
 }

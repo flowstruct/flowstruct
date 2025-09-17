@@ -1,3 +1,12 @@
+@import "tailwindcss";
+@plugin 'tailwindcss-react-aria-components';
+@plugin 'tailwindcss-animate';
+
 * {
-  margin: 0;
+    margin: 0;
+}
+
+body {
+    @apply bg-white dark:bg-zinc-900;
+    color-scheme: dark light;
 }

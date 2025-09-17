@@ -9,7 +9,7 @@ export type User = {
 };
 
 export const Role = {
-  ADMIN: 'Admin',
+  ADMIN: 'Administrator',
   APPROVER: 'Approver',
   EDITOR: 'Editor',
   GUEST: 'Guest',

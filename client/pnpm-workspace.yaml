@@ -1,6 +1,14 @@
 packages:
   - apps/*
   - packages/*
+
+injectWorkspacePackages: true
+
+onlyBuiltDependencies:
+  - '@swc/core'
+  - '@tailwindcss/oxide'
+  - esbuild
+  - sharp
+
 syncInjectedDepsAfterScripts:
   - build
-injectWorkspacePackages: true

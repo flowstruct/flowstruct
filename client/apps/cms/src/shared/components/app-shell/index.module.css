@@ -1,0 +1,9 @@
+.appShell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.appShell main {
+  flex: 1;
+  overflow-x: auto;
+}

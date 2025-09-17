@@ -1,0 +1,17 @@
+.user-profile {
+    display: flex;
+    cursor: default;
+    gap: 0.25rem;
+    padding: 0.5rem;
+    width: 100%;
+}
+
+.username {
+    color: var(--text-color);
+    font-weight: 500;
+    font-size: var(--font-size-lg);
+}
+
+.role {
+    color: var(--text-color-secondary);
+}

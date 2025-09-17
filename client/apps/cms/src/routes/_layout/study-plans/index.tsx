@@ -22,9 +22,9 @@ function RouteComponent() {
     <Stack gap="lg">
       <Group justify="space-between">
         <div>
-          <Title lh="md" order={2} fw={600}>
+          <p>
             Study Plan Pages
-          </Title>
+          </p>
 
           <Text c="dimmed" size="sm">
             Manage all university study plans
