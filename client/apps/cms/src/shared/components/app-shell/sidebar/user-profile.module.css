@@ -1,17 +1,21 @@
-.user-profile {
+.userProfile {
     display: flex;
     cursor: default;
-    gap: 0.25rem;
-    padding: 0.5rem;
+    align-items: center;
     width: 100%;
+    gap: 1rem;
+    text-align: left;
 }
 
 .username {
     color: var(--text-color);
     font-weight: 500;
-    font-size: var(--font-size-lg);
 }
 
 .role {
     color: var(--text-color-secondary);
+}
+
+.chevron {
+    margin-left: auto;
 }

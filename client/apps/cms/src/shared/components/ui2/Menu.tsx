@@ -17,17 +17,18 @@ import './Menu.css';
 import React from 'react';
 
 export interface MenuButtonProps<T extends object>
-  extends MenuProps<T>,
+  extends Omit<ExtendedMenuProps<T>, 'width'>,
     Omit<MenuTriggerProps, 'children'> {
   label?: React.ReactNode;
+  width?: number;
 }
 
-export function MenuButton<T extends object>({ label, children, ...props }: MenuButtonProps<T>) {
+export function MenuButton<T extends object>({ label, children, width, ...props }: MenuButtonProps<T>) {
   return (
     <MenuTrigger {...props}>
       <Button>{label}</Button>
       <Popover hideArrow>
-        <Menu {...props}>{children}</Menu>
+        <Menu width={width} {...props}>{children}</Menu>
       </Popover>
     </MenuTrigger>
   );
@@ -37,11 +38,22 @@ export function MenuTrigger(props: MenuTriggerProps) {
   return <AriaMenuTrigger {...props} />;
 }
 
-export function Menu<T extends object>(props: MenuProps<T>) {
-  return <AriaMenu {...props}>{props.children}</AriaMenu>;
+export interface ExtendedMenuProps<T extends object> extends MenuProps<T> {
+  width?: number;
 }
 
-export function MenuItem(props: Omit<MenuItemProps, 'children'> & { children?: React.ReactNode }) {
+export function Menu<T extends object>({ width, ...props }: ExtendedMenuProps<T>) {
+  return (
+    <AriaMenu 
+      {...props} 
+      style={width ? { width: `${width}px` } : undefined}
+    >
+      {props.children}
+    </AriaMenu>
+  );
+}
+
+export function MenuItem(props: MenuItemProps) {
   let textValue = props.textValue || undefined;
   return (
     <AriaMenuItem {...props} textValue={textValue}>

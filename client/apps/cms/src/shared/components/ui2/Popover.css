@@ -4,7 +4,7 @@
 .react-aria-Popover {
     border: 1px solid var(--border-color);
     box-shadow: 0 8px 20px rgba(0 0 0 / 0.1);
-    border-radius: 6px;
+    border-radius: 0.5rem;
     background: var(--overlay-background);
     color: var(--text-color);
     outline: none;

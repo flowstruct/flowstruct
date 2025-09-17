@@ -1,22 +1,16 @@
-'use client';
 import { Button as RACButton, ButtonProps as RACButtonProps } from 'react-aria-components';
-import './Button.css';
+import styles from './Button.module.css';
 import clsx from 'clsx';
-import React from 'react';
 
-interface ButtonProps extends Omit<RACButtonProps, 'children'> {
-  children?: React.ReactNode;
+interface ButtonProps extends RACButtonProps {
+
   variant?: 'default' | 'transparent';
 }
 
-export function Button({ children, variant, ...props }: ButtonProps) {
+export function Button({ variant = 'default', ...props }: ButtonProps) {
   return (
-    <RACButton
-      {...props}
-      data-variant={variant}
-      className={clsx('react-aria-Button', props.className)}
-    >
-      {children}
+    <RACButton {...props} data-variant={variant} className={clsx(props.className, styles.button)}>
+      {props.children}
     </RACButton>
   );
 }

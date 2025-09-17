@@ -4,34 +4,40 @@
     max-height: inherit;
     box-sizing: border-box;
     overflow: auto;
-    padding: 0.25rem;
+    padding: 0.25em;
     min-width: 150px;
     outline: none;
 }
 
 .react-aria-MenuItem {
     padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
+    border-radius: 0.5rem;
     outline: none;
     cursor: default;
     color: var(--text-color);
-    font-size: var(--font-size-sm);
     position: relative;
-    display: grid;
-    grid-template-areas: "icon label kbd chevron";
-    grid-template-columns: 1fr auto;
+    display: flex;
+    gap: var(--space-3);
     align-items: center;
-    column-gap: 20px;
+    text-align: left;
+    justify-content: flex-start;
     forced-color-adjust: none;
+    height: var(--space-9);
 
     &[data-focused],
     &[data-open] {
         background: var(--highlight-background);
         color: var(--highlight-foreground);
     }
+
+    &[data-disabled] {
+        color: var(--text-color-disabled);
+    }
 }
 
 .react-aria-MenuItem {
+    background: var(--overlay-background);
+
     &[data-selection-mode] {
         padding-left: 24px;
 
@@ -72,30 +78,6 @@
         font-size: 1.000125rem;
         font-weight: bold;
         padding: 0 0.6247499999999999rem;
-    }
-}
-
-.react-aria-MenuItem {
-    [slot=label] {
-        grid-area: label;
-    }
-
-    [slot=description] {
-        grid-area: desc;
-    }
-
-    [slot=kbd] {
-        grid-area: kbd;
-        font-family: monospace;
-        text-align: end;
-    }
-
-    [slot=icon] {
-        grid-area: icon;
-    }
-
-    &[data-disabled] {
-        color: var(--text-color-disabled);
     }
 }
 
