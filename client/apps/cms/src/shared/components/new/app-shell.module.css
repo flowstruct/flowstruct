@@ -1,9 +1,17 @@
 .appShell {
-  display: flex;
-  min-height: 100vh;
+    display: flex;
 }
 
 .appShell main {
-  flex: 1;
-  overflow-x: auto;
+    height: 100%;
+    overflow-x: auto;
+    background: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-1);
+}
+
+.mainContainer {
+    background: var(--sidebar-background);
+    width: 100%;
+    padding: var(--space-2) var(--space-2) var(--space-2) 0;
 }

@@ -22,8 +22,6 @@ import {
 } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
 import { notifications, Notifications } from '@mantine/notifications';
-import navigationProgressClasses from '@/shared/styles/NavigationProgress.module.css';
-import { NavigationProgress } from '@mantine/nprogress';
 import { NotFoundPage } from '@/shared/components/NotFoundPage.tsx';
 import { Check, Loader, X } from 'lucide-react';
 import { ErrorObject } from '@/shared/types.ts';
@@ -242,7 +240,6 @@ const theme = createTheme({
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <MantineProvider theme={theme}>
-      <NavigationProgress className={navigationProgressClasses.progress} />
       <ModalsProvider>
         <QueryClientProvider client={queryClient}>
           <RouterProvider router={router} context={{ queryClient }} />

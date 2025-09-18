@@ -1,7 +1,5 @@
-import { useEffect } from 'react';
-import { createRootRouteWithContext, Outlet, useRouterState } from '@tanstack/react-router';
+import { createRootRouteWithContext, Outlet } from '@tanstack/react-router';
 import { QueryClient } from '@tanstack/react-query';
-import { nprogress } from '@mantine/nprogress';
 import { MeQuery } from '@/features/user/queries.ts';
 
 export const Route = createRootRouteWithContext<{
@@ -21,16 +19,5 @@ export const Route = createRootRouteWithContext<{
       };
     }
   },
-  component: RootComponent,
+  component: () => <Outlet />,
 });
-
-function RootComponent() {
-  const { status } = useRouterState();
-
-  useEffect(() => {
-    if (status === 'pending') nprogress.start();
-    if (status === 'idle') nprogress.complete();
-  }, [status]);
-
-  return <Outlet />;
-}
