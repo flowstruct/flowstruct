@@ -11,12 +11,14 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LayoutRouteRouteImport } from './routes/_layout/route'
+import { Route as AppRouteRouteImport } from './routes/_app/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LayoutUsersRouteRouteImport } from './routes/_layout/users/route'
 import { Route as LayoutCatalogRouteRouteImport } from './routes/_layout/catalog/route'
 import { Route as LayoutUsersIndexRouteImport } from './routes/_layout/users/index'
 import { Route as LayoutStudyPlansIndexRouteImport } from './routes/_layout/study-plans/index'
 import { Route as LayoutCatalogIndexRouteImport } from './routes/_layout/catalog/index'
+import { Route as AppFlowsheetsIndexRouteImport } from './routes/_app/flowsheets/index'
 import { Route as LayoutUsersNewRouteImport } from './routes/_layout/users/new'
 import { Route as LayoutStudyPlansNewRouteImport } from './routes/_layout/study-plans/new'
 import { Route as LayoutStudyPlansStudyPlanIdRouteRouteImport } from './routes/_layout/study-plans/$studyPlanId/route'
@@ -49,6 +51,10 @@ const LayoutRouteRoute = LayoutRouteRouteImport.update({
   id: '/_layout',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppRouteRoute = AppRouteRouteImport.update({
+  id: '/_app',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -78,6 +84,11 @@ const LayoutCatalogIndexRoute = LayoutCatalogIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => LayoutCatalogRouteRoute,
+} as any)
+const AppFlowsheetsIndexRoute = AppFlowsheetsIndexRouteImport.update({
+  id: '/flowsheets/',
+  path: '/flowsheets/',
+  getParentRoute: () => AppRouteRoute,
 } as any)
 const LayoutUsersNewRoute = LayoutUsersNewRouteImport.update({
   id: '/new',
@@ -217,6 +228,7 @@ export interface FileRoutesByFullPath {
   '/study-plans/$studyPlanId': typeof LayoutStudyPlansStudyPlanIdRouteRouteWithChildren
   '/study-plans/new': typeof LayoutStudyPlansNewRoute
   '/users/new': typeof LayoutUsersNewRoute
+  '/flowsheets': typeof AppFlowsheetsIndexRoute
   '/catalog/': typeof LayoutCatalogIndexRoute
   '/study-plans': typeof LayoutStudyPlansIndexRoute
   '/users/': typeof LayoutUsersIndexRoute
@@ -245,6 +257,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/study-plans/new': typeof LayoutStudyPlansNewRoute
   '/users/new': typeof LayoutUsersNewRoute
+  '/flowsheets': typeof AppFlowsheetsIndexRoute
   '/catalog': typeof LayoutCatalogIndexRoute
   '/study-plans': typeof LayoutStudyPlansIndexRoute
   '/users': typeof LayoutUsersIndexRoute
@@ -269,6 +282,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_app': typeof AppRouteRouteWithChildren
   '/_layout': typeof LayoutRouteRouteWithChildren
   '/login': typeof LoginRoute
   '/_layout/catalog': typeof LayoutCatalogRouteRouteWithChildren
@@ -276,6 +290,7 @@ export interface FileRoutesById {
   '/_layout/study-plans/$studyPlanId': typeof LayoutStudyPlansStudyPlanIdRouteRouteWithChildren
   '/_layout/study-plans/new': typeof LayoutStudyPlansNewRoute
   '/_layout/users/new': typeof LayoutUsersNewRoute
+  '/_app/flowsheets/': typeof AppFlowsheetsIndexRoute
   '/_layout/catalog/': typeof LayoutCatalogIndexRoute
   '/_layout/study-plans/': typeof LayoutStudyPlansIndexRoute
   '/_layout/users/': typeof LayoutUsersIndexRoute
@@ -309,6 +324,7 @@ export interface FileRouteTypes {
     | '/study-plans/$studyPlanId'
     | '/study-plans/new'
     | '/users/new'
+    | '/flowsheets'
     | '/catalog/'
     | '/study-plans'
     | '/users/'
@@ -337,6 +353,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/study-plans/new'
     | '/users/new'
+    | '/flowsheets'
     | '/catalog'
     | '/study-plans'
     | '/users'
@@ -360,6 +377,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/_app'
     | '/_layout'
     | '/login'
     | '/_layout/catalog'
@@ -367,6 +385,7 @@ export interface FileRouteTypes {
     | '/_layout/study-plans/$studyPlanId'
     | '/_layout/study-plans/new'
     | '/_layout/users/new'
+    | '/_app/flowsheets/'
     | '/_layout/catalog/'
     | '/_layout/study-plans/'
     | '/_layout/users/'
@@ -393,6 +412,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AppRouteRoute: typeof AppRouteRouteWithChildren
   LayoutRouteRoute: typeof LayoutRouteRouteWithChildren
   LoginRoute: typeof LoginRoute
 }
@@ -411,6 +431,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: ''
       preLoaderRoute: typeof LayoutRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app': {
+      id: '/_app'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AppRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -454,6 +481,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/catalog/'
       preLoaderRoute: typeof LayoutCatalogIndexRouteImport
       parentRoute: typeof LayoutCatalogRouteRoute
+    }
+    '/_app/flowsheets/': {
+      id: '/_app/flowsheets/'
+      path: '/flowsheets'
+      fullPath: '/flowsheets'
+      preLoaderRoute: typeof AppFlowsheetsIndexRouteImport
+      parentRoute: typeof AppRouteRoute
     }
     '/_layout/users/new': {
       id: '/_layout/users/new'
@@ -612,6 +646,18 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AppRouteRouteChildren {
+  AppFlowsheetsIndexRoute: typeof AppFlowsheetsIndexRoute
+}
+
+const AppRouteRouteChildren: AppRouteRouteChildren = {
+  AppFlowsheetsIndexRoute: AppFlowsheetsIndexRoute,
+}
+
+const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
+  AppRouteRouteChildren,
+)
+
 interface LayoutCatalogCoursesCourseIdRouteRouteChildren {
   LayoutCatalogCoursesCourseIdEditRoute: typeof LayoutCatalogCoursesCourseIdEditRoute
   LayoutCatalogCoursesCourseIdIndexRoute: typeof LayoutCatalogCoursesCourseIdIndexRoute
@@ -748,6 +794,7 @@ const LayoutRouteRouteWithChildren = LayoutRouteRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AppRouteRoute: AppRouteRouteWithChildren,
   LayoutRouteRoute: LayoutRouteRouteWithChildren,
   LoginRoute: LoginRoute,
 }
