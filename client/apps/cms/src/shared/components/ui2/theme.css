@@ -15,7 +15,8 @@
     --gray-9: #8b8d98;
     --gray-10: #80828d;
     --gray-11: #62636c;
-    --gray-12: #1e1f24;
+    --gray-d12: #59595b;
+    --gray-12: #2f2f31;
 
     --gray-a1: #00005503;
     --gray-a2: #00005506;
@@ -35,36 +36,36 @@
     --gray-indicator: #8b8d98;
     --gray-track: #8b8d98;
 
-    --blue-1: #fbfdff;
-    --blue-2: #f4f9ff;
-    --blue-3: #e8f3ff;
-    --blue-4: #daecff;
-    --blue-5: #cae1ff;
-    --blue-6: #b7d4fc;
-    --blue-7: #9ec3f4;
-    --blue-8: #79aaec;
-    --blue-9: #1e3a5f;
-    --blue-10: #304c73;
-    --blue-11: #406fac;
-    --blue-12: #1d395e;
+    --primary-1: #fbfdff;
+    --primary-2: #f4f9ff;
+    --primary-3: #e8f3ff;
+    --primary-4: #daecff;
+    --primary-5: #cae1ff;
+    --primary-6: #b7d4fc;
+    --primary-7: #9ec3f4;
+    --primary-8: #79aaec;
+    --primary-9: #1e3a5f;
+    --primary-10: #304c73;
+    --primary-11: #406fac;
+    --primary-12: #1d395e;
 
-    --blue-a1: #0080ff04;
-    --blue-a2: #0074ff0b;
-    --blue-a3: #007aff17;
-    --blue-a4: #007dff25;
-    --blue-a5: #006fff35;
-    --blue-a6: #0067f548;
-    --blue-a7: #0062e361;
-    --blue-a8: #005edb86;
-    --blue-a9: #00204ae1;
-    --blue-a10: #002353cf;
-    --blue-a11: #003f90bf;
-    --blue-a12: #002049e2;
+    --primary-a1: #0080ff04;
+    --primary-a2: #0074ff0b;
+    --primary-a3: #007aff17;
+    --primary-a4: #007dff25;
+    --primary-a5: #006fff35;
+    --primary-a6: #0067f548;
+    --primary-a7: #0062e361;
+    --primary-a8: #005edb86;
+    --primary-a9: #00204ae1;
+    --primary-a10: #002353cf;
+    --primary-a11: #003f90bf;
+    --primary-a12: #002049e2;
 
-    --blue-contrast: #fff;
-    --blue-surface: #f1f8ffcc;
-    --blue-indicator: #1e3a5f;
-    --blue-track: #1e3a5f;
+    --primary-contrast: #fff;
+    --primary-surface: #f1f8ffcc;
+    --primary-indicator: #1e3a5f;
+    --primary-track: #1e3a5f;
 
 }
 
@@ -102,36 +103,36 @@
             --gray-indicator: oklch(64.6% 0.0165 277.7);
             --gray-track: oklch(64.6% 0.0165 277.7);
 
-            --blue-1: oklch(99.3% 0.0047 256);
-            --blue-2: oklch(98% 0.0101 256);
-            --blue-3: oklch(96% 0.0235 256);
-            --blue-4: oklch(93.6% 0.0377 256);
-            --blue-5: oklch(90.4% 0.0509 256);
-            --blue-6: oklch(86.2% 0.064 256);
-            --blue-7: oklch(80.7% 0.0809 256);
-            --blue-8: oklch(73.1% 0.1098 256);
-            --blue-9: oklch(34.6% 0.0736 256);
-            --blue-10: oklch(41.3% 0.0736 256);
-            --blue-11: oklch(53.7% 0.1098 256);
-            --blue-12: oklch(34.1% 0.0736 256);
+            --primary-1: oklch(99.3% 0.0047 256);
+            --primary-2: oklch(98% 0.0101 256);
+            --primary-3: oklch(96% 0.0235 256);
+            --primary-4: oklch(93.6% 0.0377 256);
+            --primary-5: oklch(90.4% 0.0509 256);
+            --primary-6: oklch(86.2% 0.064 256);
+            --primary-7: oklch(80.7% 0.0809 256);
+            --primary-8: oklch(73.1% 0.1098 256);
+            --primary-9: oklch(34.6% 0.0736 256);
+            --primary-10: oklch(41.3% 0.0736 256);
+            --primary-11: oklch(53.7% 0.1098 256);
+            --primary-12: oklch(34.1% 0.0736 256);
 
-            --blue-a1: color(display-p3 0.0235 0.5137 1 / 0.016);
-            --blue-a2: color(display-p3 0.0235 0.4157 0.9059 / 0.04);
-            --blue-a3: color(display-p3 0.0078 0.4353 0.9529 / 0.083);
-            --blue-a4: color(display-p3 0.0078 0.4157 0.9451 / 0.134);
-            --blue-a5: color(display-p3 0.0078 0.3725 0.9412 / 0.193);
-            --blue-a6: color(display-p3 0.0039 0.3373 0.8941 / 0.259);
-            --blue-a7: color(display-p3 0.0039 0.3255 0.8353 / 0.353);
-            --blue-a8: color(display-p3 0.0039 0.3098 0.8078 / 0.487);
-            --blue-a9: color(display-p3 0 0.0902 0.251 / 0.855);
-            --blue-a10: color(display-p3 0 0.1059 0.2902 / 0.789);
-            --blue-a11: color(display-p3 0 0.1961 0.5137 / 0.706);
-            --blue-a12: color(display-p3 0 0.0902 0.251 / 0.859);
+            --primary-a1: color(display-p3 0.0235 0.5137 1 / 0.016);
+            --primary-a2: color(display-p3 0.0235 0.4157 0.9059 / 0.04);
+            --primary-a3: color(display-p3 0.0078 0.4353 0.9529 / 0.083);
+            --primary-a4: color(display-p3 0.0078 0.4157 0.9451 / 0.134);
+            --primary-a5: color(display-p3 0.0078 0.3725 0.9412 / 0.193);
+            --primary-a6: color(display-p3 0.0039 0.3373 0.8941 / 0.259);
+            --primary-a7: color(display-p3 0.0039 0.3255 0.8353 / 0.353);
+            --primary-a8: color(display-p3 0.0039 0.3098 0.8078 / 0.487);
+            --primary-a9: color(display-p3 0 0.0902 0.251 / 0.855);
+            --primary-a10: color(display-p3 0 0.1059 0.2902 / 0.789);
+            --primary-a11: color(display-p3 0 0.1961 0.5137 / 0.706);
+            --primary-a12: color(display-p3 0 0.0902 0.251 / 0.859);
 
-            --blue-contrast: #fff;
-            --blue-surface: color(display-p3 0.9529 0.9725 1 / 0.8);
-            --blue-indicator: oklch(34.6% 0.0736 256);
-            --blue-track: oklch(34.6% 0.0736 256);
+            --primary-contrast: #fff;
+            --primary-surface: color(display-p3 0.9529 0.9725 1 / 0.8);
+            --primary-indicator: oklch(34.6% 0.0736 256);
+            --primary-track: oklch(34.6% 0.0736 256);
         }
     }
 }
@@ -139,16 +140,17 @@
 
 /* Semantic colors */
 :root {
-    --focus-ring-color: var(--blue-8);
+    --focus-ring-color: var(--primary-8);
     --text-color: var(--gray-12);
+    --text-color-dimmed: var(--gray-d12);
     --text-color-base: var(--gray-12);
     --text-color-secondary: var(--gray-11);
     --text-color-hover: var(--gray-11);
     --text-color-disabled: var(--gray-10);
     --text-color-placeholder: var(--gray-11);
-    --link-color: var(--blue-11);
+    --link-color: var(--primary-11);
     --link-color-secondary: var(--gray-11);
-    --link-color-pressed: var(--blue-12);
+    --link-color-pressed: var(--primary-12);
     --border-color: var(--gray-6);
     --border-color-hover: var(--gray-7);
     --border-color-pressed: var(--gray-7);
@@ -160,8 +162,13 @@
     --button-background: var(--background-color);
     --button-background-pressed: var(--gray-3);
 
-    --font-size-sm: 0.85rem;
-    --font-size-lg: 1.15rem;
+    --font-size-xs: 0.75rem;
+    --font-size-sm: .8125rem;
+    --font-size-base: 0.9375rem;
+    --font-size-lg: 1.125rem;
+
+    --primary-color: var(--primary-12);
+
 
     /* these colors are the same between light and dark themes
      * to ensure contrast with the foreground color */
@@ -188,6 +195,9 @@
     --space-10: 2.5rem;
     --space-11: 2.75rem;
     --space-12: 3rem;
+
+    --radius-1: 0.25rem;
+    --radius-2: 0.5rem;
 }
 
 /* Windows high contrast mode overrides */
