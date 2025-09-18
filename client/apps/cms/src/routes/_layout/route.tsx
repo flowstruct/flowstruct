@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
-import { AppShell } from '@/shared/components/app-shell';
+import { AppShell } from '@/shared/components/app-shell/app-shell.tsx';
 import { UserListQuery } from '@/features/user/queries.ts';
 
 export const Route = createFileRoute('/_layout')({
