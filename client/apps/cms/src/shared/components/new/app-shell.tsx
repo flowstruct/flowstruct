@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
-import { Sidebar } from '@/shared/components/app-shell/sidebar';
-import styles from './index.module.css';
+import { Sidebar } from '@/shared/components/new/sidebar.tsx';
+import styles from './app-shell.module.css';
 
 type Props = {
   children: ReactNode;
