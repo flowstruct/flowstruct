@@ -1,0 +1,120 @@
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-5);
+    padding-bottom: var(--space-4);
+    background-color: var(--sidebar-background);
+    width: 250px;
+}
+
+.userProfile {
+    all: unset;
+    box-sizing: border-box;
+    display: flex;
+    cursor: default;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-1) var(--space-1);
+    border-radius: var(--radius-1);
+    text-align: left;
+
+    &[data-hovered] {
+        background: var(--button-background-hovered);
+
+        > svg {
+            color: var(--text-color);
+        }
+    }
+
+    &[data-pressed] {
+        background: var(--button-background-pressed);
+        color: var(--text-color);
+    }
+
+    &[data-focused] {
+        outline: 2px solid var(--focus-ring-color);
+        outline-offset: -1px;
+    }
+}
+
+.userInitials {
+    font-size: var(--font-size-base);
+    background: var(--primary-color);
+    color: var(--primary-contrast);
+    padding: 0.05rem var(--space-1);
+    border-radius: var(--radius-1);
+}
+
+.username {
+    font-size: var(--font-size-base);
+    font-weight: 600;
+}
+
+.userRole {
+    font-size: var(--font-size-sm);
+    display: flex;
+    gap: var(--space-2);
+    align-items: center;
+    color: var(--text-color-secondary);
+}
+
+.userProfileChevron {
+    margin-left: auto;
+}
+
+.sidebarMenu {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.sidebarMenuItem {
+    all: unset;
+    width: 100%;
+    box-sizing: border-box;
+    padding: var(--space-1);
+    border-radius: var(--radius-1);
+    display: flex;
+    font-weight: 450;
+    gap: var(--space-3);
+    color: var(--text-color);
+    align-items: center;
+    font-size: var(--font-size-sm);
+
+    &[data-hovered] {
+        background: var(--button-background-hovered);
+        color: var(--text-color);
+    }
+
+    &[data-pressed] {
+        background: var(--button-background-pressed);
+        color: var(--text-color);
+    }
+
+    &[data-focused] {
+        outline: 2px solid var(--focus-ring-color);
+        outline-offset: -1px;
+    }
+
+    > svg {
+        stroke: var(--text-color-dimmed);
+    }
+}
+
+.sidebarMenuSection {
+    display: flex;
+    flex-direction: column;
+    gap: 0.075rem;
+}
+
+.sidebarMenuSection > h3 {
+    color: var(--text-color-dimmed);
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    margin-bottom: var(--space-1);
+}
+
+.footer {
+    margin-top: auto;
+}
