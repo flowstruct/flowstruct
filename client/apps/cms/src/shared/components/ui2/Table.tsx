@@ -19,6 +19,7 @@ import {
 import {Checkbox} from './Checkbox.tsx';
 import {ChevronUp, ChevronDown, GripVertical} from 'lucide-react';
 import './Table.css';
+import React from 'react';
 
 export function Table(props: TableProps) {
   return <AriaTable {...props} />;
