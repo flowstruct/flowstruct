@@ -1,5 +1,4 @@
 import styles from './sidebar.module.css';
-import { ReactNode } from 'react';
 import { UnstyledButton } from '@/shared/components/ui2/UnstyledButton.tsx';
 import { useMe } from '@/features/user/hooks/useMe.ts';
 import { Menu, MenuItem, MenuTrigger } from '@/shared/components/ui2/Menu.tsx';
@@ -16,50 +15,118 @@ import {
 import { Role } from '@/features/user/types.ts';
 import { Popover } from '@/shared/components/ui2/Popover.tsx';
 import { getUserInitials } from '@/shared/utils/getUserInitials.ts';
+import { useMatches, useNavigate } from '@tanstack/react-router';
+
+const sidebarSections = [
+  {
+    items: [
+      {
+        icon: Layers2,
+        label: 'Flowsheets',
+        route: '/flowsheets',
+      },
+    ],
+  },
+  {
+    header: 'Catalog',
+    items: [
+      {
+        icon: Folder,
+        label: 'Schools',
+        route: '/schools',
+      },
+      {
+        icon: Folder,
+        label: 'Departments',
+        route: '/departments',
+      },
+      {
+        icon: Folder,
+        label: 'Programs',
+        route: '/programs',
+      },
+      {
+        icon: Folder,
+        label: 'Courses',
+        route: '/courses',
+      },
+    ],
+  },
+  {
+    header: 'Admin',
+    items: [
+      {
+        icon: User,
+        label: 'Manage users',
+        route: '/admin/users',
+      },
+      {
+        icon: Brush,
+        label: 'Style editor',
+        route: '/admin/style',
+      },
+    ],
+  },
+];
+
+const footerItems = [
+  {
+    icon: Settings2,
+    label: 'Settings',
+    route: '/settings',
+  },
+];
 
 export function Sidebar() {
+  const navigate = useNavigate();
+  const matches = useMatches();
+
+  const fullPath = matches.at(-1)?.fullPath ?? '';
+  const isActive = (route: string) => fullPath.includes(route);
+
   return (
     <aside className={styles.sidebar}>
       <UserProfile />
 
       <section className={styles.sidebarMenu}>
-        <SidebarMenuItem>
-          <Layers2 size={16} /> Flowsheets
-        </SidebarMenuItem>
+        {sidebarSections.map((section, sectionIndex) => (
+          <div key={sectionIndex}>
+            {section.header && (
+              <section className={styles.sidebarMenuSection}>
+                <h3>{section.header}</h3>
+              </section>
+            )}
 
-        <SidebarMenuSection header="Catalog">
-          <SidebarMenuItem>
-            <Folder size={16} /> Schools
-          </SidebarMenuItem>
-
-          <SidebarMenuItem>
-            <Folder size={16} /> Departments
-          </SidebarMenuItem>
-
-          <SidebarMenuItem>
-            <Folder size={16} /> Programs
-          </SidebarMenuItem>
-
-          <SidebarMenuItem>
-            <Folder size={16} /> Courses
-          </SidebarMenuItem>
-        </SidebarMenuSection>
-
-        <SidebarMenuSection header="Admin">
-          <SidebarMenuItem>
-            <User size={16} /> Manage users
-          </SidebarMenuItem>
-
-          <SidebarMenuItem>
-            <Brush size={16} /> Style editor
-          </SidebarMenuItem>
-        </SidebarMenuSection>
+            {section.items.map((item) => {
+              return (
+                <UnstyledButton
+                  key={item.route}
+                  className={styles.sidebarMenuItem}
+                  data-active={isActive(item.route) || undefined}
+                  onPress={() => navigate({ to: item.route })}
+                >
+                  <item.icon size={16} />
+                  {item.label}
+                </UnstyledButton>
+              );
+            })}
+          </div>
+        ))}
       </section>
 
       <footer className={styles.footer}>
-        <SidebarMenuItem>
-          <Settings2 size={16} /> Settings
-        </SidebarMenuItem>
+        {footerItems.map((item) => {
+          return (
+            <UnstyledButton
+              key={item.route}
+              className={styles.sidebarMenuItem}
+              onPress={() => navigate({ to: item.route })}
+            >
+              <item.icon size={16} />
+              {item.label}
+            </UnstyledButton>
+          );
+        })}
       </footer>
     </aside>
   );
@@ -99,26 +166,4 @@ export function UserProfile() {
       </Popover>
     </MenuTrigger>
   );
-}
-
-type SidebarMenuSectionProps = {
-  header: string;
-  children: ReactNode;
-};
-
-function SidebarMenuSection({ header, children }: SidebarMenuSectionProps) {
-  return (
-    <section className={styles.sidebarMenuSection}>
-      <h3>{header}</h3>
-      {children}
-    </section>
-  );
-}
-
-type SideBarMenuItemsProps = {
-  children: ReactNode;
-};
-
-function SidebarMenuItem({ children }: SideBarMenuItemsProps) {
-  return <UnstyledButton className={styles.sidebarMenuItem}>{children}</UnstyledButton>;
 }

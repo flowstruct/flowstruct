@@ -85,14 +85,16 @@
     align-items: center;
     font-size: var(--font-size-sm);
 
+    &[data-active] {
+        background: var(--highlight-background-active);
+    }
+
     &[data-hovered] {
         background: var(--highlight-background);
-        color: var(--text-color);
     }
 
     &[data-pressed] {
         background: var(--highlight-background-pressed);
-        color: var(--text-color);
     }
 
     &[data-focused] {
