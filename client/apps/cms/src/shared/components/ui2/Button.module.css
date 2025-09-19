@@ -1,6 +1,7 @@
 @import "./theme.css";
 
 .button {
+    background: var(--background-color);
     color: var(--text-color);
     border-radius: 0.25rem;
     appearance: none;
@@ -39,9 +40,10 @@
         background: var(--button-background);
         border: 1px solid var(--border-color);
     }
+}
 
-    &[data-variant=transparent] {
-        border: 0;
-        padding: 0.25rem;
-    }
+.button[data-variant=transparent] {
+    --background-color: var(--button-background);
+    border: 0;
+    padding: 0.25rem;
 }
