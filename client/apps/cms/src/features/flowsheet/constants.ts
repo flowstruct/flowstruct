@@ -1,0 +1,1 @@
+export const FLOWSHEET_ENDPOINT = '/flowsheets';
