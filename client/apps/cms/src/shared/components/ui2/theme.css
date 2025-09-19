@@ -158,9 +158,9 @@
     --field-background: var(--background-color);
     --field-text-color: var(--background-color);
     --overlay-background: var(--background-color);
-    --button-background-hovered: var(--gray-4);
+    --button-background-hovered: var(--gray-3);
     --button-background: var(--background-color);
-    --button-background-pressed: var(--gray-3);
+    --button-background-pressed: var(--gray-4);
 
     --font-size-xs: 0.75rem;
     --font-size-sm: .8125rem;
@@ -172,16 +172,19 @@
 
     /* these colors are the same between light and dark themes
      * to ensure contrast with the foreground color */
-    --highlight-background: var(--gray-3); /* purple-300 from dark theme, 3.03:1 against background-color */
-    --highlight-background-pressed: var(--gray-4); /* purple-200 from dark theme */
-    --highlight-background-invalid: #cc2000; /* red-300 from dark theme */
-    --highlight-foreground: var(--text-color); /* 5.56:1 against highlight-background */
+    --highlight-background: var(--gray-3);
+    --highlight-background-pressed: var(--gray-4);
+    --highlight-background-active: var(--gray-4);
+    --highlight-background-invalid: #cc2000;
+    --highlight-foreground: var(--text-color);
     --highlight-foreground-pressed: var(--text-color);
     --highlight-overlay: rgb(from #6f46ed r g b / 15%);
     --invalid-color: var(--red-400);
     --invalid-color-pressed: var(--red-500);
 
     --sidebar-background: var(--gray-2);
+
+    --background-color-secondary: var(--gray-2);
 
     --space-1: 0.25rem;
     --space-2: 0.5rem;
