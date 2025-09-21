@@ -1,9 +1,8 @@
 import { queryOptions } from '@tanstack/react-query';
 import { api } from '@/shared/api.ts';
-import { StudyPlan } from '@/features/study-plan/types.ts';
-import { FLOWSHEET_ENDPOINT } from '@/features/flowsheet/constants.ts';
-import { CourseSummary } from '@/features/course/types.ts';
-import { FlowsheetSummary } from '@/features/flowsheet/types.ts';
+import { Flowsheet, FlowsheetSummary } from '@/features/flowsheet/domain/flowsheet.ts';
+
+export const FLOWSHEET_ENDPOINT = '/study-plans';
 
 export const FlowsheetKeys = {
   all: ['study-plans'] as const,
@@ -24,14 +23,5 @@ export const FlowsheetListQuery = queryOptions({
 export const FlowsheetQuery = (flowsheetId: number) =>
   queryOptions({
     queryKey: FlowsheetKeys.detail(flowsheetId),
-    queryFn: () => api.get<StudyPlan>([FLOWSHEET_ENDPOINT, flowsheetId]),
+    queryFn: () => api.get<Flowsheet>([FLOWSHEET_ENDPOINT, flowsheetId]),
   });
-
-export const StudyPlanCourseListQuery = (flowsheetId: number) =>
-  queryOptions({
-    queryKey: FlowsheetKeys.courseList(flowsheetId),
-    queryFn: () =>
-      api.get<Record<number, CourseSummary>>([FLOWSHEET_ENDPOINT, flowsheetId, 'courses']),
-    enabled: !!flowsheetId,
-  });
-

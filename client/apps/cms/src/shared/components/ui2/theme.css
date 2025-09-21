@@ -169,7 +169,6 @@
 
     --primary-color: var(--primary-12);
 
-
     /* these colors are the same between light and dark themes
      * to ensure contrast with the foreground color */
     --highlight-background: var(--gray-3);

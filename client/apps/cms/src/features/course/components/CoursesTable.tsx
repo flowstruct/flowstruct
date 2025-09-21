@@ -3,7 +3,7 @@ import { useDataTable } from '@/shared/hooks/useDataTable.ts';
 import { CourseSummary } from '@/features/course/types.ts';
 import React from 'react';
 import { getCoursesTableColumns } from '@/features/course/components/CoursesTableColumns.tsx';
-import { DataTable } from '@/shared/components/DataTable.tsx';
+import { DataTable } from '@/shared/components/data-table.tsx';
 import { Button, Group, LoadingOverlay, Stack } from '@mantine/core';
 import { DataTablePagination } from '@/shared/components/DataTablePagination.tsx';
 import { DataTableSearch } from '@/shared/components/DataTableSearch.tsx';

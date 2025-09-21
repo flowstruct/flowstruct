@@ -1,4 +1,4 @@
-import { DataTable } from '@/shared/components/DataTable.tsx';
+import { DataTable } from '@/shared/components/data-table.tsx';
 import { useProgramList } from '@/features/program/hooks/useProgramList.ts';
 import { getProgramsTableColumns } from '@/features/program/components/ProgramsTableColumns.tsx';
 import { useDataTable } from '@/shared/hooks/useDataTable.ts';

@@ -1,5 +1,5 @@
 import { Button, Group, Paper, Stack, Text, Title } from '@mantine/core';
-import { DataTable } from '@/shared/components/DataTable.tsx';
+import { DataTable } from '@/shared/components/data-table.tsx';
 import { useDataTable } from '@/shared/hooks/useDataTable.ts';
 import { DataTablePagination } from '@/shared/components/DataTablePagination.tsx';
 import { DataTableSearch } from '@/shared/components/DataTableSearch.tsx';

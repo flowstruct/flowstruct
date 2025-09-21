@@ -16,7 +16,7 @@ import {
 import { useDebouncedValue } from '@mantine/hooks';
 import { List, Plus, PlusCircle, X } from 'lucide-react';
 import { useAddCoursesToStudyPlan } from '@/features/study-plan/hooks/useAddCoursesToStudyPlan.ts';
-import { DataTable } from '@/shared/components/DataTable.tsx';
+import { DataTable } from '@/shared/components/data-table.tsx';
 import { DataTablePagination } from '@/shared/components/DataTablePagination.tsx';
 import { DataTableSearch } from '@/shared/components/DataTableSearch.tsx';
 import {

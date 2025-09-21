@@ -1,4 +1,4 @@
-import { DataTable } from '@/shared/components/DataTable.tsx';
+import { DataTable } from '@/shared/components/data-table.tsx';
 import { useStudyPlanList } from '@/features/study-plan/hooks/useStudyPlanList.ts';
 import { useDataTable } from '@/shared/hooks/useDataTable.ts';
 import { StudyPlanRow } from '@/features/study-plan/types.ts';

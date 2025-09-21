@@ -1,5 +1,3 @@
-import { CourseSummary } from '@/features/course/types.ts';
-
 export enum SectionLevel {
   University = 'University',
   School = 'School',
@@ -42,7 +40,6 @@ export type CoursePlacement = {
 export type Flowsheet = {
   id: number;
   year: number;
-  duration: number;
   track: string;
   status: string;
   program: number;
@@ -57,22 +54,10 @@ export type Flowsheet = {
   updatedBy: number;
 };
 
-export type FrameworkCourse = CourseSummary & {
-  prerequisites: Record<number, CourseRelation>;
-  corequisites: number[];
-  section: number;
-  sectionCode: string;
-};
-
-export type FlowsheetRow = FlowsheetSummary & {
-  programName: string;
-};
-
 export type FlowsheetSummary = Pick<
   Flowsheet,
   | 'id'
   | 'year'
-  | 'duration'
   | 'track'
   | 'status'
   | 'program'

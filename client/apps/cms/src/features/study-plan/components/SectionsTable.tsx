@@ -3,7 +3,7 @@ import { createColumnHelper } from '@tanstack/react-table';
 import { Section, SectionLevel, SectionType } from '@/features/study-plan/types.ts';
 import React from 'react';
 import { useDataTable } from '@/shared/hooks/useDataTable.ts';
-import { DataTable } from '@/shared/components/DataTable.tsx';
+import { DataTable } from '@/shared/components/data-table.tsx';
 import { getSectionCode } from '@/utils/getSectionCode.ts';
 import { Badge, Button, Group, Stack } from '@mantine/core';
 import { DataTableSearch } from '@/shared/components/DataTableSearch.tsx';

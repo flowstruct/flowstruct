@@ -3,7 +3,7 @@ import { useUserList } from '@/features/user/hooks/useUserList.ts';
 import { Role, User } from '@/features/user/types.ts';
 import React from 'react';
 import { createColumnHelper } from '@tanstack/react-table';
-import { DataTable } from '@/shared/components/DataTable.tsx';
+import { DataTable } from '@/shared/components/data-table.tsx';
 import { formatTimeAgo } from '@/utils/formatTimeAgo.ts';
 import { UsersOptionMenu } from '@/features/user/components/UsersOptionMenu.tsx';
 import { ActionIcon, Group, Stack } from '@mantine/core';
