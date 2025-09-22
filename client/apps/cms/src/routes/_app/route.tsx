@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
-import { UserListQuery } from '@/features/user/queries.ts';
-import { AppShell } from '@/shared/components/new/app-shell.tsx';
+import { userQueries } from '@/features/user/queries.ts';
+import { AppShell } from '@/shared/components/app-shell.tsx';
 
 export const Route = createFileRoute('/_app')({
   beforeLoad: async ({ context, location }) => {
@@ -9,7 +9,7 @@ export const Route = createFileRoute('/_app')({
     }
   },
   loader: ({ context: { queryClient } }) => {
-    queryClient.ensureQueryData(UserListQuery);
+    queryClient.ensureQueryData(userQueries.me);
   },
   component: RouteComponent,
 });

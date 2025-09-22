@@ -1,5 +1,5 @@
 import { z } from 'zod/v4';
-import { Role } from '@/features/user/types.ts';
+import { Role } from '@/features/user/domain/user.ts';
 
 export const LoginSchema = z.object({
   username: z.string().trim().nonempty().min(1),

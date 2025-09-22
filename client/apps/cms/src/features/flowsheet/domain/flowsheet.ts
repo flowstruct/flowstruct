@@ -15,11 +15,6 @@ export enum CourseRelation {
   OR = 'OR',
 }
 
-export enum MoveDirection {
-  UP = 'UP',
-  DOWN = 'DOWN',
-}
-
 export type Section = {
   id: number;
   level: SectionLevel;

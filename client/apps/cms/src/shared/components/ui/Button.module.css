@@ -1,0 +1,76 @@
+@import "./theme.css";
+
+.button {
+    background: var(--background-color);
+    color: var(--text-color);
+    border-radius: 0.25rem;
+    appearance: none;
+    vertical-align: middle;
+    font-size: 0.875rem;
+    text-align: center;
+    margin: 0;
+    outline: none;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-weight: 500;
+
+    &[data-hovered] {
+        background: var(--button-background-hovered);
+    }
+
+    &[data-pressed] {
+        background: var(--button-background-pressed);
+        border-color: var(--border-color-pressed);
+    }
+
+    &[data-focus-visible] {
+        outline: 2px solid var(--focus-ring-color);
+        outline-offset: -1px;
+    }
+
+    &[data-disabled] {
+        border-color: var(--border-color-disabled);
+        color: var(--text-color-disabled);
+    }
+
+    &[data-variant=default] {
+        background: var(--button-background);
+        border: 1px solid var(--border-color);
+    }
+}
+
+.button[data-variant=default] {
+    --background-color: var(--button-background);
+    box-shadow: var(--shadow-sm);
+}
+
+.button[data-variant=transparent] {
+    --background-color: var(--button-background);
+    border: 0;
+    padding: 0 var(--space-1);
+}
+
+.button[data-variant=primary] {
+    --background-color: var(--primary-color);
+    border: 0;
+    color: var(--primary-contrast);
+}
+
+.button[data-size=md] {
+    font-size: var(--font-size-sm);
+    padding: var(--space-1) var(--space-3);
+}
+
+.button[data-size=sm] {
+    font-size: var(--font-size-sm);
+    padding: 0 var(--space-2);
+}
+
+.button[data-variant=icon] {
+    --background-color: var(--button-background);
+    border: 0;
+    padding: var(--space-1);
+}

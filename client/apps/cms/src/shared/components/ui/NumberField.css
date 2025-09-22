@@ -1,0 +1,80 @@
+@import "./theme.css";
+
+.react-aria-NumberField {
+  color: var(--text-color);
+  width: fit-content;
+
+  .react-aria-Group {
+    display: flex;
+    gap: var(--space-1);
+    border-radius: var(--radius-1);
+    border: 1px solid var(--border-color);
+
+    &[data-focus-within] {
+      outline: 1px solid var(--focus-ring-color);
+      .react-aria-Input,
+      .react-aria-Button {
+        border-color: var(--focus-ring-color);
+      }
+    }
+  }
+
+  .react-aria-Button {
+    &[slot=decrement] {
+      border-start-end-radius: 0;
+      border-end-end-radius: 0;
+      border-left: 1px solid var(--border-color);
+    }
+
+    &[slot=increment] {
+      border-start-start-radius: 0;
+      border-end-start-radius: 0;
+    }
+  }
+
+  .react-aria-Input {
+    all: unset;
+    background: var(--field-background);
+    border: 0;
+    flex: 1;
+    width: 70px;
+    font-size: var(--font-size-base);
+  }
+
+  &[data-invalid] {
+    .react-aria-Input,
+    .react-aria-Button {
+      border-color: var(--invalid-color);
+    }
+
+    &:focus-within {
+      .react-aria-Input,
+      .react-aria-Button {
+        border-color: var(--focus-ring-color);
+      }
+    }
+  }
+
+  .react-aria-FieldError {
+    font-size: 12px;
+    color: var(--invalid-color);
+  }
+
+  [slot=description] {
+    font-size: var(--font-size-xs);
+  }
+
+  .react-aria-Button {
+    &[data-disabled] {
+      border-color: var(--border-color-disabled);
+      color: var(--text-color-disabled);
+    }
+  }
+
+  .react-aria-Input {
+    &[data-disabled] {
+      border-color: var(--border-color-disabled);
+      color: var(--text-color-disabled);
+    }
+  }
+}

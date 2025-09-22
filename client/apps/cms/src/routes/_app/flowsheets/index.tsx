@@ -1,74 +1,41 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
-import { DefaultSearchValues } from '@/utils/defaultSearchValues.ts';
+import { createFileRoute } from '@tanstack/react-router';
 import {
   Breadcrumb,
   Breadcrumbs,
   Header,
   HeaderLeft,
   HeaderRight,
-} from '@/shared/components/new/header.tsx';
+} from '@/shared/components/header.tsx';
 import { Layers2, Plus } from 'lucide-react';
-import { Button } from '@/shared/components/ui2/Button.tsx';
-import { DataTable } from '@/shared/components/new/data-table.tsx';
-import { createColumnHelper, getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import { useSuspenseQuery } from '@tanstack/react-query';
-import { FlowsheetListQuery } from '@/features/flowsheet/queries/flowsheet.query.ts';
-import React from 'react';
-import { Flowsheet } from '@/features/flowsheet/domain/flowsheet.ts';
+import { Button } from '@/shared/components/ui/Button.tsx';
+import { FlowsheetTable } from '@/features/flowsheet/components/flowsheet-table.tsx';
+import { flowsheetQueries } from '@/features/flowsheet/queries.ts';
+import { programQueries } from '@/features/program/queries.ts';
 
 export const Route = createFileRoute('/_app/flowsheets/')({
   loader: ({ context: { queryClient } }) => {
-    queryClient.ensureQueryData(FlowsheetListQuery);
+    queryClient.ensureQueryData(flowsheetQueries.list);
+    queryClient.ensureQueryData(programQueries.list);
   },
   component: () => (
     <div>
-      <FlowsheetsHeader />
-      <div>
-        <FlowsheetsTable />
-      </div>
-    </div>
-  ),
-});
-
-function FlowsheetsHeader() {
-  return (
-    <Header>
-      <HeaderLeft>
-        <Breadcrumbs>
-          <Link to="/flowsheets" search={DefaultSearchValues()}>
+      <Header>
+        <HeaderLeft>
+          <Breadcrumbs>
             <Breadcrumb base>
               <Layers2 size={14} /> Flowsheets
             </Breadcrumb>
-          </Link>
-        </Breadcrumbs>
-      </HeaderLeft>
+          </Breadcrumbs>
+        </HeaderLeft>
 
-      <HeaderRight>
-        <Button variant="transparent">
-          <Plus size={16} />
-        </Button>
-      </HeaderRight>
-    </Header>
-  );
-}
+        <HeaderRight>
+          <Button variant="transparent">
+            <Plus size={16} /> Add flowsheet
+          </Button>
+        </HeaderRight>
+      </Header>
 
-function FlowsheetsTable() {
-  const { data: flowsheets } = useSuspenseQuery(FlowsheetListQuery);
-
-  const { accessor } = createColumnHelper<Flowsheet>();
-  const columns = React.useMemo(
-    () => [
-      accessor('program', {
-        header: 'Program',
-      }),
-      accessor('track', {
-        header: 'Track',
-      }),
-    ],
-    []
-  );
-
-  const table = useReactTable({ data: flowsheets, columns, getCoreRowModel: getCoreRowModel() });
-
-  return <DataTable table={table} />;
-}
+      <FlowsheetTable />
+    </div>
+  ),
+});
