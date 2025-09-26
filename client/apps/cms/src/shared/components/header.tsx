@@ -14,6 +14,10 @@ export function HeaderRight({ children }: { children: ReactNode }) {
   return <div className={clsx(styles.headerSlot, styles.right)}>{children}</div>;
 }
 
+export function HeaderTitle({ children }: { children: ReactNode }) {
+  return <h1 className={styles.headerTitle}>{children}</h1>;
+}
+
 export function Breadcrumb({ children, base = false }: { children: ReactNode; base?: boolean }) {
   return <li className={clsx(styles.breadcrumb, base && styles.baseBreadcrumb)}>{children}</li>;
 }

@@ -9,14 +9,12 @@ export const programKeys = {
 };
 
 export const programQueries = {
-  list: queryOptions({
+  collection: queryOptions({
     queryKey: programKeys.list(),
     queryFn: () => programApi.getPrograms(),
-  }),
-
-  detail: (programId: number) =>
-    queryOptions({
-      queryKey: programKeys.detail(programId),
-      queryFn: () => programApi.getProgram(programId),
+    select: (data) => ({
+      list: data,
+      map: Object.fromEntries(data.map((d) => [d.id, d])),
     }),
+  }),
 };

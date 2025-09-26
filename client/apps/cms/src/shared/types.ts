@@ -7,7 +7,7 @@ export interface ErrorObject {
   timestamp: string;
 }
 
-export type NavbarLinks = {
+export type SidebarLinks = {
   label: string;
   icon: ReactNode;
   route: string;

@@ -10,7 +10,6 @@
   outline: none;
   width: 250px;
   max-height: 300px;
-  min-height: 100px;
   box-sizing: border-box;
   font-size: var(--font-size-sm);
   color: var(--text-color);

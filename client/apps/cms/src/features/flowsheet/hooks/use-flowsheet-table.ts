@@ -1,6 +1,8 @@
 import {
   createColumnHelper,
   getCoreRowModel,
+  getFacetedRowModel,
+  getFacetedUniqueValues,
   getFilteredRowModel,
   getGroupedRowModel,
   useReactTable,
@@ -11,16 +13,11 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { flowsheetQueries } from '@/features/flowsheet/queries.ts';
 import { programQueries } from '@/features/program/queries.ts';
 import { getProgramDisplayName } from '@/features/program/domain/getProgramDisplayName.ts';
-import styles from '@/features/flowsheet/components/flowsheet-table.module.css';
-import { DataTableToolbar } from '@/shared/components/data-table-toolbar.tsx';
-import { DataTable } from '@/shared/components/data-table';
-import { FlowsheetFilterMenu } from '@/features/flowsheet/components/flowsheet-filter-menu.tsx';
-import { Button } from '@/shared/components/ui/Button.tsx';
-import { Table2 } from 'lucide-react';
+import { setIncludes } from '@/shared/utils/setIncludes.ts';
 
-export function FlowsheetTable() {
+export const useFlowsheetTable = () => {
   const { data: flowsheets } = useSuspenseQuery(flowsheetQueries.list);
-  const { data: programs } = useSuspenseQuery(programQueries.list);
+  const { data: programs } = useSuspenseQuery(programQueries.collection);
 
   const { accessor } = createColumnHelper<FlowsheetSummary>();
   const columns = React.useMemo(
@@ -28,47 +25,44 @@ export function FlowsheetTable() {
       accessor('program', {
         header: 'Program',
         cell: ({ cell }) => {
-          const flowsheetProgram = programs.find((p) => p.id === cell.getValue());
+          const flowsheetProgram = programs.map[cell.getValue()];
           return flowsheetProgram ? getProgramDisplayName(flowsheetProgram) : 'None';
+        },
+        filterFn: setIncludes,
+        meta: {
+          renderFilterItem: (value: number) => {
+            const flowsheetProgram = programs.map[value];
+            return flowsheetProgram ? getProgramDisplayName(flowsheetProgram) : 'None';
+          },
         },
       }),
       accessor('year', {
         header: 'Year',
-        cell: ({ cell }) => (
-          <p className={styles.yearCell}>
-            {cell.getValue()} - {cell.getValue() + 1}
-          </p>
-        ),
+        cell: ({ cell }) => `${cell.getValue()} - ${cell.getValue() + 1}`,
+        meta: {
+          renderFilterItem: (value: number) => `${value} - ${value + 1}`,
+        },
+        filterFn: setIncludes,
       }),
       accessor('track', {
         header: 'Track',
         cell: ({ cell }) => cell.getValue() ?? '---',
+        enableColumnFilter: false,
       }),
     ],
-    [programs]
+    [programs.map]
   );
 
-  const table = useReactTable({
+  return useReactTable({
     data: flowsheets,
     columns,
-    state: {
+    initialState: {
       grouping: ['program'],
     },
     getCoreRowModel: getCoreRowModel(),
     getGroupedRowModel: getGroupedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    getFacetedRowModel: getFacetedRowModel(),
+    getFacetedUniqueValues: getFacetedUniqueValues(),
   });
-
-  return (
-    <div>
-      <DataTableToolbar>
-        <FlowsheetFilterMenu table={table} />
-
-        <Button size="sm">
-          <Table2 size={14} /> Layout
-        </Button>
-      </DataTableToolbar>
-      <DataTable table={table} />
-    </div>
-  );
-}
+};

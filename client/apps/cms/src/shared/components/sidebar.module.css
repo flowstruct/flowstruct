@@ -79,7 +79,7 @@
     padding: var(--space-1);
     border-radius: var(--radius-1);
     display: flex;
-    font-weight: 450;
+    font-weight: 400;
     gap: var(--space-3);
     color: var(--text-color);
     align-items: center;
@@ -114,9 +114,9 @@
 }
 
 .sidebarMenuSection > h3 {
-    color: var(--text-color-dimmed);
+    color: var(--gray-9);
     font-size: var(--font-size-xs);
-    font-weight: 500;
+    font-weight: 400;
     margin-bottom: var(--space-1);
 }
 

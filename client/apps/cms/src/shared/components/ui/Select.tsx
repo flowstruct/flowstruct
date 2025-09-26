@@ -4,18 +4,18 @@ import {
   Select as AriaSelect,
   SelectProps as AriaSelectProps,
   SelectValue,
-  ValidationResult
+  ValidationResult,
 } from 'react-aria-components';
-import {Button} from './Button.tsx';
-import {ListBox, ListBoxItem} from './ListBox.tsx';
-import {ChevronDown} from 'lucide-react';
-import {Popover} from './Popover.tsx';
-import {Text} from './Content.tsx';
-import {Label, FieldError} from './Form.tsx';
+import { Button } from './Button.tsx';
+import { ListBox, ListBoxItem } from './ListBox.tsx';
+import { ChevronDown } from 'lucide-react';
+import { Popover } from './Popover.tsx';
+import { Text } from './Content.tsx';
+import { FieldError, Label } from './Form.tsx';
 import './Select.css';
+import React from 'react';
 
-export interface SelectProps<T extends object>
-  extends Omit<AriaSelectProps<T>, 'children'> {
+export interface SelectProps<T extends object> extends Omit<AriaSelectProps<T>, 'children'> {
   label?: string;
   description?: string;
   errorMessage?: string | ((validation: ValidationResult) => string);
@@ -23,28 +23,29 @@ export interface SelectProps<T extends object>
   children: React.ReactNode | ((item: T) => React.ReactNode);
 }
 
-export function Select<T extends object>(
-  { label, description, errorMessage, children, items, ...props }: SelectProps<
-    T
-  >
-) {
+export function Select<T extends object>({
+  label,
+  description,
+  errorMessage,
+  children,
+  items,
+  ...props
+}: SelectProps<T>) {
   return (
-    (
-      <AriaSelect {...props}>
-        <Label>{label}</Label>
-        <Button>
-          <SelectValue />
-          <span aria-hidden="true"><ChevronDown size={16} /></span>
-        </Button>
-        {description && <Text slot="description">{description}</Text>}
-        <FieldError>{errorMessage}</FieldError>
-        <Popover hideArrow>
-          <ListBox items={items}>
-            {children}
-          </ListBox>
-        </Popover>
-      </AriaSelect>
-    )
+    <AriaSelect {...props}>
+      <Label>{label}</Label>
+      <Button>
+        <SelectValue />
+        <span aria-hidden="true">
+          <ChevronDown size={16} />
+        </span>
+      </Button>
+      {description && <Text slot="description">{description}</Text>}
+      <FieldError>{errorMessage}</FieldError>
+      <Popover hideArrow>
+        <ListBox items={items}>{children}</ListBox>
+      </Popover>
+    </AriaSelect>
   );
 }
 
