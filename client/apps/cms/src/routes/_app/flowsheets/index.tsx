@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { Breadcrumb, Header, HeaderLeft, HeaderRight } from '@/shared/components/header.tsx';
-import { Layers2, Plus } from 'lucide-react';
+import { Header, HeaderActions, HeaderMain } from '@/shared/components/header.tsx';
+import { CircleDashed, CircleDot, Layers2, Plus } from 'lucide-react';
 import { Button } from '@/shared/components/ui/Button.tsx';
 import { flowsheetQueries } from '@/features/flowsheet/queries.ts';
 import { programQueries } from '@/features/program/queries.ts';
@@ -19,19 +19,27 @@ export const Route = createFileRoute('/_app/flowsheets/')({
     return (
       <>
         <Header>
-          <HeaderLeft>
-            <Breadcrumb base>
-              <Layers2 size={14} /> Flowsheets
-            </Breadcrumb>
-          </HeaderLeft>
+          <HeaderMain>
+            <Button variant="flat" size="sm">
+              <Layers2 size={14} /> All flowsheets
+            </Button>
 
-          <HeaderRight>
+            <Button variant="flat" size="sm">
+              <CircleDot size={14} /> Active
+            </Button>
+
+            <Button variant="flat" size="sm">
+              <CircleDashed size={14} /> Archived
+            </Button>
+          </HeaderMain>
+
+          <HeaderActions>
             <DataTableToolbar table={table} />
 
             <Button size="sm" variant="primary">
               <Plus size={15} /> New
             </Button>
-          </HeaderRight>
+          </HeaderActions>
         </Header>
 
         <DataTable table={table} />

@@ -12,7 +12,7 @@ export function AppShell({ children }: Props) {
       <Sidebar />
 
       <div className={styles.mainContainer}>
-        <main>{children}</main>
+        <main >{children}</main>
       </div>
     </div>
   );
