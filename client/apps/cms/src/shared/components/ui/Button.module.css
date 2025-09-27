@@ -3,10 +3,10 @@
 .button {
     background-color: var(--background-color);
     color: var(--text-color);
-    border-radius: 0.25rem;
+    border-radius: var(--radius-1);
     appearance: none;
     vertical-align: middle;
-    font-size: 0.875rem;
+    font-size: var(--font-size-base);
     text-align: center;
     margin: 0;
     outline: none;
@@ -14,7 +14,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
+    gap: var(--space-2);
     font-weight: 400;
 
 
@@ -90,21 +90,6 @@
     }
 }
 
-.button[data-variant=icon] {
-    background-color: var(--background-color);
-    border: 0;
-    padding: var(--space-1);
-
-    &[data-hovered] {
-        background: var(--highlight-background);
-    }
-
-    &[data-pressed] {
-        background: var(--highlight-background-pressed);
-        border-color: var(--border-color-pressed);
-    }
-}
-
 .button[data-size=md] {
     font-size: var(--font-size-sm);
     padding: var(--space-1) var(--space-3);
@@ -113,4 +98,8 @@
 .button[data-size=sm] {
     font-size: var(--font-size-sm);
     padding: 0 var(--space-2);
+}
+
+.button[data-size=icon] {
+    padding: var(--space-1);
 }

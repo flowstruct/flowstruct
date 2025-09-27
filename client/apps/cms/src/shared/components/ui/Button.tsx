@@ -2,8 +2,8 @@ import { Button as RACButton, ButtonProps as RACButtonProps } from 'react-aria-c
 import styles from './Button.module.css';
 
 interface ButtonProps extends RACButtonProps {
-  variant?: 'default' | 'transparent' | 'primary' | 'icon' | 'flat' ;
-  size?: 'sm' | 'md';
+  variant?: 'default' | 'transparent' | 'primary' | 'flat' ;
+  size?: 'sm' | 'md' | 'icon';
 }
 
 export function Button({ size = 'md', variant = 'default', ...props }: ButtonProps) {
