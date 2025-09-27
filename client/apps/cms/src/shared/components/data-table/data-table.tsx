@@ -98,8 +98,8 @@ function FilterMenu({ column }: { column: Column<any, unknown> }) {
 
   return (
     <MenuTrigger>
-      <Button variant="icon" size="sm">
-        <ListFilter size={16} />
+      <Button variant="transparent" size="sm">
+        <ListFilter size={15} />
       </Button>
       <Popover aria-label="Filter" hideArrow>
         <Autocomplete>
