@@ -34,10 +34,17 @@ function DataTableSearch<TData>({ table }: { table: Table<TData> }) {
   const debouncedSearch = useDebounce(search);
 
   React.useEffect(() => {
-    table.setGlobalFilter(search);
+    table.setGlobalFilter(debouncedSearch);
   }, [debouncedSearch]);
 
-  return <SearchField aria-label="Search table" icon={<Search size={14} />} value={search} onChange={setSearch} />;
+  return (
+    <SearchField
+      aria-label="Search table"
+      icon={<Search size={14} />}
+      value={search}
+      onChange={setSearch}
+    />
+  );
 }
 
 function DataTableViewOptions<TData>({ table }: { table: Table<TData> }) {
@@ -64,7 +71,6 @@ function DataTableViewOptions<TData>({ table }: { table: Table<TData> }) {
 
 function SortingDropdown<TData>({ table }: { table: Table<TData> }) {
   const sortingState = table.getState().sorting[0];
-
   if (!sortingState) return null;
 
   const items = table
