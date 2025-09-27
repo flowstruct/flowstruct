@@ -1,9 +1,10 @@
 @import "./theme.css";
 
-.button {
+.react-aria-Button {
+    all: unset;
+    position: relative;
     background-color: var(--background-color);
     color: var(--text-color);
-    border-radius: var(--radius-1);
     appearance: none;
     vertical-align: middle;
     font-size: var(--font-size-base);
@@ -17,7 +18,6 @@
     gap: var(--space-2);
     font-weight: 400;
 
-
     &[data-focus-visible] {
         outline: 2px solid var(--focus-ring-color);
         outline-offset: -1px;
@@ -29,10 +29,22 @@
     }
 }
 
-.button[data-variant=default] {
+.react-aria-Button[data-show-indicator=true]::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+}
+
+.react-aria-Button[data-variant=default] {
     background-color: var(--background-color);
     box-shadow: var(--shadow-sm);
     border: 1px solid var(--border-color);
+    border-radius: var(--radius-1);
 
     &[data-hovered] {
         background: var(--highlight-background);
@@ -44,10 +56,11 @@
     }
 }
 
-.button[data-variant=transparent] {
+.react-aria-Button[data-variant=transparent] {
     background-color: var(--background-color);
     border: 0;
     padding: 0 var(--space-1);
+    border-radius: var(--radius-1);
 
     &[data-hovered] {
         background: var(--highlight-background);
@@ -59,7 +72,7 @@
     }
 }
 
-.button[data-variant=primary] {
+.react-aria-Button[data-variant=primary] {
     background-color: var(--button-background);
     border: 0;
     color: var(--primary-contrast);
@@ -76,9 +89,10 @@
     }
 }
 
-.button[data-variant=flat] {
+.react-aria-Button[data-variant=flat] {
     background-color: var(--background-color);
     border: 1px solid var(--border-color);
+    border-radius: var(--radius-1);
 
     &[data-hovered] {
         background: var(--highlight-background);
@@ -90,16 +104,20 @@
     }
 }
 
-.button[data-size=md] {
+.react-aria-Button[data-size=md] {
     font-size: var(--font-size-sm);
     padding: var(--space-1) var(--space-3);
 }
 
-.button[data-size=sm] {
+.react-aria-Button[data-size=sm] {
     font-size: var(--font-size-sm);
     padding: 0 var(--space-2);
 }
 
-.button[data-size=icon] {
+.react-aria-Button[data-size=icon] {
     padding: var(--space-1);
+}
+
+.react-aria-Button[data-full-width=true] {
+    width: 100%;
 }
