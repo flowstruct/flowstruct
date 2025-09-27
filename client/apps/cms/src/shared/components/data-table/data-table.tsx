@@ -81,20 +81,20 @@ export function DataTable<TData>({ table }: DataTableProps<TData>) {
 }
 
 function FilterMenu({ column }: { column: Column<any, unknown> }) {
-  const renderFilterItem = column.columnDef.meta?.renderFilterItem || undefined;
+  const renderFilterName = column.columnDef.meta?.renderFilterName || undefined;
 
-  const memoizedRenderFilterItem = React.useCallback(
+  const memoizedRenderFilterName = React.useCallback(
     (value: any) => {
-      return renderFilterItem ? renderFilterItem(value) : String(value);
+      return renderFilterName ? renderFilterName(value) : String(value);
     },
-    [renderFilterItem]
+    [renderFilterName]
   );
 
   const items = React.useMemo(() => {
     return Array.from(column.getFacetedUniqueValues().keys()).map((value) => {
-      return { id: value, name: memoizedRenderFilterItem(value) };
+      return { id: value, name: memoizedRenderFilterName(value) };
     });
-  }, [column, memoizedRenderFilterItem]);
+  }, [column, memoizedRenderFilterName]);
 
   return (
     <MenuTrigger>

@@ -5,6 +5,9 @@ import { Button } from '@/shared/components/ui/Button.tsx';
 import { Search, Settings2 } from 'lucide-react';
 import { Popover } from '@/shared/components/ui/Popover.tsx';
 import { Select, SelectItem } from '@/shared/components/ui/Select.tsx';
+import { SearchField } from '@/shared/components/ui/SearchField.tsx';
+import React from 'react';
+import { useDebounce } from '@/shared/hooks/useDebounce.ts';
 
 type DataTableToolbarProps<TData> = {
   table: Table<TData>;
@@ -13,16 +16,25 @@ type DataTableToolbarProps<TData> = {
 export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>) {
   return (
     <section className={styles.toolbar}>
-      <Button variant="icon">
-        <Search size={14} />
-      </Button>
+      <DataTableSearch table={table} />
 
-      <DataTableOptions table={table} />
+      <DataTableViewOptions table={table} />
     </section>
   );
 }
 
-function DataTableOptions<TData>({ table }: { table: Table<TData> }) {
+function DataTableSearch<TData>({ table }: { table: Table<TData> }) {
+  const [search, setSearch] = React.useState<string>('');
+  const debouncedSearch = useDebounce(search);
+
+  React.useEffect(() => {
+    table.setGlobalFilter(search);
+  }, [debouncedSearch]);
+
+  return <SearchField icon={<Search size={14} />} value={search} onChange={setSearch} />;
+}
+
+function DataTableViewOptions<TData>({ table }: { table: Table<TData> }) {
   return (
     <DialogTrigger>
       <Button variant="icon">
@@ -43,9 +55,8 @@ function SortingDropdown<TData>({ table }: { table: Table<TData> }) {
     .getAllLeafColumns()
     .filter((c) => c.getCanSort())
     .map((c) => {
-      const renderSortItem = c.columnDef.meta?.renderSortItem;
-
-      return { id: c.id, name: renderSortItem() ?? c.id };
+      const renderSortName = c.columnDef.meta?.renderSortName;
+      return { id: c.id, name: renderSortName() ?? c.id };
     });
 
   return <Select items={items}>{(item) => <SelectItem>{item.name}</SelectItem>}</Select>;

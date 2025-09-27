@@ -1,5 +1,6 @@
 import {
   Button,
+  Group,
   Input,
   SearchField as AriaSearchField,
   SearchFieldProps as AriaSearchFieldProps,
@@ -30,10 +31,13 @@ export function SearchField({
   return (
     <AriaSearchField {...props}>
       {label && <Label>{label}</Label>}
-      <Input placeholder={placeholder} />
-      <Button>
-        <X size={14} />
-      </Button>
+      <Group>
+        {icon && <div slot="icon">{icon}</div>}
+        <Input slot="input" placeholder={placeholder} />
+        <Button slot="clear">
+          <X size={14} />
+        </Button>
+      </Group>
       {description && <Text slot="description">{description}</Text>}
       <FieldError>{errorMessage}</FieldError>
     </AriaSearchField>

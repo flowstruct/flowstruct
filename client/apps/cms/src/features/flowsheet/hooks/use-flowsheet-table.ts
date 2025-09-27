@@ -30,19 +30,19 @@ export const useFlowsheetTable = () => {
         },
         filterFn: setIncludes,
         meta: {
-          renderFilterItem: (value: number) => {
+          renderFilterName: (value: number) => {
             const flowsheetProgram = programs.map[value];
             return flowsheetProgram ? getProgramDisplayName(flowsheetProgram) : 'None';
           },
-          renderSortItem: () => 'Program',
+          renderSortName: () => 'Program',
         },
       }),
       accessor('year', {
         header: 'Year',
         cell: ({ cell }) => `${cell.getValue()} - ${cell.getValue() + 1}`,
         meta: {
-          renderFilterItem: (value: number) => `${value} - ${value + 1}`,
-          renderSortItem: () => 'Year',
+          renderFilterName: (value: number) => `${value} - ${value + 1}`,
+          renderSortName: () => 'Year',
         },
         filterFn: setIncludes,
       }),

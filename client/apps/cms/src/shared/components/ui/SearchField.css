@@ -30,36 +30,36 @@
         }
     }
 
-    /*.react-aria-Group {*/
-    /*    display: flex;*/
-    /*    align-items: center;*/
-    /*    gap: var(--space-2);*/
+    .react-aria-Group {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
 
-    /*    border-radius: var(--radius-1);*/
+        border-radius: var(--radius-1);
 
-    /*    &[data-focus-within] {*/
-    /*        outline: 2px solid var(--focus-ring-color);*/
-    /*        outline-offset: -1px;*/
-    /*    }*/
-    /*}*/
+        &[data-focus] {
+            outline: 2px solid var(--focus-ring-color);
+            outline-offset: -2px;
+        }
 
-    .react-aria-Button {
-        grid-area: button;
-        width: 1.000125rem;
-        height: 1.000125rem;
-        border-radius: 1.000125rem;
-        margin-left: -1.5rem;
-        font-size: 0.749875rem;
-        line-height: 0.749875rem;
-        vertical-align: middle;
-        text-align: center;
-        background-color: transparent;
-        color: var(--text-color-dimmed);
-        border: none;
-        padding: 0;
+        [slot=icon] {
+            margin-left: var(--space-2);
+        }
 
-        &[data-pressed] {
-            background: var(--button-background-pressed);
+        [slot=clear] {
+            position: absolute;
+            right: var(--space-2);
+            border: 0;
+            padding: 0.1rem;
+            background-color: transparent;
+            line-height: 0;
+            border-radius: 1rem;
+            color: var(--text-color-dimmed);
+
+            &[data-pressed] {
+                background: var(--highlight-background-pressed);
+            }
         }
     }
 
