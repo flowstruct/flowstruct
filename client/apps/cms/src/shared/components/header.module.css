@@ -1,9 +1,8 @@
 .header {
     display: grid;
-    grid-template-columns: 1fr auto; /* left expands, right fits content */
+    grid-template-columns: 1fr auto;
     align-items: center;
     padding: var(--space-2) var(--space-8);
-    /*border-bottom: 1px solid var(--border-color);*/
     gap: var(--space-3);
 }
 
@@ -13,15 +12,15 @@
     gap: var(--space-3);
 }
 
-.left {
+.main {
     justify-content: flex-start;
 }
 
-.right {
+.actions {
     justify-content: flex-end;
 }
 
-.headerTitle {
+.title {
     display: flex;
     gap: var(--space-2);
     align-items: center;

@@ -7,13 +7,13 @@ export function Header({ children }: { children?: ReactNode }) {
 }
 
 export function HeaderMain({ children }: { children?: ReactNode }) {
-  return <div className={clsx(styles.headerSlot, styles.left)}>{children}</div>;
+  return <div className={clsx(styles.headerSlot, styles.main)}>{children}</div>;
 }
 
 export function HeaderActions({ children }: { children: ReactNode }) {
-  return <div className={clsx(styles.headerSlot, styles.right)}>{children}</div>;
+  return <div className={clsx(styles.headerSlot, styles.actions)}>{children}</div>;
 }
 
 export function HeaderTitle({ children }: { children: ReactNode }) {
-  return <h1 className={styles.headerTitle}>{children}</h1>;
+  return <h1 className={styles.title}>{children}</h1>;
 }

@@ -143,7 +143,6 @@
     }
 
     &[data-pressed] {
-        background-color: var(--highlight-background);
         color: var(--text-color-base);
     }
 }
