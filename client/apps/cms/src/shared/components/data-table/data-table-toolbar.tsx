@@ -8,6 +8,7 @@ import {
   ArrowUpNarrowWide,
   Search,
   Settings2,
+  X,
 } from 'lucide-react';
 import { Popover } from '@/shared/components/ui/Popover.tsx';
 import { Select, SelectItem } from '@/shared/components/ui/Select.tsx';
@@ -22,10 +23,24 @@ type DataTableToolbarProps<TData> = {
 export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>) {
   return (
     <section className={styles.toolbar}>
+      <ClearColumnFilters table={table} />
       <DataTableSearch table={table} />
-
       <DataTableViewOptions table={table} />
     </section>
+  );
+}
+
+function ClearColumnFilters<TData>({ table }: { table: Table<TData> }) {
+  const columnFiltersApplied = table.getState().columnFilters.length;
+
+  if (columnFiltersApplied === 0) {
+    return null;
+  }
+
+  return (
+    <Button onPress={() => table.resetColumnFilters()} variant="flat" size="sm">
+      <X size={14} /> {columnFiltersApplied} filter{columnFiltersApplied === 1 ? '' : 's'}
+    </Button>
   );
 }
 
