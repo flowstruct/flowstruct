@@ -1,5 +1,6 @@
 import {
   createColumnHelper,
+  FilterFn,
   getCoreRowModel,
   getFacetedRowModel,
   getFacetedUniqueValues,
@@ -15,10 +16,25 @@ import { flowsheetQueries } from '@/features/flowsheet/queries.ts';
 import { programQueries } from '@/features/program/queries.ts';
 import { getProgramDisplayName } from '@/features/program/domain/getProgramDisplayName.ts';
 import { setIncludes } from '@/shared/utils/setIncludes.ts';
+import { rankItem } from '@tanstack/match-sorter-utils';
 
 export const useFlowsheetTable = () => {
   const { data: flowsheets } = useSuspenseQuery(flowsheetQueries.list);
   const { data: programs } = useSuspenseQuery(programQueries.collection);
+
+  const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
+    let rowValue = row.getValue(columnId);
+
+    if (columnId === 'program') {
+      const program = programs.map[rowValue as number];
+      rowValue = program ? getProgramDisplayName(program) : '';
+    }
+
+    const itemRank = rankItem(rowValue, value);
+    addMeta({ itemRank });
+
+    return itemRank.passed;
+  };
 
   const { accessor } = createColumnHelper<FlowsheetSummary>();
   const columns = React.useMemo(
@@ -70,8 +86,9 @@ export const useFlowsheetTable = () => {
     data: flowsheets,
     columns,
     initialState: {
-      sorting: [{ id: 'year', desc: false }],
+      sorting: [{ id: 'year', desc: true }],
     },
+    globalFilterFn: fuzzyFilter,
     getCoreRowModel: getCoreRowModel(),
     getGroupedRowModel: getGroupedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
