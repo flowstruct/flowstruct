@@ -5,6 +5,7 @@ import {
   getFacetedUniqueValues,
   getFilteredRowModel,
   getGroupedRowModel,
+  getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
 import { FlowsheetSummary } from '@/features/flowsheet/domain/flowsheet.ts';
@@ -36,6 +37,14 @@ export const useFlowsheetTable = () => {
           },
           renderSortName: () => 'Program',
         },
+        sortingFn: (rowA, rowB) => {
+          const programA = programs.map[rowA.original.program];
+          const programB = programs.map[rowB.original.program];
+
+          if (!programA || !programB) return 0;
+
+          return programA.name.localeCompare(programB.name);
+        },
       }),
       accessor('year', {
         header: 'Year',
@@ -45,6 +54,7 @@ export const useFlowsheetTable = () => {
           renderSortName: () => 'Year',
         },
         filterFn: setIncludes,
+        sortingFn: (rowA, rowB) => rowA.original.year - rowB.original.year,
       }),
       accessor('track', {
         header: 'Track',
@@ -60,12 +70,13 @@ export const useFlowsheetTable = () => {
     data: flowsheets,
     columns,
     initialState: {
-      grouping: ['program'],
+      sorting: [{ id: 'year', desc: false }],
     },
     getCoreRowModel: getCoreRowModel(),
     getGroupedRowModel: getGroupedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
+    getSortedRowModel: getSortedRowModel(),
   });
 };
