@@ -1,5 +1,5 @@
 import { Column, flexRender, Table as TanStackTable } from '@tanstack/react-table';
-import { ListFilter, SearchX } from 'lucide-react';
+import { ListFilter, SearchX, X } from 'lucide-react';
 import styles from '@/shared/components/data-table/data-table.module.css';
 import { MenuTrigger } from '@/shared/components/ui/Menu.tsx';
 import { Button } from '@/shared/components/ui/Button.tsx';
@@ -7,23 +7,10 @@ import { Popover } from '@/shared/components/ui/Popover.tsx';
 import { Autocomplete } from '@/shared/components/ui/Autocomplete.tsx';
 import { GridList, GridListItem } from '@/shared/components/ui/GridList.tsx';
 import React from 'react';
-import { SearchField } from '@/shared/components/ui/SearchField.tsx';
-import { useDebounce } from '@/shared/hooks/useDebounce.ts';
 
 type DataTableProps<TData> = {
   table: TanStackTable<TData>;
 };
-
-function DataTableSearch<TData>({ table }: { table: TanStackTable<TData> }) {
-  const [search, setSearch] = React.useState<string>('');
-  const debouncedSearch = useDebounce(search);
-
-  React.useEffect(() => {
-    table.setGlobalFilter(search);
-  }, [debouncedSearch]);
-
-  return <SearchField value={search} onChange={setSearch} />;
-}
 
 export function DataTable<TData>({ table }: DataTableProps<TData>) {
   return (
@@ -81,24 +68,28 @@ export function DataTable<TData>({ table }: DataTableProps<TData>) {
 }
 
 function FilterMenu({ column }: { column: Column<any, unknown> }) {
-  const renderFilterName = column.columnDef.meta?.renderFilterName || undefined;
+  const renderFilterName = column.columnDef.meta?.renderFilterName;
 
   const memoizedRenderFilterName = React.useCallback(
-    (value: any) => {
-      return renderFilterName ? renderFilterName(value) : String(value);
-    },
+    (value: any) => (renderFilterName ? renderFilterName(value) : String(value)),
     [renderFilterName]
   );
 
   const items = React.useMemo(() => {
-    return Array.from(column.getFacetedUniqueValues().keys()).map((value) => {
-      return { id: value, name: memoizedRenderFilterName(value) };
-    });
+    return Array.from(column.getFacetedUniqueValues().keys()).map((value) => ({
+      id: value,
+      name: memoizedRenderFilterName(value),
+    }));
   }, [column, memoizedRenderFilterName]);
+
+  const selectedKeys = (() => {
+    const value = column.getFilterValue();
+    return value ? (value as Set<any>) : new Set<any>();
+  })();
 
   return (
     <MenuTrigger>
-      <Button variant="transparent" size="sm">
+      <Button showIndicator={column.getIsFiltered()} variant="transparent" size="sm">
         <ListFilter size={15} />
       </Button>
       <Popover aria-label="Filter" hideArrow>
@@ -107,12 +98,24 @@ function FilterMenu({ column }: { column: Column<any, unknown> }) {
             aria-label="filter options"
             items={items}
             selectionMode="multiple"
-            selectedKeys={column.getFilterValue() ?? new Set()}
-            onSelectionChange={(keys) => column.setFilterValue(keys)}
+            selectedKeys={selectedKeys}
+            onSelectionChange={(keys) => {
+              const keySet = keys as Set<any>;
+              column.setFilterValue(keySet.size === 0 ? undefined : keySet);
+            }}
           >
             {(item) => <GridListItem textValue={item.name}>{item.name}</GridListItem>}
           </GridList>
         </Autocomplete>
+        {column.getIsFiltered() && (
+          <Button
+            onPress={() => column.setFilterValue(undefined)}
+            fullWidth
+            className={styles.clearFilterButton}
+          >
+            <X size={15} /> Clear
+          </Button>
+        )}
       </Popover>
     </MenuTrigger>
   );
