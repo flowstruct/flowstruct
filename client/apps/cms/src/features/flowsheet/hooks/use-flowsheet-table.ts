@@ -34,6 +34,7 @@ export const useFlowsheetTable = () => {
             const flowsheetProgram = programs.map[value];
             return flowsheetProgram ? getProgramDisplayName(flowsheetProgram) : 'None';
           },
+          renderSortItem: () => 'Program',
         },
       }),
       accessor('year', {
@@ -41,6 +42,7 @@ export const useFlowsheetTable = () => {
         cell: ({ cell }) => `${cell.getValue()} - ${cell.getValue() + 1}`,
         meta: {
           renderFilterItem: (value: number) => `${value} - ${value + 1}`,
+          renderSortItem: () => 'Year',
         },
         filterFn: setIncludes,
       }),
@@ -48,6 +50,7 @@ export const useFlowsheetTable = () => {
         header: 'Track',
         cell: ({ cell }) => cell.getValue() ?? '---',
         enableColumnFilter: false,
+        enableSorting: false,
       }),
     ],
     [programs.map]

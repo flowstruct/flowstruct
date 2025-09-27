@@ -31,16 +31,22 @@ function DataTableOptions<TData>({ table }: { table: Table<TData> }) {
 
       <Popover crossOffset={-64}>
         <Dialog>
-          <Select
-            items={table
-              .getAllLeafColumns()
-              .filter((c) => c.getCanSort())
-              .map((c) => ({ id: c.id, name: c.id }))}
-          >
-            {(item) => <SelectItem>{item.name}</SelectItem>}
-          </Select>
+          <SortingDropdown table={table} />
         </Dialog>
       </Popover>
     </DialogTrigger>
   );
+}
+
+function SortingDropdown<TData>({ table }: { table: Table<TData> }) {
+  const items = table
+    .getAllLeafColumns()
+    .filter((c) => c.getCanSort())
+    .map((c) => {
+      const renderSortItem = c.columnDef.meta?.renderSortItem;
+
+      return { id: c.id, name: renderSortItem() ?? c.id };
+    });
+
+  return <Select items={items}>{(item) => <SelectItem>{item.name}</SelectItem>}</Select>;
 }
