@@ -147,7 +147,7 @@
     --text-color-secondary: var(--gray-11);
     --text-color-hover: var(--gray-11);
     --text-color-disabled: var(--gray-10);
-    --text-color-placeholder: var(--gray-11);
+    --text-color-placeholder: var(--gray-9);
     --link-color: var(--primary-11);
     --link-color-secondary: var(--gray-11);
     --link-color-pressed: var(--primary-12);
