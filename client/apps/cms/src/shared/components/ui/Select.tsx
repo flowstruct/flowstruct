@@ -5,8 +5,8 @@ import {
   SelectProps as AriaSelectProps,
   SelectValue,
   ValidationResult,
+  Button
 } from 'react-aria-components';
-import { Button } from './Button.tsx';
 import { ListBox, ListBoxItem } from './ListBox.tsx';
 import { ChevronDown } from 'lucide-react';
 import { Popover } from './Popover.tsx';
