@@ -86,15 +86,15 @@
     font-size: var(--font-size-sm);
 
     &[data-active] {
-        background: var(--highlight-background-active);
+        background: var(--sidebar-background-active);
     }
 
     &[data-hovered] {
-        background: var(--highlight-background);
+        background: var(--sidebar-background-hovered);
     }
 
     &[data-pressed] {
-        background: var(--highlight-background-pressed);
+        background: var(--sidebar-background-pressed);
     }
 
     &[data-focused] {

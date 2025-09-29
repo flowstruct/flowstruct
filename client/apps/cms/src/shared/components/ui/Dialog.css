@@ -5,7 +5,6 @@
   max-height: inherit;
   box-sizing: border-box;
   overflow: auto;
-  padding: var(--space-3);
 
   .react-aria-Heading[slot=title] {
     line-height: 1em;

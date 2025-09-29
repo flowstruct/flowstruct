@@ -53,7 +53,7 @@ export const useFlowsheetTable = ({ flowsheets }: UseFlowsheetTableProps) => {
             const flowsheetProgram = programs.map[value];
             return flowsheetProgram ? getProgramDisplayName(flowsheetProgram) : 'None';
           },
-          renderSortName: () => 'Program',
+          renderColumnDisplayName: () => 'Program',
         },
         sortingFn: (rowA, rowB) => {
           const programA = programs.map[rowA.original.program];
@@ -69,7 +69,7 @@ export const useFlowsheetTable = ({ flowsheets }: UseFlowsheetTableProps) => {
         cell: ({ cell }) => `${cell.getValue()} - ${cell.getValue() + 1}`,
         meta: {
           renderFilterName: (value: number) => `${value} - ${value + 1}`,
-          renderSortName: () => 'Year',
+          renderColumnDisplayName: () => 'Year',
         },
         filterFn: setIncludes,
         sortingFn: (rowA, rowB) => rowA.original.year - rowB.original.year,
@@ -79,6 +79,9 @@ export const useFlowsheetTable = ({ flowsheets }: UseFlowsheetTableProps) => {
         cell: ({ cell }) => cell.getValue() ?? '---',
         enableColumnFilter: false,
         enableSorting: false,
+        meta: {
+          renderColumnDisplayName: () => 'Track',
+        },
       }),
     ],
     [programs.map]

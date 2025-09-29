@@ -6,6 +6,7 @@ import {
   ArrowDownWideNarrow,
   ArrowUpDown,
   ArrowUpNarrowWide,
+  Columns3,
   Search,
   Settings2,
   X,
@@ -15,6 +16,7 @@ import { Select, SelectItem } from '@/shared/components/ui/Select.tsx';
 import { SearchField } from '@/shared/components/ui/SearchField.tsx';
 import React from 'react';
 import { useDebounce } from '@/shared/hooks/useDebounce.ts';
+import { Divider } from '@/shared/components/ui/divider.tsx';
 
 type DataTableToolbarProps<TData> = {
   table: Table<TData>;
@@ -71,12 +73,23 @@ function DataTableViewOptions<TData>({ table }: { table: Table<TData> }) {
 
       <Popover crossOffset={-64}>
         <Dialog>
-          <div className={styles.viewOption}>
-            <p className={styles.viewOptionLabel}>
-              <ArrowUpDown size={14} />
-              Sorting
-            </p>
-            <SortingDropdown table={table} />
+          <div className={styles.options}>
+            <section className={styles.horizontalOption}>
+              <p className={styles.label}>
+                <ArrowUpDown size={14} />
+                Sorting
+              </p>
+              <SortingDropdown table={table} />
+            </section>
+
+            <Divider />
+
+            <section className={styles.verticalOption}>
+              <p className={styles.label}>
+                <Columns3 size={14} /> Display
+              </p>
+              <ColumnVisibilityPills table={table} />
+            </section>
           </div>
         </Dialog>
       </Popover>
@@ -92,12 +105,12 @@ function SortingDropdown<TData>({ table }: { table: Table<TData> }) {
     .getAllLeafColumns()
     .filter((c) => c.getCanSort())
     .map((c) => {
-      const renderSortName = c.columnDef.meta?.renderSortName;
-      return { id: c.id, name: renderSortName ? renderSortName() : c.id };
+      const renderColumnDisplayName = c.columnDef.meta?.renderColumnDisplayName;
+      return { id: c.id, name: renderColumnDisplayName ? renderColumnDisplayName() : c.id };
     });
 
   return (
-    <div className={styles.sortingActions}>
+    <div className={styles.optionActions}>
       <Select
         placeholder="Select column"
         items={items}
@@ -113,6 +126,25 @@ function SortingDropdown<TData>({ table }: { table: Table<TData> }) {
       >
         {sortingState.desc ? <ArrowUpNarrowWide size={16} /> : <ArrowDownWideNarrow size={16} />}
       </Button>
+    </div>
+  );
+}
+
+function ColumnVisibilityPills<TData>({ table }: { table: Table<TData> }) {
+  return (
+    <div className={styles.columnPills}>
+      {table.getAllLeafColumns().map((c) => {
+        const name = c.columnDef.meta?.renderColumnDisplayName() ?? c.id;
+        return (
+          <Button
+            data-active={c.getIsVisible() || undefined}
+            className={styles.columnPill}
+            onPress={() => c.toggleVisibility()}
+          >
+            {name}
+          </Button>
+        );
+      })}
     </div>
   );
 }
