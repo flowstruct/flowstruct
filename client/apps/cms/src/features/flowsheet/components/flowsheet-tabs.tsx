@@ -1,7 +1,7 @@
 import { Button } from '@/shared/components/ui/Button.tsx';
 import { CircleDashed, CircleDot, Layers2 } from 'lucide-react';
 import styles from './flowsheet-tabs.module.css';
-import { FlowsheetTabOptions } from '@/routes/_app/flowsheets/route.tsx';
+import { FlowsheetTabOptions } from '@/routes/_app/flowsheets';
 
 type FlowsheetTabsProps = {
   currentTab: FlowsheetTabOptions;

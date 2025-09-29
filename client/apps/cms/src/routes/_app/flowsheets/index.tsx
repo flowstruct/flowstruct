@@ -15,7 +15,7 @@ type FlowsheetSearch = {
   tab: FlowsheetTabOptions;
 };
 
-export const Route = createFileRoute('/_app/flowsheets')({
+export const Route = createFileRoute('/_app/flowsheets/')({
   validateSearch: (search): FlowsheetSearch => ({
     tab: (search.tab as FlowsheetTabOptions) || 'active',
   }),
