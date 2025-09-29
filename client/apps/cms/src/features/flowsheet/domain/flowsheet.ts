@@ -62,3 +62,5 @@ export type FlowsheetSummary = Pick<
   | 'updatedAt'
   | 'updatedBy'
 >;
+
+export type FlowsheetTabs = 'all' | 'active' | 'archived';

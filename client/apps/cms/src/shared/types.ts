@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import { ColumnFilter } from '@tanstack/react-table';
 
 export interface ErrorObject {
@@ -11,6 +11,12 @@ export type SidebarLinks = {
   label: string;
   icon: ReactNode;
   route: string;
+};
+
+export type TabOption<T extends string> = {
+  value: T;
+  label: string;
+  icon?: React.ReactNode;
 };
 
 export type TableSearchOptions = {
