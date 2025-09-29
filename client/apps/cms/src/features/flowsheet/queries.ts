@@ -13,10 +13,14 @@ export const flowsheetKeys = {
 };
 
 export const flowsheetQueries = {
-  list: queryOptions({
-      queryKey: flowsheetKeys.list(),
-      queryFn: () => flowsheetApi.getFlowsheets(),
+  collection: queryOptions({
+    queryKey: flowsheetKeys.list(),
+    queryFn: () => flowsheetApi.getFlowsheets(),
+    select: (data) => ({
+      list: data,
+      map: Object.fromEntries(data.map((d) => [d.id, d])),
     }),
+  }),
 
   detail: (flowsheetId: number) =>
     queryOptions({

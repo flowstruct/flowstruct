@@ -4,7 +4,7 @@
     all: unset;
     position: relative;
     background-color: var(--background-color);
-    color: var(--text-color);
+    color: var(--text-color-base);
     appearance: none;
     vertical-align: middle;
     font-size: var(--font-size-base);

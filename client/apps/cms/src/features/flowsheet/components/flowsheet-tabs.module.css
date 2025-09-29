@@ -2,3 +2,26 @@
     display: flex;
     gap: var(--space-2);
 }
+
+.tab {
+    padding: 0 var(--space-2);
+    font-size: var(--font-size-sm);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-1);
+    color: var(--text-color-secondary);
+
+    &[data-active] {
+        color: var(--text-color-base);
+        background-color: var(--highlight-background-active);
+    }
+
+    &[data-hovered] {
+        color: var(--text-color-base);
+        background-color: var(--highlight-background-hovered);
+    }
+
+    &[data-pressed] {
+        color: var(--text-color-base);
+        background-color: var(--highlight-background-pressed);
+    }
+}

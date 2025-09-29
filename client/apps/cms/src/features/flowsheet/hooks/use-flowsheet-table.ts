@@ -12,14 +12,16 @@ import {
 import { FlowsheetSummary } from '@/features/flowsheet/domain/flowsheet.ts';
 import React from 'react';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { flowsheetQueries } from '@/features/flowsheet/queries.ts';
 import { programQueries } from '@/features/program/queries.ts';
 import { getProgramDisplayName } from '@/features/program/domain/getProgramDisplayName.ts';
 import { setIncludes } from '@/shared/utils/setIncludes.ts';
 import { rankItem } from '@tanstack/match-sorter-utils';
 
-export const useFlowsheetTable = () => {
-  const { data: flowsheets } = useSuspenseQuery(flowsheetQueries.list);
+interface UseFlowsheetTableProps {
+  flowsheets: FlowsheetSummary[];
+}
+
+export const useFlowsheetTable = ({ flowsheets }: UseFlowsheetTableProps) => {
   const { data: programs } = useSuspenseQuery(programQueries.collection);
 
   const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {

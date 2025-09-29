@@ -3,7 +3,7 @@ import { AriaButtonProps, useButton, useFocusRing, useHover } from 'react-aria';
 
 type Props = AriaButtonProps<'button'> & {
   className?: string;
-};
+}
 
 export function UnstyledButton(props: Props) {
   const ref = useRef<HTMLButtonElement>(null);
