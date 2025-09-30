@@ -55,7 +55,6 @@ export function DataTable<TData>({ table }: DataTableProps<TData>) {
             <tr className={styles.emptyRow}>
               <td colSpan={table.getLeafHeaders().length} className={styles.emptyCell}>
                 <div className={styles.emptyContent}>
-                  <SearchX size={16} className={styles.emptyIcon} />
                   <span className={styles.emptyText}>No results.</span>
                 </div>
               </td>

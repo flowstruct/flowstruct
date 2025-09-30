@@ -87,7 +87,7 @@
 }
 
 .emptyCell {
-    padding: 2rem 1rem;
+    padding: var(--space-6) var(--space-3);
     border-bottom: none;
 }
 
@@ -103,8 +103,8 @@
 }
 
 .emptyText {
-    color: var(--mantine-color-gray-6);
-    font-size: 0.875rem;
+    color: var(--text-color-dimmed);
+    font-size: var(--font-size-sm);
     text-align: center;
 }
 

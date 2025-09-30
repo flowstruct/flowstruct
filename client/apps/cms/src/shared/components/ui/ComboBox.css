@@ -10,9 +10,8 @@
 
   .react-aria-Input {
     margin: 0;
-    font-size: 0.9380000000000001rem;
+    font-size: var(--font-size-sm);
     background: var(--field-background);
-    color: var(--field-text-color);
     border: 1px solid var(--border-color);
     border-radius: 6px;
     padding: 0.25025rem 1.75rem 0.25025rem 0.499625rem;
@@ -33,47 +32,6 @@
 
 .react-aria-Popover[data-trigger=ComboBox] {
   width: var(--trigger-width);
-
-  .react-aria-ListBox {
-    display: block;
-    width: unset;
-    max-height: inherit;
-    min-height: unset;
-    border: none;
-
-    .react-aria-Header {
-      padding-left: 1.374625rem;
-    }
-  }
-
-  .react-aria-ListBoxItem {
-    padding: 0 0.499625rem 0 1.374625rem;
-
-    &[data-focus-visible] {
-      outline: none;
-    }
-
-    &[data-selected] {
-      font-weight: 600;
-      background: unset;
-      color: var(--text-color);
-
-      &::before {
-        content: '✓';
-        content: '✓' / '';
-        alt: ' ';
-        position: absolute;
-        top: 4px;
-        left: 4px;
-      }
-    }
-
-    &[data-focused],
-    &[data-pressed] {
-      background: var(--highlight-background);
-      color: var(--highlight-foreground);
-    }
-  }
 }
 
 .react-aria-ListBoxItem[href] {

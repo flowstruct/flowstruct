@@ -1,0 +1,12 @@
+.programComboBox {
+
+
+    .react-aria-ComboBox {
+        .react-aria-Input {
+    border: none;
+            color: var(--text-color-base);
+            padding: 0;
+            font-size: var(--font-size-sm);
+        }
+    }
+}

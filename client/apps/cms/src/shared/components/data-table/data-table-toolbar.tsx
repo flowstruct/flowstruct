@@ -41,7 +41,7 @@ function ClearColumnFilters<TData>({ table }: { table: Table<TData> }) {
 
   return (
     <Button onPress={() => table.resetColumnFilters()} variant="flat" size="sm">
-      <X size={14} /> {columnFiltersApplied} filter{columnFiltersApplied === 1 ? '' : 's'}
+      <X size={14} /> {columnFiltersApplied} filter(s)
     </Button>
   );
 }

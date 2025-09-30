@@ -1,7 +1,5 @@
 import { createFileRoute, stripSearchParams, useNavigate } from '@tanstack/react-router';
 import { Header, HeaderActions, HeaderMain } from '@/shared/components/header.tsx';
-import { Plus } from 'lucide-react';
-import { Button } from '@/shared/components/ui/Button.tsx';
 import { flowsheetQueries } from '@/features/flowsheet/queries.ts';
 import { programQueries } from '@/features/program/queries.ts';
 import { DataTable } from '@/shared/components/data-table/data-table.tsx';
@@ -10,6 +8,7 @@ import { DataTableToolbar } from '@/shared/components/data-table/data-table-tool
 import { Tabs } from '@/shared/components/ui/tabs.tsx';
 import { getFlowsheetTabs } from '@/features/flowsheet/domain/getFlowsheetTabs.tsx';
 import { FlowsheetTabs } from '@/features/flowsheet/domain/flowsheet.ts';
+import { CreateFlowsheetForm } from '@/features/flowsheet/components/create-flowsheet-form.tsx';
 
 type FlowsheetSearch = {
   tab: FlowsheetTabs;
@@ -55,10 +54,7 @@ export const Route = createFileRoute('/_app/flowsheets/')({
 
           <HeaderActions>
             <DataTableToolbar table={table} />
-
-            <Button size="sm" variant="primary">
-              <Plus size={15} /> New
-            </Button>
+            <CreateFlowsheetForm />
           </HeaderActions>
         </Header>
 
