@@ -21,7 +21,7 @@
     border: 1px solid var(--border-color);
     border-radius: var(--radius-1);
     background: var(--background-color-secondary);
-    padding: 0 var(--space-3);
+    padding: 0 var(--space-2);
 }
 
 .arrow {

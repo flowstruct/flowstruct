@@ -1,32 +1,43 @@
 'use client';
 import {
+  Group,
   Input,
   TextField as AriaTextField,
   TextFieldProps as AriaTextFieldProps,
-  ValidationResult
+  ValidationResult,
 } from 'react-aria-components';
-import {Label, FieldError} from './Form.tsx';
-import {Text} from './Content.tsx';
-
+import { FieldError, Label } from './Form.tsx';
+import { Text } from './Content.tsx';
 import './TextField.css';
+import React from 'react';
 
 export interface TextFieldProps extends AriaTextFieldProps {
+  icon?: React.ReactNode;
   label?: string;
   description?: string;
+  placeholder?: string;
   errorMessage?: string | ((validation: ValidationResult) => string);
+  variant?: 'default' | 'transparent';
 }
 
-export function TextField(
-  { label, description, errorMessage, ...props }: TextFieldProps
-) {
+export function TextField({
+  icon,
+  label,
+  description,
+  placeholder,
+  errorMessage,
+  variant = 'default',
+  ...props
+}: TextFieldProps) {
   return (
-    (
-      <AriaTextField {...props}>
-        <Label>{label}</Label>
-        <Input />
-        {description && <Text slot="description">{description}</Text>}
-        <FieldError>{errorMessage}</FieldError>
-      </AriaTextField>
-    )
+    <AriaTextField data-variant={variant} {...props}>
+      {label && <Label>{label}</Label>}
+      <Group>
+        {icon}
+        <Input placeholder={placeholder} />
+      </Group>
+      {description && <Text slot="description">{description}</Text>}
+      {errorMessage && <FieldError>{errorMessage}</FieldError>}
+    </AriaTextField>
   );
 }

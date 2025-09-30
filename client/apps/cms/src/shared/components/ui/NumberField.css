@@ -6,10 +6,9 @@
 
     .react-aria-Button {
         background-color: transparent;
-        padding: 0 var(--space-1);
 
-        [slot=increment] {
-            border-bottom: 1px solid var(--border-color);
+        > svg {
+            stroke-width: 0.175rem;
         }
     }
 }
@@ -19,9 +18,16 @@
     width: fit-content;
 
     .react-aria-Group {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: var(--space-1) var(--space-2);
         border: 1px solid var(--border-color);
         border-radius: var(--radius-1);
-        display: flex;
+
+        > svg {
+            color: var(--text-color-secondary);
+        }
 
         &[data-focus-within] {
             outline: 1px solid var(--focus-ring-color);
@@ -36,9 +42,9 @@
 
     .react-aria-Input {
         all: unset;
-        font-size: var(--font-size-sm);
-        padding-left: var(--space-2);
-        width: 70px;
+        font-size: var(--font-size-base);
+        min-width: 0;
+        width: 6rem;
     }
 
     &[data-invalid] {

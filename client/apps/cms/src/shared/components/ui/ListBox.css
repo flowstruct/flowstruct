@@ -3,15 +3,14 @@
 .react-aria-ListBox {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: var(--space-1);
     max-height: inherit;
     overflow: auto;
-    padding: 4px;
-    border-radius: 6px;
-    background: var(--overlay-background);
+    padding: var(--space-1);
     forced-color-adjust: none;
     outline: none;
     box-sizing: border-box;
+    font-size: var(--font-size-sm);
 
     &[data-focus-visible] {
         outline: 2px solid var(--focus-ring-color);
@@ -41,7 +40,6 @@
     outline: none;
     cursor: default;
     color: var(--text-color);
-    font-size: var(--font-size-sm);
     position: relative;
     display: flex;
     flex-direction: column;

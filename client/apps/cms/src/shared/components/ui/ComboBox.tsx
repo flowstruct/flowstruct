@@ -2,6 +2,7 @@
 import {
   ComboBox as AriaComboBox,
   ComboBoxProps as AriaComboBoxProps,
+  Group,
   Input,
   ListBoxItemProps,
   ValidationResult,
@@ -21,6 +22,8 @@ export interface ComboBoxProps<T extends object> extends Omit<AriaComboBoxProps<
   errorMessage?: string | ((validation: ValidationResult) => string);
   placeholder?: string;
   className?: string;
+  variant?: 'default' | 'transparent';
+  size?: 'sm' | 'lg' | 'xl';
   children: React.ReactNode | ((item: T) => React.ReactNode);
 }
 
@@ -30,18 +33,20 @@ export function ComboBox<T extends object>({
   placeholder = 'Select an item',
   errorMessage,
   className,
+  variant = 'default',
+  size = 'sm',
   children,
   ...props
 }: ComboBoxProps<T>) {
   return (
-    <AriaComboBox className={className} {...props}>
+    <AriaComboBox data-size={size} data-variant={variant} {...props}>
       <Label>{label}</Label>
-      <div>
+      <Group>
         <Input placeholder={placeholder} />
         <FieldButton>
-          <ChevronDown size={16} />
+          <ChevronDown />
         </FieldButton>
-      </div>
+      </Group>
       {description && <Text slot="description">{description}</Text>}
       <FieldError>{errorMessage}</FieldError>
       <Popover hideArrow>

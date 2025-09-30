@@ -23,7 +23,7 @@ export interface SelectProps<T extends object> extends Omit<AriaSelectProps<T>, 
   children: React.ReactNode | ((item: T) => React.ReactNode);
 }
 
-export function Select<T extends object>({
+export function  Select<T extends object>({
   label,
   description,
   errorMessage,

@@ -142,9 +142,9 @@
 :root {
     --focus-ring-color: var(--primary-8);
     --text-color: var(--gray-12);
-    --text-color-dimmed: var(--gray-10);
     --text-color-base: var(--gray-12);
     --text-color-secondary: var(--gray-11);
+    --text-color-dimmed: var(--gray-9);
     --text-color-hover: var(--gray-11);
     --text-color-disabled: var(--gray-10);
     --text-color-placeholder: var(--gray-9);
@@ -166,6 +166,7 @@
     --font-size-sm: .8125rem;
     --font-size-base: 0.9375rem;
     --font-size-lg: 1.125rem;
+    --font-size-xl: 1.375rem;
 
     --primary-color: var(--primary-11);
 
