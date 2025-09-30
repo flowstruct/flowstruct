@@ -3,6 +3,7 @@ import { ListFilter, SearchX, X } from 'lucide-react';
 import styles from '@/shared/components/data-table/data-table.module.css';
 import { MenuTrigger } from '@/shared/components/ui/Menu.tsx';
 import { Button } from '@/shared/components/ui/Button.tsx';
+import {Button as RACButton } from 'react-aria-components';
 import { Popover } from '@/shared/components/ui/Popover.tsx';
 import { Autocomplete } from '@/shared/components/ui/Autocomplete.tsx';
 import { GridList, GridListItem } from '@/shared/components/ui/GridList.tsx';
@@ -107,13 +108,12 @@ function FilterMenu({ column }: { column: Column<any, unknown> }) {
           </GridList>
         </Autocomplete>
         {column.getIsFiltered() && (
-          <Button
+          <RACButton
             onPress={() => column.setFilterValue(undefined)}
-            fullWidth
             className={styles.clearFilterButton}
           >
             <X size={15} /> Clear
-          </Button>
+          </RACButton>
         )}
       </Popover>
     </MenuTrigger>
