@@ -17,6 +17,7 @@
     justify-content: center;
     gap: var(--space-2);
     font-weight: 400;
+    cursor: default;
 
     &[data-focus-visible] {
         outline: 2px solid var(--focus-ring-color);
@@ -105,13 +106,13 @@
 }
 
 .react-aria-Button[data-size=md] {
-    font-size: var(--font-size-base);
+    font-size: var(--font-size-sm);
     padding: var(--space-2) var(--space-3);
 }
 
 .react-aria-Button[data-size=sm] {
-    font-size: var(--font-size-sm);
-    padding: 0 var(--space-2);
+    font-size: var(--font-size-xs);
+    padding: var(--space-1) var(--space-3);
 }
 
 .react-aria-Button[data-size=icon] {

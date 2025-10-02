@@ -1,6 +1,7 @@
 import { Button as RACButton, ButtonProps as RACButtonProps } from 'react-aria-components';
 import clsx from 'clsx';
 import './Button.css';
+import { ProgressCircle } from '@/shared/components/ui/ProgressCircle.tsx';
 
 interface ButtonProps extends RACButtonProps {
   variant?: 'default' | 'transparent' | 'primary' | 'flat';
@@ -16,6 +17,8 @@ export function Button({
   showIndicator = false,
   fullWidth = false,
   className,
+  isPending = false,
+  children,
   ...props
 }: ButtonProps) {
   return (
@@ -26,8 +29,14 @@ export function Button({
       data-show-indicator={showIndicator ? true : undefined}
       data-full-width={fullWidth ? true : undefined}
       className={clsx('react-aria-Button', className)}
+      isPending={isPending}
     >
-      {props.children}
+      {({ isPending }) => (
+        <>
+          {!isPending && children}
+          {isPending && <ProgressCircle aria-label="Saving..." isIndeterminate />}
+        </>
+      )}
     </RACButton>
   );
 }

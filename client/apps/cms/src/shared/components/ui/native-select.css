@@ -1,0 +1,22 @@
+.native-select-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.react-aria-Label {
+    margin-bottom: 0.2rem;
+    font-size: var(--font-size-xs);
+}
+
+select {
+    background: transparent;
+    color: var(--text-color-base);
+    font-size: var(--font-size-sm);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-1);
+    padding: var(--space-2) var(--space-2);
+
+    [slot=placeholder] {
+        color: var(--text-color-dimmed);
+    }
+}

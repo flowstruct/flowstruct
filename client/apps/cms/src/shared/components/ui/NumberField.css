@@ -3,9 +3,11 @@
 .my-stepper-buttons {
     display: flex;
     flex-direction: column;
+    margin-right: 0.1rem;
 
     .react-aria-Button {
         background-color: transparent;
+        height: 0.6rem;
 
         > svg {
             stroke-width: 0.175rem;
@@ -21,7 +23,7 @@
         display: flex;
         align-items: center;
         gap: var(--space-2);
-        padding: var(--space-1) var(--space-2);
+        padding: var(--space-1);
         border: 1px solid var(--border-color);
         border-radius: var(--radius-1);
 
@@ -42,7 +44,7 @@
 
     .react-aria-Input {
         all: unset;
-        font-size: var(--font-size-base);
+        font-size: var(--font-size-sm);
         min-width: 0;
         width: 6rem;
     }

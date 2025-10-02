@@ -1,9 +1,12 @@
 @import "./theme.css";
 
 .react-aria-Select {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
     color: var(--text-color-base);
     position: relative;
-    width: fit-content;
+
 
     .react-aria-Button {
         all: unset;
@@ -37,6 +40,7 @@
         }
     }
 
+
     .react-aria-SelectValue {
         min-width: 100px;
         text-align: start;
@@ -48,6 +52,8 @@
     }
 
     span[aria-hidden] {
+        margin-left: auto;
+        padding-left: var(--space-2);
         color: var(--text-color-secondary);
         forced-color-adjust: none;
         font-size: var(--font-size-sm);

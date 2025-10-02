@@ -9,7 +9,7 @@ import {
 } from 'react-aria-components';
 import { FieldButton, FieldError, Label } from './Form.tsx';
 import { Text } from './Content.tsx';
-import { ListBox, ListBoxItem } from './ListBox.tsx';
+import { ListBoxItem } from './ListBox.tsx';
 import { Popover } from './Popover.tsx';
 import { ChevronDown } from 'lucide-react';
 
@@ -24,7 +24,7 @@ export interface ComboBoxProps<T extends object> extends Omit<AriaComboBoxProps<
   className?: string;
   variant?: 'default' | 'transparent';
   size?: 'sm' | 'lg' | 'xl';
-  children: React.ReactNode | ((item: T) => React.ReactNode);
+  children: React.ReactNode;
 }
 
 export function ComboBox<T extends object>({
@@ -44,14 +44,12 @@ export function ComboBox<T extends object>({
       <Group>
         <Input placeholder={placeholder} />
         <FieldButton>
-          <ChevronDown />
+          <ChevronDown size={15} />
         </FieldButton>
       </Group>
       {description && <Text slot="description">{description}</Text>}
       <FieldError>{errorMessage}</FieldError>
-      <Popover hideArrow>
-        <ListBox>{children}</ListBox>
-      </Popover>
+      <Popover hideArrow>{children}</Popover>
     </AriaComboBox>
   );
 }

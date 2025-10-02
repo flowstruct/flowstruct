@@ -6,7 +6,7 @@
     left: 0;
     width: 100vw;
     height: var(--visual-viewport-height);
-    background: rgba(0 0 0 / .5);
+    background: rgba(0 0 0 / .3);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -29,17 +29,10 @@
     border: 1px solid var(--border-color);
     outline: none;
     position: relative;
-
-    [slot=x] {
-
-    }
+    top: -250px;
 
     &[data-entering] {
         animation: modal-zoom 300ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-
-    .react-aria-TextField {
-        margin-bottom: 8px;
     }
 
     &[data-size=md] {
@@ -48,6 +41,11 @@
 
     &[data-size=lg] {
         width: 600px;
+    }
+
+
+    &[data-size=xl] {
+        width: 800px;
     }
 }
 

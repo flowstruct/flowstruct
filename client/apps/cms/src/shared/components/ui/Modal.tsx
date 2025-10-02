@@ -6,7 +6,7 @@ import {
 import './Modal.css';
 
 interface ModalOverlayProps extends RACModalOverlayProps {
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
 }
 
 export function Modal({ size = 'md', ...props }: ModalOverlayProps) {

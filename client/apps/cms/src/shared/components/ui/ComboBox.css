@@ -3,6 +3,7 @@
 .react-aria-ComboBox {
     color: var(--text-color);
 
+
     .react-aria-Group {
         display: flex;
         align-items: center;
@@ -57,10 +58,7 @@
     &[data-size=lg] {
         .react-aria-Input {
             font-size: var(--font-size-lg);
-
-            &::placeholder {
-                font-weight: 500;
-            }
+            font-weight: 600;
         }
     }
 
@@ -83,6 +81,10 @@
 
 .react-aria-Popover[data-trigger=ComboBox] {
     width: var(--trigger-width);
+
+    .react-aria-ListBox {
+        max-height: 250px;
+    }
 }
 
 .react-aria-ListBoxItem[href] {

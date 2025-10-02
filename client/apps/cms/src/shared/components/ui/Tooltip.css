@@ -3,13 +3,13 @@
 .react-aria-Tooltip {
   box-shadow: 0 8px 20px rgba(0 0 0 / 0.1);
   border-radius: 4px;
-  background: var(--highlight-background);
-  color: var(--highlight-foreground);
+  background: var(--gray-12);
+  font-size: var(--font-size-xs);
+  color: var(--gray-2);
   forced-color-adjust: none;
   outline: none;
-  padding: 2px 8px;
+  padding: var(--space-1) var(--space-2);
   max-width: 150px;
-  /* fixes FF gap */
   transform: translate3d(0, 0, 0);
   transition: transform 200ms, opacity 200ms;
 

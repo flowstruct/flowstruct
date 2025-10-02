@@ -1,11 +1,11 @@
 'use client';
 import {
+  Button,
   ListBoxItemProps,
   Select as AriaSelect,
   SelectProps as AriaSelectProps,
   SelectValue,
   ValidationResult,
-  Button
 } from 'react-aria-components';
 import { ListBox, ListBoxItem } from './ListBox.tsx';
 import { ChevronDown } from 'lucide-react';
@@ -23,7 +23,7 @@ export interface SelectProps<T extends object> extends Omit<AriaSelectProps<T>, 
   children: React.ReactNode | ((item: T) => React.ReactNode);
 }
 
-export function  Select<T extends object>({
+export function Select<T extends object>({
   label,
   description,
   errorMessage,
@@ -37,7 +37,7 @@ export function  Select<T extends object>({
       <Button>
         <SelectValue />
         <span aria-hidden="true">
-          <ChevronDown size={16} />
+          <ChevronDown size={15} />
         </span>
       </Button>
       {description && <Text slot="description">{description}</Text>}

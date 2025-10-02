@@ -12,6 +12,7 @@ import './TextField.css';
 import React from 'react';
 
 export interface TextFieldProps extends AriaTextFieldProps {
+  width?: number;
   icon?: React.ReactNode;
   label?: string;
   description?: string;
@@ -21,6 +22,7 @@ export interface TextFieldProps extends AriaTextFieldProps {
 }
 
 export function TextField({
+  width,
   icon,
   label,
   description,
@@ -30,14 +32,14 @@ export function TextField({
   ...props
 }: TextFieldProps) {
   return (
-    <AriaTextField data-variant={variant} {...props}>
+    <AriaTextField style={{ width: width ? '' : '100%' }} data-variant={variant} {...props}>
       {label && <Label>{label}</Label>}
-      <Group>
+      <Group style={{ width: width ? '' : '100%' }}>
         {icon}
-        <Input placeholder={placeholder} />
+        <Input style={{ width: width ?? '' }} placeholder={placeholder} />
       </Group>
       {description && <Text slot="description">{description}</Text>}
-      {errorMessage && <FieldError>{errorMessage}</FieldError>}
+      <FieldError>{errorMessage}</FieldError>
     </AriaTextField>
   );
 }

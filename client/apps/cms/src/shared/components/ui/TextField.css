@@ -4,8 +4,13 @@
     display: flex;
     flex-direction: column;
     color: var(--text-color-base);
-    font-size: var(--font-size-base);
+    font-size: var(--font-size-sm);
     height: fit-content;
+
+    .react-aria-Label {
+        font-size: var(--font-size-xs);
+        margin-bottom: var(--space-1);
+    }
 
     .react-aria-Group {
         display: flex;
@@ -17,6 +22,9 @@
         }
 
         .react-aria-Input {
+            all: unset;
+            width: 100%;
+
             &::placeholder {
                 color: var(--text-color-dimmed);
             }
@@ -25,19 +33,13 @@
 
     &[data-variant=default] {
         .react-aria-Group {
-            .react-aria-Input,
-            .react-aria-TextArea {
-                padding: 0.25025rem;
-                margin: 0;
-                border: 1px solid var(--border-color);
-                border-radius: var(--radius-1);
-                background: var(--field-background);
-                color: var(--field-text-color);
+            padding: var(--space-1) var(--space-2);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-1);
 
-                &[data-focused] {
-                    outline: 2px solid var(--focus-ring-color);
-                    outline-offset: -1px;
-                }
+            &[data-focus-within] {
+                outline: 2px solid var(--focus-ring-color);
+                outline-offset: -1px;
             }
         }
     }
