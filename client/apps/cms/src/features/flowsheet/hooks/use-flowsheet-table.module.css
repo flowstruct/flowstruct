@@ -1,0 +1,50 @@
+.yearCell {
+    color: var(--text-color-secondary);
+}
+
+.programCell {
+    display: flex;
+    gap: var(--space-8);
+    align-items: center;
+}
+
+.statusIcon {
+    display: flex;
+    position: relative;
+    width: fit-content;
+    height: fit-content;
+    color: var(--text-color-base);
+
+    &[data-status=DRAFT]::before {
+        content: '';
+        position: absolute;
+        top: -2px;
+        right: -2px;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background-color: var(--primary-color); /* subtle blue */
+    }
+
+
+    &[data-status=NEW] {
+        color: var(--primary-color);
+    }
+
+    &[data-status=NEW]::before {
+        content: '';
+        position: absolute;
+        top: -2px;
+        right: -2px;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background-color: forestgreen;
+    }
+}
+
+.actionsMenu {
+    display: flex;
+    padding: 0 var(--space-4);
+    justify-content: end;
+}
