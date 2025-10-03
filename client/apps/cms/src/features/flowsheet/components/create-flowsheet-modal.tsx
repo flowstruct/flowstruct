@@ -32,15 +32,20 @@ import { Select, SelectItem } from '@/shared/components/ui/Select.tsx';
 import { Tooltip, TooltipTrigger } from '@/shared/components/ui/Tooltip.tsx';
 import { Key } from 'react-aria-components';
 import { flowsheetApi } from '@/features/flowsheet/api.ts';
+import { useNavigate } from '@tanstack/react-router';
 
 export function CreateFlowsheetModal() {
   const [programFormIsOpen, setProgramFormIsOpen] = React.useState<boolean>(false);
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
+  const [openFlowsheet, setOpenFlowsheet] = React.useState<boolean>(true);
 
   const createFlowsheet = useMutation({
     mutationFn: flowsheetApi.createFlowsheet,
     meta: { successMessage: 'Flowsheet created.' },
   });
+
+  const navigate = useNavigate();
+
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     if (programFormIsOpen) {
       return;
@@ -49,15 +54,18 @@ export function CreateFlowsheetModal() {
     e.preventDefault();
     e.stopPropagation();
 
-    let data = Object.fromEntries(new FormData(e.currentTarget));
+    let formData = Object.fromEntries(new FormData(e.currentTarget));
 
-    console.log(e.isPropagationStopped());
-    createFlowsheet.mutate(data, {
-      onSuccess: () => {
+    createFlowsheet.mutate(formData, {
+      onSuccess: (data) => {
         setIsOpen(false);
+        if (openFlowsheet) {
+          navigate({ to: '/flowsheets/$flowsheetId', params: { flowsheetId: String(data.id) } });
+        }
       },
     });
   };
+
   return (
     <DialogTrigger>
       <Button onPress={() => setIsOpen(true)} size="sm" variant="primary">
@@ -130,6 +138,10 @@ export function CreateFlowsheetModal() {
               <Divider />
 
               <section className={styles.footer}>
+                <Switch isSelected={openFlowsheet} onChange={setOpenFlowsheet}>
+                  Open after creating
+                </Switch>
+
                 <Button isPending={createFlowsheet.isPending} variant="primary" type="submit">
                   <Grid2X2 size={15} /> Create flowsheet
                 </Button>
@@ -268,8 +280,8 @@ function CreateProgramForm({
     e.preventDefault();
     e.stopPropagation();
 
-    const data = Object.fromEntries(new FormData(e.currentTarget));
-    createProgram.mutate(data, {
+    const formData = Object.fromEntries(new FormData(e.currentTarget));
+    createProgram.mutate(formData, {
       onSuccess: (data) => {
         if (selectOnCreate) {
           onCreateProgram(data);
@@ -282,17 +294,9 @@ function CreateProgramForm({
   return (
     <div className={styles.programForm}>
       <Form id="program-form" onSubmit={handleSubmit}>
-        <div className={styles.programFormCodeAndName}>
-          <TextField
-            autoFocus
-            isRequired
-            width={75}
-            icon={<Hash size={15} />}
-            name="code"
-            label="Code"
-          />
-          <TextField isRequired icon={<Tag size={15} />} name="name" label="Name" />
-        </div>
+        <TextField autoFocus isRequired icon={<Hash size={15} />} name="code" label="Code" />
+
+        <TextField isRequired icon={<Tag size={15} />} name="name" label="Name" />
 
         <Select
           isRequired
