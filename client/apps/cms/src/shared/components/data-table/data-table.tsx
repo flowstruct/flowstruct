@@ -1,13 +1,14 @@
-import { Column, flexRender, Table as TanStackTable } from '@tanstack/react-table';
-import { ListFilter, SearchX, X } from 'lucide-react';
+import { Column, flexRender, Row, Table as TanStackTable } from '@tanstack/react-table';
+import { ListFilter, X } from 'lucide-react';
 import styles from '@/shared/components/data-table/data-table.module.css';
 import { MenuTrigger } from '@/shared/components/ui/Menu.tsx';
 import { Button } from '@/shared/components/ui/Button.tsx';
-import {Button as RACButton } from 'react-aria-components';
+import { Button as RACButton } from 'react-aria-components';
 import { Popover } from '@/shared/components/ui/Popover.tsx';
 import { Autocomplete } from '@/shared/components/ui/Autocomplete.tsx';
 import { GridList, GridListItem } from '@/shared/components/ui/GridList.tsx';
 import React from 'react';
+import { AriaButtonProps, useButton, useFocusRing, useHover } from 'react-aria';
 
 type DataTableProps<TData> = {
   table: TanStackTable<TData>;
@@ -20,38 +21,39 @@ export function DataTable<TData>({ table }: DataTableProps<TData>) {
         <thead className={styles.thead}>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id} className={styles.headerRow}>
-              {headerGroup.headers.map((header) => (
-                <th key={header.id} className={styles.th}>
-                  {header.isPlaceholder ? null : (
-                    <>
-                      <div className={styles.headerCell}>
-                        {flexRender(header.column.columnDef.header, header.getContext())}
+              {headerGroup.headers.map((header) => {
 
-                        {header.column.getCanFilter() && <FilterMenu column={header.column} />}
-                      </div>
-                    </>
-                  )}
-                </th>
-              ))}
+                return (
+                  <th
+                    key={header.id}
+                    className={styles.th}
+                  >
+                    {header.isPlaceholder ? null : (
+                      <>
+                        <div
+                          key={header.id}
+                          className={styles.headerCell}
+                          style={{ width: header.getSize() }}
+                        >
+                          {flexRender(header.column.columnDef.header, header.getContext())}
+
+                          {header.column.getCanFilter() && <FilterMenu column={header.column} />}
+                        </div>
+                      </>
+                    )}
+                  </th>
+                );
+              })}
             </tr>
           ))}
         </thead>
         <tbody className={styles.tbody}>
           {table.getRowModel().rows.length ? (
-            table.getRowModel().rows.map((row) => (
-              <tr
-                key={row.id}
-                className={`${styles.tr} ${
-                  row.getIsSelected() ? styles.selected : ''
-                } ${!row.getCanSelect() ? styles.disabled : ''}`}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id} className={styles.td}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
-              </tr>
-            ))
+            table
+              .getRowModel()
+              .rows.map((row) => (
+                <Tr key={row.id} onPress={() => table.options.meta?.rowAction(row)} row={row} />
+              ))
           ) : (
             <tr className={styles.emptyRow}>
               <td colSpan={table.getLeafHeaders().length} className={styles.emptyCell}>
@@ -64,6 +66,39 @@ export function DataTable<TData>({ table }: DataTableProps<TData>) {
         </tbody>
       </table>
     </>
+  );
+}
+
+interface TrProps<TData> extends AriaButtonProps<'button'> {
+  row: Row<TData>;
+}
+
+function Tr<TData>({ row, ...props }: TrProps<TData>) {
+  const ref = React.useRef<HTMLTableRowElement>(null);
+  const { buttonProps, isPressed } = useButton(props, ref);
+  const { hoverProps, isHovered } = useHover(props);
+  const { focusProps, isFocused } = useFocusRing(props);
+
+  return (
+    <tr
+      {...buttonProps}
+      {...hoverProps}
+      {...focusProps}
+      ref={ref}
+      key={row.id}
+      className={`${styles.tr} ${
+        row.getIsSelected() ? styles.selected : ''
+      } ${!row.getCanSelect() ? styles.disabled : ''}`}
+      data-pressed={isPressed || undefined}
+      data-hovered={isHovered || undefined}
+      data-focused={isFocused || undefined}
+    >
+      {row.getVisibleCells().map((cell) => (
+        <td key={cell.id} className={styles.td}>
+          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+        </td>
+      ))}
+    </tr>
   );
 }
 

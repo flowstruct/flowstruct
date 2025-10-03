@@ -7,6 +7,7 @@ import {
   getFilteredRowModel,
   getGroupedRowModel,
   getSortedRowModel,
+  Row,
   useReactTable,
 } from '@tanstack/react-table';
 import { FlowsheetSummary } from '@/features/flowsheet/domain/flowsheet.ts';
@@ -16,6 +17,12 @@ import { programQueries } from '@/features/program/queries.ts';
 import { getProgramDisplayName } from '@/features/program/domain/getProgramDisplayName.ts';
 import { setIncludes } from '@/shared/utils/setIncludes.ts';
 import { rankItem } from '@tanstack/match-sorter-utils';
+import { Ellipsis, Grid2x2 } from 'lucide-react';
+import styles from './use-flowsheet-table.module.css';
+import { useNavigate } from '@tanstack/react-router';
+import { Menu, MenuTrigger } from '@/shared/components/ui/Menu.tsx';
+import { Button } from '@/shared/components/ui/Button.tsx';
+import { Popover } from '@/shared/components/ui/Popover.tsx';
 
 interface UseFlowsheetTableProps {
   flowsheets: FlowsheetSummary[];
@@ -23,6 +30,7 @@ interface UseFlowsheetTableProps {
 
 export const useFlowsheetTable = ({ flowsheets }: UseFlowsheetTableProps) => {
   const { data: programs } = useSuspenseQuery(programQueries.collection);
+  const navigate = useNavigate();
 
   const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
     let rowValue = row.getValue(columnId);
@@ -38,14 +46,23 @@ export const useFlowsheetTable = ({ flowsheets }: UseFlowsheetTableProps) => {
     return itemRank.passed;
   };
 
-  const { accessor } = createColumnHelper<FlowsheetSummary>();
+  const { accessor, display } = createColumnHelper<FlowsheetSummary>();
   const columns = React.useMemo(
     () => [
       accessor('program', {
         header: 'Program',
-        cell: ({ cell }) => {
-          const flowsheetProgram = programs.map[cell.getValue()];
-          return flowsheetProgram ? getProgramDisplayName(flowsheetProgram) : 'None';
+        cell: ({ row }) => {
+          const program = programs.map[row.original.program];
+          const programName = program ? getProgramDisplayName(program) : 'None';
+
+          return (
+            <div className={styles.programCell}>
+              <div data-status={row.original.status || undefined} className={styles.statusIcon}>
+                {/*<Grid2x2 size={16} />*/}
+              </div>
+              <p>{programName}</p>
+            </div>
+          );
         },
         filterFn: setIncludes,
         meta: {
@@ -64,9 +81,14 @@ export const useFlowsheetTable = ({ flowsheets }: UseFlowsheetTableProps) => {
           return programA.name.localeCompare(programB.name);
         },
       }),
+
       accessor('year', {
         header: 'Year',
-        cell: ({ cell }) => `${cell.getValue()} - ${cell.getValue() + 1}`,
+        cell: ({ cell }) => (
+          <p className={styles.yearCell}>
+            {cell.getValue()} - {cell.getValue() + 1}
+          </p>
+        ),
         meta: {
           renderFilterName: (value: number) => `${value} - ${value + 1}`,
           renderColumnDisplayName: () => 'Year',
@@ -74,6 +96,7 @@ export const useFlowsheetTable = ({ flowsheets }: UseFlowsheetTableProps) => {
         filterFn: setIncludes,
         sortingFn: (rowA, rowB) => rowA.original.year - rowB.original.year,
       }),
+
       accessor('track', {
         header: 'Track',
         cell: ({ cell }) => cell.getValue() ?? '---',
@@ -82,6 +105,15 @@ export const useFlowsheetTable = ({ flowsheets }: UseFlowsheetTableProps) => {
         meta: {
           renderColumnDisplayName: () => 'Track',
         },
+      }),
+      display({
+        id: 'actions',
+        cell: ({ row }) => (
+          <div className={styles.actionsMenu}>
+            <ActionsMenu flowsheet={row.original} />
+          </div>
+        ),
+        size: 50,
       }),
     ],
     [programs.map]
@@ -100,5 +132,31 @@ export const useFlowsheetTable = ({ flowsheets }: UseFlowsheetTableProps) => {
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
     getSortedRowModel: getSortedRowModel(),
+    meta: {
+      rowAction: (row: Row<FlowsheetSummary>) => {
+        navigate({
+          to: '/flowsheets/$flowsheetId',
+          params: { flowsheetId: String(row.original.id) },
+        });
+      },
+    },
   });
 };
+
+type ActionsMenuProps = {
+  flowsheet: FlowsheetSummary;
+};
+
+function ActionsMenu({ flowsheet }: ActionsMenuProps) {
+  return (
+    <MenuTrigger>
+      <Button size="icon" variant="transparent">
+        <Ellipsis color="gray" size={16} />
+      </Button>
+
+      <Popover hideArrow>
+        <Menu></Menu>
+      </Popover>
+    </MenuTrigger>
+  );
+}
