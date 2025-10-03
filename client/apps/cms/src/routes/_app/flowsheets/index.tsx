@@ -1,16 +1,16 @@
 import { createFileRoute, stripSearchParams, useNavigate } from '@tanstack/react-router';
 import { Header, HeaderActions, HeaderMain } from '@/shared/components/header.tsx';
 import { flowsheetQueries } from '@/features/flowsheet/queries.ts';
-import { programQueries } from '@/features/program/queries.ts';
 import { DataTable } from '@/shared/components/data-table/data-table.tsx';
-import { useFlowsheetTable } from '@/features/flowsheet/hooks/use-flowsheet-table.ts';
+import { useFlowsheetTable } from '@/features/flowsheet/hooks/use-flowsheet-table.tsx';
 import { DataTableToolbar } from '@/shared/components/data-table/data-table-toolbar.tsx';
 import { Tabs } from '@/shared/components/ui/tabs.tsx';
-import { getFlowsheetTabs } from '@/features/flowsheet/domain/getFlowsheetTabs.tsx';
 import { ArchiveStatus } from '@/features/flowsheet/domain/flowsheet.ts';
 import { CreateFlowsheetModal } from '@/features/flowsheet/components/create-flowsheet-modal.tsx';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { getFlowsheetsByArchiveStatus } from '@/features/flowsheet/domain/getFlowsheetsByArchiveStatus.ts';
+import { TabOption } from '@/shared/types.ts';
+import { CircleDashed, CircleDot, Layers2 } from 'lucide-react';
 
 type FlowsheetSearch = {
   tab: ArchiveStatus;
@@ -20,9 +20,7 @@ export const Route = createFileRoute('/_app/flowsheets/')({
   validateSearch: (search): FlowsheetSearch => ({
     tab: (search.tab as ArchiveStatus) || 'active',
   }),
-  loaderDeps: ({ search: { tab } }) => ({ tab }),
   loader: async ({ context: { queryClient } }) => {
-    queryClient.ensureQueryData(programQueries.collection);
     queryClient.ensureQueryData(flowsheetQueries.collection);
   },
   search: {
@@ -34,19 +32,13 @@ export const Route = createFileRoute('/_app/flowsheets/')({
       ...flowsheetQueries.collection,
       select: (data) => getFlowsheetsByArchiveStatus(data, tab),
     });
-
     const table = useFlowsheetTable({ flowsheets });
-    const navigate = useNavigate();
 
     return (
       <>
         <Header>
           <HeaderMain>
-            <Tabs
-              tabs={getFlowsheetTabs()}
-              currentTab={tab}
-              onTabChange={(next) => navigate({ to: '.', search: { tab: next } })}
-            />
+            <RouteTabs />
           </HeaderMain>
 
           <HeaderActions>
@@ -60,3 +52,22 @@ export const Route = createFileRoute('/_app/flowsheets/')({
     );
   },
 });
+
+function RouteTabs() {
+  const { tab } = Route.useSearch();
+  const navigate = useNavigate();
+
+  const tabs: TabOption<ArchiveStatus>[] = [
+    { value: 'all', label: 'All flowsheets', icon: <Layers2 size={14} /> },
+    { value: 'active', label: 'Active', icon: <CircleDot size={14} /> },
+    { value: 'archived', label: 'Archived', icon: <CircleDashed size={14} /> },
+  ];
+
+  return (
+    <Tabs
+      tabs={tabs}
+      currentTab={tab}
+      onTabChange={(next) => navigate({ to: '.', search: { tab: next } })}
+    />
+  );
+}

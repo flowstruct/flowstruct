@@ -1,7 +1,10 @@
-import { FlowsheetSummary, ArchiveStatus } from '@/features/flowsheet/domain/flowsheet.ts';
+import { ArchiveStatus, FlowsheetSummary } from '@/features/flowsheet/domain/flowsheet.ts';
 
-export const getFlowsheetsByArchiveStatus = (flowsheets: FlowsheetSummary[], option: ArchiveStatus) => {
-  switch (option) {
+export const getFlowsheetsByArchiveStatus = (
+  flowsheets: FlowsheetSummary[],
+  archiveStatus: ArchiveStatus
+) => {
+  switch (archiveStatus) {
     case 'active':
       return flowsheets.filter((f) => f.archivedAt !== undefined);
     case 'archived':
