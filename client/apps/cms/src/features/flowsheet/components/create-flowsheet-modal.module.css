@@ -30,6 +30,11 @@
     justify-content: end;
 }
 
+.flowsheetProperties {
+    display: flex;
+    gap: var(--space-4);
+}
+
 .programForm {
     width: 100%;
     gap: var(--space-4);

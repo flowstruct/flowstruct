@@ -7,37 +7,34 @@ import { useFlowsheetTable } from '@/features/flowsheet/hooks/use-flowsheet-tabl
 import { DataTableToolbar } from '@/shared/components/data-table/data-table-toolbar.tsx';
 import { Tabs } from '@/shared/components/ui/tabs.tsx';
 import { getFlowsheetTabs } from '@/features/flowsheet/domain/getFlowsheetTabs.tsx';
-import { FlowsheetTabs } from '@/features/flowsheet/domain/flowsheet.ts';
-import { CreateFlowsheetForm } from '@/features/flowsheet/components/create-flowsheet-form.tsx';
+import { ArchiveStatus } from '@/features/flowsheet/domain/flowsheet.ts';
+import { CreateFlowsheetModal } from '@/features/flowsheet/components/create-flowsheet-modal.tsx';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { getFlowsheetsByArchiveStatus } from '@/features/flowsheet/domain/getFlowsheetsByArchiveStatus.ts';
 
 type FlowsheetSearch = {
-  tab: FlowsheetTabs;
+  tab: ArchiveStatus;
 };
 
 export const Route = createFileRoute('/_app/flowsheets/')({
   validateSearch: (search): FlowsheetSearch => ({
-    tab: (search.tab as FlowsheetTabs) || 'active',
+    tab: (search.tab as ArchiveStatus) || 'active',
   }),
   loaderDeps: ({ search: { tab } }) => ({ tab }),
-  loader: async ({ context: { queryClient }, deps: { tab } }) => {
+  loader: async ({ context: { queryClient } }) => {
     queryClient.ensureQueryData(programQueries.collection);
-    const flowsheets = await queryClient.ensureQueryData(flowsheetQueries.collection);
-
-    switch (tab) {
-      case 'active':
-        return { flowsheets: flowsheets.filter((f) => f.archivedAt !== undefined) };
-      case 'archived':
-        return { flowsheets: flowsheets.filter((f) => f.archivedAt === undefined) };
-      default:
-        return { flowsheets };
-    }
+    queryClient.ensureQueryData(flowsheetQueries.collection);
   },
   search: {
     middlewares: [stripSearchParams({ tab: 'active' })],
   },
   component: () => {
-    const { flowsheets } = Route.useLoaderData();
     const { tab } = Route.useSearch();
+    const { data: flowsheets } = useSuspenseQuery({
+      ...flowsheetQueries.collection,
+      select: (data) => getFlowsheetsByArchiveStatus(data, tab),
+    });
+
     const table = useFlowsheetTable({ flowsheets });
     const navigate = useNavigate();
 
@@ -54,7 +51,7 @@ export const Route = createFileRoute('/_app/flowsheets/')({
 
           <HeaderActions>
             <DataTableToolbar table={table} />
-            <CreateFlowsheetForm />
+            <CreateFlowsheetModal />
           </HeaderActions>
         </Header>
 

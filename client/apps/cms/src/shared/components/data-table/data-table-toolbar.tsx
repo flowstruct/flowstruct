@@ -27,7 +27,7 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
     <section className={styles.toolbar}>
       <ClearColumnFilters table={table} />
       <DataTableSearch table={table} />
-      <DataTableViewOptions table={table} />
+      <DataTableSettings table={table} />
     </section>
   );
 }
@@ -64,7 +64,7 @@ function DataTableSearch<TData>({ table }: { table: Table<TData> }) {
   );
 }
 
-function DataTableViewOptions<TData>({ table }: { table: Table<TData> }) {
+function DataTableSettings<TData>({ table }: { table: Table<TData> }) {
   return (
     <DialogTrigger>
       <Button variant="transparent" size="md">
@@ -79,6 +79,7 @@ function DataTableViewOptions<TData>({ table }: { table: Table<TData> }) {
                 <ArrowUpDown size={14} />
                 Sorting
               </p>
+
               <SortingDropdown table={table} />
             </section>
 
@@ -88,6 +89,7 @@ function DataTableViewOptions<TData>({ table }: { table: Table<TData> }) {
               <p className={styles.label}>
                 <Columns3 size={14} /> Display
               </p>
+
               <ColumnVisibilityPills table={table} />
             </section>
           </div>
@@ -119,6 +121,7 @@ function SortingDropdown<TData>({ table }: { table: Table<TData> }) {
       >
         {(item) => <SelectItem>{item.name}</SelectItem>}
       </Select>
+
       <Button
         variant="flat"
         size="icon"

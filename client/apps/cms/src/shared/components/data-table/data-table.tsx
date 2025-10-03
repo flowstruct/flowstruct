@@ -92,6 +92,7 @@ function FilterMenu({ column }: { column: Column<any, unknown> }) {
       <Button showIndicator={column.getIsFiltered()} variant="transparent" size="sm">
         <ListFilter size={15} />
       </Button>
+
       <Popover aria-label="Filter" hideArrow>
         <Autocomplete>
           <GridList
@@ -107,6 +108,7 @@ function FilterMenu({ column }: { column: Column<any, unknown> }) {
             {(item) => <GridListItem textValue={item.name}>{item.name}</GridListItem>}
           </GridList>
         </Autocomplete>
+
         {column.getIsFiltered() && (
           <RACButton
             onPress={() => column.setFilterValue(undefined)}
