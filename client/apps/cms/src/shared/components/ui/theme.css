@@ -172,10 +172,10 @@
 
     /* these colors are the same between light and dark themes
      * to ensure contrast with the foreground color */
-    --highlight-background: var(--gray-3);
-    --highlight-background-hovered: var(--gray-3);
-    --highlight-background-pressed: var(--gray-4);
-    --highlight-background-active: var(--gray-3);
+    --highlight-background: var(--gray-2);
+    --highlight-background-hovered: var(--gray-2);
+    --highlight-background-pressed: var(--gray-3);
+    --highlight-background-active: var(--gray-2);
     --highlight-background-invalid: #cc2000;
     --highlight-foreground: var(--text-color);
     --highlight-foreground-pressed: var(--text-color);
