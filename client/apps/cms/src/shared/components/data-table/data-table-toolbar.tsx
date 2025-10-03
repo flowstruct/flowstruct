@@ -6,7 +6,6 @@ import {
   ArrowDownWideNarrow,
   ArrowUpDown,
   ArrowUpNarrowWide,
-  Columns3,
   Search,
   Settings2,
   X,
@@ -74,24 +73,11 @@ function DataTableSettings<TData>({ table }: { table: Table<TData> }) {
       <Popover crossOffset={-64}>
         <Dialog>
           <div className={styles.options}>
-            <section className={styles.horizontalOption}>
-              <p className={styles.label}>
-                <ArrowUpDown size={14} />
-                Sorting
-              </p>
-
-              <SortingDropdown table={table} />
-            </section>
+            <SortingOptions table={table} />
 
             <Divider />
 
-            <section className={styles.verticalOption}>
-              <p className={styles.label}>
-                <Columns3 size={14} /> Display
-              </p>
-
-              <ColumnVisibilityPills table={table} />
-            </section>
+            <ColumnVisibilityPills table={table} />
           </div>
         </Dialog>
       </Popover>
@@ -99,7 +85,7 @@ function DataTableSettings<TData>({ table }: { table: Table<TData> }) {
   );
 }
 
-function SortingDropdown<TData>({ table }: { table: Table<TData> }) {
+function SortingOptions<TData>({ table }: { table: Table<TData> }) {
   const sortingState = table.getState().sorting[0];
   if (!sortingState) return null;
 
@@ -112,42 +98,54 @@ function SortingDropdown<TData>({ table }: { table: Table<TData> }) {
     });
 
   return (
-    <div className={styles.optionActions}>
-      <Select
-        placeholder="Select column"
-        items={items}
-        selectedKey={sortingState.id}
-        onSelectionChange={(key) => table.setSorting([{ ...sortingState, id: key as string }])}
-      >
-        {(item) => <SelectItem>{item.name}</SelectItem>}
-      </Select>
+    <section className={styles.horizontalOption}>
+      <p className={styles.label}>
+        <ArrowUpDown size={14} />
+        Sorting
+      </p>
 
-      <Button
-        variant="flat"
-        size="icon"
-        onPress={() => table.setSorting([{ ...sortingState, desc: !sortingState.desc }])}
-      >
-        {sortingState.desc ? <ArrowUpNarrowWide size={16} /> : <ArrowDownWideNarrow size={16} />}
-      </Button>
-    </div>
+      <div className={styles.optionActions}>
+        <Select
+          placeholder="Select column"
+          items={items}
+          selectedKey={sortingState.id}
+          onSelectionChange={(key) => table.setSorting([{ ...sortingState, id: key as string }])}
+        >
+          {(item) => <SelectItem>{item.name}</SelectItem>}
+        </Select>
+
+        <Button
+          variant="flat"
+          size="icon"
+          onPress={() => table.setSorting([{ ...sortingState, desc: !sortingState.desc }])}
+        >
+          {sortingState.desc ? <ArrowUpNarrowWide size={16} /> : <ArrowDownWideNarrow size={16} />}
+        </Button>
+      </div>
+    </section>
   );
 }
 
 function ColumnVisibilityPills<TData>({ table }: { table: Table<TData> }) {
   return (
-    <div className={styles.columnPills}>
-      {table.getAllLeafColumns().map((c) => {
-        const name = c.columnDef.meta?.renderColumnDisplayName() ?? c.id;
-        return (
-          <Button
-            data-active={c.getIsVisible() || undefined}
-            className={styles.columnPill}
-            onPress={() => c.toggleVisibility()}
-          >
-            {name}
-          </Button>
-        );
-      })}
-    </div>
+    <section className={styles.verticalOption}>
+      <p className={styles.label}>Display properties</p>
+
+      <div className={styles.columnPills}>
+        {table.getAllLeafColumns().map((c) => {
+          const name = c.columnDef.meta?.renderColumnDisplayName() ?? c.id;
+
+          return (
+            <Button
+              data-active={c.getIsVisible() || undefined}
+              className={styles.columnPill}
+              onPress={() => c.toggleVisibility()}
+            >
+              {name}
+            </Button>
+          );
+        })}
+      </div>
+    </section>
   );
 }
