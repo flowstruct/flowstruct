@@ -12,7 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppRouteRouteImport } from './routes/_app/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppFlowsheetsRouteRouteImport } from './routes/_app/flowsheets/route'
 import { Route as AppFlowsheetsIndexRouteImport } from './routes/_app/flowsheets/index'
+import { Route as AppFlowsheetsFlowsheetIdRouteImport } from './routes/_app/flowsheets/$flowsheetId'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -28,20 +30,34 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppFlowsheetsIndexRoute = AppFlowsheetsIndexRouteImport.update({
-  id: '/flowsheets/',
-  path: '/flowsheets/',
+const AppFlowsheetsRouteRoute = AppFlowsheetsRouteRouteImport.update({
+  id: '/flowsheets',
+  path: '/flowsheets',
   getParentRoute: () => AppRouteRoute,
 } as any)
+const AppFlowsheetsIndexRoute = AppFlowsheetsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppFlowsheetsRouteRoute,
+} as any)
+const AppFlowsheetsFlowsheetIdRoute =
+  AppFlowsheetsFlowsheetIdRouteImport.update({
+    id: '/$flowsheetId',
+    path: '/$flowsheetId',
+    getParentRoute: () => AppFlowsheetsRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
-  '/flowsheets': typeof AppFlowsheetsIndexRoute
+  '/flowsheets': typeof AppFlowsheetsRouteRouteWithChildren
+  '/flowsheets/$flowsheetId': typeof AppFlowsheetsFlowsheetIdRoute
+  '/flowsheets/': typeof AppFlowsheetsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/flowsheets/$flowsheetId': typeof AppFlowsheetsFlowsheetIdRoute
   '/flowsheets': typeof AppFlowsheetsIndexRoute
 }
 export interface FileRoutesById {
@@ -49,14 +65,28 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_app': typeof AppRouteRouteWithChildren
   '/login': typeof LoginRoute
+  '/_app/flowsheets': typeof AppFlowsheetsRouteRouteWithChildren
+  '/_app/flowsheets/$flowsheetId': typeof AppFlowsheetsFlowsheetIdRoute
   '/_app/flowsheets/': typeof AppFlowsheetsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/flowsheets'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/flowsheets'
+    | '/flowsheets/$flowsheetId'
+    | '/flowsheets/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/flowsheets'
-  id: '__root__' | '/' | '/_app' | '/login' | '/_app/flowsheets/'
+  to: '/' | '/login' | '/flowsheets/$flowsheetId' | '/flowsheets'
+  id:
+    | '__root__'
+    | '/'
+    | '/_app'
+    | '/login'
+    | '/_app/flowsheets'
+    | '/_app/flowsheets/$flowsheetId'
+    | '/_app/flowsheets/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -88,22 +118,49 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_app/flowsheets/': {
-      id: '/_app/flowsheets/'
+    '/_app/flowsheets': {
+      id: '/_app/flowsheets'
       path: '/flowsheets'
       fullPath: '/flowsheets'
-      preLoaderRoute: typeof AppFlowsheetsIndexRouteImport
+      preLoaderRoute: typeof AppFlowsheetsRouteRouteImport
       parentRoute: typeof AppRouteRoute
+    }
+    '/_app/flowsheets/': {
+      id: '/_app/flowsheets/'
+      path: '/'
+      fullPath: '/flowsheets/'
+      preLoaderRoute: typeof AppFlowsheetsIndexRouteImport
+      parentRoute: typeof AppFlowsheetsRouteRoute
+    }
+    '/_app/flowsheets/$flowsheetId': {
+      id: '/_app/flowsheets/$flowsheetId'
+      path: '/$flowsheetId'
+      fullPath: '/flowsheets/$flowsheetId'
+      preLoaderRoute: typeof AppFlowsheetsFlowsheetIdRouteImport
+      parentRoute: typeof AppFlowsheetsRouteRoute
     }
   }
 }
 
-interface AppRouteRouteChildren {
+interface AppFlowsheetsRouteRouteChildren {
+  AppFlowsheetsFlowsheetIdRoute: typeof AppFlowsheetsFlowsheetIdRoute
   AppFlowsheetsIndexRoute: typeof AppFlowsheetsIndexRoute
 }
 
-const AppRouteRouteChildren: AppRouteRouteChildren = {
+const AppFlowsheetsRouteRouteChildren: AppFlowsheetsRouteRouteChildren = {
+  AppFlowsheetsFlowsheetIdRoute: AppFlowsheetsFlowsheetIdRoute,
   AppFlowsheetsIndexRoute: AppFlowsheetsIndexRoute,
+}
+
+const AppFlowsheetsRouteRouteWithChildren =
+  AppFlowsheetsRouteRoute._addFileChildren(AppFlowsheetsRouteRouteChildren)
+
+interface AppRouteRouteChildren {
+  AppFlowsheetsRouteRoute: typeof AppFlowsheetsRouteRouteWithChildren
+}
+
+const AppRouteRouteChildren: AppRouteRouteChildren = {
+  AppFlowsheetsRouteRoute: AppFlowsheetsRouteRouteWithChildren,
 }
 
 const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
