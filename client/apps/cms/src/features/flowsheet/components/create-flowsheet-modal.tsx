@@ -25,7 +25,7 @@ import { TextField } from '@/shared/components/ui/TextField.tsx';
 import { Divider } from '@/shared/components/ui/divider.tsx';
 import { Degree, Program } from '@/features/program/domain/program.ts';
 import { Switch } from '@/shared/components/ui/Switch.tsx';
-import { ListBox, ListBoxEmptyState, ListBoxItem } from '@/shared/components/ui/ListBox.tsx';
+import { ListBox, ListBoxItem, ListEmptyState } from '@/shared/components/ui/ListBox.tsx';
 import { getProgramDisplayName } from '@/features/program/domain/getProgramDisplayName.ts';
 import { programApi } from '@/features/program/api.ts';
 import { Select, SelectItem } from '@/shared/components/ui/Select.tsx';
@@ -219,7 +219,7 @@ function ProgramComboBox({ programFormIsOpen, setProgramFormIsOpen }: ProgramCom
         {!programFormIsOpen && (
           <ListBox
             renderEmptyState={() => (
-              <ListBoxEmptyState label="No programs found. Create a new one below." />
+              <ListEmptyState>No programs found. Create a new one below.</ListEmptyState>
             )}
             items={programs.list}
           >
@@ -298,7 +298,14 @@ function CreateProgramForm({
   return (
     <div className={styles.programForm}>
       <Form id="program-form" onSubmit={handleSubmit}>
-        <TextField autoFocus isRequired icon={<Hash size={15} />} name="code" label="Code" />
+        <TextField
+          autoFocus
+          placeholder="A unique identifier (MECH, CS, MGT, etc.)..."
+          isRequired
+          icon={<Hash size={15} />}
+          name="code"
+          label="Code"
+        />
 
         <TextField isRequired icon={<Tag size={15} />} name="name" label="Name" />
 
