@@ -129,7 +129,7 @@ function FilterMenu({ column }: { column: Column<any, unknown> }) {
       <Popover aria-label="Filter" hideArrow>
         <Autocomplete>
           <GridList
-            renderEmptyState={() => <ListEmptyState>No programs found.</ListEmptyState>}
+            renderEmptyState={() => <ListEmptyState>No results.</ListEmptyState>}
             aria-label="filter options"
             items={items}
             selectionMode="multiple"
