@@ -4,7 +4,7 @@ import './Button.css';
 import { ProgressCircle } from '@/shared/components/ui/ProgressCircle.tsx';
 
 interface ButtonProps extends RACButtonProps {
-  variant?: 'default' | 'transparent' | 'primary' | 'flat';
+  variant?: 'default' | 'transparent' | 'primary' | 'flat' | 'ghost';
   size?: 'sm' | 'md' | 'icon';
   showIndicator?: boolean;
   fullWidth?: boolean;

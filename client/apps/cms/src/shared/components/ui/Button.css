@@ -73,6 +73,22 @@
     }
 }
 
+.react-aria-Button[data-variant=ghost] {
+    background-color: transparent;
+    border: 0;
+    padding: 0 var(--space-1);
+    border-radius: var(--radius-1);
+    color: var(--text-color-secondary);
+
+    &[data-hovered] {
+        color: var(--text-color-base);
+    }
+
+    &[data-pressed] {
+        color: var(--text-color-base);
+    }
+}
+
 .react-aria-Button[data-variant=primary] {
     background-color: var(--button-background);
     border: 0;
