@@ -16,6 +16,7 @@ import { SearchField } from '@/shared/components/ui/SearchField.tsx';
 import React from 'react';
 import { useDebounce } from '@/shared/hooks/useDebounce.ts';
 import { Divider } from '@/shared/components/ui/divider.tsx';
+import { Tooltip, TooltipTrigger } from '@/shared/components/ui/Tooltip.tsx';
 
 type DataTableToolbarProps<TData> = {
   table: Table<TData>;
@@ -39,7 +40,7 @@ function ClearColumnFilters<TData>({ table }: { table: Table<TData> }) {
   }
 
   return (
-    <Button onPress={() => table.resetColumnFilters()} variant="flat" size="sm">
+    <Button onPress={() => table.resetColumnFilters()} variant="ghost" size="sm">
       <X size={14} /> {columnFiltersApplied} filter(s)
     </Button>
   );
@@ -66,9 +67,13 @@ function DataTableSearch<TData>({ table }: { table: Table<TData> }) {
 function DataTableSettings<TData>({ table }: { table: Table<TData> }) {
   return (
     <DialogTrigger>
-      <Button variant="transparent" size="md">
-        <Settings2 size={14} />
-      </Button>
+      <TooltipTrigger>
+        <Button size="sm" variant="transparent">
+          <Settings2 size={14} />
+        </Button>
+
+        <Tooltip>Table settings</Tooltip>
+      </TooltipTrigger>
 
       <Popover crossOffset={-64}>
         <div className={styles.option}>
@@ -106,6 +111,7 @@ function SortingOptions<TData>({ table }: { table: Table<TData> }) {
       <div className={styles.optionActions}>
         <Select
           placeholder="Select column"
+          size="xs"
           items={items}
           selectedKey={sortingState.id}
           onSelectionChange={(key) => table.setSorting([{ ...sortingState, id: key as string }])}
@@ -118,7 +124,7 @@ function SortingOptions<TData>({ table }: { table: Table<TData> }) {
           size="icon"
           onPress={() => table.setSorting([{ ...sortingState, desc: !sortingState.desc }])}
         >
-          {sortingState.desc ? <ArrowUpNarrowWide size={16} /> : <ArrowDownWideNarrow size={16} />}
+          {sortingState.desc ? <ArrowUpNarrowWide size={14} /> : <ArrowDownWideNarrow size={14} />}
         </Button>
       </div>
     </section>

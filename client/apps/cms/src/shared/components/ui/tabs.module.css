@@ -10,6 +10,10 @@
     border-radius: var(--radius-1);
     color: var(--text-color-base);
 
+    > svg {
+        color: var(--text-color-secondary);
+    }
+
     &[data-active] {
         background-color: var(--highlight-background-active);
     }

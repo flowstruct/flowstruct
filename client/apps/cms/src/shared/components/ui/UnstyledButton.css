@@ -1,0 +1,10 @@
+
+.unstyledButton {
+    border-radius: var(--radius-1);
+    cursor: default;
+
+    &[data-focused] {
+        outline: 2px solid var(--focus-ring-color);
+        offset: -1px;
+    }
+}

@@ -21,14 +21,6 @@ public class StudyPlanCourseController {
     private final StudyPlanCourseService studyPlanCourseService;
     private final StudyPlanCourseManagerService studyPlanCourseManagerService;
 
-    @GetMapping
-    public ResponseEntity<Map<Long, CourseSummaryDto>> getStudyPlanCourseList(@PathVariable long studyPlanId) {
-        return new ResponseEntity<>(
-                studyPlanCourseService.getStudyPlanCourseList(studyPlanId),
-                HttpStatus.OK
-        );
-    }
-
     @GetMapping("/detailed")
     public ResponseEntity<Map<Long, CourseDto>> getStudyPlanDetailedCourseList(@PathVariable long studyPlanId) {
         return new ResponseEntity<>(

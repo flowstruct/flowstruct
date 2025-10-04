@@ -78,11 +78,11 @@ public class CourseService {
         return coursesPageResponseMapper.apply(coursesPage);
     }
 
-    public Map<Long, CourseSummaryDto> getCourseList(List<Long> courseIds) {
+    public List<CourseSummaryDto> getCourseList(List<Long> courseIds) {
         return courseRepository.findAllById(courseIds)
                 .stream()
                 .map(courseSummaryDtoMapper)
-                .collect(Collectors.toMap(CourseSummaryDto::id, Function.identity()));
+                .toList();
     }
 
     public Map<Long, CourseDto> getDetailedCourseList(List<Long> courseIds) {

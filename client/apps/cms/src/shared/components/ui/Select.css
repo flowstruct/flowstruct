@@ -7,13 +7,29 @@
     color: var(--text-color-base);
     position: relative;
 
+    &[data-size=sm] {
+        .react-aria-ListBoxItem,
+        .react-aria-Button {
+            padding: var(--space-1) var(--space-2);
+            font-size: var(--font-size-sm);
+        }
+    }
+
+    &[data-size=xs] {
+        .react-aria-ListBoxItem {
+            background: blue;
+        }
+        .react-aria-Button {
+            padding: 0.15rem 0.35rem;
+            font-size: var(--font-size-xs);
+        }
+    }
 
     .react-aria-Button {
         all: unset;
         border: 1px solid var(--border-color);
         border-radius: var(--radius-1);
-        padding: var(--space-1) var(--space-2);
-        font-size: var(--font-size-sm);
+
 
         display: flex;
         align-items: center;

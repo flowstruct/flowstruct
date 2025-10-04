@@ -34,8 +34,19 @@
     }
 }
 
-.react-aria-ListBoxItem {
+.react-aria-ListBox[data-size=xs] .react-aria-ListBoxItem {
+    padding: var(--space-1) var(--space-2);
+    font-size: var(--font-size-xs);
+    min-height: 28px;
+}
+
+.react-aria-ListBox[data-size=sm] .react-aria-ListBoxItem {
     padding: var(--space-1) var(--space-3);
+    font-size: var(--font-size-sm);
+    min-height: 32px;
+}
+
+.react-aria-ListBoxItem {
     border-radius: var(--radius-2);
     outline: none;
     cursor: default;
@@ -44,7 +55,6 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    min-height: 32px;
 
     &[data-focus-visible] {
         outline: 2px solid var(--focus-ring-color);

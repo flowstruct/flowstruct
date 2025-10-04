@@ -35,8 +35,8 @@
     position: absolute;
     top: -2px;
     right: -2px;
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
     border-radius: 50%;
     background-color: var(--primary-color);
 }
@@ -119,6 +119,10 @@
         background: var(--highlight-background-pressed);
         border-color: var(--border-color-pressed);
     }
+
+    > svg {
+        color: var(--text-color-secondary);
+    }
 }
 
 .react-aria-Button[data-size=md] {
@@ -129,6 +133,11 @@
 .react-aria-Button[data-size=sm] {
     font-size: var(--font-size-xs);
     padding: var(--space-1) var(--space-3);
+}
+
+.react-aria-Button[data-size=xs] {
+    font-size: var(--font-size-xs);
+    padding: 0 var(--space-2);
 }
 
 .react-aria-Button[data-size=icon] {

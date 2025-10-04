@@ -80,13 +80,14 @@
     border-radius: var(--radius-1);
     display: flex;
     cursor: default;
-    font-weight: 400;
+    font-weight: 450;
     gap: var(--space-3);
-    color: var(--text-color);
+    color: var(--gray-d12);
     align-items: center;
     font-size: var(--font-size-sm);
 
     &[data-active] {
+        color: var(--text-color-base);
         background: var(--sidebar-background-active);
     }
 
@@ -115,9 +116,9 @@
 }
 
 .sidebarMenuSection > h3 {
-    color: var(--gray-9);
+    color: var(--text-color-dimmed);
     font-size: var(--font-size-xs);
-    font-weight: 400;
+    font-weight: 450;
     margin-bottom: var(--space-1);
 }
 

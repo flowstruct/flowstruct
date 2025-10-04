@@ -4,7 +4,7 @@ import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { programQueries } from '@/features/program/queries.ts';
 import React from 'react';
 import { createPortal } from 'react-dom';
-import { Dialog, DialogTrigger } from '@/shared/components/ui/Dialog.tsx';
+import { DialogTrigger } from '@/shared/components/ui/Dialog.tsx';
 import { Modal } from '@/shared/components/ui/Modal.tsx';
 import { Button } from '@/shared/components/ui/Button';
 import {
@@ -69,87 +69,89 @@ export function CreateFlowsheetModal() {
 
   return (
     <DialogTrigger>
-      <Button onPress={() => setIsOpen(true)} size="sm" variant="primary">
-        <Plus size={15} /> New
-      </Button>
+      <TooltipTrigger>
+        <Button onPress={() => setIsOpen(true)} size="sm" variant="transparent">
+          <Plus size={15} />
+        </Button>
+
+        <Tooltip>New</Tooltip>
+      </TooltipTrigger>
 
       <Modal isOpen={isOpen} onOpenChange={setIsOpen} size="xl">
-        <Dialog>
-          <Form onSubmit={onSubmit}>
-            <div className={styles.dialog}>
-              <header className={styles.header}>
-                <Breadcrumbs>
-                  <Breadcrumb base>
-                    <Layers2 size={15} /> Flowsheets
-                  </Breadcrumb>
+        <Form onSubmit={onSubmit}>
+          <div className={styles.content}>
+            <header className={styles.header}>
+              <Breadcrumbs>
+                <Breadcrumb base>
+                  <Layers2 size={15} /> Flowsheets
+                </Breadcrumb>
 
-                  <Breadcrumb>
-                    <Grid2X2 size={15} color="teal" /> New flowsheet
-                  </Breadcrumb>
-                </Breadcrumbs>
+                <Breadcrumb>
+                  <Grid2X2 size={15} color="teal" /> New flowsheet
+                </Breadcrumb>
+              </Breadcrumbs>
 
-                <Button variant="transparent" size="icon" slot="close">
-                  <X size={14} />
-                </Button>
-              </header>
+              <Button variant="transparent" size="icon" onPress={() => setIsOpen(false)}>
+                <X size={14} />
+              </Button>
+            </header>
 
-              <section className={styles.form}>
-                <section className={styles.programAndName}>
-                  <ProgramComboBox
-                    programFormIsOpen={programFormIsOpen}
-                    setProgramFormIsOpen={setProgramFormIsOpen}
-                  />
+            <section className={styles.form}>
+              <section className={styles.programAndName}>
+                <ProgramComboBox
+                  programFormIsOpen={programFormIsOpen}
+                  setProgramFormIsOpen={setProgramFormIsOpen}
+                />
 
-                  <TextField
-                    name="track"
-                    aria-label="Flowsheet name"
-                    icon={<Tag size={14} />}
-                    variant="transparent"
-                    placeholder="Enter an optional name (e.g., General, Data Science, Cybersecurity)"
-                  />
-                </section>
-
-                <div className={styles.flowsheetProperties}>
-                  <NumberField
-                    minValue={2005}
-                    name="year"
-                    aria-label="Flowsheet year"
-                    isRequired
-                    formatOptions={{
-                      useGrouping: false,
-                    }}
-                    icon={<CalendarDays size={15} />}
-                    defaultValue={new Date().getFullYear()}
-                  />
-
-                  <NumberField
-                    name="duration"
-                    minValue={1}
-                    aria-label="Flowsheet duration"
-                    isRequired
-                    formatOptions={{
-                      useGrouping: false,
-                    }}
-                    icon={<Hourglass size={15} />}
-                    defaultValue={4}
-                  />
-                </div>
+                <TextField
+                  name="track"
+                  aria-label="Flowsheet name"
+                  icon={<Tag size={14} />}
+                  variant="transparent"
+                  placeholder="Enter an optional name (e.g., General, Data Science, Cybersecurity)"
+                />
               </section>
 
-              <Divider />
+              <div className={styles.flowsheetProperties}>
+                <NumberField
+                  minValue={2005}
+                  name="year"
+                  aria-label="Flowsheet year"
+                  isRequired
+                  formatOptions={{
+                    useGrouping: false,
+                  }}
+                  icon={<CalendarDays size={15} />}
+                  defaultValue={new Date().getFullYear()}
+                />
 
-              <section className={styles.footer}>
-                <Switch isSelected={openFlowsheet} onChange={setOpenFlowsheet}>
-                  Open after creating
-                </Switch>
+                <NumberField
+                  name="duration"
+                  minValue={1}
+                  aria-label="Flowsheet duration"
+                  isRequired
+                  formatOptions={{
+                    useGrouping: false,
+                  }}
+                  icon={<Hourglass size={15} />}
+                  defaultValue={4}
+                />
+              </div>
+            </section>
+          </div>
 
-                <Button isPending={createFlowsheet.isPending} variant="primary" type="submit">
-                  <Grid2X2 size={15} /> Create flowsheet
-                </Button>
-              </section>
-            </div>
-          </Form>
-        </Dialog>
+          <Divider />
+
+          <section className={styles.footer}>
+            <Switch isSelected={openFlowsheet} onChange={setOpenFlowsheet}>
+              Open after creating
+            </Switch>
+
+            <Button isPending={createFlowsheet.isPending} variant="primary" type="submit">
+              <Grid2X2 size={15} /> Create flowsheet
+            </Button>
+          </section>
+        </Form>
       </Modal>
     </DialogTrigger>
   );
@@ -297,8 +299,8 @@ function CreateProgramForm({
   };
 
   return (
-    <div className={styles.programForm}>
-      <Form id="program-form" onSubmit={handleSubmit}>
+    <Form id="program-form" onSubmit={handleSubmit}>
+      <div className={styles.programFormFields}>
         <TextField
           autoFocus
           placeholder="A unique identifier (MECH, CS, MGT, etc.)..."
@@ -319,31 +321,31 @@ function CreateProgramForm({
         >
           {(item) => <SelectItem>{item.name}</SelectItem>}
         </Select>
+      </div>
 
-        <Divider />
+      <Divider />
 
-        <footer className={styles.programFormFooter}>
-          <Button size="sm" variant="transparent" type="reset" onPress={closeForm}>
-            <ChevronLeft size={14} /> Cancel
+      <footer className={styles.programFormFooter}>
+        <Button size="sm" variant="transparent" type="reset" onPress={closeForm}>
+          <ChevronLeft size={14} /> Cancel
+        </Button>
+
+        <div className={styles.programFormSubmit}>
+          <Switch isSelected={selectOnCreate} onChange={setSelectOnCreate}>
+            Select after creating
+          </Switch>
+
+          <Button
+            size="sm"
+            variant="primary"
+            type="submit"
+            form="program-form"
+            isPending={createProgram.isPending}
+          >
+            <GraduationCap size={15} /> Create program
           </Button>
-
-          <div className={styles.programFormSubmit}>
-            <Switch isSelected={selectOnCreate} onChange={setSelectOnCreate}>
-              Select after creating
-            </Switch>
-
-            <Button
-              size="sm"
-              variant="primary"
-              type="submit"
-              form="program-form"
-              isPending={createProgram.isPending}
-            >
-              <GraduationCap size={15} /> Create program
-            </Button>
-          </div>
-        </footer>
-      </Form>
-    </div>
+        </div>
+      </footer>
+    </Form>
   );
 }

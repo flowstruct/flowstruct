@@ -4,8 +4,8 @@ import { TableSearchOptions } from '@/shared/types.ts';
 
 export const courseKeys = {
   all: ['courses'] as const,
-  lists: () => [...courseKeys.all, 'list'] as const,
-  list: (options: TableSearchOptions) => [...courseKeys.lists(), options] as const,
+  pages: () => [...courseKeys.all, 'page'] as const,
+  page: (options: TableSearchOptions) => [...courseKeys.pages(), options] as const,
   details: () => [...courseKeys.all, 'detail'] as const,
   detail: (id: number) => [...courseKeys.details(), id] as const,
 };
@@ -17,9 +17,9 @@ export const courseQueries = {
       queryFn: () => courseApi.getCourse(courseId),
     }),
 
-  paginatedList: (options: TableSearchOptions) =>
+  page: (options: TableSearchOptions) =>
     queryOptions({
-      queryKey: courseKeys.list(options),
+      queryKey: courseKeys.page(options),
       queryFn: () => courseApi.getPaginatedCourses(options),
       placeholderData: keepPreviousData,
     }),

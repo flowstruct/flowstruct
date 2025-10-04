@@ -15,10 +15,9 @@
 }
 
 .th {
-    /*background: var(--gray-1);*/
     padding: var(--space-2) var(--space-8);
     text-align: left;
-    font-weight: 400;
+    font-weight: 450;
     color: var(--text-color-dimmed);
     border-bottom: 1px solid var(--border-color);
     vertical-align: middle;
@@ -31,7 +30,7 @@
 
 .tr {
     transition: background-color 0.15s ease;
-    color: var(--text-color);
+    color: var(--text-color-base);
 
     &[data-hovered] {
         background-color: var(--highlight-background);
@@ -44,6 +43,7 @@
     &[data-focused] {
         outline: 2px solid var(--focus-ring-color);
         outline-offset: -2px;
+        border-radius: var(--radius-1);
     }
 }
 

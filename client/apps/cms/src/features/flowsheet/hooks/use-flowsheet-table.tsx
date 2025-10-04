@@ -59,9 +59,11 @@ export const useFlowsheetTable = ({ flowsheets }: UseFlowsheetTableProps) => {
 
           return (
             <div className={styles.programCell}>
-              {row.original.status !== 'APPROVED' && <div data-status={row.original.status || undefined} className={styles.statusIcon}>
-                <Grid2x2 size={15} />
-              </div>}
+              {row.original.status !== 'APPROVED' && (
+                <div data-status={row.original.status || undefined} className={styles.statusIcon}>
+                  <Grid2x2 size={15} />
+                </div>
+              )}
               <p>{programName}</p>
             </div>
           );
@@ -101,7 +103,7 @@ export const useFlowsheetTable = ({ flowsheets }: UseFlowsheetTableProps) => {
 
       accessor('track', {
         header: 'Track',
-        cell: ({ cell }) => cell.getValue() ?? '---',
+        cell: ({ cell }) => (cell.getValue().length === 0 ? <p className={styles.emptyTrack}>---</p> : cell.getValue()),
         enableColumnFilter: false,
         enableSorting: false,
         meta: {
@@ -153,7 +155,6 @@ type ActionsMenuProps = {
 function ActionsMenu({ flowsheet }: ActionsMenuProps) {
   const { data: users } = useSuspenseQuery(userQueries.collection);
   const editedBy = users.map[flowsheet.updatedBy];
-  console.log(editedBy);
 
   return (
     <MenuTrigger>

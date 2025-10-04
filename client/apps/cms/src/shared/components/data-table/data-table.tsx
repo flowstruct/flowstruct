@@ -122,7 +122,7 @@ function FilterMenu({ column }: { column: Column<any, unknown> }) {
 
   return (
     <MenuTrigger>
-      <Button showIndicator={column.getIsFiltered()} variant="transparent" size="sm">
+      <Button showIndicator={column.getIsFiltered()} variant="transparent" size="xs">
         <ListFilter size={15} />
       </Button>
 

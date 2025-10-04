@@ -3,6 +3,7 @@ package com.flowstruct.api.course.controller;
 import com.flowstruct.api.course.domain.OutdatedFilter;
 import com.flowstruct.api.course.dto.CourseDetailsDto;
 import com.flowstruct.api.course.dto.CourseDto;
+import com.flowstruct.api.course.dto.CourseSummaryDto;
 import com.flowstruct.api.course.dto.CoursesPageDto;
 import com.flowstruct.api.course.service.CourseManagerService;
 import com.flowstruct.api.course.service.CourseService;
@@ -11,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/courses")
@@ -28,6 +31,16 @@ public class CourseController {
     ) {
         return new ResponseEntity<>(
                 courseService.getPaginatedCourseList(page, size, filter, status),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<CourseSummaryDto>> getCourseList(
+            @RequestParam(value = "courses", defaultValue = "") List<Long> courseIds
+    ) {
+        return new ResponseEntity<>(
+                courseService.getCourseList(courseIds),
                 HttpStatus.OK
         );
     }

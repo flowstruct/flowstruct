@@ -11,4 +11,10 @@ export const courseApi = {
     api.get<CoursesPage>(COURSE_ENDPOINT, {
       params: transformCourseSearchOptions(options),
     }),
+  getCourses: (courseIds: number[]) =>
+    api.get<Course[]>([COURSE_ENDPOINT, 'list'], {
+      params: {
+        courses: courseIds,
+      },
+    }),
 };

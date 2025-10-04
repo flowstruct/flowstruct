@@ -1,20 +1,23 @@
 import { queryOptions } from '@tanstack/react-query';
 import { flowsheetApi } from '@/features/flowsheet/api.ts';
+import { Flowsheet } from '@/features/flowsheet/domain/flowsheet.ts';
+import { courseApi } from '@/features/course/api.ts';
 
 export const flowsheetKeys = {
   all: ['study-plans'] as const,
-  list: () => [...flowsheetKeys.all, 'list'] as const,
+  collection: () => [...flowsheetKeys.all, 'list'] as const,
   details: () => [...flowsheetKeys.all, 'detail'] as const,
   detail: (id: number) => [...flowsheetKeys.details(), id] as const,
-  courseLists: () => [...flowsheetKeys.all, 'courses'] as const,
-  courseList: (flowsheetId: number) => [...flowsheetKeys.courseLists(), flowsheetId] as const,
+  courseCollections: () => [...flowsheetKeys.all, 'courses'] as const,
+  courseCollection: (flowsheetId: number) =>
+    [...flowsheetKeys.courseCollections(), flowsheetId] as const,
   programs: () => [...flowsheetKeys.all, 'programs'] as const,
   program: (flowsheetId: number) => [...flowsheetKeys.programs(), flowsheetId] as const,
 };
 
 export const flowsheetQueries = {
   collection: queryOptions({
-    queryKey: flowsheetKeys.list(),
+    queryKey: flowsheetKeys.collection(),
     queryFn: () => flowsheetApi.getFlowsheets(),
     select: (data) => ({
       list: data,
@@ -26,5 +29,19 @@ export const flowsheetQueries = {
     queryOptions({
       queryKey: flowsheetKeys.detail(flowsheetId),
       queryFn: () => flowsheetApi.getFlowsheet(flowsheetId),
+    }),
+
+  courseCollection: (flowsheet: Flowsheet) =>
+    queryOptions({
+      queryKey: flowsheetKeys.courseCollection(flowsheet.id),
+      queryFn: () => {
+        const courseIds = Object.keys(flowsheet.coursePlacements).map(Number);
+
+        return courseApi.getCourses(courseIds);
+      },
+      select: (data) => ({
+        list: data,
+        map: Object.fromEntries(data.map((c) => [c.id, c])),
+      }),
     }),
 };

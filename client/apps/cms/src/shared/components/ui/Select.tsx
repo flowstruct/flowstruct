@@ -20,11 +20,13 @@ export interface SelectProps<T extends object> extends Omit<AriaSelectProps<T>, 
   description?: string;
   errorMessage?: string | ((validation: ValidationResult) => string);
   items?: Iterable<T>;
+  size?: 'xs' | 'sm';
   children: React.ReactNode | ((item: T) => React.ReactNode);
 }
 
 export function Select<T extends object>({
   label,
+  size = 'sm',
   description,
   errorMessage,
   children,
@@ -32,18 +34,24 @@ export function Select<T extends object>({
   ...props
 }: SelectProps<T>) {
   return (
-    <AriaSelect {...props}>
+    <AriaSelect data-size={size} {...props}>
       {label && <Label>{label}</Label>}
       <Button>
         <SelectValue />
+
         <span aria-hidden="true">
           <ChevronDown size={15} />
         </span>
       </Button>
+
       {description && <Text slot="description">{description}</Text>}
+
       <FieldError>{errorMessage}</FieldError>
+
       <Popover hideArrow>
-        <ListBox items={items}>{children}</ListBox>
+        <ListBox size={size} items={items}>
+          {children}
+        </ListBox>
       </Popover>
     </AriaSelect>
   );
