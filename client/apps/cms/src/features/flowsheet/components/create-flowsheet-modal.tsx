@@ -9,6 +9,7 @@ import { Modal } from '@/shared/components/ui/Modal.tsx';
 import { Button } from '@/shared/components/ui/Button';
 import {
   CalendarDays,
+  ChevronLeft,
   GraduationCap,
   Grid2X2,
   Hash,
@@ -323,7 +324,7 @@ function CreateProgramForm({
 
         <footer className={styles.programFormFooter}>
           <Button size="sm" variant="transparent" type="reset" onPress={closeForm}>
-            <X size={15} /> Cancel
+            <ChevronLeft size={14} /> Cancel
           </Button>
 
           <div className={styles.programFormSubmit}>

@@ -57,14 +57,14 @@
 .createProgramButton {
     padding: var(--space-1) var(--space-4);
     font-size: var(--font-size-sm);
-    color: var(--primary-10);
+    color: var(--primary-color);
     margin: var(--space-2) auto;
 
     font-weight: 450;
     border-radius: var(--radius-1);
 
     &[data-hovered] {
-        background: var(--highlight-background-hovered);
+        color: var(--text-color-base);
     }
 }
 

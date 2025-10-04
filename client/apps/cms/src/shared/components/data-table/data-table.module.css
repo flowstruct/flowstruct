@@ -15,6 +15,7 @@
 }
 
 .th {
+    /*background: var(--gray-1);*/
     padding: var(--space-2) var(--space-8);
     text-align: left;
     font-weight: 400;
