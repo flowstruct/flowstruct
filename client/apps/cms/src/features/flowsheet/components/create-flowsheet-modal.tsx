@@ -216,25 +216,29 @@ function ProgramComboBox({ programFormIsOpen, setProgramFormIsOpen }: ProgramCom
           }
         }}
       >
-        <ListBox
-          renderEmptyState={() => (
-            <ListBoxEmptyState label="No programs found. Create a new one below." />
-          )}
-          items={programs.list}
-        >
-          {(item) => {
-            const name = getProgramDisplayName(item);
+        {!programFormIsOpen && (
+          <ListBox
+            renderEmptyState={() => (
+              <ListBoxEmptyState label="No programs found. Create a new one below." />
+            )}
+            items={programs.list}
+          >
+            {(item) => {
+              const name = getProgramDisplayName(item);
 
-            return (
-              <ListBoxItem key={item.id} textValue={name}>
-                {name}
-              </ListBoxItem>
-            );
-          }}
-        </ListBox>
+              return (
+                <ListBoxItem key={item.id} textValue={name}>
+                  {name}
+                </ListBoxItem>
+              );
+            }}
+          </ListBox>
+        )}
 
-        <section className={styles.createProgramSection} ref={programFormRef}>
-          {!programFormIsOpen && (
+        <div ref={programFormRef} />
+
+        {!programFormIsOpen && (
+          <section className={styles.createProgramSection}>
             <TooltipTrigger>
               <Button
                 aria-label="Create program"
@@ -246,8 +250,8 @@ function ProgramComboBox({ programFormIsOpen, setProgramFormIsOpen }: ProgramCom
 
               <Tooltip>Create program</Tooltip>
             </TooltipTrigger>
-          )}
-        </section>
+          </section>
+        )}
       </ComboBox>
 
       {programFormIsOpen &&
