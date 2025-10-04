@@ -11,6 +11,6 @@ export const userApi = {
       body: loginDetails,
     }),
   getMe: () => api.get<User>([USER_ENDPOINT, 'me']),
-  getUsers: () => api.get<User[]>(USER_ENDPOINT),
+  getUsers: () => api.get<Record<number, User>>(USER_ENDPOINT),
   getUser: (userId: number) => api.get<User>([USER_ENDPOINT, userId]),
 };

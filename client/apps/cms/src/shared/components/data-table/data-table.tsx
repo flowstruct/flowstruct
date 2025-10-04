@@ -9,6 +9,8 @@ import { Autocomplete } from '@/shared/components/ui/Autocomplete.tsx';
 import { GridList, GridListItem } from '@/shared/components/ui/GridList.tsx';
 import React from 'react';
 import { AriaButtonProps, useButton, useFocusRing, useHover } from 'react-aria';
+import { ListEmptyState } from '@/shared/components/ui/ListBox.tsx';
+import { Tooltip, TooltipTrigger } from '@/shared/components/ui/Tooltip.tsx';
 
 type DataTableProps<TData> = {
   table: TanStackTable<TData>;
@@ -22,12 +24,8 @@ export function DataTable<TData>({ table }: DataTableProps<TData>) {
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id} className={styles.headerRow}>
               {headerGroup.headers.map((header) => {
-
                 return (
-                  <th
-                    key={header.id}
-                    className={styles.th}
-                  >
+                  <th key={header.id} className={styles.th}>
                     {header.isPlaceholder ? null : (
                       <>
                         <div
@@ -131,6 +129,7 @@ function FilterMenu({ column }: { column: Column<any, unknown> }) {
       <Popover aria-label="Filter" hideArrow>
         <Autocomplete>
           <GridList
+            renderEmptyState={() => <ListEmptyState>No programs found.</ListEmptyState>}
             aria-label="filter options"
             items={items}
             selectionMode="multiple"
@@ -145,12 +144,16 @@ function FilterMenu({ column }: { column: Column<any, unknown> }) {
         </Autocomplete>
 
         {column.getIsFiltered() && (
-          <RACButton
-            onPress={() => column.setFilterValue(undefined)}
-            className={styles.clearFilterButton}
-          >
-            <X size={15} /> Clear
-          </RACButton>
+          <TooltipTrigger>
+            <RACButton
+              onPress={() => column.setFilterValue(undefined)}
+              className={styles.clearFilterButton}
+            >
+              <X size={15} />
+            </RACButton>
+
+            <Tooltip placement="bottom">Clear filter</Tooltip>
+          </TooltipTrigger>
         )}
       </Popover>
     </MenuTrigger>

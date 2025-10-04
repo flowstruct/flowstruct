@@ -52,7 +52,7 @@
     }
 
     &[data-selected] {
-        padding-right: var(--space-6);
+        padding-right: var(--space-7);
         font-weight: 600;
         background: unset;
         color: var(--text-color);
@@ -62,7 +62,8 @@
             content: '•' / '';
             alt: ' ';
             position: absolute;
-            right: var(--space-2);
+            right: var(--space-3);
+            color: var(--primary-color);
         }
     }
 

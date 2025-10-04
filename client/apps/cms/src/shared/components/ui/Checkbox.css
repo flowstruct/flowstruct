@@ -1,7 +1,7 @@
 @import "./theme.css";
 
 .react-aria-Checkbox {
-  --selected-color: var(--highlight-background);
+  --selected-color: var(--primary-color);
   --selected-color-pressed: var(--highlight-background-pressed);
   --checkmark-color: var(--highlight-foreground);
 

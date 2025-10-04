@@ -4,6 +4,7 @@
     align-items: center;
     padding: var(--space-2) var(--space-8);
     gap: var(--space-3);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .headerSlot {

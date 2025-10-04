@@ -5,7 +5,7 @@
     box-sizing: border-box;
     overflow: auto;
     padding: 0.25em;
-    min-width: 150px;
+    min-width: 200px;
     outline: none;
     font-size: var(--font-size-sm);
 }

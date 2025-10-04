@@ -33,11 +33,11 @@
     color: var(--text-color);
 
     &[data-hovered] {
-        background-color: var(--primary-2);
+        background-color: var(--highlight-background);
     }
 
     &[data-pressed] {
-        background: var(--primary-3);
+        background: var(--highlight-background);
     }
 
     &[data-focused] {
@@ -132,9 +132,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: var(--space-2);
+    gap: var(--space-1);
     font-size: var(--font-size-sm);
-    padding: var(--space-1) 0;
+    padding: var(--space-2) 0;
     border-top: 1px solid var(--border-color);
     border-bottom-left-radius: var(--radius-2);
     border-bottom-right-radius: var(--radius-2);

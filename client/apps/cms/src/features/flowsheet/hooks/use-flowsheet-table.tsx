@@ -17,12 +17,14 @@ import { programQueries } from '@/features/program/queries.ts';
 import { getProgramDisplayName } from '@/features/program/domain/getProgramDisplayName.ts';
 import { setIncludes } from '@/shared/utils/setIncludes.ts';
 import { rankItem } from '@tanstack/match-sorter-utils';
-import { Ellipsis, Grid2x2 } from 'lucide-react';
+import { Archive, Ellipsis, Link, User } from 'lucide-react';
 import styles from './use-flowsheet-table.module.css';
 import { useNavigate } from '@tanstack/react-router';
-import { Menu, MenuTrigger } from '@/shared/components/ui/Menu.tsx';
+import { Menu, MenuItem, MenuTrigger } from '@/shared/components/ui/Menu.tsx';
 import { Button } from '@/shared/components/ui/Button.tsx';
 import { Popover } from '@/shared/components/ui/Popover.tsx';
+import { userQueries } from '@/features/user/queries.ts';
+import { formatTimeAgo } from '@/shared/utils/formatTimeAgo.ts';
 
 interface UseFlowsheetTableProps {
   flowsheets: FlowsheetSummary[];
@@ -113,6 +115,7 @@ export const useFlowsheetTable = ({ flowsheets }: UseFlowsheetTableProps) => {
             <ActionsMenu flowsheet={row.original} />
           </div>
         ),
+        enableHiding: false,
         size: 50,
       }),
     ],
@@ -148,14 +151,35 @@ type ActionsMenuProps = {
 };
 
 function ActionsMenu({ flowsheet }: ActionsMenuProps) {
+  const { data: users } = useSuspenseQuery(userQueries.collection);
+  const editedBy = users.map[flowsheet.updatedBy];
+  console.log(editedBy);
+
   return (
     <MenuTrigger>
-      <Button size="icon" variant="transparent">
-        <Ellipsis color="gray" size={16} />
+      <Button size="icon" variant="ghost">
+        <Ellipsis size={15} />
       </Button>
 
-      <Popover hideArrow>
-        <Menu></Menu>
+      <Popover hideArrow placement="bottom right" crossOffset={25}>
+        <Menu>
+          <MenuItem>
+            <Link size={14} />
+            Copy page URL
+          </MenuItem>
+
+          <MenuItem>
+            <Archive size={14} /> Archive
+          </MenuItem>
+        </Menu>
+
+        <section className={styles.userActivity}>
+          <p>Edited {formatTimeAgo(new Date(flowsheet.updatedAt))}</p>
+          <div className={styles.userActivityUser}>
+            <User size={12} />
+            <p>{editedBy?.username ?? 'Unknown user'}</p>
+          </div>
+        </section>
       </Popover>
     </MenuTrigger>
   );

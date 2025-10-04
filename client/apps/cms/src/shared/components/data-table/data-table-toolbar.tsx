@@ -1,6 +1,6 @@
 import styles from './data-table-toolbar.module.css';
 import { Table } from '@tanstack/react-table';
-import { Dialog, DialogTrigger } from '@/shared/components/ui/Dialog.tsx';
+import { DialogTrigger } from '@/shared/components/ui/Dialog.tsx';
 import { Button } from '@/shared/components/ui/Button.tsx';
 import {
   ArrowDownWideNarrow,
@@ -71,15 +71,14 @@ function DataTableSettings<TData>({ table }: { table: Table<TData> }) {
       </Button>
 
       <Popover crossOffset={-64}>
-        <Dialog>
-          <div className={styles.options}>
-            <SortingOptions table={table} />
+        <div className={styles.option}>
+          <SortingOptions table={table} />
+        </div>
 
-            <Divider />
-
-            <ColumnVisibilityPills table={table} />
-          </div>
-        </Dialog>
+        <Divider />
+        <div className={styles.option}>
+          <ColumnVisibilityPills table={table} />
+        </div>
       </Popover>
     </DialogTrigger>
   );
@@ -134,6 +133,10 @@ function ColumnVisibilityPills<TData>({ table }: { table: Table<TData> }) {
       <div className={styles.columnPills}>
         {table.getAllLeafColumns().map((c) => {
           const name = c.columnDef.meta?.renderColumnDisplayName() ?? c.id;
+
+          if (!c.getCanHide()) {
+            return;
+          }
 
           return (
             <Button

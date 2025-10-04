@@ -143,24 +143,25 @@ export function UserProfile() {
 
         <div>
           <h1 className={styles.username}>{me.username}</h1>
+
           <div className={styles.userRole}>
             <Crown size={13} />
             <p className={styles.userRole}>{Role[me.role as keyof typeof Role]}</p>
           </div>
         </div>
 
-        <ChevronsUpDown className={styles.userProfileChevron} size={16} />
+        <ChevronsUpDown className={styles.userProfileChevron} size={15} />
       </UnstyledButton>
 
       <Popover hideArrow>
         <Menu width={200}>
           <MenuItem textValue="Settings">
-            <Settings2 size={16} />
+            <Settings2 size={14} />
             <span>Settings</span>
           </MenuItem>
 
           <MenuItem textValue="Settings">
-            <LogOut size={16} />
+            <LogOut size={14} />
             <span>Log out</span>
           </MenuItem>
         </Menu>

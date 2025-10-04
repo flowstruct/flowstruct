@@ -10,6 +10,7 @@ export const Route = createFileRoute('/_app')({
   },
   loader: ({ context: { queryClient } }) => {
     queryClient.ensureQueryData(userQueries.me);
+    queryClient.ensureQueryData(userQueries.collection);
   },
   component: RouteComponent,
 });

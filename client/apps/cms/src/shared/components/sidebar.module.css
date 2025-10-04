@@ -79,6 +79,7 @@
     padding: var(--space-1);
     border-radius: var(--radius-1);
     display: flex;
+    cursor: default;
     font-weight: 400;
     gap: var(--space-3);
     color: var(--text-color);
@@ -99,11 +100,11 @@
 
     &[data-focused] {
         outline: 2px solid var(--focus-ring-color);
-        outline-offset: -1px;
+        outline-offset: -2px;
     }
 
     > svg {
-        stroke: var(--text-color-dimmed);
+        stroke: var(--text-color-secondary);
     }
 }
 

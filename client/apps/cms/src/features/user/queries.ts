@@ -10,9 +10,13 @@ export const userKeys = {
 };
 
 export const userQueries = {
-  list: queryOptions({
+  collection: queryOptions({
     queryKey: userKeys.list(),
     queryFn: userApi.getUsers,
+    select: (data) => ({
+      list: Object.values(data),
+      map: data,
+    }),
   }),
 
   detail: (userId: number) =>
