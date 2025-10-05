@@ -41,7 +41,7 @@ function RouteBreadcrumbs() {
 
   return (
     <Breadcrumbs>
-      <UnstyledButton onPress={() => navigate({ to: '/flowsheets' })}>
+      <UnstyledButton onPress={() => navigate({ to: '/flowsheets', search: { tab: 'active' } })}>
         <Breadcrumb base>
           <Layers2 size={14} /> Flowsheets
         </Breadcrumb>
