@@ -8,7 +8,7 @@ type Props = AriaButtonProps<'button'> & {
 };
 
 export function UnstyledButton(props: Props) {
-  const ref = useRef<HTMLButtonElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
   const { buttonProps, isPressed } = useButton(props, ref);
   const { hoverProps, isHovered } = useHover(props);
   const { focusProps, isFocused } = useFocusRing(props);
