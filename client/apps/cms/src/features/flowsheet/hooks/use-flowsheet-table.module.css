@@ -1,9 +1,8 @@
 .yearCell {
-    color: var(--text-color-secondary);
+    color: var(--text-color-secondary   );
 }
 
 .programCell {
-    font-weight: 450;
     display: flex;
     gap: var(--space-8);
     align-items: center;
@@ -11,7 +10,7 @@
 
 .emptyTrack {
     color: var(--text-color-dimmed);
-    font-weight: 500;
+    font-weight: 450;
 }
 
 .statusIcon {
