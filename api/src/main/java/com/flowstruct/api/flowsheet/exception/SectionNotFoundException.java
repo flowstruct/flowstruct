@@ -1,0 +1,7 @@
+package com.flowstruct.api.flowsheet.exception;
+
+public class SectionNotFoundException extends RuntimeException {
+    public SectionNotFoundException(String message) {
+        super(message);
+    }
+}

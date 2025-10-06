@@ -2,8 +2,8 @@ package com.flowstruct.api.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flowstruct.api.common.AppAuditorAware;
-import com.flowstruct.api.studyplan.converter.StudyPlanDraftReadingConverter;
-import com.flowstruct.api.studyplan.converter.StudyPlanDraftWritingConverter;
+import com.flowstruct.api.flowsheet.converter.StudyPlanDraftReadingConverter;
+import com.flowstruct.api.flowsheet.converter.StudyPlanDraftWritingConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

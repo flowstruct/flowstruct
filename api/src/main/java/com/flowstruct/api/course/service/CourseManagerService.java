@@ -5,7 +5,7 @@ import com.flowstruct.api.course.domain.Course;
 import com.flowstruct.api.course.dto.CourseDetailsDto;
 import com.flowstruct.api.course.dto.CourseDto;
 import com.flowstruct.api.course.repository.CourseRepository;
-import com.flowstruct.api.studyplan.exception.CourseExistsException;
+import com.flowstruct.api.flowsheet.exception.CourseExistsException;
 import com.flowstruct.api.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;

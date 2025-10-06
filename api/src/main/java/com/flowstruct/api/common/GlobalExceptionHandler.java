@@ -8,7 +8,7 @@ import com.flowstruct.api.common.exception.PendingResourceException;
 import com.flowstruct.api.program.exception.InvalidDegreeException;
 import com.flowstruct.api.program.exception.ProgramNotFoundException;
 import com.flowstruct.api.program.exception.UniqueProgramException;
-import com.flowstruct.api.studyplan.exception.*;
+import com.flowstruct.api.flowsheet.exception.*;
 import com.flowstruct.api.user.exception.InvalidCredentialsException;
 import com.flowstruct.api.user.exception.InvalidPasswordException;
 import com.flowstruct.api.user.exception.UserNotFoundException;
