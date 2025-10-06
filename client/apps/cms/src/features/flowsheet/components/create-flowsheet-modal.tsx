@@ -13,7 +13,6 @@ import {
   GraduationCap,
   Grid2X2,
   Hash,
-  Hourglass,
   Layers2,
   Plus,
   Tag,
@@ -104,7 +103,7 @@ export function CreateFlowsheetModal() {
                 />
 
                 <TextField
-                  name="track"
+                  name="name"
                   aria-label="Flowsheet name"
                   icon={<Tag size={14} />}
                   variant="transparent"
@@ -123,18 +122,6 @@ export function CreateFlowsheetModal() {
                   }}
                   icon={<CalendarDays size={15} />}
                   defaultValue={new Date().getFullYear()}
-                />
-
-                <NumberField
-                  name="duration"
-                  minValue={1}
-                  aria-label="Flowsheet duration"
-                  isRequired
-                  formatOptions={{
-                    useGrouping: false,
-                  }}
-                  icon={<Hourglass size={15} />}
-                  defaultValue={4}
                 />
               </div>
             </section>
