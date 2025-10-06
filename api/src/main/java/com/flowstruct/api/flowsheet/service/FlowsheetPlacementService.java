@@ -85,8 +85,8 @@ public class FlowsheetPlacementService {
             throw new InvalidCoursePlacement("Cannot move course to this term.");
         }
 
-        placementUtils.deleteCoursePlacement(flowsheet, courseId, oldPlacement);
-        placementUtils.insertCoursePlacement(flowsheet, courseId, newPlacement);
+        placementUtils.deleteCoursePlacement(flowsheet, oldPlacement);
+        placementUtils.insertCoursePlacement(flowsheet, newPlacement);
 
         return flowsheetService.saveAndMap(flowsheet);
     }
@@ -171,7 +171,6 @@ public class FlowsheetPlacementService {
 
         placementUtils.deleteCoursePlacement(
                 flowsheet,
-                courseId,
                 flowsheet.getPlacements().stream()
                         .filter(p -> Objects.equals(p.getCourse().getId(), courseId))
                         .findFirst()
