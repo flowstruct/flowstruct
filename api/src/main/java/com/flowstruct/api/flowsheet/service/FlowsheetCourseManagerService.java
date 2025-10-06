@@ -3,11 +3,11 @@ package com.flowstruct.api.flowsheet.service;
 import com.flowstruct.api.common.exception.EmptyListException;
 import com.flowstruct.api.course.exception.CourseNotFoundException;
 import com.flowstruct.api.flowsheet.domain.*;
-import com.flowstruct.api.flowsheet.dto.StudyPlanDto;
+import com.flowstruct.api.flowsheet.dto.FlowsheetDto;
 import com.flowstruct.api.flowsheet.exception.CourseExistsException;
 import com.flowstruct.api.flowsheet.exception.SectionNotFoundException;
 import com.flowstruct.api.flowsheet.utils.CourseGraphUtils;
-import com.flowstruct.api.flowsheet.utils.ProgramMapUtils;
+import com.flowstruct.api.flowsheet.utils.PlacementUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,14 +22,14 @@ import java.util.stream.Collectors;
 @PreAuthorize("hasRole('ROLE_EDITOR')")
 @RequiredArgsConstructor
 @Service
-public class StudyPlanCourseManagerService {
-    private final StudyPlanService studyPlanService;
-    private final ProgramMapUtils programMapUtils;
+public class FlowsheetCourseManagerService {
+    private final FlowsheetService flowsheetService;
+    private final PlacementUtils placementUtils;
     private final CourseGraphUtils courseGraphUtils;
 
     @Transactional
-    public StudyPlanDto addCoursesToStudyPlan(
-            long studyPlanId,
+    public FlowsheetDto addCoursesToFlowsheet(
+            long flowsheetId,
             long sectionId,
             List<Long> courseIds
     ) {
@@ -37,9 +37,9 @@ public class StudyPlanCourseManagerService {
             throw new EmptyListException("No courses were found to add");
         }
 
-        var studyPlan = studyPlanService.findOrThrow(studyPlanId);
+        var flowsheet = flowsheetService.findOrThrow(flowsheetId);
 
-        var section = studyPlan.getSections().stream()
+        var section = flowsheet.getSections().stream()
                 .filter(s -> s.getId() == sectionId)
                 .findFirst()
                 .orElseThrow(() -> new SectionNotFoundException("Section was not found"));
@@ -47,7 +47,7 @@ public class StudyPlanCourseManagerService {
         Set<SectionCourse> toBeAddedCourses = courseIds
                 .stream()
                 .filter(courseId -> {
-                    boolean alreadyAdded = studyPlan.getSections().stream()
+                    boolean alreadyAdded = flowsheet.getSections().stream()
                             .anyMatch(s -> s.hasCourse(courseId));
                     if (alreadyAdded) {
                         throw new CourseExistsException("Course was already added in another section");
@@ -59,49 +59,49 @@ public class StudyPlanCourseManagerService {
 
         section.getCourses().addAll(toBeAddedCourses);
 
-        return studyPlanService.saveAndMap(studyPlan);
+        return flowsheetService.saveAndMap(flowsheet);
     }
 
     @Transactional
-    public StudyPlanDto removeCoursesFromStudyPlan(long studyPlanId, List<Long> courseIds) {
-        var studyPlan = studyPlanService.findOrThrow(studyPlanId);
+    public FlowsheetDto removeCoursesFromFlowsheet(long flowsheetId, List<Long> courseIds) {
+        var flowsheet = flowsheetService.findOrThrow(flowsheetId);
 
         for (var courseId : courseIds) {
-            studyPlan.getSections().forEach(section -> section.removeCourse(courseId));
+            flowsheet.getSections().forEach(section -> section.removeCourse(courseId));
 
-            studyPlan.getCoursePrerequisites().removeIf(coursePrerequisite ->
+            flowsheet.getCoursePrerequisites().removeIf(coursePrerequisite ->
                     Objects.equals(coursePrerequisite.getCourse().getId(), courseId)
                             || Objects.equals(coursePrerequisite.getPrerequisite().getId(), courseId)
             );
 
-            studyPlan.getCourseCorequisites().removeIf(coursePrerequisite ->
+            flowsheet.getCourseCorequisites().removeIf(coursePrerequisite ->
                     Objects.equals(coursePrerequisite.getCourse().getId(), courseId)
                             || Objects.equals(coursePrerequisite.getCorequisite().getId(), courseId)
             );
 
-            programMapUtils.deleteCoursePlacement(
-                    studyPlan,
+            placementUtils.deleteCoursePlacement(
+                    flowsheet,
                     courseId,
-                    studyPlan.getCoursePlacements().get(courseId)
+                    flowsheet.getPlacements().get(courseId)
             );
         }
 
-        return studyPlanService.saveAndMap(studyPlan);
+        return flowsheetService.saveAndMap(flowsheet);
     }
 
     @Transactional
-    public StudyPlanDto linkPrerequisitesToCourse(
-            long studyPlanId,
+    public FlowsheetDto linkPrerequisitesToCourse(
+            long flowsheetId,
             long courseId,
             List<Long> prerequisites,
             Relation relation
     ) {
-        var studyPlan = studyPlanService.findOrThrow(studyPlanId);
+        var flowsheet = flowsheetService.findOrThrow(flowsheetId);
 
-        courseGraphUtils.validatePrerequisites(courseId, studyPlan, prerequisites);
+        courseGraphUtils.validatePrerequisites(courseId, flowsheet, prerequisites);
 
         for (var prerequisite : prerequisites) {
-            studyPlan.getCoursePrerequisites().add(
+            flowsheet.getCoursePrerequisites().add(
                     new CoursePrerequisite(
                             AggregateReference.to(courseId),
                             AggregateReference.to(prerequisite),
@@ -110,19 +110,19 @@ public class StudyPlanCourseManagerService {
             );
         }
 
-        return studyPlanService.saveAndMap(studyPlan);
+        return flowsheetService.saveAndMap(flowsheet);
     }
 
     @Transactional
-    public StudyPlanDto linkCorequisitesToCourse(
-            long studyPlanId,
+    public FlowsheetDto linkCorequisitesToCourse(
+            long flowsheetId,
             long courseId,
             List<Long> corequisiteIds
     ) {
-        var studyPlan = studyPlanService.findOrThrow(studyPlanId);
+        var flowsheet = flowsheetService.findOrThrow(flowsheetId);
 
         for (var corequisiteId : corequisiteIds) {
-            studyPlan.getCourseCorequisites().add(
+            flowsheet.getCourseCorequisites().add(
                     new CourseCorequisite(
                             AggregateReference.to(courseId),
                             AggregateReference.to(corequisiteId)
@@ -130,67 +130,67 @@ public class StudyPlanCourseManagerService {
             );
         }
 
-        return studyPlanService.saveAndMap(studyPlan);
+        return flowsheetService.saveAndMap(flowsheet);
     }
 
     @Transactional
-    public StudyPlanDto unlinkCorequisitesFromCourse(
-            long studyPlanId,
+    public FlowsheetDto unlinkCorequisitesFromCourse(
+            long flowsheetId,
             long courseId,
             long corequisiteId
     ) {
-        var studyPlan = studyPlanService.findOrThrow(studyPlanId);
+        var flowsheet = flowsheetService.findOrThrow(flowsheetId);
 
-        boolean removed = studyPlan.getCourseCorequisites().removeIf(courseCorequisite ->
+        boolean removed = flowsheet.getCourseCorequisites().removeIf(courseCorequisite ->
                 courseCorequisite.getCourse().getId() == courseId && courseCorequisite.getCorequisite().getId() == corequisiteId
         );
 
         if (!removed) throw new CourseNotFoundException("Corequisite not found");
 
-        return studyPlanService.saveAndMap(studyPlan);
+        return flowsheetService.saveAndMap(flowsheet);
     }
 
     @Transactional
-    public StudyPlanDto unlinkPrerequisitesFromCourse(
-            long studyPlanId,
+    public FlowsheetDto unlinkPrerequisitesFromCourse(
+            long flowsheetId,
             long courseId,
             long prerequisiteId
     ) {
-        var studyPlan = studyPlanService.findOrThrow(studyPlanId);
+        var flowsheet = flowsheetService.findOrThrow(flowsheetId);
 
-        boolean removed = studyPlan.getCoursePrerequisites().removeIf(coursePrerequisite ->
+        boolean removed = flowsheet.getCoursePrerequisites().removeIf(coursePrerequisite ->
                 coursePrerequisite.getCourse().getId() == courseId
                         && coursePrerequisite.getPrerequisite().getId() == prerequisiteId
         );
 
         if (!removed) throw new CourseNotFoundException("Prerequisite not found");
 
-        return studyPlanService.saveAndMap(studyPlan);
+        return flowsheetService.saveAndMap(flowsheet);
     }
 
     @Transactional
-    public StudyPlanDto moveCourseToSection(
-            long studyPlanId,
+    public FlowsheetDto moveCourseToSection(
+            long flowsheetId,
             List<Long> courseIds,
             long targetSectionId
     ) {
-        var studyPlan = studyPlanService.findOrThrow(studyPlanId);
+        var flowsheet = flowsheetService.findOrThrow(flowsheetId);
 
-        var targetSection = studyPlan.getSections().stream()
+        var targetSection = flowsheet.getSections().stream()
                 .filter(section -> section.getId() == targetSectionId)
                 .findFirst()
                 .orElseThrow(() -> new SectionNotFoundException("Target section not found"));
 
         for (long courseId : courseIds) {
-            studyPlan.getSections().forEach(section -> section.removeCourse(courseId));
+            flowsheet.getSections().forEach(section -> section.removeCourse(courseId));
 
             if (targetSection.getType() == SectionType.Elective || targetSection.getType() == SectionType.Remedial) {
-                studyPlan.getCoursePlacements().remove(courseId);
+                flowsheet.getPlacements().remove(courseId);
             }
 
             targetSection.addCourse(courseId);
         }
 
-        return studyPlanService.saveAndMap(studyPlan);
+        return flowsheetService.saveAndMap(flowsheet);
     }
 }

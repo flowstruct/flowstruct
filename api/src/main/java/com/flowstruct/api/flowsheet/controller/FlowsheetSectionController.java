@@ -2,8 +2,8 @@ package com.flowstruct.api.flowsheet.controller;
 
 import com.flowstruct.api.flowsheet.domain.MoveDirection;
 import com.flowstruct.api.flowsheet.dto.SectionDetailsDto;
-import com.flowstruct.api.flowsheet.dto.StudyPlanDto;
-import com.flowstruct.api.flowsheet.service.StudyPlanSectionService;
+import com.flowstruct.api.flowsheet.dto.FlowsheetDto;
+import com.flowstruct.api.flowsheet.service.FlowsheetSectionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,52 +12,52 @@ import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/study-plans/{studyPlanId}/sections")
-public class StudyPlanSectionController {
-    private final StudyPlanSectionService studyPlanSectionService;
+@RequestMapping("/api/study-plans/{flowsheetId}/sections")
+public class FlowsheetSectionController {
+    private final FlowsheetSectionService flowsheetSectionService;
 
     @PostMapping
-    public ResponseEntity<StudyPlanDto> createSection(
-            @PathVariable long studyPlanId,
+    public ResponseEntity<FlowsheetDto> createSection(
+            @PathVariable long flowsheetId,
             @Valid @RequestBody SectionDetailsDto sectionDetails
     ) {
         return new ResponseEntity<>(
-                studyPlanSectionService.createSection(studyPlanId, sectionDetails),
+                flowsheetSectionService.createSection(flowsheetId, sectionDetails),
                 HttpStatus.OK
         );
     }
 
     @PutMapping("/{sectionId}")
-    public ResponseEntity<StudyPlanDto> editSectionDetails(
-            @PathVariable long studyPlanId,
+    public ResponseEntity<FlowsheetDto> editSectionDetails(
+            @PathVariable long flowsheetId,
             @PathVariable long sectionId,
             @Valid @RequestBody SectionDetailsDto sectionDetails
     ) {
         return new ResponseEntity<>(
-                studyPlanSectionService.editSectionDetails(studyPlanId, sectionId, sectionDetails),
+                flowsheetSectionService.editSectionDetails(flowsheetId, sectionId, sectionDetails),
                 HttpStatus.OK
         );
     }
 
     @DeleteMapping("/{sectionId}")
-    public ResponseEntity<StudyPlanDto> deleteSection(
-            @PathVariable long studyPlanId,
+    public ResponseEntity<FlowsheetDto> deleteSection(
+            @PathVariable long flowsheetId,
             @PathVariable long sectionId
     ) {
         return new ResponseEntity<>(
-                studyPlanSectionService.deleteSection(studyPlanId, sectionId),
+                flowsheetSectionService.deleteSection(flowsheetId, sectionId),
                 HttpStatus.OK
         );
     }
 
     @PutMapping("/{sectionId}/move")
-    public ResponseEntity<StudyPlanDto> moveSection(
-            @PathVariable long studyPlanId,
+    public ResponseEntity<FlowsheetDto> moveSection(
+            @PathVariable long flowsheetId,
             @PathVariable long sectionId,
             @RequestParam(value = "direction", defaultValue = "") MoveDirection direction
     ) {
         return new ResponseEntity<>(
-                studyPlanSectionService.moveSection(studyPlanId, sectionId, direction),
+                flowsheetSectionService.moveSection(flowsheetId, sectionId, direction),
                 HttpStatus.OK
         );
     }

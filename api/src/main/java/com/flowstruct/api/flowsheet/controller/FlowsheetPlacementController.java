@@ -1,8 +1,8 @@
 package com.flowstruct.api.flowsheet.controller;
 
 import com.flowstruct.api.flowsheet.dto.PlacementDto;
-import com.flowstruct.api.flowsheet.dto.StudyPlanDto;
-import com.flowstruct.api.flowsheet.service.StudyPlanCoursePlacementService;
+import com.flowstruct.api.flowsheet.dto.FlowsheetDto;
+import com.flowstruct.api.flowsheet.service.FlowsheetPlacementService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,53 +13,53 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/study-plans/{studyPlanId}/course-placements")
-public class StudyPlanProgramMapController {
-    private final StudyPlanCoursePlacementService studyPlanCoursePlacementService;
+@RequestMapping("/api/study-plans/{flowsheetId}/placements")
+public class FlowsheetPlacementController {
+    private final FlowsheetPlacementService flowsheetPlacementService;
 
     @PostMapping
-    public ResponseEntity<StudyPlanDto> placeCoursesInSemester(
-            @PathVariable long studyPlanId,
+    public ResponseEntity<FlowsheetDto> placeCourses(
+            @PathVariable long flowsheetId,
             @RequestParam(value = "courses", defaultValue = "") List<Long> courseIds,
             @Valid @RequestBody PlacementDto targetPlacement
     ) {
         return new ResponseEntity<>(
-                studyPlanCoursePlacementService.placeCoursesInSemester(studyPlanId, courseIds, targetPlacement),
+                flowsheetPlacementService.placeCourses(flowsheetId, courseIds, targetPlacement),
                 HttpStatus.OK
         );
     }
 
     @PutMapping("/{courseId}")
-    public ResponseEntity<StudyPlanDto> moveCourseToSemester(
-            @PathVariable long studyPlanId,
+    public ResponseEntity<FlowsheetDto> movePlacement(
+            @PathVariable long flowsheetId,
             @PathVariable long courseId,
             @Valid @RequestBody PlacementDto targetPlacement
     ) {
         return new ResponseEntity<>(
-                studyPlanCoursePlacementService.moveCourseToSemester(studyPlanId, courseId, targetPlacement),
+                flowsheetPlacementService.movePlacement(flowsheetId, courseId, targetPlacement),
                 HttpStatus.OK
         );
     }
 
     @PutMapping("/{courseId}/resize")
-    public ResponseEntity<StudyPlanDto> resizeCoursePlacement(
-            @PathVariable long studyPlanId,
+    public ResponseEntity<FlowsheetDto> resizePlacement(
+            @PathVariable long flowsheetId,
             @PathVariable long courseId,
             @RequestParam(value = "span", defaultValue = "1") int span
     ) {
         return new ResponseEntity<>(
-                studyPlanCoursePlacementService.resizeCoursePlacement(studyPlanId, courseId, span),
+                flowsheetPlacementService.resizePlacement(flowsheetId, courseId, span),
                 HttpStatus.OK
         );
     }
 
     @DeleteMapping("/{courseId}")
-    public ResponseEntity<StudyPlanDto> removeCourseFromSemester(
-            @PathVariable long studyPlanId,
+    public ResponseEntity<FlowsheetDto> removePlacement(
+            @PathVariable long flowsheetId,
             @PathVariable long courseId
     ) {
         return new ResponseEntity<>(
-                studyPlanCoursePlacementService.removeCourseFromSemester(studyPlanId, courseId),
+                flowsheetPlacementService.removePlacement(flowsheetId, courseId),
                 HttpStatus.OK
         );
     }

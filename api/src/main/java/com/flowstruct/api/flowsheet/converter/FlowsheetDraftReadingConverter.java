@@ -11,7 +11,7 @@ import org.springframework.data.convert.ReadingConverter;
 
 @ReadingConverter
 @RequiredArgsConstructor
-public class StudyPlanDraftReadingConverter implements Converter<PGobject, FlowsheetSnapshot> {
+public class FlowsheetDraftReadingConverter implements Converter<PGobject, FlowsheetSnapshot> {
     private final ObjectMapper objectMapper;
 
     @Override

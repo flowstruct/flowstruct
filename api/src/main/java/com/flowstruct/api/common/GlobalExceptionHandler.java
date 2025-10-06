@@ -214,9 +214,9 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(StudyPlanNotFoundException.class)
+    @ExceptionHandler(FlowsheetNotFoundException.class)
     public ResponseEntity<ErrorObject> handleException(
-            StudyPlanNotFoundException exception
+            FlowsheetNotFoundException exception
     ) {
         return new ResponseEntity<>(
                 new ErrorObject(HttpStatus.NOT_FOUND.value(), List.of(exception.getMessage()), new Date()),
@@ -350,9 +350,9 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(CourseAlreadyAddedException.class)
+    @ExceptionHandler(CourseAlreadyPlacedException.class)
     public ResponseEntity<ErrorObject> handleException(
-            CourseAlreadyAddedException exception
+            CourseAlreadyPlacedException exception
     ) {
         return new ResponseEntity<>(
                 new ErrorObject(

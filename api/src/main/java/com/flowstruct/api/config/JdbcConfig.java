@@ -2,8 +2,8 @@ package com.flowstruct.api.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flowstruct.api.common.AppAuditorAware;
-import com.flowstruct.api.flowsheet.converter.StudyPlanDraftReadingConverter;
-import com.flowstruct.api.flowsheet.converter.StudyPlanDraftWritingConverter;
+import com.flowstruct.api.flowsheet.converter.FlowsheetDraftReadingConverter;
+import com.flowstruct.api.flowsheet.converter.FlowsheetDraftWritingConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,8 +27,8 @@ public class JdbcConfig {
     @Bean
     public JdbcCustomConversions jdbcCustomConversions() {
         return new JdbcCustomConversions(List.of(
-                new StudyPlanDraftReadingConverter(objectMapper),
-                new StudyPlanDraftWritingConverter(objectMapper)
+                new FlowsheetDraftReadingConverter(objectMapper),
+                new FlowsheetDraftWritingConverter(objectMapper)
         ));
     }
 }

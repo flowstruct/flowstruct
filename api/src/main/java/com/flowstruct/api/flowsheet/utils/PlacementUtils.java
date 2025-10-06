@@ -5,16 +5,16 @@ import com.flowstruct.api.flowsheet.domain.Flowsheet;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ProgramMapUtils {
+public class PlacementUtils {
     public void insertCoursePlacement(Flowsheet flowsheet, long courseId, Placement placement) {
         if (placement == null) return;
         shiftPositions(flowsheet, placement, +1);
-        flowsheet.getCoursePlacements().put(courseId, placement);
+        flowsheet.getPlacements().put(courseId, placement);
     }
 
     public void deleteCoursePlacement(Flowsheet flowsheet, long courseId, Placement placement) {
         if (placement == null) return;
-        flowsheet.getCoursePlacements().remove(courseId);
+        flowsheet.getPlacements().remove(courseId);
         shiftPositions(flowsheet, placement, -1);
     }
 
@@ -26,7 +26,7 @@ public class ProgramMapUtils {
     }
 
     private void shiftPositions(Flowsheet flowsheet, Placement placement, int delta) {
-        flowsheet.getCoursePlacements().values()
+        flowsheet.getPlacements().values()
                 .stream()
                 .filter(p ->
                         p.getYear() == placement.getYear() &&

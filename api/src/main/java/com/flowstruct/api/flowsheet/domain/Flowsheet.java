@@ -11,7 +11,10 @@ import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -26,9 +29,7 @@ public class Flowsheet {
 
     private int year;
 
-    private int duration;
-
-    private String track;
+    private String name;
 
     private AggregateReference<Program, Long> program;
 
@@ -65,12 +66,23 @@ public class Flowsheet {
     public Map<Long, List<CoursePrerequisite>> getCoursePrerequisitesMap() {
         return coursePrerequisites
                 .stream()
-                .collect(Collectors.groupingBy(coursePrerequisite -> coursePrerequisite.getCourse().getId()));
+                .collect(Collectors.groupingBy(coursePrerequisite ->
+                        coursePrerequisite.getCourse().getId()
+                ));
     }
 
     public Map<Long, List<CourseCorequisite>> getCourseCorequisitesMap() {
         return courseCorequisites
                 .stream()
-                .collect(Collectors.groupingBy(courseCorequisite -> courseCorequisite.getCourse().getId()));
+                .collect(Collectors.groupingBy(courseCorequisite ->
+                        courseCorequisite.getCourse().getId()
+                ));
+    }
+
+    public Map<Long, Placement> getPlacementsMap() {
+        return placements.stream().collect(Collectors.toUnmodifiableMap(
+                p -> p.getCourse().getId(),
+                p -> p
+        ));
     }
 }

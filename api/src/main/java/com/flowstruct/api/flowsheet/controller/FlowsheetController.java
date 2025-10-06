@@ -1,10 +1,10 @@
 package com.flowstruct.api.flowsheet.controller;
 
-import com.flowstruct.api.flowsheet.dto.StudyPlanDetailsDto;
-import com.flowstruct.api.flowsheet.dto.StudyPlanDto;
-import com.flowstruct.api.flowsheet.dto.StudyPlanSummaryDto;
-import com.flowstruct.api.flowsheet.service.StudyPlanManagerService;
-import com.flowstruct.api.flowsheet.service.StudyPlanService;
+import com.flowstruct.api.flowsheet.dto.FlowsheetDetailsDto;
+import com.flowstruct.api.flowsheet.dto.FlowsheetDto;
+import com.flowstruct.api.flowsheet.dto.FlowsheetSummaryDto;
+import com.flowstruct.api.flowsheet.service.FlowsheetManagerService;
+import com.flowstruct.api.flowsheet.service.FlowsheetService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,92 +15,92 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/study-plans")
+@RequestMapping("/api/flowsheets")
 public class FlowsheetController {
-    private final StudyPlanService studyPlanService;
-    private final StudyPlanManagerService studyPlanManagerService;
+    private final FlowsheetService flowsheetService;
+    private final FlowsheetManagerService flowsheetManagerService;
 
     @GetMapping
-    public ResponseEntity<List<StudyPlanSummaryDto>> getAllStudyPlans() {
+    public ResponseEntity<List<FlowsheetSummaryDto>> getAllFlowsheets() {
         return new ResponseEntity<>(
-                studyPlanService.getAllStudyPlans(),
+                flowsheetService.getAllFlowsheets(),
                 HttpStatus.OK
         );
     }
 
-    @GetMapping("/{studyPlanId}/approved")
-    public ResponseEntity<StudyPlanDto> getApprovedStudyPlan(@PathVariable long studyPlanId) {
-        return studyPlanService.getApprovedStudyPlan(studyPlanId)
+    @GetMapping("/{flowsheetId}/approved")
+    public ResponseEntity<FlowsheetDto> getFlowsheetIfApproved(@PathVariable long flowsheetId) {
+        return flowsheetService.getFlowsheetIfApproved(flowsheetId)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/{studyPlanId}")
-    public ResponseEntity<StudyPlanDto> getStudyPlan(@PathVariable long studyPlanId) {
+    @GetMapping("/{flowsheetId}")
+    public ResponseEntity<FlowsheetDto> getFlowsheet(@PathVariable long flowsheetId) {
         return new ResponseEntity<>(
-                studyPlanService.getStudyPlan(studyPlanId),
+                flowsheetService.getFlowsheet(flowsheetId),
                 HttpStatus.OK
         );
     }
 
-    @PutMapping("/{studyPlanId}/approve-changes")
-    public ResponseEntity<StudyPlanDto> approveStudyPlanChanges(@PathVariable long studyPlanId) {
+    @PutMapping("/{flowsheetId}/approve-changes")
+    public ResponseEntity<FlowsheetDto> approveFlowsheetChanges(@PathVariable long flowsheetId) {
         return new ResponseEntity<>(
-                studyPlanManagerService.approveStudyPlanChanges(studyPlanId),
+                flowsheetManagerService.approveFlowsheetChanges(flowsheetId),
                 HttpStatus.OK
         );
     }
 
-    @PutMapping("/{studyPlanId}/discard-changes")
-    public ResponseEntity<StudyPlanDto> discardStudyPlanChanges(@PathVariable long studyPlanId) {
+    @PutMapping("/{flowsheetId}/discard-changes")
+    public ResponseEntity<FlowsheetDto> discardFlowsheetChanges(@PathVariable long flowsheetId) {
         return new ResponseEntity<>(
-                studyPlanManagerService.discardStudyPlanChanges(studyPlanId),
+                flowsheetManagerService.discardFlowsheetChanges(flowsheetId),
                 HttpStatus.OK
         );
     }
 
-    @PutMapping("/{studyPlanId}")
-    public ResponseEntity<StudyPlanDto> editStudyPlanDetails(
-            @PathVariable long studyPlanId,
-            @Valid @RequestBody StudyPlanDetailsDto studyPlanDetails
+    @PutMapping("/{flowsheetId}")
+    public ResponseEntity<FlowsheetDto> editFlowsheetDetails(
+            @PathVariable long flowsheetId,
+            @Valid @RequestBody FlowsheetDetailsDto studyPlanDetails
     ) {
         return new ResponseEntity<>(
-                studyPlanManagerService.editStudyPlanDetails(studyPlanId, studyPlanDetails),
+                flowsheetManagerService.editFlowsheetDetails(flowsheetId, studyPlanDetails),
                 HttpStatus.OK
         );
     }
 
     @PostMapping
-    public ResponseEntity<StudyPlanDto> createStudyPlan(@Valid @RequestBody StudyPlanDetailsDto studyPlanDetails) {
+    public ResponseEntity<FlowsheetDto> createFlowsheet(@Valid @RequestBody FlowsheetDetailsDto studyPlanDetails) {
         return new ResponseEntity<>(
-                studyPlanManagerService.createStudyPlan(studyPlanDetails),
+                flowsheetManagerService.createFlowsheet(studyPlanDetails),
                 HttpStatus.OK
         );
     }
 
-    @PutMapping("/{studyPlanId}/archive")
-    public ResponseEntity<StudyPlanDto> archiveStudyPlan(@PathVariable long studyPlanId) {
+    @PutMapping("/{flowsheetId}/archive")
+    public ResponseEntity<FlowsheetDto> archiveFlowsheet(@PathVariable long flowsheetId) {
         return new ResponseEntity<>(
-                studyPlanManagerService.archiveStudyPlan(studyPlanId),
+                flowsheetManagerService.archiveFlowsheet(flowsheetId),
                 HttpStatus.OK
         );
     }
 
-    @PutMapping("/{studyPlanId}/unarchive")
-    public ResponseEntity<StudyPlanDto> unarchiveStudyPlan(@PathVariable long studyPlanId) {
+    @PutMapping("/{flowsheetId}/unarchive")
+    public ResponseEntity<FlowsheetDto> unarchiveFlowsheet(@PathVariable long flowsheetId) {
         return new ResponseEntity<>(
-                studyPlanManagerService.unarchiveStudyPlan(studyPlanId),
+                flowsheetManagerService.unarchiveFlowsheet(flowsheetId),
                 HttpStatus.OK
         );
     }
 
-    @PostMapping("/{studyPlanId}/clone")
-    public ResponseEntity<StudyPlanDto> cloneStudyPlan(
-            @PathVariable long studyPlanId,
-            @Valid @RequestBody StudyPlanDetailsDto cloneDetails
+    @PostMapping("/{flowsheetId}/clone")
+    public ResponseEntity<FlowsheetDto> cloneFlowsheet(
+            @PathVariable long flowsheetId,
+            @Valid @RequestBody FlowsheetDetailsDto cloneDetails
     ) {
         return new ResponseEntity<>(
-                studyPlanManagerService.cloneStudyPlan(studyPlanId, cloneDetails),
+                flowsheetManagerService.cloneFlowsheet(flowsheetId, cloneDetails),
                 HttpStatus.OK
         );
     }

@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class FlowsheetSnapshot {
     private int year;
     private int duration;
-    private String track;
+    private String name;
     private AggregateReference<Program, Long> program;
     private Set<Section> sections;
     private Map<Long, Placement> coursePlacements;
@@ -27,7 +27,7 @@ public class FlowsheetSnapshot {
     public FlowsheetSnapshot(Flowsheet flowsheet) {
         this.year = flowsheet.getYear();
         this.duration = flowsheet.getDuration();
-        this.track = flowsheet.getTrack();
+        this.name = flowsheet.getName();
         this.program = flowsheet.getProgram();
         this.version = flowsheet.getVersion();
 

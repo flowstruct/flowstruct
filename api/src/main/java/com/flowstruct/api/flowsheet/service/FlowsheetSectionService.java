@@ -2,8 +2,8 @@ package com.flowstruct.api.flowsheet.service;
 
 import com.flowstruct.api.flowsheet.domain.MoveDirection;
 import com.flowstruct.api.flowsheet.domain.Section;
+import com.flowstruct.api.flowsheet.dto.FlowsheetDto;
 import com.flowstruct.api.flowsheet.dto.SectionDetailsDto;
-import com.flowstruct.api.flowsheet.dto.StudyPlanDto;
 import com.flowstruct.api.flowsheet.exception.NotEnoughSectionsException;
 import com.flowstruct.api.flowsheet.exception.OutOfBoundsPositionException;
 import com.flowstruct.api.flowsheet.exception.SectionNotFoundException;
@@ -16,12 +16,12 @@ import org.springframework.transaction.annotation.Transactional;
 @PreAuthorize("hasRole('ROLE_EDITOR')")
 @RequiredArgsConstructor
 @Service
-public class StudyPlanSectionService {
-    private final StudyPlanService studyPlanService;
+public class FlowsheetSectionService {
+    private final FlowsheetService flowsheetService;
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
-    public StudyPlanDto createSection(long studyPlanId, SectionDetailsDto details) {
-        var studyPlan = studyPlanService.findOrThrow(studyPlanId);
+    public FlowsheetDto createSection(long flowsheetId, SectionDetailsDto details) {
+        var flowsheet = flowsheetService.findOrThrow(flowsheetId);
 
         Section newSection = new Section();
         newSection.setLevel(details.level());
@@ -29,7 +29,7 @@ public class StudyPlanSectionService {
         newSection.setRequiredCreditHours(details.requiredCreditHours());
         newSection.setName(details.name().trim());
 
-        var sectionSiblings = studyPlan.getSections()
+        var sectionSiblings = flowsheet.getSections()
                 .stream()
                 .filter(s -> s.getLevel() == newSection.getLevel() && s.getType() == newSection.getType())
                 .toList();
@@ -43,16 +43,16 @@ public class StudyPlanSectionService {
             newSection.setPosition(sectionSiblings.size() + 1);
         }
 
-        studyPlan.getSections().add(newSection);
+        flowsheet.getSections().add(newSection);
 
-        return studyPlanService.saveAndMap(studyPlan);
+        return flowsheetService.saveAndMap(flowsheet);
     }
 
     @Transactional
-    public StudyPlanDto editSectionDetails(long studyPlanId, long sectionId, SectionDetailsDto details) {
-        var studyPlan = studyPlanService.findOrThrow(studyPlanId);
+    public FlowsheetDto editSectionDetails(long flowsheetId, long sectionId, SectionDetailsDto details) {
+        var flowsheet = flowsheetService.findOrThrow(flowsheetId);
 
-        studyPlan.getSections().stream()
+        flowsheet.getSections().stream()
                 .filter(s -> s.getId() == sectionId)
                 .findFirst()
                 .ifPresentOrElse(section -> {
@@ -65,24 +65,24 @@ public class StudyPlanSectionService {
                         }
                 );
 
-        return studyPlanService.saveAndMap(studyPlan);
+        return flowsheetService.saveAndMap(flowsheet);
     }
 
     @Transactional
-    public StudyPlanDto deleteSection(long studyPlanId, long sectionId) {
-        var studyPlan = studyPlanService.findOrThrow(studyPlanId);
+    public FlowsheetDto deleteSection(long flowsheetId, long sectionId) {
+        var flowsheet = flowsheetService.findOrThrow(flowsheetId);
 
-        var section = studyPlan.getSections().stream()
+        var section = flowsheet.getSections().stream()
                 .filter(s -> s.getId() == sectionId)
                 .findFirst()
                 .orElseThrow(() -> new SectionNotFoundException("Section not found"));
 
-        var sectionSiblings = studyPlan.getSections()
+        var sectionSiblings = flowsheet.getSections()
                 .stream()
                 .filter(s -> s.getLevel() == section.getLevel() && s.getType() == section.getType())
                 .toList();
 
-        studyPlan.getSections().stream()
+        flowsheet.getSections().stream()
                 .filter(s -> s.getLevel() == section.getLevel() &&
                         s.getType() == section.getType() &&
                         s.getPosition() > section.getPosition())
@@ -96,36 +96,38 @@ public class StudyPlanSectionService {
             remainingSection.setPosition(0);
         }
 
-        section.getCourses().forEach(sectionCourse -> studyPlan.getCoursePlacements().remove(sectionCourse.getCourse().getId()));
+        section.getCourses().forEach(sectionCourse ->
+                flowsheet.getPlacements().remove(sectionCourse.getCourse().getId())
+        );
 
-        studyPlan.getCoursePrerequisites().removeIf(coursePrerequisite ->
+        flowsheet.getCoursePrerequisites().removeIf(coursePrerequisite ->
                 section.hasCourse(coursePrerequisite.getPrerequisite().getId())
         );
 
-        studyPlan.getCourseCorequisites().removeIf(courseCorequisite ->
+        flowsheet.getCourseCorequisites().removeIf(courseCorequisite ->
                 section.hasCourse(courseCorequisite.getCorequisite().getId())
         );
 
-        studyPlan.getSections().remove(section);
+        flowsheet.getSections().remove(section);
 
-        return studyPlanService.saveAndMap(studyPlan);
+        return flowsheetService.saveAndMap(flowsheet);
     }
 
     @Transactional
-    public StudyPlanDto moveSection(
-            long studyPlanId,
+    public FlowsheetDto moveSection(
+            long flowsheetId,
             long sectionId,
             MoveDirection direction
     ) {
-        var studyPlan = studyPlanService.findOrThrow(studyPlanId);
+        var flowsheet = flowsheetService.findOrThrow(flowsheetId);
 
-        var targetSection = studyPlan.getSections()
+        var targetSection = flowsheet.getSections()
                 .stream()
                 .filter(s -> s.getId() == sectionId)
                 .findFirst()
                 .orElseThrow(() -> new SectionNotFoundException("Section not found."));
 
-        var sectionsList = studyPlan.getSections()
+        var sectionsList = flowsheet.getSections()
                 .stream()
                 .filter(s -> s.getLevel() == targetSection.getLevel() && s.getType() == targetSection.getType())
                 .toList();
@@ -153,6 +155,6 @@ public class StudyPlanSectionService {
         targetSection.setPosition(newPosition);
         swappedSection.setPosition(currentPosition);
 
-        return studyPlanService.saveAndMap(studyPlan);
+        return flowsheetService.saveAndMap(flowsheet);
     }
 }

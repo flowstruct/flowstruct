@@ -7,11 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public record StudyPlanDto(
+public record FlowsheetDto(
         long id,
         int year,
-        int duration,
-        String track,
+        String name,
         long program,
         String status,
         Instant archivedAt,
@@ -20,8 +19,8 @@ public record StudyPlanDto(
         Instant updatedAt,
         Long updatedBy,
         List<SectionDto> sections,
-        Map<Long, PlacementDto> coursePlacements,
-        Map<Long, Map<Long, Relation>> coursePrerequisites,
-        Map<Long, Set<Long>> courseCorequisites
+        List<PlacementDto> placements,
+        Map<Long, List<Long>> coursePrerequisites,
+        Map<Long, List<Long>> courseCorequisites
 ) {
 }

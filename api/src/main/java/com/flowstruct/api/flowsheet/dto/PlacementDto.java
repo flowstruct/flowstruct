@@ -2,15 +2,15 @@ package com.flowstruct.api.flowsheet.dto;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 
 public record PlacementDto(
 
-        @Min(value = 1, message = "A course cannot be placed in a year less than 1.")
-        int year,
+        @NotNull(message = "Placement cannot have an undefined course.")
+        long course,
 
-        @Min(value = 1, message = "Cannot place course before first semester.")
-        @Max(value = 3, message = "Cannot place course after summer semester.")
-        int semester,
+        @Min(value = 1, message = "A course cannot be placed in a term less than 1.")
+        int term,
 
         @Min(value = 1, message = "Course cannot be placed in a position less than 1.")
         int position,

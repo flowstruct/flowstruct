@@ -1,12 +1,12 @@
 package com.flowstruct.api.flowsheet.mapper;
 
+import com.flowstruct.api.flowsheet.domain.Flowsheet;
 import com.flowstruct.api.flowsheet.domain.Section;
 import com.flowstruct.api.flowsheet.domain.SectionLevel;
 import com.flowstruct.api.flowsheet.domain.SectionType;
-import com.flowstruct.api.flowsheet.domain.Flowsheet;
+import com.flowstruct.api.flowsheet.dto.FlowsheetDto;
 import com.flowstruct.api.flowsheet.dto.PlacementDto;
 import com.flowstruct.api.flowsheet.dto.SectionDto;
-import com.flowstruct.api.flowsheet.dto.StudyPlanDto;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -16,10 +16,10 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
-public class StudyPlanDtoMapper implements Function<Flowsheet, StudyPlanDto> {
+public class FlowsheetDtoMapper implements Function<Flowsheet, FlowsheetDto> {
 
     @Override
-    public StudyPlanDto apply(Flowsheet flowsheet) {
+    public FlowsheetDto apply(Flowsheet flowsheet) {
 
         String status = flowsheet.getApprovedFlowsheet() == null
                 ? "NEW"
@@ -27,11 +27,10 @@ public class StudyPlanDtoMapper implements Function<Flowsheet, StudyPlanDto> {
                 ? "DRAFT"
                 : "APPROVED";
 
-        return new StudyPlanDto(
+        return new FlowsheetDto(
                 flowsheet.getId(),
                 flowsheet.getYear(),
-                flowsheet.getDuration(),
-                flowsheet.getTrack(),
+                flowsheet.getName(),
                 flowsheet.getProgram().getId(),
                 status,
                 flowsheet.getArchivedAt(),
@@ -54,34 +53,33 @@ public class StudyPlanDtoMapper implements Function<Flowsheet, StudyPlanDto> {
                                         .toList()
                         ))
                         .toList(),
-                flowsheet.getCoursePlacements().entrySet()
+                flowsheet.getPlacements()
                         .stream()
-                        .collect(Collectors.toMap(
-                                Map.Entry::getKey,
-                                entry -> new PlacementDto(
-                                        entry.getValue().getYear(),
-                                        entry.getValue().getSemester(),
-                                        entry.getValue().getPosition(),
-                                        entry.getValue().getSpan()
-                                )
-                        )),
+                        .map(p -> new PlacementDto(
+                                p.getCourse().getId(),
+                                p.getTerm(),
+                                p.getPosition(),
+                                p.getTerm(),
+                                p.getSpan()
+                        ))
+                        .toList(),
                 flowsheet.getCoursePrerequisitesMap().entrySet()
                         .stream()
                         .collect(Collectors.toMap(
                                 Map.Entry::getKey,
-                                entry -> entry.getValue().stream()
-                                        .collect(Collectors.toMap(
-                                                prerequisite -> prerequisite.getPrerequisite().getId(),
-                                                prerequisite -> prerequisite.getRelation()
-                                        ))
+                                e -> e.getValue()
+                                        .stream()
+                                        .map(cp -> cp.getCourse().getId())
+                                        .toList()
                         )),
                 flowsheet.getCourseCorequisitesMap().entrySet()
                         .stream()
                         .collect(Collectors.toMap(
                                 Map.Entry::getKey,
-                                entry -> entry.getValue().stream()
-                                        .map(corequisite -> corequisite.getCorequisite().getId())
-                                        .collect(Collectors.toSet())
+                                e -> e.getValue()
+                                        .stream()
+                                        .map(cc -> cc.getCourse().getId())
+                                        .toList()
                         ))
         );
     }

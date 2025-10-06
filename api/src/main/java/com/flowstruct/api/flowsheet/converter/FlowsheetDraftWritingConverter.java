@@ -13,7 +13,7 @@ import java.sql.SQLException;
 
 @WritingConverter
 @RequiredArgsConstructor
-public class StudyPlanDraftWritingConverter implements Converter<FlowsheetSnapshot, PGobject> {
+public class FlowsheetDraftWritingConverter implements Converter<FlowsheetSnapshot, PGobject> {
     private final ObjectMapper objectMapper;
 
     @Override
