@@ -5,8 +5,7 @@ import java.time.Instant;
 public record FlowsheetSummaryDto(
         long id,
         int year,
-        int duration,
-        String track,
+        String name,
         long program,
         String status,
         Instant archivedAt,

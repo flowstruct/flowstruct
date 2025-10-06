@@ -11,7 +11,7 @@ import java.util.*;
 
 @Service
 public class CourseGraphUtils {
-    public Map<Long, CourseSequences> buildStudyPlanSequences(
+    public Map<Long, CourseSequences> buildFlowsheetSequences(
             Map<Long, Map<Long, Relation>> coursePrerequisites,
             List<Long> courseIds
     ) {

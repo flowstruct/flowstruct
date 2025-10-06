@@ -46,7 +46,7 @@ public class FlowsheetService {
                 flowsheet.getUpdatedAt(),
                 flowsheet.getUpdatedBy(),
                 flowsheet.getApprovedFlowsheet().getSections(),
-                flowsheet.getApprovedFlowsheet().getCoursePlacements(),
+                flowsheet.getApprovedFlowsheet().getPlacements(),
                 flowsheet.getApprovedFlowsheet().getCoursePrerequisites(),
                 flowsheet.getApprovedFlowsheet().getCourseCorequisites()
         );

@@ -5,8 +5,7 @@ import java.time.Instant;
 public record FlowsheetSummaryProjection(
         long id,
         int year,
-        int duration,
-        String track,
+        String name,
         Instant archivedAt,
         Long archivedBy,
         Long version,

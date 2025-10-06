@@ -24,70 +24,7 @@ import java.util.stream.Collectors;
 @Service
 public class FlowsheetCourseManagerService {
     private final FlowsheetService flowsheetService;
-    private final PlacementUtils placementUtils;
     private final CourseGraphUtils courseGraphUtils;
-
-    @Transactional
-    public FlowsheetDto addCoursesToFlowsheet(
-            long flowsheetId,
-            long sectionId,
-            List<Long> courseIds
-    ) {
-        if (courseIds.isEmpty()) {
-            throw new EmptyListException("No courses were found to add");
-        }
-
-        var flowsheet = flowsheetService.findOrThrow(flowsheetId);
-
-        var section = flowsheet.getSections().stream()
-                .filter(s -> s.getId() == sectionId)
-                .findFirst()
-                .orElseThrow(() -> new SectionNotFoundException("Section was not found"));
-
-        Set<SectionCourse> toBeAddedCourses = courseIds
-                .stream()
-                .filter(courseId -> {
-                    boolean alreadyAdded = flowsheet.getSections().stream()
-                            .anyMatch(s -> s.hasCourse(courseId));
-                    if (alreadyAdded) {
-                        throw new CourseExistsException("Course was already added in another section");
-                    }
-                    return true;
-                })
-                .map(courseId -> new SectionCourse(AggregateReference.to(courseId)))
-                .collect(Collectors.toSet());
-
-        section.getCourses().addAll(toBeAddedCourses);
-
-        return flowsheetService.saveAndMap(flowsheet);
-    }
-
-    @Transactional
-    public FlowsheetDto removeCoursesFromFlowsheet(long flowsheetId, List<Long> courseIds) {
-        var flowsheet = flowsheetService.findOrThrow(flowsheetId);
-
-        for (var courseId : courseIds) {
-            flowsheet.getSections().forEach(section -> section.removeCourse(courseId));
-
-            flowsheet.getCoursePrerequisites().removeIf(coursePrerequisite ->
-                    Objects.equals(coursePrerequisite.getCourse().getId(), courseId)
-                            || Objects.equals(coursePrerequisite.getPrerequisite().getId(), courseId)
-            );
-
-            flowsheet.getCourseCorequisites().removeIf(coursePrerequisite ->
-                    Objects.equals(coursePrerequisite.getCourse().getId(), courseId)
-                            || Objects.equals(coursePrerequisite.getCorequisite().getId(), courseId)
-            );
-
-            placementUtils.deleteCoursePlacement(
-                    flowsheet,
-                    courseId,
-                    flowsheet.getPlacements().get(courseId)
-            );
-        }
-
-        return flowsheetService.saveAndMap(flowsheet);
-    }
 
     @Transactional
     public FlowsheetDto linkPrerequisitesToCourse(

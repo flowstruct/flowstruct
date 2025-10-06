@@ -48,20 +48,19 @@ CREATE TABLE course
     FOREIGN KEY (outdated_by) REFERENCES "user" (id)
 );
 
-CREATE TABLE study_plan
+CREATE TABLE flowsheet
 (
-    id                  SERIAL PRIMARY KEY,
-    year                INT                      NOT NULL,
-    duration            INT                      NOT NULL DEFAULT (1),
-    track               VARCHAR(255)             NOT NULL,
-    program             INT                      NOT NULL,
-    approved_study_plan JSONB,
-    version             BIGINT                   NOT NULL DEFAULT (0),
-    created_at          TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT (NOW()),
-    updated_at          TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT (NOW()),
-    updated_by          INT,
-    archived_at         TIMESTAMP WITH TIME ZONE,
-    archived_by         INT,
+    id                 SERIAL PRIMARY KEY,
+    year               INT                      NOT NULL,
+    name               VARCHAR(255)             NOT NULL,
+    program            INT                      NOT NULL,
+    approved_flowsheet JSONB,
+    version            BIGINT                   NOT NULL DEFAULT (0),
+    created_at         TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT (NOW()),
+    updated_at         TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT (NOW()),
+    updated_by         INT,
+    archived_at        TIMESTAMP WITH TIME ZONE,
+    archived_by        INT,
     FOREIGN KEY (program) REFERENCES program (id),
     FOREIGN KEY (updated_by) REFERENCES "user" (id),
     FOREIGN KEY (archived_by) REFERENCES "user" (id)
@@ -75,8 +74,8 @@ CREATE TABLE section
     required_credit_hours INT          NOT NULL,
     name                  VARCHAR(255) NOT NULL,
     position              INT          NOT NULL DEFAULT (0),
-    study_plan            INT          NOT NULL,
-    UNIQUE (level, type, position, study_plan)
+    flowsheet             INT          NOT NULL,
+    UNIQUE (level, type, position, flowsheet)
 );
 
 CREATE TABLE section_course
@@ -90,34 +89,33 @@ CREATE TABLE section_course
 
 CREATE TABLE course_prerequisite
 (
-    study_plan   INT          NOT NULL,
+    flowsheet    INT          NOT NULL,
     course       INT          NOT NULL,
     prerequisite INT          NOT NULL,
     relation     VARCHAR(255) NOT NULL,
-    PRIMARY KEY (study_plan, course, prerequisite),
+    PRIMARY KEY (flowsheet, course, prerequisite),
     FOREIGN KEY (course) REFERENCES course (id),
     FOREIGN KEY (prerequisite) REFERENCES course (id)
 );
 
 CREATE TABLE course_corequisite
 (
-    study_plan  INT NOT NULL,
+    flowsheet   INT NOT NULL,
     course      INT NOT NULL,
     corequisite INT NOT NULL,
-    PRIMARY KEY (study_plan, course, corequisite),
+    PRIMARY KEY (flowsheet, course, corequisite),
     FOREIGN KEY (course) REFERENCES course (id),
     FOREIGN KEY (corequisite) REFERENCES course (id)
 );
 
-CREATE TABLE course_placement
+CREATE TABLE placement
 (
-    study_plan INT NOT NULL,
-    course     INT NOT NULL,
-    year       INT NOT NULL,
-    semester   INT NOT NULL,
-    position   INT NOT NULL DEFAULT (1),
-    span       INT NOT NULL DEFAULT (1),
-    PRIMARY KEY (study_plan, course),
+    flowsheet INT NOT NULL,
+    course    INT NOT NULL,
+    term      INT NOT NULL,
+    position  INT NOT NULL DEFAULT (1),
+    span      INT NOT NULL DEFAULT (1),
+    PRIMARY KEY (flowsheet, course),
     FOREIGN KEY (course) REFERENCES course (id)
 );
 

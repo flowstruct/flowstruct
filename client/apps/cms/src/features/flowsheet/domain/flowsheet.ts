@@ -25,7 +25,8 @@ export type Section = {
   courses: number[];
 };
 
-export type CoursePlacement = {
+export type Placement = {
+  course: number;
   year: number;
   semester: number;
   position: number;
@@ -35,11 +36,11 @@ export type CoursePlacement = {
 export type Flowsheet = {
   id: number;
   year: number;
-  track: string;
+  name: string;
   status: string;
   program: number;
   sections: Section[];
-  coursePlacements: Record<number, CoursePlacement>;
+  placements: Placement[];
   coursePrerequisites: Record<number, Record<number, CourseRelation>>;
   courseCorequisites: Record<number, number[]>;
   archivedAt: Date;
@@ -53,7 +54,7 @@ export type FlowsheetSummary = Pick<
   Flowsheet,
   | 'id'
   | 'year'
-  | 'track'
+  | 'name'
   | 'status'
   | 'program'
   | 'archivedAt'

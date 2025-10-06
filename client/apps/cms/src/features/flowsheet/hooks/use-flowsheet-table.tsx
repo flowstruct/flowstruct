@@ -101,13 +101,14 @@ export const useFlowsheetTable = ({ flowsheets }: UseFlowsheetTableProps) => {
         sortingFn: (rowA, rowB) => rowA.original.year - rowB.original.year,
       }),
 
-      accessor('track', {
-        header: 'Track',
-        cell: ({ cell }) => (cell.getValue().length === 0 ? <p className={styles.emptyTrack}>---</p> : cell.getValue()),
+      accessor('name', {
+        header: 'Name',
+        cell: ({ cell }) =>
+          cell.getValue().length === 0 ? <p className={styles.emptyTrack}>---</p> : cell.getValue(),
         enableColumnFilter: false,
         enableSorting: false,
         meta: {
-          renderColumnDisplayName: () => 'Track',
+          renderColumnDisplayName: () => 'Name',
         },
       }),
       display({

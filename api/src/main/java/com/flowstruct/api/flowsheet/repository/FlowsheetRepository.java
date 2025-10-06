@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface FlowsheetRepository extends CrudRepository<Flowsheet, Long> {
     String flowsheetSummariesQuery =
-            "SELECT id, year, duration, track, (approved_flowsheet ->> 'version')::BIGINT AS approved_version, version, program, created_at, updated_at, updated_by, archived_at, archived_by " +
+            "SELECT id, year, name, (approved_flowsheet ->> 'version')::BIGINT AS approved_version, version, program, created_at, updated_at, updated_by, archived_at, archived_by " +
                     "FROM flowsheet";
 
     @Query(flowsheetSummariesQuery)

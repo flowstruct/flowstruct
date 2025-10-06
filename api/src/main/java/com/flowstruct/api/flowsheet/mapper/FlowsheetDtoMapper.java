@@ -59,7 +59,6 @@ public class FlowsheetDtoMapper implements Function<Flowsheet, FlowsheetDto> {
                                 p.getCourse().getId(),
                                 p.getTerm(),
                                 p.getPosition(),
-                                p.getTerm(),
                                 p.getSpan()
                         ))
                         .toList(),

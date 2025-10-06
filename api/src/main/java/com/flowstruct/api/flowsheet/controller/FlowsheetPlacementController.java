@@ -1,7 +1,7 @@
 package com.flowstruct.api.flowsheet.controller;
 
-import com.flowstruct.api.flowsheet.dto.PlacementDto;
 import com.flowstruct.api.flowsheet.dto.FlowsheetDto;
+import com.flowstruct.api.flowsheet.dto.PlacementDto;
 import com.flowstruct.api.flowsheet.service.FlowsheetPlacementService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/study-plans/{flowsheetId}/placements")
+@RequestMapping("/api/flowsheets/{flowsheetId}/placements")
 public class FlowsheetPlacementController {
     private final FlowsheetPlacementService flowsheetPlacementService;
 
@@ -54,12 +54,12 @@ public class FlowsheetPlacementController {
     }
 
     @DeleteMapping("/{courseId}")
-    public ResponseEntity<FlowsheetDto> removePlacement(
+    public ResponseEntity<FlowsheetDto> removePlacements(
             @PathVariable long flowsheetId,
-            @PathVariable long courseId
+            @RequestParam(value = "courses", defaultValue = "") List<Long> courseIds
     ) {
         return new ResponseEntity<>(
-                flowsheetPlacementService.removePlacement(flowsheetId, courseId),
+                flowsheetPlacementService.removePlacements(flowsheetId, courseIds),
                 HttpStatus.OK
         );
     }

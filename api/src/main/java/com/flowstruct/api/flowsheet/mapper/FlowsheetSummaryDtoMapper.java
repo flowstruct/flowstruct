@@ -11,25 +11,24 @@ import java.util.function.Function;
 public class FlowsheetSummaryDtoMapper implements Function<FlowsheetSummaryProjection, FlowsheetSummaryDto> {
 
     @Override
-    public FlowsheetSummaryDto apply(FlowsheetSummaryProjection studyPlan) {
-        String status = studyPlan.approvedVersion() == null
+    public FlowsheetSummaryDto apply(FlowsheetSummaryProjection flowsheet) {
+        String status = flowsheet.approvedVersion() == null
                 ? "NEW"
-                : !Objects.equals(studyPlan.approvedVersion(), studyPlan.version())
+                : !Objects.equals(flowsheet.approvedVersion(), flowsheet.version())
                 ? "DRAFT"
                 : "APPROVED";
 
         return new FlowsheetSummaryDto(
-                studyPlan.id(),
-                studyPlan.year(),
-                studyPlan.duration(),
-                studyPlan.track(),
-                studyPlan.program(),
+                flowsheet.id(),
+                flowsheet.year(),
+                flowsheet.name(),
+                flowsheet.program(),
                 status,
-                studyPlan.archivedAt(),
-                studyPlan.archivedBy(),
-                studyPlan.createdAt(),
-                studyPlan.updatedAt(),
-                studyPlan.updatedBy()
+                flowsheet.archivedAt(),
+                flowsheet.archivedBy(),
+                flowsheet.createdAt(),
+                flowsheet.updatedAt(),
+                flowsheet.updatedBy()
         );
     }
 }

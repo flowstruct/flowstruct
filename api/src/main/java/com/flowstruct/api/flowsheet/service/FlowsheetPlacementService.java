@@ -166,16 +166,25 @@ public class FlowsheetPlacementService {
     }
 
     @Transactional
-    public FlowsheetDto removePlacement(long flowsheetId, long courseId) {
+    public FlowsheetDto removePlacements(long flowsheetId, List<Long> courseIds) {
         var flowsheet = flowsheetService.findOrThrow(flowsheetId);
+        var placementsMap = flowsheet.getPlacementsMap();
 
-        placementUtils.deleteCoursePlacement(
-                flowsheet,
-                flowsheet.getPlacements().stream()
-                        .filter(p -> Objects.equals(p.getCourse().getId(), courseId))
-                        .findFirst()
-                        .orElseThrow(() -> new CourseNotPlacedException("No course to remove."))
-        );
+        for (var courseId : courseIds) {
+            flowsheet.getSections().forEach(section -> section.removeCourse(courseId));
+
+            flowsheet.getCoursePrerequisites().removeIf(coursePrerequisite ->
+                    Objects.equals(coursePrerequisite.getCourse().getId(), courseId)
+                            || Objects.equals(coursePrerequisite.getPrerequisite().getId(), courseId)
+            );
+
+            flowsheet.getCourseCorequisites().removeIf(coursePrerequisite ->
+                    Objects.equals(coursePrerequisite.getCourse().getId(), courseId)
+                            || Objects.equals(coursePrerequisite.getCorequisite().getId(), courseId)
+            );
+
+            placementUtils.deleteCoursePlacement(flowsheet, placementsMap.get(courseId));
+        }
 
         return flowsheetService.saveAndMap(flowsheet);
     }

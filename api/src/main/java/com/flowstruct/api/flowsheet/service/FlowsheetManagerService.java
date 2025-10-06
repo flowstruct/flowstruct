@@ -46,7 +46,7 @@ public class FlowsheetManagerService {
         flowsheet.setName(lastApprovedFlowsheet.getName());
         flowsheet.setProgram(lastApprovedFlowsheet.getProgram());
         flowsheet.setSections(lastApprovedFlowsheet.getSections());
-        flowsheet.setPlacements(lastApprovedFlowsheet.getCoursePlacements());
+        flowsheet.setPlacements(lastApprovedFlowsheet.getPlacements());
         flowsheet.setCoursePrerequisites(lastApprovedFlowsheet.getCoursePrerequisites());
         flowsheet.setCourseCorequisites(lastApprovedFlowsheet.getCourseCorequisites());
 
@@ -113,7 +113,7 @@ public class FlowsheetManagerService {
                 null,
                 null,
                 new HashSet<>(),
-                new HashMap<>(),
+                new HashSet<>(),
                 new HashSet<>(),
                 new HashSet<>()
         );

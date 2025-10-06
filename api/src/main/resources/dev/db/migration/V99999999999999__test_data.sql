@@ -90,12 +90,12 @@ VALUES ('BE302', 'Business Entrepreneurship', 3, 3, 3, 0, 'OL', false),
 INSERT INTO program (code, name, degree)
 VALUES ('CS', 'Computer Science', 'BSc');
 
-INSERT INTO section (level, type, required_credit_hours, name, "position", study_plan)
+INSERT INTO section (level, type, required_credit_hours, name, "position", flowsheet)
 VALUES ('University', 'Requirement', 9, 'Dual Studies', 2, 1),
        ('Program', 'Requirement', 12, 'Special Courses for the General Track', 2, 1),
        ('Program', 'Requirement', 81, '', 1, 1),
        ('School', 'Requirement', 27, '', 0, 1),
        ('University', 'Requirement', 21, '', 1, 1);
 
-INSERT INTO study_plan (year, track, program, duration)
-VALUES (2025, 'General Track', 1, 4);
+INSERT INTO flowsheet (year, name, program)
+VALUES (2025, 'General Track', 1);

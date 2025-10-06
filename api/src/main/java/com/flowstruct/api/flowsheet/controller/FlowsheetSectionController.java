@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/study-plans/{flowsheetId}/sections")
+@RequestMapping("/api/flowsheets/{flowsheetId}/sections")
 public class FlowsheetSectionController {
     private final FlowsheetSectionService flowsheetSectionService;
 
