@@ -1,0 +1,20 @@
+.flowsheetMeta {
+    display: flex;
+    align-items: center;
+
+    color: var(--text-color-secondary);
+    font-size: var(--font-size-xs);
+}
+
+.flowsheetBreadcrumb {
+    display: flex;
+    align-items: center;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+
+    padding: 3rem 6rem;
+}

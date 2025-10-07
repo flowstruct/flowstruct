@@ -17,7 +17,7 @@ import { programQueries } from '@/features/program/queries.ts';
 import { getProgramDisplayName } from '@/features/program/domain/getProgramDisplayName.ts';
 import { setIncludes } from '@/shared/utils/setIncludes.ts';
 import { rankItem } from '@tanstack/match-sorter-utils';
-import { Archive, Ellipsis, Grid2x2, Link, User } from 'lucide-react';
+import { Archive, Ellipsis, Link, User } from 'lucide-react';
 import styles from './use-flowsheet-table.module.css';
 import { useNavigate } from '@tanstack/react-router';
 import { Menu, MenuItem, MenuTrigger } from '@/shared/components/ui/Menu.tsx';
@@ -25,6 +25,7 @@ import { Button } from '@/shared/components/ui/Button.tsx';
 import { Popover } from '@/shared/components/ui/Popover.tsx';
 import { userQueries } from '@/features/user/queries.ts';
 import { formatTimeAgo } from '@/shared/utils/formatTimeAgo.ts';
+import { FlowsheetStatusIcon } from '@/features/flowsheet/components/flowsheet-status-icon.tsx';
 
 interface UseFlowsheetTableProps {
   flowsheets: FlowsheetSummary[];
@@ -59,11 +60,7 @@ export const useFlowsheetTable = ({ flowsheets }: UseFlowsheetTableProps) => {
 
           return (
             <div className={styles.programCell}>
-              {row.original.status !== 'APPROVED' && (
-                <div data-status={row.original.status || undefined} className={styles.statusIcon}>
-                  <Grid2x2 size={15} />
-                </div>
-              )}
+              <FlowsheetStatusIcon flowsheet={row.original} />
               <p>{programName}</p>
             </div>
           );

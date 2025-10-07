@@ -47,13 +47,13 @@ export function CreateFlowsheetModal() {
   const navigate = useNavigate();
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    if (programFormIsOpen) {
-      return;
-    }
-
     e.preventDefault();
     e.stopPropagation();
 
+    if (programFormIsOpen) {
+      return;
+    }
+    
     let formData = Object.fromEntries(new FormData(e.currentTarget));
 
     createFlowsheet.mutate(formData, {

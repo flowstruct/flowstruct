@@ -112,7 +112,7 @@ CREATE TABLE placement
 (
     flowsheet INT NOT NULL,
     course    INT NOT NULL,
-    term      INT NOT NULL,
+    term      INT NOT NULL DEFAULT (1),
     position  INT NOT NULL DEFAULT (1),
     span      INT NOT NULL DEFAULT (1),
     PRIMARY KEY (flowsheet, course),

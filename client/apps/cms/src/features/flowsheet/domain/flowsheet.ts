@@ -27,8 +27,7 @@ export type Section = {
 
 export type Placement = {
   course: number;
-  year: number;
-  semester: number;
+  term: number;
   position: number;
   span: number;
 };

@@ -25,6 +25,6 @@
 }
 
 .arrow {
-    margin: 0 var(--space-4);
+    margin: 0 var(--space-5);
     color: var(--text-color-dimmed);
 }
