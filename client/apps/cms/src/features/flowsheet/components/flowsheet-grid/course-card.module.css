@@ -2,9 +2,9 @@
 .card {
     padding: var(--space-4);
     background: var(--highlight-background);
-    /*border: 1px solid var(--border-color);*/
+    border: 1px solid var(--border-color);
     border-radius: var(--radius-1);
-    width: 11rem;
+    width: 10rem;
     height: 9rem;
     user-select: none;
 }

@@ -151,7 +151,7 @@
     --link-color: var(--primary-11);
     --link-color-secondary: var(--gray-11);
     --link-color-pressed: var(--primary-12);
-    --border-color: var(--gray-4);
+    --border-color: var(--gray-3);
     --border-color-hover: var(--gray-4);
     --border-color-pressed: var(--gray-5);
     --border-color-disabled: var(--gray-3);
