@@ -5,6 +5,7 @@
 }
 
 .term {
+    width: 10rem;
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
@@ -13,6 +14,8 @@
 }
 
 .termCourseCards {
+    position: relative;
+    width: 100%;
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
@@ -21,6 +24,8 @@
 
 .termHeader {
     /*font-weight: 450;*/
+    display: flex;
+    gap: var(--space-1);
     color: var(--text-color-dimmed);
     font-size: var(--font-size-xs);
 }

@@ -11,17 +11,20 @@ import { Text } from './Content.tsx';
 import { X } from 'lucide-react';
 import './SearchField.css';
 import React from 'react';
+import { ProgressCircle } from '@/shared/components/ui/ProgressCircle.tsx';
 
 export interface SearchFieldProps extends AriaSearchFieldProps {
   label?: string;
   description?: string;
   errorMessage?: string | ((validation: ValidationResult) => string);
   placeholder?: string;
+  isLoading?: boolean;
   icon?: React.ReactNode;
 }
 
 export function SearchField({
   label,
+  isLoading = false,
   description,
   errorMessage,
   placeholder = 'Search...',
@@ -34,9 +37,13 @@ export function SearchField({
       <Group>
         {icon && <div slot="icon">{icon}</div>}
         <Input slot="input" placeholder={placeholder} />
-        <Button slot="clear">
-          <X size={14} />
-        </Button>
+
+        <Group slot="right">
+          {isLoading && <ProgressCircle slot="clear" />}
+          <Button slot="clear">
+            <X size={14} />
+          </Button>
+        </Group>
       </Group>
       {description && <Text slot="description">{description}</Text>}
       <FieldError>{errorMessage}</FieldError>

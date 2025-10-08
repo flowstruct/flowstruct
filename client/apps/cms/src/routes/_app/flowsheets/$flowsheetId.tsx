@@ -31,11 +31,11 @@ export const Route = createFileRoute('/_app/flowsheets/$flowsheetId')({
           </HeaderMain>
         </Header>
 
-        <main className={styles.content}>
-          <FlowsheetSections />
+        <div className={styles.content}>
+          {/*<FlowsheetSections />*/}
           <FlowsheetGrid />
-          <FlowsheetNotes />
-        </main>
+          {/*<FlowsheetNotes />*/}
+        </div>
       </FlowsheetProvider>
     );
   },

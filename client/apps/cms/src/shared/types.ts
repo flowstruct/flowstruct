@@ -19,7 +19,7 @@ export type TabOption<T extends string> = {
   icon?: React.ReactNode;
 };
 
-export type TableSearchOptions = {
+export type FilterSearchParams = {
   filter: string;
   page: number;
   size: number;

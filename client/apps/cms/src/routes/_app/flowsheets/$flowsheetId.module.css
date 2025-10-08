@@ -1,7 +1,6 @@
 .flowsheetMeta {
     display: flex;
     align-items: center;
-
     color: var(--text-color-secondary);
     font-size: var(--font-size-xs);
 }

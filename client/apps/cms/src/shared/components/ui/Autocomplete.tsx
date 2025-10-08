@@ -11,6 +11,7 @@ import React from 'react';
 
 export interface AutocompleteProps<T extends object>
   extends Omit<AriaAutocompleteProps, 'children'> {
+  isLoading?: boolean;
   label?: string;
   placeholder?: string;
   items?: Iterable<T>;
@@ -20,6 +21,7 @@ export interface AutocompleteProps<T extends object>
 
 export function Autocomplete<T extends object>({
   label,
+  isLoading = false,
   placeholder = 'Find...',
   items,
   children,
@@ -30,7 +32,13 @@ export function Autocomplete<T extends object>({
   return (
     <div className="my-autocomplete">
       <AriaAutocomplete filter={contains} {...props}>
-        <SearchField aria-label="Search items" autoFocus label={label} placeholder={placeholder} />
+        <SearchField
+          aria-label="Search items"
+          autoFocus
+          label={label}
+          isLoading={isLoading}
+          placeholder={placeholder}
+        />
         {children}
       </AriaAutocomplete>
     </div>

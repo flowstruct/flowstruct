@@ -1,6 +1,6 @@
-import { TableSearchOptions } from '@/shared/types.ts';
+import { FilterSearchParams } from '@/shared/types.ts';
 
-export const transformCourseSearchOptions = (options: TableSearchOptions) => {
+export const transformCourseSearchParams = (options: Partial<FilterSearchParams>) => {
   const { filter, page, size, columnFilters } = options;
 
   const outdatedFilter = columnFilters.find((cf) => cf.id === 'outdatedAt');

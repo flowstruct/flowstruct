@@ -1,32 +1,51 @@
 import { useFlowsheetContext } from '@/features/flowsheet/contexts/flowsheet-context.tsx';
 import styles from './flowsheet-grid.module.css';
 import { CourseCard } from '@/features/flowsheet/components/flowsheet-grid/course-card.tsx';
+import { Placement } from '@/features/flowsheet/domain/flowsheet.ts';
+import { AddCoursesPopover } from '@/features/flowsheet/components/flowsheet-grid/add-courses-popover.tsx';
 
 export function FlowsheetGrid() {
-  const { flowsheet, courses } = useFlowsheetContext();
+  const { flowsheet } = useFlowsheetContext();
 
   const terms = Object.groupBy(flowsheet.placements, (p) => p.term);
 
+  if (Object.keys(terms).length === 0) {
+    terms[1] = [];
+  }
+
   return (
     <div className={styles.terms}>
-      {Object.entries(terms).map(([term, placements]) => {
-        return (
-          <section className={styles.term}>
-            <p className={styles.termHeader} key={term}>
-              Term {term}
-            </p>
-
-            <div className={styles.termCourseCards}>
-              {placements?.sort().map((p) => {
-                const course = courses.map[p.course];
-                if (!course) return;
-
-                return <CourseCard course={course} />;
-              })}
-            </div>
-          </section>
-        );
-      })}
+      {Object.entries(terms).map(([term, placements]) => (
+        <Term key={term} term={term} placements={placements ?? []} />
+      ))}
     </div>
+  );
+}
+
+type TermProps = {
+  term: string;
+  placements: Placement[];
+};
+
+function Term({ term, placements }: TermProps) {
+  const { courses } = useFlowsheetContext();
+
+  return (
+    <section className={styles.term}>
+      <div className={styles.termHeader}>
+        <p>Term {term}</p>
+
+        <AddCoursesPopover term={Number(term)} />
+      </div>
+
+      <div className={styles.termCourseCards}>
+        {placements?.sort().map((p) => {
+          const course = courses.map[p.course];
+          if (!course) return;
+
+          return <CourseCard course={course} />;
+        })}
+      </div>
+    </section>
   );
 }
