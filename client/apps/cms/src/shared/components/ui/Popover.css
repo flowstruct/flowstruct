@@ -5,11 +5,11 @@
     border: 1px solid var(--border-color);
     box-shadow: 0 8px 20px rgba(0 0 0 / 0.1);
     border-radius: var(--radius-2);
-    background: var(--overlay-background);
+    background: var(--background-color);
     color: var(--text-color);
     outline: none;
     transition: transform 200ms, opacity 200ms;
-
+    overflow: hidden;
 
     .react-aria-OverlayArrow svg {
         display: block;

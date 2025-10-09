@@ -1,10 +1,10 @@
-.breadcrumbs {
+.my-breadcrumbs {
     all: unset;
     display: flex;
     align-items: center;
 }
 
-.breadcrumb {
+.my-breadcrumb {
     all: unset;
     font-size: var(--font-size-sm);
     color: var(--text-color);
@@ -14,7 +14,7 @@
     gap: var(--space-3);
 }
 
-.baseBreadcrumb {
+.my-base-breadcrumb {
     display: flex;
     align-items: center;
     gap: var(--space-2);
@@ -24,7 +24,7 @@
     padding: 0 var(--space-2);
 }
 
-.arrow {
+.my-breadcrumb-arrow {
     margin: 0 var(--space-5);
     color: var(--text-color-dimmed);
 }

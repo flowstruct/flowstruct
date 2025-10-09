@@ -12,6 +12,6 @@ export const transformCourseSearchParams = ({
     filter,
     page,
     size,
-    status: outdatedFilter?.value ?? 'all',
+    archiveStatus: outdatedFilter?.value ?? 'all',
   };
 };

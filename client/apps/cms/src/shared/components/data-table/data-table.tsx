@@ -8,9 +8,10 @@ import { Popover } from '@/shared/components/ui/Popover.tsx';
 import { Autocomplete } from '@/shared/components/ui/Autocomplete.tsx';
 import { GridList, GridListItem } from '@/shared/components/ui/GridList.tsx';
 import React from 'react';
-import { AriaButtonProps, useButton, useFocusRing, useHover } from 'react-aria';
+import { AriaButtonProps, useButton, useFilter, useFocusRing, useHover } from 'react-aria';
 import { ListEmptyState } from '@/shared/components/ui/ListBox.tsx';
 import { Tooltip, TooltipTrigger } from '@/shared/components/ui/Tooltip.tsx';
+import { SearchField } from '@/shared/components/ui/SearchField.tsx';
 
 type DataTableProps<TData> = {
   table: TanStackTable<TData>;
@@ -101,6 +102,8 @@ function Tr<TData>({ row, ...props }: TrProps<TData>) {
 }
 
 function FilterMenu({ column }: { column: Column<any, unknown> }) {
+  const { contains } = useFilter();
+
   const renderFilterName = column.columnDef.meta?.renderFilterName;
 
   const memoizedRenderFilterName = React.useCallback(
@@ -127,7 +130,8 @@ function FilterMenu({ column }: { column: Column<any, unknown> }) {
       </Button>
 
       <Popover aria-label="Filter" hideArrow>
-        <Autocomplete>
+        <Autocomplete filter={contains}>
+          <SearchField />
           <GridList
             renderEmptyState={() => <ListEmptyState>No results.</ListEmptyState>}
             aria-label="filter options"

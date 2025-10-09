@@ -32,6 +32,7 @@ export const courseQueries = {
       queryFn: ({ pageParam }) =>
         courseApi.getPaginatedCourses({ filter: options.filter, page: pageParam }),
       initialPageParam: 0,
+      placeholderData: keepPreviousData,
       getNextPageParam: (lastPage, _, lastPageParam) =>
         lastPage.isLastPage ? null : lastPageParam + 1,
     }),

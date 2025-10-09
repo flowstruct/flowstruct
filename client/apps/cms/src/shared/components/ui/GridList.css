@@ -122,6 +122,14 @@
     }
 }
 
+.react-aria-GridListLoadingIndicator {
+    align-items: center;
+    justify-content: center;
+    height: 24px;
+    width: 100%;
+    display: flex;
+}
+
 .react-aria-GridListItem[data-href] {
     cursor: pointer;
 }

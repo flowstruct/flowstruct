@@ -81,6 +81,7 @@ function DataTableSettings<TData>({ table }: { table: Table<TData> }) {
         </div>
 
         <Divider />
+
         <div className={styles.option}>
           <ColumnVisibilityPills table={table} />
         </div>

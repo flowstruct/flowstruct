@@ -9,7 +9,7 @@ import { FlowsheetGrid } from '@/features/flowsheet/components/flowsheet-grid/fl
 import styles from './$flowsheetId.module.css';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { programQueries } from '@/features/program/queries.ts';
-import { Breadcrumb, Breadcrumbs } from '@/shared/components/breadcrumbs.tsx';
+import { Breadcrumb, Breadcrumbs } from '@/shared/components/ui/breadcrumbs.tsx';
 import { UnstyledButton } from '@/shared/components/ui/UnstyledButton.tsx';
 import { Dot, Layers2 } from 'lucide-react';
 import { FlowsheetStatusIcon } from '@/features/flowsheet/components/flowsheet-status-icon.tsx';

@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 import styles from './create-flowsheet-modal.module.css';
 import { ComboBox } from '@/shared/components/ui/ComboBox.tsx';
-import { Breadcrumb, Breadcrumbs } from '@/shared/components/breadcrumbs.tsx';
+import { Breadcrumb, Breadcrumbs } from '@/shared/components/ui/breadcrumbs.tsx';
 import { TextField } from '@/shared/components/ui/TextField.tsx';
 import { Divider } from '@/shared/components/ui/divider.tsx';
 import { Degree, Program } from '@/features/program/domain/program.ts';

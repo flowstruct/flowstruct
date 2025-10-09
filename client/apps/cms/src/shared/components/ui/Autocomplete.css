@@ -1,31 +1,28 @@
 @import "./theme.css";
 
-.react-aria-Popover {
+.my-autocomplete {
     display: flex;
     flex-direction: column;
     max-width: 400px;
     max-height: 250px;
-    background: transparent;
+    background: var(--overlay-background);
 
-    .my-autocomplete {
-        .react-aria-SearchField {
+    .react-aria-SearchField {
+        width: 100%;
+
+        .react-aria-Input {
             width: 100%;
-
-            .react-aria-Input {
-                width: 100%;
-                padding: var(--space-2) var(--space-3);
-                border: 0;
-                border-bottom: 1px solid var(--border-color);
-                border-top-left-radius: var(--radius-2);
-                border-top-right-radius: var(--radius-2);
-                background: var(--field-background);
-                font-size: var(--font-size-sm);
-                color: var(--text-color-base);
-                outline: none;
-            }
+            padding: var(--space-2) var(--space-3);
+            border: 0;
+            border-bottom: 1px solid var(--border-color);
+            border-top-left-radius: var(--radius-2);
+            border-top-right-radius: var(--radius-2);
+            background: var(--field-background);
+            font-size: var(--font-size-sm);
+            color: var(--text-color-base);
+            outline: none;
         }
     }
-
 }
 
 .react-aria-Label {
