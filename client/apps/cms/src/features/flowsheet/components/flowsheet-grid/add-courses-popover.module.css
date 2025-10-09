@@ -1,6 +1,18 @@
-.button {
 
-    &[data-hovered] {
+.footer {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    border-top: 1px solid var(--border-color);
+    padding: var(--space-2) var(--space-3);
+    max-width: 400px;
+}
 
-    }
+.placeCoursesButton {
+    margin-left: auto;
+}
+
+.clearSelectionButton {
+    font-weight: 500;
+    margin: auto;
 }

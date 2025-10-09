@@ -24,8 +24,8 @@ export function Button({
   return (
     <RACButton
       {...props}
-      data-variant={className ? undefined : variant}
-      data-size={className ? undefined : size}
+      data-variant={variant}
+      data-size={size}
       data-show-indicator={showIndicator ? true : undefined}
       data-full-width={fullWidth ? true : undefined}
       className={clsx('react-aria-Button', className)}

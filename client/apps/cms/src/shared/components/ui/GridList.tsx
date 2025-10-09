@@ -12,11 +12,7 @@ import './GridList.css';
 import React from 'react';
 
 export function GridList<T extends object>({ children, ...props }: GridListProps<T>) {
-  return (
-    <>
-      <AriaGridList {...props}>{children}</AriaGridList>
-    </>
-  );
+  return <AriaGridList {...props}>{children}</AriaGridList>;
 }
 
 export function GridListItem({
