@@ -12,7 +12,6 @@ import { SearchField } from '@/shared/components/ui/SearchField.tsx';
 import { Autocomplete } from '@/shared/components/ui/Autocomplete.tsx';
 import { DialogTrigger } from '@/shared/components/ui/Dialog.tsx';
 import { Collection, GridListLoadMoreItem } from 'react-aria-components';
-import { ProgressCircle } from '@/shared/components/ui/ProgressCircle.tsx';
 import styles from './add-courses-popover.module.css';
 
 type AddCoursesPopoverProps = {
@@ -33,8 +32,7 @@ export function AddCoursesPopover({ term }: AddCoursesPopoverProps) {
 
   const {
     data: courseSearchResults,
-    isLoading,
-    isFetchingNextPage,
+    isFetching,
     fetchNextPage,
   } = useInfiniteQuery(courseQueries.infinite({ filter: debouncedSearch }));
 
@@ -65,7 +63,7 @@ export function AddCoursesPopover({ term }: AddCoursesPopoverProps) {
             autoFocus
             aria-label="Search courses."
             placeholder="Search course catalog..."
-            isLoading={isLoading}
+            isLoading={isFetching}
           />
 
           <GridList
@@ -82,9 +80,7 @@ export function AddCoursesPopover({ term }: AddCoursesPopoverProps) {
               )}
             </Collection>
 
-            <GridListLoadMoreItem onLoadMore={fetchNextPage} isLoading={isFetchingNextPage}>
-              <ProgressCircle isIndeterminate aria-label="Loading more courses..." />
-            </GridListLoadMoreItem>
+            <GridListLoadMoreItem onLoadMore={fetchNextPage} isLoading={isFetching} />
           </GridList>
         </Autocomplete>
 
