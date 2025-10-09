@@ -2,17 +2,46 @@
 .footer {
     display: flex;
     align-items: center;
-    gap: var(--space-1);
+    justify-content: right;
+    gap: var(--space-2);
     border-top: 1px solid var(--border-color);
-    padding: var(--space-2) var(--space-3);
+    padding: var(--space-1) var(--space-2);
     max-width: 400px;
 }
 
-.placeCoursesButton {
-    margin-left: auto;
+.createHint {
+    padding: var(--space-2) var(--space-3);
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    gap: var(--space-1);
+    justify-content: center;
+    font-size: var(--font-size-xs);
+    align-items: center;
+    color: var(--text-color-secondary);
 }
 
-.clearSelectionButton {
+.createLinkText {
+
+    color: var(--text-color-base);
+}
+
+.createHintButton {
     font-weight: 500;
-    margin: auto;
+    cursor: pointer;
+
+    &[data-hovered] {
+        .createLinkText {
+            color: var(--primary-color);
+        }
+    }
+}
+
+.placeCoursesButton {
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.resetButton {
+    font-weight: 500;
+    color: var(--text-color-secondary);
 }

@@ -32,11 +32,7 @@ function Term({ term, placements }: TermProps) {
 
   return (
     <section className={styles.term}>
-      <div className={styles.termHeader}>
-        <p>Term {term}</p>
-
-        <AddCoursesPopover term={Number(term)} />
-      </div>
+      <p className={styles.termHeader}>Term {term}</p>
 
       <div className={styles.termCourseCards}>
         {placements?.sort().map((p) => {
@@ -45,6 +41,8 @@ function Term({ term, placements }: TermProps) {
 
           return <CourseCard course={course} />;
         })}
+
+        <AddCoursesPopover term={Number(term)} />
       </div>
     </section>
   );

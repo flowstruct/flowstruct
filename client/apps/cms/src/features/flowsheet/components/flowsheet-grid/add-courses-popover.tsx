@@ -1,5 +1,5 @@
 import { Button } from '@/shared/components/ui/Button.tsx';
-import { BetweenHorizontalEnd, ChevronDown, Plus, X } from 'lucide-react';
+import { BetweenHorizontalEnd, Plus } from 'lucide-react';
 import { Tooltip, TooltipTrigger } from '@/shared/components/ui/Tooltip.tsx';
 import { Popover } from '@/shared/components/ui/Popover.tsx';
 import { GridList, GridListItem } from '@/shared/components/ui/GridList.tsx';
@@ -14,7 +14,6 @@ import { DialogTrigger } from '@/shared/components/ui/Dialog.tsx';
 import { Collection, GridListLoadMoreItem } from 'react-aria-components';
 import { ProgressCircle } from '@/shared/components/ui/ProgressCircle.tsx';
 import styles from './add-courses-popover.module.css';
-import { Menu, MenuItem, MenuTrigger } from '@/shared/components/ui/Menu.tsx';
 
 type AddCoursesPopoverProps = {
   term: number;
@@ -65,7 +64,7 @@ export function AddCoursesPopover({ term }: AddCoursesPopoverProps) {
           <SearchField
             autoFocus
             aria-label="Search courses."
-            placeholder="Find courses..."
+            placeholder="Search course catalog..."
             isLoading={isLoading}
           />
 
@@ -89,52 +88,36 @@ export function AddCoursesPopover({ term }: AddCoursesPopoverProps) {
           </GridList>
         </Autocomplete>
 
-        <footer className={styles.footer}>
-          {selectedKeys.size > 0 && (
-            <MenuTrigger>
-              <Button variant="transparent" size="sm">
-                {selectedKeys.size} selected
-                <ChevronDown size={14} />
-              </Button>
+        {debouncedSearch && courses.length > 0 && (
+          <div className={styles.createHint}>
+            Can’t find what you’re looking for?{' '}
+            <Button
+              size="xs"
+              variant="ghost"
+              className={styles.createHintButton}
+              // onPress={() => handleCreateCourse(debouncedSearch)}
+            >
+              <span className={styles.createLinkText}>Create “{debouncedSearch}”</span>
+            </Button>
+          </div>
+        )}
 
-              <Popover>
-                <Menu
-                  selectionMode="multiple"
-                  selectedKeys={selectedKeys}
-                  onSelectionChange={setSelectedKeys}
-                  items={selectedCourses}
-                >
-                  {(item) => (
-                    <MenuItem textValue={item.name}>
-                      {item.code}: {item.name}
-                    </MenuItem>
-                  )}
-                </Menu>
+        {selectedKeys.size > 0 && (
+          <footer className={styles.footer}>
+            <Button
+              size="sm"
+              className={styles.resetButton}
+              onPress={() => setSelectedKeys(new Set())}
+              variant="transparent"
+            >
+              Reset
+            </Button>
 
-                <footer className={styles.footer}>
-                  <p className={styles.filteredOutMessage}>
-                    {selectedCourses.length < selectedKeys.size &&
-                      `Filtered ${selectedCourses.length} out of ${selectedKeys.size}`}
-                  </p>
-
-                  <Button
-                    className={styles.clearSelectionButton}
-                    onPress={() => setSelectedKeys(new Set())}
-                    size="xs"
-                    variant="ghost"
-                  >
-                    <X size={14} /> Clear selected
-                  </Button>
-                </footer>
-              </Popover>
-            </MenuTrigger>
-          )}
-
-          <Button className={styles.placeCoursesButton} variant="primary" size="sm">
-            <BetweenHorizontalEnd size={14} />
-            Place courses
-          </Button>
-        </footer>
+            <Button size="sm" className={styles.placeCoursesButton} variant="transparent">
+              <BetweenHorizontalEnd size={14} /> Confirm placements
+            </Button>
+          </footer>
+        )}
       </Popover>
     </DialogTrigger>
   );
