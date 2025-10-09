@@ -19,9 +19,9 @@ export type TabOption<T extends string> = {
   icon?: React.ReactNode;
 };
 
-export type FilterSearchParams = {
-  filter: string;
-  page: number;
-  size: number;
-  columnFilters: ColumnFilter[];
+export type SearchOptions = {
+  filter?: string;
+  page?: number;
+  size?: number;
+  columnFilters?: ColumnFilter[];
 };

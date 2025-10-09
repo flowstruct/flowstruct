@@ -41,7 +41,7 @@ export function AddCoursesPopover({ term }: AddCoursesPopoverProps) {
           onInputChange={setSearch}
         >
           <GridList
-            items={courseSearchResults?.pages[0].content}
+            items={courseSearchResults?.pages.flatMap((p) => p.content)}
             selectionMode="multiple"
             renderEmptyState={() => <ListEmptyState>No results.</ListEmptyState>}
           >
