@@ -2,7 +2,7 @@ import { useFlowsheetContext } from '@/features/flowsheet/contexts/flowsheet-con
 import styles from './flowsheet-grid.module.css';
 import { CourseCard } from '@/features/flowsheet/components/flowsheet-grid/course-card.tsx';
 import { Placement } from '@/features/flowsheet/domain/flowsheet.ts';
-import { AddCoursesPopover } from '@/features/flowsheet/components/flowsheet-grid/add-courses-popover.tsx';
+import { CourseCatalogFinder } from '@/features/flowsheet/components/flowsheet-grid/course-catalog-finder.tsx';
 
 export function FlowsheetGrid() {
   const { flowsheet } = useFlowsheetContext();
@@ -42,7 +42,7 @@ function Term({ term, placements }: TermProps) {
           return <CourseCard course={course} />;
         })}
 
-        <AddCoursesPopover term={Number(term)} />
+        <CourseCatalogFinder term={Number(term)} />
       </div>
     </section>
   );

@@ -4,7 +4,7 @@ import { Tooltip, TooltipTrigger } from '@/shared/components/ui/Tooltip.tsx';
 import { Popover } from '@/shared/components/ui/Popover.tsx';
 import { GridList, GridListItem } from '@/shared/components/ui/GridList.tsx';
 import { ListEmptyState } from '@/shared/components/ui/ListBox.tsx';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import { courseQueries } from '@/features/course/queries.ts';
 import React from 'react';
 import { useDebounce } from '@/shared/hooks/useDebounce.ts';
@@ -12,41 +12,43 @@ import { SearchField } from '@/shared/components/ui/SearchField.tsx';
 import { Autocomplete } from '@/shared/components/ui/Autocomplete.tsx';
 import { DialogTrigger } from '@/shared/components/ui/Dialog.tsx';
 import { Collection, GridListLoadMoreItem } from 'react-aria-components';
-import styles from './add-courses-popover.module.css';
+import styles from './course-catalog-finder.module.css';
+import { CourseSummary } from '@/features/course/domain/course.ts';
 
 type AddCoursesPopoverProps = {
   term: number;
 };
 
-type Course = {
-  id: number;
-  code: string;
-  name: string;
-};
-
-export function AddCoursesPopover({ term }: AddCoursesPopoverProps) {
+export function CourseCatalogFinder({ term }: AddCoursesPopoverProps) {
   const [search, setSearch] = React.useState('');
   const debouncedSearch = useDebounce(search);
   const [selectedKeys, setSelectedKeys] = React.useState<Set<number>>(new Set());
-  const allCoursesRef = React.useRef<Map<number, Course>>(new Map());
+  const queryClient = useQueryClient();
+  const allCourseResultsRef = React.useRef<Map<number, CourseSummary>>(new Map());
 
   const {
-    data: courseSearchResults,
+    data: courseResults,
     isFetching,
     fetchNextPage,
   } = useInfiniteQuery(courseQueries.infinite({ filter: debouncedSearch }));
 
-  const courses = courseSearchResults?.pages.flatMap((p) => p.content) ?? [];
-
-  courses.forEach((course) => {
-    allCoursesRef.current.set(course.id, course);
-  });
-
-  const selectedCourses = React.useMemo(() => {
-    return Array.from(selectedKeys)
-      .map((id) => allCoursesRef.current.get(id))
-      .filter((course): course is Course => course !== undefined);
+  React.useEffect(() => {
+    updateSelectedCoursesCache(selectedKeys);
   }, [selectedKeys]);
+
+  const courses = courseResults?.pages.flatMap((p) => p.content) ?? [];
+
+  function updateSelectedCoursesCache(selectedKeys: Set<number>) {
+    courses.forEach((course) => {
+      allCourseResultsRef.current.set(course.id, course);
+    });
+
+    const selectedCourses = Array.from(selectedKeys)
+      .map((id) => allCourseResultsRef.current.get(id))
+      .filter((course): course is CourseSummary => course !== undefined);
+
+    queryClient.setQueryData(['terms', term, 'courses', 'to-be-added'], selectedCourses);
+  }
 
   return (
     <DialogTrigger>
@@ -84,15 +86,12 @@ export function AddCoursesPopover({ term }: AddCoursesPopoverProps) {
           </GridList>
         </Autocomplete>
 
+        {JSON.stringify(queryClient.getQueryData(['terms', term, 'courses', 'to-be-added']))}
+
         {debouncedSearch && courses.length > 0 && (
           <div className={styles.createHint}>
             Can’t find what you’re looking for?{' '}
-            <Button
-              size="xs"
-              variant="ghost"
-              className={styles.createHintButton}
-              // onPress={() => handleCreateCourse(debouncedSearch)}
-            >
+            <Button size="xs" variant="ghost" className={styles.createHintButton}>
               <span className={styles.createLinkText}>Create “{debouncedSearch}”</span>
             </Button>
           </div>
