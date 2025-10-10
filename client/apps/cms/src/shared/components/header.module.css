@@ -1,10 +1,14 @@
 .header {
-    height: 45px;
+    position: sticky;
+    top: 0;
+    height: 50px;
     display: grid;
     grid-template-columns: 1fr auto;
     align-items: center;
-    padding: 0 var(--space-8);
+    padding: var(--space-3) var(--space-8);
     gap: var(--space-3);
+    background: var(--background-color);
+    z-index: 2;
     /*border-bottom: 1px solid var(--border-color);*/
 }
 

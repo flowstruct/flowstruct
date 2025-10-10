@@ -7,6 +7,9 @@
     padding-bottom: var(--space-4);
     background-color: var(--sidebar-background);
     width: 275px;
+    position: sticky;
+    border-right: 1px solid var(--border-color);
+    top: 0;
 }
 
 .userProfile {
