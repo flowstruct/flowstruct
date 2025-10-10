@@ -3,11 +3,12 @@ import styles from './course-card.module.css';
 
 type CourseCardProps = {
   course: CourseSummary;
+  mode?: 'pending';
 };
 
-export function CourseCard({ course }: CourseCardProps) {
+export function CourseCard({ course, mode }: CourseCardProps) {
   return (
-    <div className={styles.card}>
+    <div data-mode={mode} className={styles.card}>
       <h3 className={styles.code}>{course.code}</h3>
 
       <p className={styles.name}>{course.name}</p>

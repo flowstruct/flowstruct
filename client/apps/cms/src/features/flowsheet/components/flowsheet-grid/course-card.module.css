@@ -6,6 +6,11 @@
     border-radius: var(--radius-1);
     height: 9rem;
     user-select: none;
+    width: 100%;
+
+    &[data-mode=pending] {
+        opacity: 75%;
+    }
 }
 
 .code {

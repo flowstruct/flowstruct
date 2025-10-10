@@ -64,3 +64,5 @@ export type FlowsheetSummary = Pick<
 >;
 
 export type ArchiveStatus = 'all' | 'active' | 'archived';
+
+export type Term = number;

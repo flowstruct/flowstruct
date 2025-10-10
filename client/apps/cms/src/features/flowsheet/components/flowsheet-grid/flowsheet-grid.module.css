@@ -13,7 +13,7 @@
     user-select: none;
 }
 
-.termCourseCards {
+.courseCardList {
     position: relative;
     width: 100%;
     display: flex;

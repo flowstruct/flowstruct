@@ -8,8 +8,8 @@ export const courseKeys = {
   page: (options: SearchOptions) => [...courseKeys.pages(), options] as const,
   details: () => [...courseKeys.all, 'detail'] as const,
   detail: (id: number) => [...courseKeys.details(), id] as const,
-  infinites: () => [...courseKeys.all, 'infinite'] as const,
-  infinite: (options: SearchOptions) => [...courseKeys.infinites(), options] as const,
+  catalogs: () => [...courseKeys.all, 'catalog'] as const,
+  catalog: (options: SearchOptions) => [...courseKeys.catalogs(), options] as const,
 };
 
 export const courseQueries = {
@@ -26,9 +26,9 @@ export const courseQueries = {
       placeholderData: keepPreviousData,
     }),
 
-  infinite: (options: SearchOptions) =>
+  catalog: (options: SearchOptions) =>
     infiniteQueryOptions({
-      queryKey: courseKeys.infinite(options),
+      queryKey: courseKeys.catalog(options),
       queryFn: ({ pageParam }) =>
         courseApi.getPaginatedCourses({ filter: options.filter, page: pageParam }),
       initialPageParam: 0,
