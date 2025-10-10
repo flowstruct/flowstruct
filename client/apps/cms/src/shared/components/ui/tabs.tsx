@@ -16,7 +16,7 @@ export function Tabs<T extends string>({ tabs, currentTab, onTabChange }: TabsPr
           key={value}
           data-active={currentTab === value || undefined}
           variant="flat"
-          size="sm"
+          size="xs"
           className={styles.tab}
           onPress={() => onTabChange(value)}
         >

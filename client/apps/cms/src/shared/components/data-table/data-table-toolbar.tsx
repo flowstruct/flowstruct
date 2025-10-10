@@ -147,6 +147,8 @@ function ColumnVisibilityPills<TData>({ table }: { table: Table<TData> }) {
 
           return (
             <Button
+              size="xs"
+              variant="flat"
               data-active={c.getIsVisible() || undefined}
               className={styles.columnPill}
               onPress={() => c.toggleVisibility()}

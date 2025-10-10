@@ -33,11 +33,12 @@ import { Tooltip, TooltipTrigger } from '@/shared/components/ui/Tooltip.tsx';
 import { Key } from 'react-aria-components';
 import { flowsheetApi } from '@/features/flowsheet/api.ts';
 import { useNavigate } from '@tanstack/react-router';
+import { handleSubmit } from '@/shared/utils/handle-submit.ts';
 
 export function CreateFlowsheetModal() {
   const [programFormIsOpen, setProgramFormIsOpen] = React.useState<boolean>(false);
-  const [isOpen, setIsOpen] = React.useState<boolean>(false);
-  const [openFlowsheet, setOpenFlowsheet] = React.useState<boolean>(true);
+  const [modalIsOpen, setModalIsOpen] = React.useState<boolean>(false);
+  const [navigateToFlowsheet, setNavigateToFlowsheet] = React.useState<boolean>(true);
 
   const createFlowsheet = useMutation({
     mutationFn: flowsheetApi.createFlowsheet,
@@ -46,37 +47,32 @@ export function CreateFlowsheetModal() {
 
   const navigate = useNavigate();
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-
+  const onSubmit = handleSubmit((formData) => {
     if (programFormIsOpen) {
       return;
     }
-    
-    let formData = Object.fromEntries(new FormData(e.currentTarget));
 
     createFlowsheet.mutate(formData, {
       onSuccess: (data) => {
-        setIsOpen(false);
-        if (openFlowsheet) {
+        setModalIsOpen(false);
+        if (navigateToFlowsheet) {
           navigate({ to: '/flowsheets/$flowsheetId', params: { flowsheetId: String(data.id) } });
         }
       },
     });
-  };
+  });
 
   return (
     <DialogTrigger>
       <TooltipTrigger>
-        <Button onPress={() => setIsOpen(true)} size="sm" variant="transparent">
+        <Button onPress={() => setModalIsOpen(true)} size="sm" variant="transparent">
           <Plus size={15} />
         </Button>
 
         <Tooltip>New</Tooltip>
       </TooltipTrigger>
 
-      <Modal isOpen={isOpen} onOpenChange={setIsOpen} size="xl">
+      <Modal isOpen={modalIsOpen} onOpenChange={setModalIsOpen} size="xl">
         <Form onSubmit={onSubmit}>
           <div className={styles.content}>
             <header className={styles.header}>
@@ -90,7 +86,7 @@ export function CreateFlowsheetModal() {
                 </Breadcrumb>
               </Breadcrumbs>
 
-              <Button variant="transparent" size="icon" onPress={() => setIsOpen(false)}>
+              <Button variant="transparent" size="icon" onPress={() => setModalIsOpen(false)}>
                 <X size={14} />
               </Button>
             </header>
@@ -130,7 +126,7 @@ export function CreateFlowsheetModal() {
           <Divider />
 
           <section className={styles.footer}>
-            <Switch isSelected={openFlowsheet} onChange={setOpenFlowsheet}>
+            <Switch isSelected={navigateToFlowsheet} onChange={setNavigateToFlowsheet}>
               Open after creating
             </Switch>
 
@@ -231,6 +227,8 @@ function ProgramComboBox({ programFormIsOpen, setProgramFormIsOpen }: ProgramCom
           <section className={styles.createProgramSection}>
             <TooltipTrigger>
               <Button
+                variant="transparent"
+                size="sm"
                 aria-label="Create program"
                 onPress={() => setProgramFormIsOpen(true)}
                 className={styles.createProgramButton}
