@@ -55,7 +55,13 @@ export function CourseCatalog({ term }: AddCoursesPopoverProps) {
               pendCoursesFromCatalog({ term, courseIds: keys });
             }}
             selectionMode="multiple"
-            renderEmptyState={() => <ListEmptyState>No results.</ListEmptyState>}
+            renderEmptyState={() => (
+              <ListEmptyState>
+                <Button size="xs" variant="ghost" className={styles.createHintButton}>
+                  <span className={styles.createLinkText}>Create “{debouncedSearch}”</span>
+                </Button>
+              </ListEmptyState>
+            )}
           >
             <Collection items={courses}>
               {(item) => (
