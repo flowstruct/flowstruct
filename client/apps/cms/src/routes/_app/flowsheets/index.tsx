@@ -6,7 +6,7 @@ import { useFlowsheetTable } from '@/features/flowsheet/hooks/use-flowsheet-tabl
 import { DataTableToolbar } from '@/shared/components/data-table/data-table-toolbar.tsx';
 import { Tabs } from '@/shared/components/ui/tabs.tsx';
 import { ArchiveStatus } from '@/features/flowsheet/domain/flowsheet.ts';
-import { CreateFlowsheetModal } from '@/features/flowsheet/components/create-flowsheet-modal.tsx';
+import { CreateFlowsheetModal } from '@/features/flowsheet/components/create-flowsheet-modal/create-flowsheet-modal.tsx';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { getFlowsheetsByArchiveStatus } from '@/features/flowsheet/domain/getFlowsheetsByArchiveStatus.ts';
 import { TabOption } from '@/shared/types.ts';

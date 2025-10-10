@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react';
 import { ColumnFilter } from '@tanstack/react-table';
+import { useDisclosure } from '@/shared/hooks/use-disclosure.ts';
 
 export interface ErrorObject {
   statusCode: number;
@@ -25,3 +26,5 @@ export type SearchOptions = {
   size?: number;
   columnFilters?: ColumnFilter[];
 };
+
+export type DisclosureState = ReturnType<typeof useDisclosure>;

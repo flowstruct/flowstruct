@@ -2,7 +2,7 @@ import { useFlowsheetContext } from '@/features/flowsheet/contexts/flowsheet-con
 import styles from './flowsheet-grid.module.css';
 import { CourseCard } from '@/features/flowsheet/components/flowsheet-grid/course-card.tsx';
 import { Placement } from '@/features/flowsheet/domain/flowsheet.ts';
-import { CourseCatalog } from '@/features/flowsheet/components/flowsheet-grid/course-catalog.tsx';
+import { CourseCatalogAutocomplete } from '@/features/flowsheet/components/flowsheet-grid/course-catalog-autocomplete.tsx';
 import { useFlowsheetGridContext } from '@/features/flowsheet/contexts/flowsheet-grid-context.tsx';
 import {
   CourseCatalogProvider,
@@ -54,7 +54,7 @@ function Term({ term, placements }: TermProps) {
       <div className={styles.termHeader}>
         <p>Term {term}</p>
 
-        <CourseCatalog term={Number(term)} />
+        <CourseCatalogAutocomplete term={Number(term)} />
       </div>
 
       <div className={styles.courseCardList}>

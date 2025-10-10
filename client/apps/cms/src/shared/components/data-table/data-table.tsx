@@ -1,17 +1,16 @@
 import { Column, flexRender, Row, Table as TanStackTable } from '@tanstack/react-table';
-import { ListFilter, X } from 'lucide-react';
+import { ListFilter } from 'lucide-react';
 import styles from '@/shared/components/data-table/data-table.module.css';
 import { MenuTrigger } from '@/shared/components/ui/Menu.tsx';
 import { Button } from '@/shared/components/ui/Button.tsx';
-import { Button as RACButton } from 'react-aria-components';
 import { Popover } from '@/shared/components/ui/Popover.tsx';
 import { Autocomplete } from '@/shared/components/ui/Autocomplete.tsx';
 import { GridList, GridListItem } from '@/shared/components/ui/GridList.tsx';
 import React from 'react';
 import { AriaButtonProps, useButton, useFilter, useFocusRing, useHover } from 'react-aria';
 import { ListEmptyState } from '@/shared/components/ui/ListBox.tsx';
-import { Tooltip, TooltipTrigger } from '@/shared/components/ui/Tooltip.tsx';
 import { SearchField } from '@/shared/components/ui/SearchField.tsx';
+import { UnstyledButton } from '@/shared/components/ui/UnstyledButton.tsx';
 
 type DataTableProps<TData> = {
   table: TanStackTable<TData>;
@@ -148,16 +147,16 @@ function FilterMenu({ column }: { column: Column<any, unknown> }) {
         </Autocomplete>
 
         {column.getIsFiltered() && (
-          <TooltipTrigger>
-            <RACButton
+          <footer className={styles.filterMenuFooter}>
+            <Button
+              variant="ghost"
+              size="xs"
               onPress={() => column.setFilterValue(undefined)}
-              className={styles.clearFilterButton}
+              className={styles.resetFilterButton}
             >
-              <X size={15} />
-            </RACButton>
-
-            <Tooltip placement="bottom">Clear filter</Tooltip>
-          </TooltipTrigger>
+              Reset
+            </Button>
+          </footer>
         )}
       </Popover>
     </MenuTrigger>

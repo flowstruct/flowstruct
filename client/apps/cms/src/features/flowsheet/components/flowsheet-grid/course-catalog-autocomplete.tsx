@@ -7,17 +7,17 @@ import { ListEmptyState } from '@/shared/components/ui/ListBox.tsx';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { courseQueries } from '@/features/course/queries.ts';
 import React from 'react';
-import { useDebounce } from '@/shared/hooks/useDebounce.ts';
+import { useDebounce } from '@/shared/hooks/use-debounce.ts';
 import { SearchField } from '@/shared/components/ui/SearchField.tsx';
 import { Autocomplete } from '@/shared/components/ui/Autocomplete.tsx';
 import { DialogTrigger } from '@/shared/components/ui/Dialog.tsx';
 import { Collection, GridListLoadMoreItem } from 'react-aria-components';
-import styles from './course-catalog-finder.module.css';
+import styles from './course-catalog-autocomplete.module.css';
 import { useFlowsheetGridContext } from '@/features/flowsheet/contexts/flowsheet-grid-context.tsx';
 
 type AddCoursesPopoverProps = { term: number };
 
-export function CourseCatalog({ term }: AddCoursesPopoverProps) {
+export function CourseCatalogAutocomplete({ term }: AddCoursesPopoverProps) {
   const { pendingCourses, pendCoursesFromCatalog } = useFlowsheetGridContext();
   const [search, setSearch] = React.useState('');
   const debouncedSearch = useDebounce(search);

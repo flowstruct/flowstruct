@@ -9,7 +9,7 @@ import {
 import './ListBox.css';
 import React from 'react';
 
-interface ListBoxProps extends RACListBoxProps {
+interface ListBoxProps<T> extends RACListBoxProps<T> {
   size?: 'xs' | 'sm';
 }
 

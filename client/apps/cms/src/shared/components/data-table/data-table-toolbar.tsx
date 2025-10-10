@@ -14,7 +14,7 @@ import { Popover } from '@/shared/components/ui/Popover.tsx';
 import { Select, SelectItem } from '@/shared/components/ui/Select.tsx';
 import { SearchField } from '@/shared/components/ui/SearchField.tsx';
 import React from 'react';
-import { useDebounce } from '@/shared/hooks/useDebounce.ts';
+import { useDebounce } from '@/shared/hooks/use-debounce.ts';
 import { Divider } from '@/shared/components/ui/divider.tsx';
 import { Tooltip, TooltipTrigger } from '@/shared/components/ui/Tooltip.tsx';
 
@@ -75,7 +75,7 @@ function DataTableSettings<TData>({ table }: { table: Table<TData> }) {
         <Tooltip>Table settings</Tooltip>
       </TooltipTrigger>
 
-      <Popover crossOffset={-64}>
+      <Popover crossOffset={-90}>
         <div className={styles.option}>
           <SortingOptions table={table} />
         </div>
