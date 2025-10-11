@@ -1,11 +1,13 @@
 import { Placement, Term } from '@/features/flowsheet/domain/flowsheet.ts';
 import React, { useContext } from 'react';
 import { useFlowsheetContext } from '@/features/flowsheet/contexts/flowsheet-context.tsx';
+import { getFlowsheetTerms } from '@/features/flowsheet/domain/getFlowsheetTerms.ts';
 
 type FlowsheetGridContextValues = {
   terms: Record<Term, Placement[]>;
   pendingCourses: Map<number, Term>;
   pendCoursesFromCatalog: ({ term, courseIds }: { term: Term; courseIds: number[] }) => void;
+  unpendCourseFromGrid: (courseId: number) => void;
 };
 
 const FlowsheetGridContext = React.createContext<FlowsheetGridContextValues | undefined>(undefined);
@@ -34,18 +36,21 @@ export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) 
     });
   };
 
-  const terms = React.useMemo(() => {
-    const grouped = Object.groupBy(flowsheet.placements, (p) => p.term);
-    if (Object.keys(grouped).length === 0) {
-      return { 1: [] } as Record<Term, Placement[]>;
-    }
-    return grouped as Record<Term, Placement[]>;
-  }, [flowsheet.placements]);
+  const unpendCourseFromGrid = (courseId: number) => {
+    setPendingCourses((prev) => {
+      const updated = new Map(prev);
+      updated.delete(courseId);
+
+      return updated;
+    });
+  };
+
+  const terms = React.useMemo(() => getFlowsheetTerms(flowsheet), [flowsheet.placements]);
+
+  const contextValue = { terms, pendingCourses, pendCoursesFromCatalog, unpendCourseFromGrid };
 
   return (
-    <FlowsheetGridContext.Provider value={{ terms, pendingCourses, pendCoursesFromCatalog }}>
-      {children}
-    </FlowsheetGridContext.Provider>
+    <FlowsheetGridContext.Provider value={contextValue}>{children}</FlowsheetGridContext.Provider>
   );
 }
 

@@ -47,7 +47,7 @@ export function RouteBreadcrumbs() {
   const { data: programs } = useSuspenseQuery(programQueries.collection);
   const navigate = useNavigate();
 
-  const program = programs.map[flowsheet.program];
+  const program = programs.byIds[flowsheet.program];
   if (!program) return;
 
   return (

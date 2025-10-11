@@ -35,5 +35,6 @@ export const courseQueries = {
       getNextPageParam: (lastPage, _, lastPageParam) =>
         lastPage.isLastPage ? null : lastPageParam + 1,
       placeholderData: keepPreviousData,
+      select: (data) => ({ results: data.pages.flatMap((p) => p.content) ?? [] }),
     }),
 };

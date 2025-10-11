@@ -23,12 +23,12 @@ export function CourseCatalogAutocomplete({ term }: AddCoursesPopoverProps) {
   const debouncedSearch = useDebounce(search);
 
   const {
-    data: courseResults,
+    data: catalogCourses,
     isFetching,
     fetchNextPage,
   } = useInfiniteQuery(courseQueries.catalog({ filter: debouncedSearch }));
 
-  const courses = courseResults?.pages.flatMap((p) => p.content) ?? [];
+  const suggestCreateCourse = debouncedSearch && (catalogCourses?.results.length ?? 0) > 0;
 
   return (
     <DialogTrigger>
@@ -63,7 +63,7 @@ export function CourseCatalogAutocomplete({ term }: AddCoursesPopoverProps) {
               </ListEmptyState>
             )}
           >
-            <Collection items={courses}>
+            <Collection items={catalogCourses?.results}>
               {(item) => (
                 <GridListItem id={item.id} textValue={item.name}>
                   {item.code}: {item.name}
@@ -75,7 +75,7 @@ export function CourseCatalogAutocomplete({ term }: AddCoursesPopoverProps) {
           </GridList>
         </Autocomplete>
 
-        {debouncedSearch && courses.length > 0 && (
+        {suggestCreateCourse && (
           <div className={styles.createHint}>
             Can’t find what you’re looking for?{' '}
             <Button size="xs" variant="ghost" className={styles.createHintButton}>

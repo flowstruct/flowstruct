@@ -5,21 +5,21 @@ import { Placement } from '@/features/flowsheet/domain/flowsheet.ts';
 import { CourseCatalogAutocomplete } from '@/features/flowsheet/components/flowsheet-grid/course-catalog-autocomplete.tsx';
 import { useFlowsheetGridContext } from '@/features/flowsheet/contexts/flowsheet-grid-context.tsx';
 import {
-  CourseCatalogProvider,
-  useCourseCatalogContext,
-} from '@/features/course/contexts/course-catalog-context.tsx';
+  CatalogCoursesProvider,
+  useCatalogCoursesContext,
+} from '@/features/course/contexts/catalog-courses-context.tsx';
 
 export function FlowsheetGrid() {
   const { terms } = useFlowsheetGridContext();
 
   return (
-    <CourseCatalogProvider>
+    <CatalogCoursesProvider>
       <div className={styles.terms}>
         {Object.entries(terms).map(([term, placements]) => (
           <Term key={term} term={Number(term)} placements={placements ?? []} />
         ))}
       </div>
-    </CourseCatalogProvider>
+    </CatalogCoursesProvider>
   );
 }
 
@@ -29,21 +29,21 @@ type TermProps = {
 };
 
 function Term({ term, placements }: TermProps) {
-  const { courses } = useFlowsheetContext();
-  const { courseCatalog } = useCourseCatalogContext();
+  const { flowsheetCourses } = useFlowsheetContext();
+  const { catalogCourses } = useCatalogCoursesContext();
   const { pendingCourses } = useFlowsheetGridContext();
 
   const pendingCourseCards = Array.from(pendingCourses)
     .filter(([_, v]) => v === term)
     .map(([k, _]) => {
-      const course = courseCatalog.get(k);
+      const course = catalogCourses.get(k);
       if (!course) return;
 
       return <CourseCard course={course} mode="pending" />;
     });
 
   const termCourseCards = placements?.sort().map((p) => {
-    const course = courses.map[p.course];
+    const course = flowsheetCourses.byIds[p.course];
     if (!course) return;
 
     return <CourseCard course={course} />;

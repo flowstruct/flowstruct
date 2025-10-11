@@ -18,10 +18,15 @@ type ProgramComboBoxProps = {
 export function ProgramComboBox({ programFormState }: ProgramComboBoxProps) {
   const { data: programs } = useSuspenseQuery(programQueries.collection);
   const comboBoxState = useComboBoxState({
-    items: programs.map,
+    items: programs.byIds,
     getDisplayName: getProgramDisplayName,
   });
   const programFormRef = React.useRef<HTMLDivElement>(null);
+
+  const suggestCreateProgram =
+    comboBoxState.filteredItems.length !== 0 &&
+    comboBoxState.inputValue !== '' &&
+    !comboBoxState.selectedKey;
 
   const createProgramButton = (
     <UnstyledButton
@@ -66,14 +71,12 @@ export function ProgramComboBox({ programFormState }: ProgramComboBoxProps) {
               )}
             </ListBox>
 
-            {comboBoxState.filteredItems.length !== 0 &&
-              comboBoxState.inputValue !== '' &&
-              !comboBoxState.selectedKey && (
-                <section className={styles.createHint}>
-                  Can't find what you're looking for?
-                  {createProgramButton}
-                </section>
-              )}
+            {suggestCreateProgram && (
+              <section className={styles.createHint}>
+                Can't find what you're looking for?
+                {createProgramButton}
+              </section>
+            )}
           </>
         )}
 

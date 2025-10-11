@@ -39,7 +39,7 @@ export const useFlowsheetTable = ({ flowsheets }: UseFlowsheetTableProps) => {
     let rowValue = row.getValue(columnId);
 
     if (columnId === 'program') {
-      const program = programs.map[rowValue as number];
+      const program = programs.byIds[rowValue as number];
       rowValue = program ? getProgramDisplayName(program) : '';
     }
 
@@ -55,7 +55,7 @@ export const useFlowsheetTable = ({ flowsheets }: UseFlowsheetTableProps) => {
       accessor('program', {
         header: 'Program',
         cell: ({ row }) => {
-          const program = programs.map[row.original.program];
+          const program = programs.byIds[row.original.program];
           const programName = program ? getProgramDisplayName(program) : 'None';
 
           return (
@@ -68,14 +68,14 @@ export const useFlowsheetTable = ({ flowsheets }: UseFlowsheetTableProps) => {
         filterFn: setIncludes,
         meta: {
           renderFilterName: (value: number) => {
-            const flowsheetProgram = programs.map[value];
+            const flowsheetProgram = programs.byIds[value];
             return flowsheetProgram ? getProgramDisplayName(flowsheetProgram) : 'None';
           },
           renderColumnDisplayName: () => 'Program',
         },
         sortingFn: (rowA, rowB) => {
-          const programA = programs.map[rowA.original.program];
-          const programB = programs.map[rowB.original.program];
+          const programA = programs.byIds[rowA.original.program];
+          const programB = programs.byIds[rowB.original.program];
 
           if (!programA || !programB) return 0;
 
@@ -119,7 +119,7 @@ export const useFlowsheetTable = ({ flowsheets }: UseFlowsheetTableProps) => {
         size: 50,
       }),
     ],
-    [programs.map]
+    [programs.byIds]
   );
 
   return useReactTable({

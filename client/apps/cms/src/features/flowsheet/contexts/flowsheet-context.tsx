@@ -6,7 +6,7 @@ import { flowsheetQueries } from '@/features/flowsheet/queries.ts';
 
 type FlowsheetContextValues = {
   flowsheet: Flowsheet;
-  courses: { list: CourseSummary[]; map: Record<number, CourseSummary> };
+  flowsheetCourses: { list: CourseSummary[]; byIds: Record<number, CourseSummary> };
 };
 
 const FlowsheetContext = React.createContext<FlowsheetContextValues | undefined>(undefined);
@@ -18,10 +18,12 @@ type FlowsheetProviderProps = {
 
 export function FlowsheetProvider({ flowsheetId, children }: FlowsheetProviderProps) {
   const { data: flowsheet } = useSuspenseQuery(flowsheetQueries.detail(flowsheetId));
-  const { data: courses } = useSuspenseQuery(flowsheetQueries.courseCollection(flowsheet));
+  const { data: flowsheetCourses } = useSuspenseQuery(flowsheetQueries.courseCollection(flowsheet));
 
   return (
-    <FlowsheetContext.Provider value={{ flowsheet, courses }}>{children}</FlowsheetContext.Provider>
+    <FlowsheetContext.Provider value={{ flowsheet, flowsheetCourses }}>
+      {children}
+    </FlowsheetContext.Provider>
   );
 }
 

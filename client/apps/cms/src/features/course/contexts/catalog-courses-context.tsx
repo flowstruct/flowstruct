@@ -3,18 +3,20 @@ import { InfiniteData, useQueryClient } from '@tanstack/react-query';
 import { courseKeys } from '@/features/course/queries.ts';
 import { CoursesPage, CourseSummary } from '@/features/course/domain/course.ts';
 
-type CourseCatalogContextValue = {
-  courseCatalog: Map<number, CourseSummary>;
+type CatalogCoursesContextValue = {
+  catalogCourses: Map<number, CourseSummary>;
 };
 
-const CourseCatalogContext = React.createContext<CourseCatalogContextValue | undefined>(undefined);
+const CatalogCoursesContext = React.createContext<CatalogCoursesContextValue | undefined>(
+  undefined
+);
 
-type CourseCatalogProviderProps = { children: React.ReactNode };
+type CatalogCoursesProviderProps = { children: React.ReactNode };
 
-export function CourseCatalogProvider({ children }: CourseCatalogProviderProps) {
+export function CatalogCoursesProvider({ children }: CatalogCoursesProviderProps) {
   const queryClient = useQueryClient();
 
-  const courseCatalog = React.useMemo(() => {
+  const catalogCourses = React.useMemo(() => {
     const queries = queryClient.getQueriesData({ queryKey: courseKeys.catalogs() }) as [
       unknown,
       InfiniteData<CoursesPage, number>,
@@ -28,14 +30,14 @@ export function CourseCatalogProvider({ children }: CourseCatalogProviderProps) 
   }, [queryClient.getQueriesData({ queryKey: courseKeys.catalogs() })]);
 
   return (
-    <CourseCatalogContext.Provider value={{ courseCatalog }}>
+    <CatalogCoursesContext.Provider value={{ catalogCourses }}>
       {children}
-    </CourseCatalogContext.Provider>
+    </CatalogCoursesContext.Provider>
   );
 }
 
-export const useCourseCatalogContext = () => {
-  const context = useContext(CourseCatalogContext);
+export const useCatalogCoursesContext = () => {
+  const context = useContext(CatalogCoursesContext);
 
   if (!context)
     throw new Error('useCourseCatalogContext must be used within CourseCatalogProvider.');

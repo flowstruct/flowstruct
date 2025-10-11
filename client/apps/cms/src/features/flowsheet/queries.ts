@@ -11,8 +11,6 @@ export const flowsheetKeys = {
   courseCollections: () => [...flowsheetKeys.all, 'courses'] as const,
   courseCollection: (flowsheetId: number) =>
     [...flowsheetKeys.courseCollections(), flowsheetId] as const,
-  programs: () => [...flowsheetKeys.all, 'programs'] as const,
-  program: (flowsheetId: number) => [...flowsheetKeys.programs(), flowsheetId] as const,
 };
 
 export const flowsheetQueries = {
@@ -21,7 +19,7 @@ export const flowsheetQueries = {
     queryFn: () => flowsheetApi.getFlowsheets(),
     select: (data) => ({
       list: data,
-      map: Object.fromEntries(data.map((d) => [d.id, d])),
+      byIds: Object.fromEntries(data.map((d) => [d.id, d])),
     }),
   }),
 
@@ -41,7 +39,7 @@ export const flowsheetQueries = {
       },
       select: (data) => ({
         list: data,
-        map: Object.fromEntries(data.map((c) => [c.id, c])),
+        byIds: Object.fromEntries(data.map((c) => [c.id, c])),
       }),
     }),
 };

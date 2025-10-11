@@ -10,7 +10,6 @@ import React from 'react';
 import { AriaButtonProps, useButton, useFilter, useFocusRing, useHover } from 'react-aria';
 import { ListEmptyState } from '@/shared/components/ui/ListBox.tsx';
 import { SearchField } from '@/shared/components/ui/SearchField.tsx';
-import { UnstyledButton } from '@/shared/components/ui/UnstyledButton.tsx';
 
 type DataTableProps<TData> = {
   table: TanStackTable<TData>;
@@ -101,7 +100,7 @@ function Tr<TData>({ row, ...props }: TrProps<TData>) {
 }
 
 function FilterMenu({ column }: { column: Column<any, unknown> }) {
-  const { contains } = useFilter();
+  const { contains } = useFilter({ sensitivity: 'base' });
 
   const renderFilterName = column.columnDef.meta?.renderFilterName;
 
@@ -130,7 +129,7 @@ function FilterMenu({ column }: { column: Column<any, unknown> }) {
 
       <Popover aria-label="Filter" hideArrow>
         <Autocomplete filter={contains}>
-          <SearchField />
+          <SearchField autoFocus />
           <GridList
             renderEmptyState={() => <ListEmptyState>No results.</ListEmptyState>}
             aria-label="filter options"

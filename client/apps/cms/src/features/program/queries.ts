@@ -14,7 +14,7 @@ export const programQueries = {
     queryFn: () => programApi.getPrograms(),
     select: (data) => ({
       list: data,
-      map: Object.fromEntries(data.map((d) => [d.id, d])),
+      byIds: Object.fromEntries(data.map((d) => [d.id, d])),
     }),
   }),
 };
