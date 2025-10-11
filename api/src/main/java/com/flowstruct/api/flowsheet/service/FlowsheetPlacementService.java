@@ -1,5 +1,6 @@
 package com.flowstruct.api.flowsheet.service;
 
+import com.flowstruct.api.flowsheet.domain.Flowsheet;
 import com.flowstruct.api.flowsheet.domain.Placement;
 import com.flowstruct.api.flowsheet.dto.FlowsheetDto;
 import com.flowstruct.api.flowsheet.dto.PlacementDto;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @PreAuthorize("hasRole('ROLE_EDITOR')")
@@ -25,6 +27,41 @@ public class FlowsheetPlacementService {
     private final PlacementUtils placementUtils;
 
     @Transactional
+    public FlowsheetDto placeCourses(long flowsheetId, List<Long> courseIds, int term) {
+        Flowsheet flowsheet = flowsheetService.findOrThrow(flowsheetId);
+
+        List<Placement> termPlacements = flowsheet.getPlacements()
+                .stream()
+                .filter(p -> p.getTerm() == term)
+                .toList();
+
+        Map<Long, Placement> placementsByCourse = flowsheet.getPlacementsByCourse();
+
+        for (var placement : termPlacements) {
+            placement.setPosition(placement.getPosition() + courseIds.size());
+        }
+
+        int firstPosition = 0;
+
+        for (var courseId : courseIds) {
+            if (placementsByCourse.containsKey(courseId)) {
+                throw new CourseAlreadyPlacedException("Course is already placed.");
+            }
+
+            Placement newPlacement = new Placement(
+                    AggregateReference.to(courseId),
+                    term,
+                    ++firstPosition,
+                    1
+            );
+
+            flowsheet.getPlacements().add(newPlacement);
+        }
+
+        return flowsheetService.saveAndMap(flowsheet);
+    }
+
+    @Transactional
     public FlowsheetDto movePlacement(
             long flowsheetId,
             long courseId,
@@ -32,7 +69,7 @@ public class FlowsheetPlacementService {
     ) {
         var flowsheet = flowsheetService.findOrThrow(flowsheetId);
 
-        var placementsMap = flowsheet.getPlacementsMap();
+        var placementsMap = flowsheet.getPlacementsByCourse();
 
         var oldPlacement = placementsMap.get(courseId);
         var newPlacement = new Placement(
@@ -93,59 +130,6 @@ public class FlowsheetPlacementService {
 
 
     @Transactional
-    public FlowsheetDto placeCourses(long flowsheetId, List<Long> courseIds, PlacementDto targetPlacement) {
-        var flowsheet = flowsheetService.findOrThrow(flowsheetId);
-
-        var coursePrerequisitesMap = flowsheet.getCoursePrerequisitesMap();
-        var placementsMap = flowsheet.getPlacementsMap();
-
-        int lastPosition = flowsheet.getPlacements()
-                .stream()
-                .filter(currentPlacement ->
-                        placementUtils.comparePlacement(
-                                new Placement(
-                                        null,
-                                        targetPlacement.term(),
-                                        1,
-                                        1
-                                ),
-                                currentPlacement
-                        ) == 0
-                )
-                .mapToInt(Placement::getPosition)
-                .max()
-                .orElse(0);
-
-        for (var courseId : courseIds) {
-            if (placementsMap.containsKey(courseId)) {
-                throw new CourseAlreadyPlacedException("Course is already placed.");
-            }
-
-            var individualCoursePlacement = new Placement(
-                    AggregateReference.to(courseId),
-                    targetPlacement.term(),
-                    ++lastPosition,
-                    1
-            );
-
-            var prerequisites = coursePrerequisitesMap.get(courseId);
-
-            if (prerequisites != null) {
-                prerequisites.forEach(prerequisite -> {
-                    var prerequisitePlacement = placementsMap.get(prerequisite.getPrerequisite().getId());
-                    if (prerequisitePlacement == null || placementUtils.comparePlacement(prerequisitePlacement, individualCoursePlacement) >= 0) {
-                        throw new InvalidCoursePlacement("A course has missing prerequisites or has prerequisites in later semesters.");
-                    }
-                });
-            }
-
-            flowsheet.getPlacements().add(individualCoursePlacement);
-        }
-
-        return flowsheetService.saveAndMap(flowsheet);
-    }
-
-    @Transactional
     public FlowsheetDto resizePlacement(long flowsheetId, long courseId, int span) {
         if (span < 1 || span > 5) {
             throw new InvalidSpanException("A course cannot span less than 1 or larger than 5 courses.");
@@ -153,7 +137,7 @@ public class FlowsheetPlacementService {
 
         var flowsheet = flowsheetService.findOrThrow(flowsheetId);
 
-        var placementsMap = flowsheet.getPlacementsMap();
+        var placementsMap = flowsheet.getPlacementsByCourse();
         var coursePlacement = placementsMap.get(courseId);
 
         if (coursePlacement == null) {
@@ -168,7 +152,7 @@ public class FlowsheetPlacementService {
     @Transactional
     public FlowsheetDto removePlacements(long flowsheetId, List<Long> courseIds) {
         var flowsheet = flowsheetService.findOrThrow(flowsheetId);
-        var placementsMap = flowsheet.getPlacementsMap();
+        var placementsMap = flowsheet.getPlacementsByCourse();
 
         for (var courseId : courseIds) {
             flowsheet.getSections().forEach(section -> section.removeCourse(courseId));

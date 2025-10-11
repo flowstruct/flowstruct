@@ -20,11 +20,11 @@ public class FlowsheetPlacementController {
     @PostMapping
     public ResponseEntity<FlowsheetDto> placeCourses(
             @PathVariable long flowsheetId,
-            @RequestParam(value = "courses", defaultValue = "") List<Long> courseIds,
-            @Valid @RequestBody PlacementDto targetPlacement
+            @RequestParam(value = "courseIds", defaultValue = "") List<Long> courseIds,
+            @RequestParam(value = "term", defaultValue = "1") int term
     ) {
         return new ResponseEntity<>(
-                flowsheetPlacementService.placeCourses(flowsheetId, courseIds, targetPlacement),
+                flowsheetPlacementService.placeCourses(flowsheetId, courseIds, term),
                 HttpStatus.OK
         );
     }

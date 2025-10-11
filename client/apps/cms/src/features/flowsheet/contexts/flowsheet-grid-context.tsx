@@ -8,6 +8,7 @@ type FlowsheetGridContextValues = {
   pendingCourses: Map<number, Term>;
   pendCoursesFromCatalog: ({ term, courseIds }: { term: Term; courseIds: number[] }) => void;
   unpendCourseFromGrid: (courseId: number) => void;
+  unpendAllCoursesFromTerm: (term: Term) => void;
 };
 
 const FlowsheetGridContext = React.createContext<FlowsheetGridContextValues | undefined>(undefined);
@@ -45,9 +46,20 @@ export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) 
     });
   };
 
+  const unpendAllCoursesFromTerm = (term: Term) => {
+    setPendingCourses((prev) => {
+      const updated = new Map(prev);
+      updated.forEach((v, k) => {
+        if (v === term) updated.delete(k);
+      });
+
+      return updated;
+    });
+  };
+
   const terms = React.useMemo(() => getFlowsheetTerms(flowsheet), [flowsheet.placements]);
 
-  const contextValue = { terms, pendingCourses, pendCoursesFromCatalog, unpendCourseFromGrid };
+  const contextValue = { terms, pendingCourses, pendCoursesFromCatalog, unpendCourseFromGrid, unpendAllCoursesFromTerm };
 
   return (
     <FlowsheetGridContext.Provider value={contextValue}>{children}</FlowsheetGridContext.Provider>

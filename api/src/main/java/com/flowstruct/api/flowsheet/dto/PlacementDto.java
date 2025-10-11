@@ -2,12 +2,9 @@ package com.flowstruct.api.flowsheet.dto;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
 
 public record PlacementDto(
-
-        @NotNull(message = "Placement cannot have an undefined course.")
-        long course,
+        Long course,
 
         @Min(value = 1, message = "A course cannot be placed in a term less than 1.")
         int term,

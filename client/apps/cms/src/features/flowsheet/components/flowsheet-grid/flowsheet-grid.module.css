@@ -29,3 +29,12 @@
     color: var(--text-color-dimmed);
     font-size: var(--font-size-xs);
 }
+
+.placeCoursesButton {
+    color: var(--primary-color);
+    font-weight: 500;
+
+    &[data-hovered] {
+        color: var(--text-color-base);
+    }
+}

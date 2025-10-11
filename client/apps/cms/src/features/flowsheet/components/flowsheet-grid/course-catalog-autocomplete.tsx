@@ -14,10 +14,12 @@ import { DialogTrigger } from '@/shared/components/ui/Dialog.tsx';
 import { Collection, GridListLoadMoreItem } from 'react-aria-components';
 import styles from './course-catalog-autocomplete.module.css';
 import { useFlowsheetGridContext } from '@/features/flowsheet/contexts/flowsheet-grid-context.tsx';
+import { useFlowsheetContext } from '@/features/flowsheet/contexts/flowsheet-context.tsx';
 
 type AddCoursesPopoverProps = { term: number };
 
 export function CourseCatalogAutocomplete({ term }: AddCoursesPopoverProps) {
+  const { flowsheetCourses } = useFlowsheetContext();
   const { pendingCourses, pendCoursesFromCatalog } = useFlowsheetGridContext();
   const [search, setSearch] = React.useState('');
   const debouncedSearch = useDebounce(search);
@@ -65,7 +67,11 @@ export function CourseCatalogAutocomplete({ term }: AddCoursesPopoverProps) {
           >
             <Collection items={catalogCourses?.results}>
               {(item) => (
-                <GridListItem id={item.id} textValue={item.name}>
+                <GridListItem
+                  id={item.id}
+                  isDisabled={!!flowsheetCourses.byIds[item.id]}
+                  textValue={item.name}
+                >
                   {item.code}: {item.name}
                 </GridListItem>
               )}

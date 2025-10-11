@@ -79,7 +79,7 @@ public class Flowsheet {
                 ));
     }
 
-    public Map<Long, Placement> getPlacementsMap() {
+    public Map<Long, Placement> getPlacementsByCourse() {
         return placements.stream().collect(Collectors.toUnmodifiableMap(
                 p -> p.getCourse().getId(),
                 p -> p

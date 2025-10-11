@@ -1,10 +1,9 @@
 import { queryOptions } from '@tanstack/react-query';
 import { flowsheetApi } from '@/features/flowsheet/api.ts';
-import { Flowsheet } from '@/features/flowsheet/domain/flowsheet.ts';
 import { courseApi } from '@/features/course/api.ts';
 
 export const flowsheetKeys = {
-  all: ['study-plans'] as const,
+  all: ['flowsheets'] as const,
   collection: () => [...flowsheetKeys.all, 'list'] as const,
   details: () => [...flowsheetKeys.all, 'detail'] as const,
   detail: (id: number) => [...flowsheetKeys.details(), id] as const,
@@ -29,11 +28,15 @@ export const flowsheetQueries = {
       queryFn: () => flowsheetApi.getFlowsheet(flowsheetId),
     }),
 
-  courseCollection: (flowsheet: Flowsheet) =>
+  courseCollection: (flowsheetId: number) =>
     queryOptions({
-      queryKey: flowsheetKeys.courseCollection(flowsheet.id),
-      queryFn: () => {
+      queryKey: flowsheetKeys.courseCollection(flowsheetId),
+      queryFn: async ({ client }) => {
+        const flowsheet = await client.fetchQuery(flowsheetQueries.detail(flowsheetId));
+
         const courseIds = flowsheet.placements.map((p) => p.course);
+
+        console.log(courseIds.length);
 
         return courseApi.getCourses(courseIds);
       },
@@ -41,5 +44,6 @@ export const flowsheetQueries = {
         list: data,
         byIds: Object.fromEntries(data.map((c) => [c.id, c])),
       }),
+      enabled: !!flowsheetId,
     }),
 };

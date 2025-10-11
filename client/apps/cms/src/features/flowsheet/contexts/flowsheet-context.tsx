@@ -18,7 +18,9 @@ type FlowsheetProviderProps = {
 
 export function FlowsheetProvider({ flowsheetId, children }: FlowsheetProviderProps) {
   const { data: flowsheet } = useSuspenseQuery(flowsheetQueries.detail(flowsheetId));
-  const { data: flowsheetCourses } = useSuspenseQuery(flowsheetQueries.courseCollection(flowsheet));
+  const { data: flowsheetCourses } = useSuspenseQuery(
+    flowsheetQueries.courseCollection(flowsheetId)
+  );
 
   return (
     <FlowsheetContext.Provider value={{ flowsheet, flowsheetCourses }}>
