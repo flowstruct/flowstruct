@@ -3,27 +3,30 @@ import styles from './flowsheet-grid.module.css';
 import { CourseCard } from '@/features/flowsheet/components/flowsheet-grid/course-card.tsx';
 import { Placement } from '@/features/flowsheet/domain/flowsheet.ts';
 import { CourseCatalogAutocomplete } from '@/features/flowsheet/components/flowsheet-grid/course-catalog-autocomplete.tsx';
-import { useFlowsheetGridContext } from '@/features/flowsheet/contexts/flowsheet-grid-context.tsx';
 import {
-  CatalogCoursesProvider,
-  useCatalogCoursesContext,
-} from '@/features/course/contexts/catalog-courses-context.tsx';
+  FlowsheetGridProvider,
+  useFlowsheetGridContext,
+} from '@/features/flowsheet/contexts/flowsheet-grid-context.tsx';
 import { Button } from '@/shared/components/ui/Button.tsx';
-import { BetweenHorizontalStart } from 'lucide-react';
-import { useMutation } from '@tanstack/react-query';
-import { flowsheetApi } from '@/features/flowsheet/api.ts';
+import { BetweenHorizontalStart, X } from 'lucide-react';
+import React from 'react';
+import { getFlowsheetTerms } from '@/features/flowsheet/domain/getFlowsheetTerms.ts';
+import { ProgressCircle } from '@/shared/components/ui/ProgressCircle.tsx';
+import { useCatalogCoursesCache } from '@/features/course/hooks/use-catalog-courses-cache.ts';
 
 export function FlowsheetGrid() {
-  const { terms } = useFlowsheetGridContext();
+  const { flowsheet } = useFlowsheetContext();
+
+  const terms = React.useMemo(() => getFlowsheetTerms(flowsheet), [flowsheet.placements]);
 
   return (
-    <CatalogCoursesProvider>
+    <FlowsheetGridProvider>
       <div className={styles.terms}>
         {Object.entries(terms).map(([term, placements]) => (
           <Term key={term} term={Number(term)} placements={placements ?? []} />
         ))}
       </div>
-    </CatalogCoursesProvider>
+    </FlowsheetGridProvider>
   );
 }
 
@@ -33,29 +36,36 @@ type TermProps = {
 };
 
 function Term({ term, placements }: TermProps) {
-  const { flowsheet, flowsheetCourses } = useFlowsheetContext();
-  const { catalogCourses } = useCatalogCoursesContext();
-  const { pendingCourses, unpendAllCoursesFromTerm } = useFlowsheetGridContext();
-
-  const placeCourses = useMutation({
-    mutationFn: () =>
-      flowsheetApi.placeCourses({
-        flowsheetId: flowsheet.id,
-        courseIds: Array.from(pendingCourses.keys()),
-        term,
-      }),
-    onSuccess: () => {
-      unpendAllCoursesFromTerm(term);
-    },
-  });
+  const { flowsheetCourses } = useFlowsheetContext();
+  const { pendingCourses, placeCourses, unpendCourseFromGrid } = useFlowsheetGridContext();
+  const catalogCoursesCache = useCatalogCoursesCache();
 
   const pendingCourseCards = Array.from(pendingCourses)
     .filter(([_, v]) => v === term)
     .map(([k, _]) => {
-      const course = catalogCourses.get(k);
+      const course = catalogCoursesCache.get(k);
       if (!course) return;
 
-      return <CourseCard key={k} course={course} mode="pending" />;
+      return (
+        <CourseCard
+          key={k}
+          course={course}
+          action={
+            placeCourses.isPending ? (
+              <ProgressCircle isIndeterminate />
+            ) : (
+              <Button
+                size="icon"
+                slot="actions"
+                variant="ghost"
+                onPress={() => unpendCourseFromGrid(course.id)}
+              >
+                <X size={14} />
+              </Button>
+            )
+          }
+        />
+      );
     });
 
   const termCourseCards = placements?.sort().map((p) => {
@@ -75,13 +85,13 @@ function Term({ term, placements }: TermProps) {
 
       <div className={styles.courseCardList}>
         {pendingCourseCards}
-        {pendingCourseCards.length !== 0 && (
+
+        {pendingCourseCards.length !== 0 && !placeCourses.isPending && (
           <Button
             variant="transparent"
             size="sm"
-            isPending={placeCourses.isPending}
             className={styles.placeCoursesButton}
-            onPress={() => placeCourses.mutate()}
+            onPress={() => placeCourses.mutate(term)}
           >
             <BetweenHorizontalStart size={14} /> Place courses
           </Button>

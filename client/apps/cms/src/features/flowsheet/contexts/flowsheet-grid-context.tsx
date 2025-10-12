@@ -1,7 +1,10 @@
-import { Placement, Term } from '@/features/flowsheet/domain/flowsheet.ts';
+import { Flowsheet, Placement, Term } from '@/features/flowsheet/domain/flowsheet.ts';
 import React, { useContext } from 'react';
 import { useFlowsheetContext } from '@/features/flowsheet/contexts/flowsheet-context.tsx';
 import { getFlowsheetTerms } from '@/features/flowsheet/domain/getFlowsheetTerms.ts';
+import { useMutation, UseMutationResult, useQueryClient } from '@tanstack/react-query';
+import { flowsheetApi } from '@/features/flowsheet/api.ts';
+import { flowsheetKeys } from '@/features/flowsheet/queries.ts';
 
 type FlowsheetGridContextValues = {
   terms: Record<Term, Placement[]>;
@@ -9,6 +12,8 @@ type FlowsheetGridContextValues = {
   pendCoursesFromCatalog: ({ term, courseIds }: { term: Term; courseIds: number[] }) => void;
   unpendCourseFromGrid: (courseId: number) => void;
   unpendAllCoursesFromTerm: (term: Term) => void;
+  placeCourses: UseMutationResult<Flowsheet, Error, number, unknown>;
+  isPlacing: boolean;
 };
 
 const FlowsheetGridContext = React.createContext<FlowsheetGridContextValues | undefined>(undefined);
@@ -18,6 +23,31 @@ type FlowsheetGridProviderProps = { children: React.ReactNode };
 export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) {
   const [pendingCourses, setPendingCourses] = React.useState<Map<number, Term>>(new Map());
   const { flowsheet } = useFlowsheetContext();
+  const queryClient = useQueryClient();
+
+  const placeCourses = useMutation({
+    mutationFn: (term: Term) =>
+      flowsheetApi.placeCourses({
+        flowsheetId: flowsheet.id,
+        courseIds: Array.from(pendingCourses.keys()),
+        term,
+      }),
+    onSuccess: (_, term) => {
+      unpendAllCoursesFromTerm(term);
+    },
+  });
+
+  const isFlowsheetFetching =
+    queryClient.isFetching({
+      queryKey: flowsheetKeys.detail(flowsheet.id),
+    }) > 0;
+
+  const isCoursesFetching =
+    queryClient.isFetching({
+      queryKey: flowsheetKeys.courseCollection(flowsheet.id),
+    }) > 0;
+
+  const isPlacing = placeCourses.isPending || isFlowsheetFetching || isCoursesFetching;
 
   const pendCoursesFromCatalog = ({ term, courseIds }: { term: Term; courseIds: number[] }) => {
     setPendingCourses((prev) => {
@@ -59,7 +89,15 @@ export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) 
 
   const terms = React.useMemo(() => getFlowsheetTerms(flowsheet), [flowsheet.placements]);
 
-  const contextValue = { terms, pendingCourses, pendCoursesFromCatalog, unpendCourseFromGrid, unpendAllCoursesFromTerm };
+  const contextValue = {
+    terms,
+    pendingCourses,
+    pendCoursesFromCatalog,
+    unpendCourseFromGrid,
+    unpendAllCoursesFromTerm,
+    placeCourses,
+    isPlacing,
+  };
 
   return (
     <FlowsheetGridContext.Provider value={contextValue}>{children}</FlowsheetGridContext.Provider>

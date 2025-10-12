@@ -33,10 +33,7 @@ export const flowsheetQueries = {
       queryKey: flowsheetKeys.courseCollection(flowsheetId),
       queryFn: async ({ client }) => {
         const flowsheet = await client.fetchQuery(flowsheetQueries.detail(flowsheetId));
-
         const courseIds = flowsheet.placements.map((p) => p.course);
-
-        console.log(courseIds.length);
 
         return courseApi.getCourses(courseIds);
       },

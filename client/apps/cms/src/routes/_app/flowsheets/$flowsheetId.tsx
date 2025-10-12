@@ -15,7 +15,6 @@ import { Dot, Layers2 } from 'lucide-react';
 import { FlowsheetStatusIcon } from '@/features/flowsheet/components/flowsheet-status-icon.tsx';
 import { getProgramDisplayName } from '@/features/program/domain/getProgramDisplayName.ts';
 import { getFlowsheetDisplayName } from '@/features/flowsheet/domain/getFlowsheetDisplayName.ts';
-import { FlowsheetGridProvider } from '@/features/flowsheet/contexts/flowsheet-grid-context.tsx';
 
 export const Route = createFileRoute('/_app/flowsheets/$flowsheetId')({
   loader: ({ context: { queryClient }, params: { flowsheetId } }) => {
@@ -34,9 +33,7 @@ export const Route = createFileRoute('/_app/flowsheets/$flowsheetId')({
         </Header>
 
         <div className={styles.content}>
-          <FlowsheetGridProvider>
-            <FlowsheetGrid />
-          </FlowsheetGridProvider>
+          <FlowsheetGrid />
         </div>
       </FlowsheetProvider>
     );
