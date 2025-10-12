@@ -20,6 +20,7 @@ import { FlowsheetGridProvider } from '@/features/flowsheet/contexts/flowsheet-g
 export const Route = createFileRoute('/_app/flowsheets/$flowsheetId')({
   loader: ({ context: { queryClient }, params: { flowsheetId } }) => {
     queryClient.ensureQueryData(flowsheetQueries.detail(Number(flowsheetId)));
+    queryClient.ensureQueryData(flowsheetQueries.courseCollection(Number(flowsheetId)));
   },
   component: () => {
     const { flowsheetId } = Route.useParams();
