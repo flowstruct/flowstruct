@@ -3,7 +3,7 @@ import { InfiniteData, useQueryClient } from '@tanstack/react-query';
 import { courseKeys } from '@/features/course/queries.ts';
 import { CoursesPage } from '@/features/course/domain/course.ts';
 
-export const useCatalogCoursesCache = () => {
+export const useCourseCatalogSearchResults = () => {
   const queryClient = useQueryClient();
 
   const courseCatalogQueries = queryClient.getQueriesData({ queryKey: courseKeys.catalogs() }) as [
@@ -11,12 +11,14 @@ export const useCatalogCoursesCache = () => {
     InfiniteData<CoursesPage, number>,
   ][];
 
-  return React.useMemo(() => {
-    return new Map(
-      courseCatalogQueries
-        .flatMap(([_, data]) => data.pages)
-        .flatMap((p) => p.content)
-        .map((c) => [c.id, c])
-    );
-  }, [courseCatalogQueries]);
+  return React.useMemo(
+    () =>
+      new Map(
+        courseCatalogQueries
+          .flatMap(([_, data]) => data?.pages)
+          .flatMap((p) => p?.content)
+          .map((c) => [c?.id, c])
+      ),
+    [courseCatalogQueries]
+  );
 };

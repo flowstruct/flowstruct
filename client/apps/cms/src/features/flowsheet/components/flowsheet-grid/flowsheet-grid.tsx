@@ -1,32 +1,60 @@
 import { useFlowsheetContext } from '@/features/flowsheet/contexts/flowsheet-context.tsx';
 import styles from './flowsheet-grid.module.css';
 import { CourseCard } from '@/features/flowsheet/components/flowsheet-grid/course-card.tsx';
-import { Placement } from '@/features/flowsheet/domain/flowsheet.ts';
+import { Placement, Term } from '@/features/flowsheet/domain/flowsheet.ts';
 import { CourseCatalogAutocomplete } from '@/features/flowsheet/components/flowsheet-grid/course-catalog-autocomplete.tsx';
-import {
-  FlowsheetGridProvider,
-  useFlowsheetGridContext,
-} from '@/features/flowsheet/contexts/flowsheet-grid-context.tsx';
-import { Button } from '@/shared/components/ui/Button.tsx';
-import { BetweenHorizontalStart, X } from 'lucide-react';
 import React from 'react';
 import { getFlowsheetTerms } from '@/features/flowsheet/domain/getFlowsheetTerms.ts';
-import { ProgressCircle } from '@/shared/components/ui/ProgressCircle.tsx';
-import { useCatalogCoursesCache } from '@/features/course/hooks/use-catalog-courses-cache.ts';
+import { Grid2X2Plus } from 'lucide-react';
+import { Button } from '@/shared/components/ui/Button.tsx';
+import { Tooltip, TooltipTrigger } from '@/shared/components/ui/Tooltip.tsx';
+import { motion } from 'framer-motion';
 
 export function FlowsheetGrid() {
   const { flowsheet } = useFlowsheetContext();
+  const [createdTerms, setCreatedTerms] = React.useState<number[]>([]);
 
-  const terms = React.useMemo(() => getFlowsheetTerms(flowsheet), [flowsheet.placements]);
+  const terms = React.useMemo(() => {
+    const flowsheetTerms = getFlowsheetTerms(flowsheet);
+
+    const newTerms = createdTerms.reduce(
+      (acc, term) => {
+        if (!(term in flowsheetTerms)) {
+          acc[term] = [];
+        }
+        return acc;
+      },
+      {} as Record<Term, Placement[]>
+    );
+
+    return { ...flowsheetTerms, ...newTerms };
+  }, [flowsheet.placements, createdTerms]);
 
   return (
-    <FlowsheetGridProvider>
-      <div className={styles.terms}>
-        {Object.entries(terms).map(([term, placements]) => (
-          <Term key={term} term={Number(term)} placements={placements ?? []} />
-        ))}
-      </div>
-    </FlowsheetGridProvider>
+    <div className={styles.terms}>
+      {Object.entries(terms).map(([term, placements]) => (
+        <Term
+          key={term}
+          term={Number(term)}
+          placements={placements.sort((a, b) => a.position - b.position) ?? []}
+        />
+      ))}
+
+      <motion.div layout className={styles.addTermSection}>
+        <TooltipTrigger>
+          <Button
+            variant="ghost"
+            size="xs"
+            className={styles.addTermButton}
+            onPress={() => setCreatedTerms((prev) => [...prev, prev.length + 1])}
+          >
+            <Grid2X2Plus size={15} />
+          </Button>
+
+          <Tooltip>Add term</Tooltip>
+        </TooltipTrigger>
+      </motion.div>
+    </div>
   );
 }
 
@@ -37,67 +65,22 @@ type TermProps = {
 
 function Term({ term, placements }: TermProps) {
   const { flowsheetCourses } = useFlowsheetContext();
-  const { pendingCourses, placeCourses, unpendCourseFromGrid } = useFlowsheetGridContext();
-  const catalogCoursesCache = useCatalogCoursesCache();
-
-  const pendingCourseCards = Array.from(pendingCourses)
-    .filter(([_, v]) => v === term)
-    .map(([k, _]) => {
-      const course = catalogCoursesCache.get(k);
-      if (!course) return;
-
-      return (
-        <CourseCard
-          key={k}
-          course={course}
-          action={
-            placeCourses.isPending ? (
-              <ProgressCircle isIndeterminate />
-            ) : (
-              <Button
-                size="icon"
-                slot="actions"
-                variant="ghost"
-                onPress={() => unpendCourseFromGrid(course.id)}
-              >
-                <X size={14} />
-              </Button>
-            )
-          }
-        />
-      );
-    });
-
-  const termCourseCards = placements?.sort().map((p) => {
-    const course = flowsheetCourses.byIds[p.course];
-    if (!course) return;
-
-    return <CourseCard key={course.id} course={course} />;
-  });
 
   return (
     <section className={styles.term}>
       <div className={styles.termHeader}>
         <p>Term {term}</p>
-
-        <CourseCatalogAutocomplete term={Number(term)} />
       </div>
 
       <div className={styles.courseCardList}>
-        {pendingCourseCards}
+        {placements?.map((p) => {
+          const course = flowsheetCourses.byIds[p.course];
+          if (!course) return;
 
-        {pendingCourseCards.length !== 0 && !placeCourses.isPending && (
-          <Button
-            variant="transparent"
-            size="sm"
-            className={styles.placeCoursesButton}
-            onPress={() => placeCourses.mutate(term)}
-          >
-            <BetweenHorizontalStart size={14} /> Place courses
-          </Button>
-        )}
+          return <CourseCard key={course.id} course={course} />;
+        })}
 
-        {termCourseCards}
+        <CourseCatalogAutocomplete term={Number(term)} />
       </div>
     </section>
   );

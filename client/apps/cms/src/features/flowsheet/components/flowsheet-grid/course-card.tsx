@@ -1,6 +1,7 @@
 import { CourseSummary } from '@/features/course/domain/course.ts';
 import styles from './course-card.module.css';
 import React from 'react';
+import { motion } from 'framer-motion';
 
 type CourseCardProps = {
   course: CourseSummary;
@@ -10,10 +11,10 @@ type CourseCardProps = {
 
 export function CourseCard({ course, mode = 'base', action }: CourseCardProps) {
   return (
-    <div data-mode={mode} className={styles.card}>
+    <motion.div data-mode={mode} className={styles.card} layout layoutId={String(course.id)}>
       {action && action}
       <h3 className={styles.code}>{course.code}</h3>
       <p className={styles.name}>{course.name}</p>
-    </div>
+    </motion.div>
   );
 }

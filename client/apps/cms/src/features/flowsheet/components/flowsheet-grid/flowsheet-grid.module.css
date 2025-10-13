@@ -5,7 +5,7 @@
 }
 
 .term {
-    width: 10rem;
+    width: 12rem;
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
@@ -23,7 +23,6 @@
 }
 
 .termHeader {
-    /*font-weight: 450;*/
     display: flex;
     gap: var(--space-1);
     color: var(--text-color-dimmed);
@@ -37,4 +36,16 @@
     &[data-hovered] {
         color: var(--text-color-base);
     }
+}
+
+.addTermSection {
+    position: relative;
+    color: var(--text-color-secondary);
+    padding: 0 var(--space-2);
+}
+
+.addTermButton {
+    position: absolute;
+    top: 0;
+    left: var(--space-2);
 }

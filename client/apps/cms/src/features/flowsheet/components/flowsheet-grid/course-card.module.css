@@ -1,10 +1,10 @@
 
 .card {
     padding: var(--space-4);
-    background: var(--highlight-background);
-    border: 1px solid var(--border-color);
+    background: var(--gray-2);
+    /*border: 1px solid var(--border-color);*/
     border-radius: var(--radius-1);
-    height: 9rem;
+    height: 8rem;
     user-select: none;
     width: 100%;
     position: relative;
