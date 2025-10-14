@@ -70,6 +70,8 @@ function Term({ term, placements }: TermProps) {
     <section className={styles.term}>
       <div className={styles.termHeader}>
         <p>Term {term}</p>
+
+        <CourseCatalogAutocomplete term={Number(term)} />
       </div>
 
       <div className={styles.courseCardList}>
@@ -79,8 +81,6 @@ function Term({ term, placements }: TermProps) {
 
           return <CourseCard key={course.id} course={course} />;
         })}
-
-        <CourseCatalogAutocomplete term={Number(term)} />
       </div>
     </section>
   );

@@ -1,11 +1,10 @@
 .terms {
     display: flex;
-    gap: var(--space-2);
     width: fit-content;
 }
 
 .term {
-    width: 12rem;
+    width: 10rem;
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
@@ -13,7 +12,20 @@
     user-select: none;
 }
 
+.termHeader {
+    display: flex;
+    /*border-bottom: 1px solid var(--border-color);*/
+    /*padding: var(--space-2);*/
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: var(--space-1);
+    color: var(--text-color-dimmed);
+    font-size: var(--font-size-xs);
+}
+
 .courseCardList {
+    padding: 0 var(--space-1);
     position: relative;
     width: 100%;
     display: flex;
@@ -22,12 +34,6 @@
     align-items: center;
 }
 
-.termHeader {
-    display: flex;
-    gap: var(--space-1);
-    color: var(--text-color-dimmed);
-    font-size: var(--font-size-xs);
-}
 
 .placeCoursesButton {
     color: var(--primary-color);

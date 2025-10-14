@@ -30,31 +30,33 @@ public class FlowsheetPlacementService {
     public FlowsheetDto placeCourses(long flowsheetId, List<Long> courseIds, int term) {
         Flowsheet flowsheet = flowsheetService.findOrThrow(flowsheetId);
 
-        List<Placement> termPlacements = flowsheet.getPlacements()
-                .stream()
-                .filter(p -> p.getTerm() == term)
-                .toList();
-
         Map<Long, Placement> placementsByCourse = flowsheet.getPlacementsByCourse();
-
-        for (var placement : termPlacements) {
-            placement.setPosition(placement.getPosition() + courseIds.size());
-        }
-
-        int firstPosition = 0;
 
         for (var courseId : courseIds) {
             if (placementsByCourse.containsKey(courseId)) {
                 throw new CourseAlreadyPlacedException("Course is already placed.");
             }
+        }
 
+        List<Placement> termPlacements = flowsheet.getPlacements()
+                .stream()
+                .filter(p -> p.getTerm() == term)
+                .toList();
+
+        int delta = courseIds.size();
+
+        for (var placement : termPlacements) {
+            placement.setPosition(placement.getPosition() + delta);
+        }
+
+        int position = 1;
+        for (var courseId : courseIds) {
             Placement newPlacement = new Placement(
                     AggregateReference.to(courseId),
                     term,
-                    ++firstPosition,
+                    position++,
                     1
             );
-
             flowsheet.getPlacements().add(newPlacement);
         }
 

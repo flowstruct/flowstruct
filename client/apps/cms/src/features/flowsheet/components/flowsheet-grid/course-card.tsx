@@ -2,6 +2,8 @@ import { CourseSummary } from '@/features/course/domain/course.ts';
 import styles from './course-card.module.css';
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useFlowsheetGridContext } from '@/features/flowsheet/contexts/flowsheet-grid-context.tsx';
+import { UnstyledButton } from '@/shared/components/ui/UnstyledButton.tsx';
 
 type CourseCardProps = {
   course: CourseSummary;
@@ -10,11 +12,20 @@ type CourseCardProps = {
 };
 
 export function CourseCard({ course, mode = 'base', action }: CourseCardProps) {
+  const { toggleSelectCourse, isSelected } = useFlowsheetGridContext();
+
   return (
-    <motion.div data-mode={mode} className={styles.card} layout layoutId={String(course.id)}>
-      {action && action}
-      <h3 className={styles.code}>{course.code}</h3>
-      <p className={styles.name}>{course.name}</p>
+    <motion.div layout layoutId={String(course.id)} className={styles.wrapper}>
+      <UnstyledButton
+        data-selected={isSelected(course.id) ? true : undefined}
+        data-mode={mode}
+        className={styles.card}
+        onPress={() => toggleSelectCourse(course.id)}
+      >
+        {action && action}
+        <h3 className={styles.code}>{course.code}</h3>
+        <p className={styles.name}>{course.name}</p>
+      </UnstyledButton>
     </motion.div>
   );
 }
