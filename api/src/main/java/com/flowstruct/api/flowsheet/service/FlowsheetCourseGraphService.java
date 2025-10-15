@@ -1,13 +1,10 @@
 package com.flowstruct.api.flowsheet.service;
 
-import com.flowstruct.api.common.exception.EmptyListException;
 import com.flowstruct.api.course.exception.CourseNotFoundException;
 import com.flowstruct.api.flowsheet.domain.*;
 import com.flowstruct.api.flowsheet.dto.FlowsheetDto;
-import com.flowstruct.api.flowsheet.exception.CourseExistsException;
 import com.flowstruct.api.flowsheet.exception.SectionNotFoundException;
 import com.flowstruct.api.flowsheet.utils.CourseGraphUtils;
-import com.flowstruct.api.flowsheet.utils.PlacementUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,14 +12,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @PreAuthorize("hasRole('ROLE_EDITOR')")
 @RequiredArgsConstructor
 @Service
-public class FlowsheetCourseManagerService {
+public class FlowsheetCourseGraphService {
     private final FlowsheetService flowsheetService;
     private final CourseGraphUtils courseGraphUtils;
 

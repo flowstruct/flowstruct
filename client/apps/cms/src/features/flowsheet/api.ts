@@ -28,4 +28,11 @@ export const flowsheetApi = {
         term,
       },
     }),
+
+  removeCourses: ({ flowsheetId, courseIds }: { flowsheetId: number; courseIds: number[] }) =>
+    api.delete([FLOWSHEET_ENDPOINT, flowsheetId, 'placements'], {
+      params: {
+        courseIds,
+      },
+    }),
 };

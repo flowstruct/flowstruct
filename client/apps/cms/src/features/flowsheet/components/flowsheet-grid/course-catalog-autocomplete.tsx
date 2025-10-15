@@ -14,7 +14,7 @@ import { Collection, GridListLoadMoreItem } from 'react-aria-components';
 import styles from './course-catalog-autocomplete.module.css';
 import { useFlowsheetContext } from '@/features/flowsheet/contexts/flowsheet-context.tsx';
 import { flowsheetApi } from '@/features/flowsheet/api.ts';
-import { Menu, MenuItem, MenuTrigger } from '@/shared/components/ui/Menu.tsx';
+import { MenuTrigger } from '@/shared/components/ui/Menu.tsx';
 import { getCourseDisplayName } from '@/features/course/domain/getCourseDisplayName.ts';
 import { useCourseCatalogSearchResults } from '@/features/course/hooks/use-course-catalog-search-results.ts';
 import { useDisclosure } from '@/shared/hooks/use-disclosure.ts';
@@ -118,7 +118,7 @@ export function CourseCatalogAutocomplete({ term }: AddCoursesPopoverProps) {
                 </Button>
 
                 <Popover>
-                  <Menu
+                  <GridList
                     selectedKeys={selectedKeys}
                     onSelectionChange={setSelectedKeys}
                     selectionMode="multiple"
@@ -141,11 +141,11 @@ export function CourseCatalogAutocomplete({ term }: AddCoursesPopoverProps) {
                     })}
                   >
                     {(item) => (
-                      <MenuItem id={item.id} textValue={item.name}>
+                      <GridListItem id={item.id} textValue={item.name}>
                         {item.name}
-                      </MenuItem>
+                      </GridListItem>
                     )}
-                  </Menu>
+                  </GridList>
                 </Popover>
               </MenuTrigger>
 

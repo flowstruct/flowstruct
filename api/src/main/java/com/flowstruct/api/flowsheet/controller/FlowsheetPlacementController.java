@@ -53,10 +53,10 @@ public class FlowsheetPlacementController {
         );
     }
 
-    @DeleteMapping("/{courseId}")
+    @DeleteMapping
     public ResponseEntity<FlowsheetDto> removePlacements(
             @PathVariable long flowsheetId,
-            @RequestParam(value = "courses", defaultValue = "") List<Long> courseIds
+            @RequestParam(value = "courseIds", defaultValue = "") List<Long> courseIds
     ) {
         return new ResponseEntity<>(
                 flowsheetPlacementService.removePlacements(flowsheetId, courseIds),
