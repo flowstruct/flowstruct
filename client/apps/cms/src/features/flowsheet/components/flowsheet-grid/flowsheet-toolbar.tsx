@@ -6,6 +6,7 @@ import { Tooltip, TooltipTrigger } from '@/shared/components/ui/Tooltip.tsx';
 import { useFlowsheetContext } from '@/features/flowsheet/contexts/flowsheet-context.tsx';
 import { useMutation } from '@tanstack/react-query';
 import { flowsheetApi } from '@/features/flowsheet/api.ts';
+import Group from '@/shared/components/layout/group.tsx';
 
 export function FlowsheetToolbar() {
   const { flowsheet } = useFlowsheetContext();
@@ -30,18 +31,22 @@ export function FlowsheetToolbar() {
   return (
     <div className={styles.wrapper}>
       <div className={styles.toolbar}>
-        <TooltipTrigger>
-          <Button
-            variant="flat"
-            size="icon"
-            isPending={removeCourses.isPending}
-            onPress={() => removeCourses.mutate()}
-          >
-            <Trash color="red" size={14} />
-          </Button>
+        <Group>
+          <div className={styles.selectionCounter}>{selectedCourses.size} selected</div>
 
-          <Tooltip>Remove courses</Tooltip>
-        </TooltipTrigger>
+          <TooltipTrigger>
+            <Button
+              variant="flat"
+              size="icon"
+              isPending={removeCourses.isPending}
+              onPress={() => removeCourses.mutate()}
+            >
+              <Trash color="red" size={14} />
+            </Button>
+
+            <Tooltip>Remove courses</Tooltip>
+          </TooltipTrigger>
+        </Group>
       </div>
     </div>
   );
