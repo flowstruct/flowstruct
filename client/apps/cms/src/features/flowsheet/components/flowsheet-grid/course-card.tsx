@@ -4,6 +4,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useFlowsheetGridContext } from '@/features/flowsheet/contexts/flowsheet-grid-context.tsx';
 import { UnstyledButton } from '@/shared/components/ui/UnstyledButton.tsx';
+import { Checkbox } from '@/shared/components/ui/Checkbox.tsx';
 
 type CourseCardProps = {
   course: CourseSummary;
@@ -23,7 +24,10 @@ export function CourseCard({ course, mode = 'base', action }: CourseCardProps) {
         onPress={() => toggleSelectCourse(course.id)}
       >
         {action && action}
-        <h3 className={styles.code}>{course.code}</h3>
+        <header className={styles.header}>
+          {isSelected(course.id) && <Checkbox isSelected />}
+          <h3 className={styles.code}>{course.code}</h3>
+        </header>
         <p className={styles.name}>{course.name}</p>
       </UnstyledButton>
     </motion.div>
