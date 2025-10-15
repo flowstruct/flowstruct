@@ -1,7 +1,7 @@
 import styles from './flowsheet-toolbar.module.css';
 import { useFlowsheetGridContext } from '@/features/flowsheet/contexts/flowsheet-grid-context.tsx';
 import { Button } from '@/shared/components/ui/Button.tsx';
-import { Trash } from 'lucide-react';
+import { Trash, X } from 'lucide-react';
 import { Tooltip, TooltipTrigger } from '@/shared/components/ui/Tooltip.tsx';
 import { useFlowsheetContext } from '@/features/flowsheet/contexts/flowsheet-context.tsx';
 import { useMutation } from '@tanstack/react-query';
@@ -21,9 +21,6 @@ export function FlowsheetToolbar() {
     onSuccess: () => {
       clearSelectedCourses();
     },
-    meta: {
-      successMessage: 'Removed courses.',
-    },
   });
 
   if (selectedCourses.size === 0) return;
@@ -32,12 +29,26 @@ export function FlowsheetToolbar() {
     <div className={styles.wrapper}>
       <div className={styles.toolbar}>
         <Group>
-          <div className={styles.selectionCounter}>{selectedCourses.size} selected</div>
+          <div className={styles.selectionCounter}>
+            <Group gap={2}>
+              <p>{selectedCourses.size} selected</p>
+
+              <Button
+                variant="ghost"
+                shape="icon"
+                size="none"
+                onPress={() => clearSelectedCourses()}
+              >
+                <X size={12} />
+              </Button>
+            </Group>
+          </div>
 
           <TooltipTrigger>
             <Button
               variant="flat"
-              size="icon"
+              shape="icon"
+              size="sm"
               isPending={removeCourses.isPending}
               onPress={() => removeCourses.mutate()}
             >

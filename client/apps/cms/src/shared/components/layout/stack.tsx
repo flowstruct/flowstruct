@@ -12,7 +12,7 @@ export interface StackProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
-export function Stack({ gap = 4, justify, align, className, children, ...props }: StackProps) {
+export function Stack({ gap = 2, justify, align, className, children, ...props }: StackProps) {
   const gapClass = styles[`gap${gap}`] ?? styles.gap4;
   const justifyClass = justify ? styles[`justify${cap(justify)}`] : undefined;
   const alignClass = align ? styles[`align${cap(align)}`] : undefined;

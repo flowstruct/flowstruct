@@ -5,7 +5,8 @@ import { ProgressCircle } from '@/shared/components/ui/ProgressCircle.tsx';
 
 interface ButtonProps extends RACButtonProps {
   variant?: 'default' | 'transparent' | 'primary' | 'flat' | 'ghost';
-  size?: 'xs' | 'sm' | 'md' | 'icon';
+  size?: 'xs' | 'sm' | 'md' | 'none';
+  shape?: 'button' | 'icon';
   showIndicator?: boolean;
   fullWidth?: boolean;
   className?: string;
@@ -14,6 +15,7 @@ interface ButtonProps extends RACButtonProps {
 export function Button({
   size = 'md',
   variant = 'default',
+  shape = 'button',
   showIndicator = false,
   fullWidth = false,
   className,
@@ -28,6 +30,7 @@ export function Button({
       data-size={size}
       data-show-indicator={showIndicator ? true : undefined}
       data-full-width={fullWidth ? true : undefined}
+      data-shape={shape}
       className={clsx('react-aria-Button', className)}
       isPending={isPending}
     >

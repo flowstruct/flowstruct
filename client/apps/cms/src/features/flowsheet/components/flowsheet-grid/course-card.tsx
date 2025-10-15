@@ -12,6 +12,8 @@ import { Popover } from '@/shared/components/ui/Popover.tsx';
 import { useMutation } from '@tanstack/react-query';
 import { flowsheetApi } from '@/features/flowsheet/api.ts';
 import { useFlowsheetContext } from '@/features/flowsheet/contexts/flowsheet-context.tsx';
+import Group from '@/shared/components/layout/group.tsx';
+import { Stack } from '@/shared/components/layout/stack.tsx';
 
 type CourseCardProps = {
   course: CourseSummary;
@@ -30,19 +32,19 @@ export function CourseCard({ course, mode = 'base', action }: CourseCardProps) {
         className={styles.card}
         onPress={() => toggleSelectCourse(course.id)}
       >
-        {action && action}
+        <Stack gap={1}>
+          <Group justify="between">
+            <Group>
+              {isSelected(course.id) && <Checkbox isSelected />}
 
-        <header className={styles.header}>
-          <div className={styles.headerGroup}>
-            {isSelected(course.id) && <Checkbox isSelected />}
+              <h3 className={styles.code}>{course.code}</h3>
+            </Group>
 
-            <h3 className={styles.code}>{course.code}</h3>
-          </div>
+            <CourseMenu course={course} />
+          </Group>
 
-          <CourseMenu course={course} />
-        </header>
-
-        <p className={styles.name}>{course.name}</p>
+          <p className={styles.name}>{course.name}</p>
+        </Stack>
       </UnstyledButton>
     </motion.div>
   );

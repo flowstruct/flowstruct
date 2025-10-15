@@ -122,7 +122,8 @@ function SortingOptions<TData>({ table }: { table: Table<TData> }) {
 
         <Button
           variant="flat"
-          size="icon"
+          size="xs"
+          shape="icon"
           onPress={() => table.setSorting([{ ...sortingState, desc: !sortingState.desc }])}
         >
           {sortingState.desc ? <ArrowUpNarrowWide size={14} /> : <ArrowDownWideNarrow size={14} />}
