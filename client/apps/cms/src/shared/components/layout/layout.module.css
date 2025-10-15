@@ -12,6 +12,14 @@
     align-items: center;
 }
 
+.fillHeight {
+    height: 100%;
+}
+
+.fillWidth {
+    width: 100%;
+}
+
 .gap0 {
     gap: 0;
 }

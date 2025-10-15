@@ -4,63 +4,47 @@ import { CourseCard } from '@/features/flowsheet/components/flowsheet-grid/cours
 import { Placement, Term } from '@/features/flowsheet/domain/flowsheet.ts';
 import { CourseCatalogAutocomplete } from '@/features/flowsheet/components/flowsheet-grid/course-catalog-autocomplete.tsx';
 import React from 'react';
-import { getFlowsheetTerms } from '@/features/flowsheet/domain/getFlowsheetTerms.ts';
 import { Grid2X2Plus } from 'lucide-react';
 import { Button } from '@/shared/components/ui/Button.tsx';
 import { Tooltip, TooltipTrigger } from '@/shared/components/ui/Tooltip.tsx';
-import { motion } from 'framer-motion';
 import { FlowsheetToolbar } from '@/features/flowsheet/components/flowsheet-grid/flowsheet-toolbar.tsx';
 import { createPortal } from 'react-dom';
+import Group from '@/shared/components/layout/group.tsx';
+import { Stack } from '@/shared/components/layout/stack.tsx';
+import { useFlowsheetGridContext } from '@/features/flowsheet/contexts/flowsheet-grid-context.tsx';
 
 export function FlowsheetGrid() {
-  const { flowsheet } = useFlowsheetContext();
-  const [createdTerms, setCreatedTerms] = React.useState<number[]>([]);
-
-  const terms = React.useMemo(() => {
-    const flowsheetTerms = getFlowsheetTerms(flowsheet);
-
-    const newTerms = createdTerms.reduce(
-      (acc, term) => {
-        if (!(term in flowsheetTerms)) {
-          acc[term] = [];
-        }
-        return acc;
-      },
-      {} as Record<Term, Placement[]>
-    );
-
-    return { ...flowsheetTerms, ...newTerms };
-  }, [flowsheet.placements, createdTerms]);
+  const { terms, createTerm } = useFlowsheetGridContext();
 
   return (
-    <>
-      <div className={styles.terms}>
+    <div className={styles.grid}>
+      <Group align="start">
         {Object.entries(terms).map(([term, placements]) => (
           <Term
             key={term}
             term={Number(term)}
-            placements={placements.sort((a, b) => a.position - b.position) ?? []}
+            placements={placements.sort((a, b) => a.position - b.position)}
           />
         ))}
 
-        <motion.div layout className={styles.addTermSection}>
+        <div className={styles.addTermSection}>
           <TooltipTrigger>
             <Button
               variant="ghost"
               size="xs"
+              shape="icon"
               className={styles.addTermButton}
-              onPress={() => setCreatedTerms((prev) => [...prev, prev.length + 1])}
+              onPress={createTerm}
             >
               <Grid2X2Plus size={15} />
             </Button>
-
             <Tooltip>Add term</Tooltip>
           </TooltipTrigger>
-        </motion.div>
-      </div>
+        </div>
+      </Group>
 
       {createPortal(<FlowsheetToolbar />, document.body)}
-    </>
+    </div>
   );
 }
 
@@ -74,20 +58,23 @@ function Term({ term, placements }: TermProps) {
 
   return (
     <section className={styles.term}>
-      <div className={styles.termHeader}>
-        <p>Term {term}</p>
+      <Stack>
+        <div className={styles.termHeader}>
+          <Group justify="between">
+            <p>Term {term}</p>
+            <CourseCatalogAutocomplete term={Number(term)} />
+          </Group>
+        </div>
 
-        <CourseCatalogAutocomplete term={Number(term)} />
-      </div>
+        <Stack>
+          {placements?.map((p) => {
+            const course = flowsheetCourses.byIds[p.course];
+            if (!course) return;
 
-      <div className={styles.courseCardList}>
-        {placements?.map((p) => {
-          const course = flowsheetCourses.byIds[p.course];
-          if (!course) return;
-
-          return <CourseCard key={course.id} course={course} />;
-        })}
-      </div>
+            return <CourseCard key={course.id} course={course} />;
+          })}
+        </Stack>
+      </Stack>
     </section>
   );
 }

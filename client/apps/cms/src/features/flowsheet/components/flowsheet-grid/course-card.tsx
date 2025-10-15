@@ -18,35 +18,46 @@ import { Stack } from '@/shared/components/layout/stack.tsx';
 type CourseCardProps = {
   course: CourseSummary;
   mode?: 'pending' | 'base';
-  action?: React.ReactNode;
 };
 
-export function CourseCard({ course, mode = 'base', action }: CourseCardProps) {
+export function CourseCard({ course, mode = 'base' }: CourseCardProps) {
   const { toggleSelectCourse, isSelected } = useFlowsheetGridContext();
 
   return (
-    <motion.div layout layoutId={String(course.id)} className={styles.wrapper}>
-      <UnstyledButton
+    <UnstyledButton
+      className={styles.button}
+      data-mode={mode}
+      onPress={() => toggleSelectCourse(course.id)}
+    >
+      <motion.div
+        layout
+        layoutId={String(course.id)}
         data-selected={isSelected(course.id) ? true : undefined}
-        data-mode={mode}
         className={styles.card}
-        onPress={() => toggleSelectCourse(course.id)}
       >
-        <Stack gap={1}>
-          <Group justify="between">
-            <Group>
-              {isSelected(course.id) && <Checkbox isSelected />}
+        <Stack fill justify="between">
+          <Stack gap={1}>
+            <Group justify="between">
+              <Group>
+                {isSelected(course.id) && <Checkbox isSelected />}
 
-              <h3 className={styles.code}>{course.code}</h3>
+                <h3 className={styles.code}>{course.code}</h3>
+              </Group>
+
+              <CourseMenu course={course} />
             </Group>
 
-            <CourseMenu course={course} />
-          </Group>
+            <p className={styles.name}>{course.name}</p>
+          </Stack>
 
-          <p className={styles.name}>{course.name}</p>
+          {/*<Group justify="end">*/}
+          {/*  <Button size="xs" shape="icon" variant="ghost">*/}
+          {/*    <Link size={12} />*/}
+          {/*  </Button>*/}
+          {/*</Group>*/}
         </Stack>
-      </UnstyledButton>
-    </motion.div>
+      </motion.div>
+    </UnstyledButton>
   );
 }
 
@@ -65,7 +76,7 @@ function CourseMenu({ course }: CourseMenuProps) {
 
   return (
     <MenuTrigger>
-      <Button variant="ghost" size="icon">
+      <Button variant="ghost" size="xs" shape="icon">
         <EllipsisVertical size={12} />
       </Button>
 

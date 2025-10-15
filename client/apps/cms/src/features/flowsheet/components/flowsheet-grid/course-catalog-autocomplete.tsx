@@ -55,7 +55,7 @@ export function CourseCatalogAutocomplete({ term }: AddCoursesPopoverProps) {
   return (
     <motion.div layout>
       <DialogTrigger>
-        <Button aria-label="Add courses" onPress={dialogDisclosure.open} variant="ghost" size="xs">
+        <Button aria-label="Add courses" onPress={dialogDisclosure.open} variant="ghost" shape="icon" size="none">
           <Plus size={14} />
         </Button>
 
