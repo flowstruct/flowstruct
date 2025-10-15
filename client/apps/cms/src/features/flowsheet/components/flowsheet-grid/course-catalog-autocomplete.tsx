@@ -74,7 +74,11 @@ export function CourseCatalogAutocomplete({ term }: AddCoursesPopoverProps) {
 
             <GridList
               selectedKeys={selectedKeys}
-              onSelectionChange={setSelectedKeys}
+              onSelectionChange={(selection) => {
+                if (selection === 'all') return;
+
+                setSelectedKeys(selection);
+              }}
               selectionMode="multiple"
               renderEmptyState={() => (
                 <ListEmptyState>

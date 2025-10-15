@@ -31,6 +31,7 @@ export function CourseCard({ course, mode = 'base', action }: CourseCardProps) {
         onPress={() => toggleSelectCourse(course.id)}
       >
         {action && action}
+
         <header className={styles.header}>
           <div className={styles.headerGroup}>
             {isSelected(course.id) && <Checkbox isSelected />}
@@ -57,9 +58,7 @@ function CourseMenu({ course }: CourseMenuProps) {
   const removeCourse = useMutation({
     mutationFn: () =>
       flowsheetApi.removeCourses({ flowsheetId: flowsheet.id, courseIds: [course.id] }),
-    meta: {
-      successMessage: 'Courses removed.',
-    },
+    mutationKey: ['flowsheet-courses', course.id],
   });
 
   return (

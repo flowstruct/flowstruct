@@ -9,6 +9,8 @@ import { Grid2X2Plus } from 'lucide-react';
 import { Button } from '@/shared/components/ui/Button.tsx';
 import { Tooltip, TooltipTrigger } from '@/shared/components/ui/Tooltip.tsx';
 import { motion } from 'framer-motion';
+import { FlowsheetToolbar } from '@/features/flowsheet/components/flowsheet-grid/flowsheet-toolbar.tsx';
+import { createPortal } from 'react-dom';
 
 export function FlowsheetGrid() {
   const { flowsheet } = useFlowsheetContext();
@@ -31,30 +33,34 @@ export function FlowsheetGrid() {
   }, [flowsheet.placements, createdTerms]);
 
   return (
-    <div className={styles.terms}>
-      {Object.entries(terms).map(([term, placements]) => (
-        <Term
-          key={term}
-          term={Number(term)}
-          placements={placements.sort((a, b) => a.position - b.position) ?? []}
-        />
-      ))}
+    <>
+      <div className={styles.terms}>
+        {Object.entries(terms).map(([term, placements]) => (
+          <Term
+            key={term}
+            term={Number(term)}
+            placements={placements.sort((a, b) => a.position - b.position) ?? []}
+          />
+        ))}
 
-      <motion.div layout className={styles.addTermSection}>
-        <TooltipTrigger>
-          <Button
-            variant="ghost"
-            size="xs"
-            className={styles.addTermButton}
-            onPress={() => setCreatedTerms((prev) => [...prev, prev.length + 1])}
-          >
-            <Grid2X2Plus size={15} />
-          </Button>
+        <motion.div layout className={styles.addTermSection}>
+          <TooltipTrigger>
+            <Button
+              variant="ghost"
+              size="xs"
+              className={styles.addTermButton}
+              onPress={() => setCreatedTerms((prev) => [...prev, prev.length + 1])}
+            >
+              <Grid2X2Plus size={15} />
+            </Button>
 
-          <Tooltip>Add term</Tooltip>
-        </TooltipTrigger>
-      </motion.div>
-    </div>
+            <Tooltip>Add term</Tooltip>
+          </TooltipTrigger>
+        </motion.div>
+      </div>
+
+      {createPortal(<FlowsheetToolbar />, document.body)}
+    </>
   );
 }
 

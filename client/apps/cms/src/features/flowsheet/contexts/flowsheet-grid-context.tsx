@@ -4,6 +4,7 @@ type FlowsheetGridContextValues = {
   selectedCourses: Set<number>;
   toggleSelectCourse: (courseId: number) => void;
   isSelected: (courseId: number) => boolean;
+  clearSelectedCourses: () => void;
 };
 
 const FlowsheetGridContext = React.createContext<FlowsheetGridContextValues | undefined>(undefined);
@@ -29,10 +30,16 @@ export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) 
     });
   };
 
+  const clearSelectedCourses = () => {
+    setSelectedCourses(new Set());
+  };
+
   const isSelected = (courseId: number) => selectedCourses.has(courseId);
 
   return (
-    <FlowsheetGridContext.Provider value={{ selectedCourses, toggleSelectCourse, isSelected }}>
+    <FlowsheetGridContext.Provider
+      value={{ selectedCourses, toggleSelectCourse, isSelected, clearSelectedCourses }}
+    >
       {children}
     </FlowsheetGridContext.Provider>
   );
