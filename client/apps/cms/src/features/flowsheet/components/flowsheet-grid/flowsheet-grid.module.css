@@ -12,6 +12,7 @@
 .grid {
     overflow: auto;
 }
+
 .termHeader {
     padding: 0 var(--space-2);
     color: var(--text-color-dimmed);
@@ -40,8 +41,6 @@
 
 .addTermSection {
     position: relative;
-    color: var(--text-color-secondary);
-    padding: 0 var(--space-2);
 }
 
 .addTermButton {

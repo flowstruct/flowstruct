@@ -1,7 +1,5 @@
 import { CourseSummary } from '@/features/course/domain/course.ts';
 import styles from './course-card.module.css';
-import React from 'react';
-import { motion } from 'framer-motion';
 import { useFlowsheetGridContext } from '@/features/flowsheet/contexts/flowsheet-grid-context.tsx';
 import { UnstyledButton } from '@/shared/components/ui/UnstyledButton.tsx';
 import { Checkbox } from '@/shared/components/ui/Checkbox.tsx';
@@ -29,12 +27,7 @@ export function CourseCard({ course, mode = 'base' }: CourseCardProps) {
       data-mode={mode}
       onPress={() => toggleSelectCourse(course.id)}
     >
-      <motion.div
-        layout
-        layoutId={String(course.id)}
-        data-selected={isSelected(course.id) ? true : undefined}
-        className={styles.card}
-      >
+      <div data-selected={isSelected(course.id) ? true : undefined} className={styles.card}>
         <Stack fill justify="between">
           <Stack gap={1}>
             <Group justify="between">
@@ -44,7 +37,7 @@ export function CourseCard({ course, mode = 'base' }: CourseCardProps) {
                 <h3 className={styles.code}>{course.code}</h3>
               </Group>
 
-              <CourseMenu course={course} />
+              <ActionsMenu course={course} />
             </Group>
 
             <p className={styles.name}>{course.name}</p>
@@ -56,22 +49,21 @@ export function CourseCard({ course, mode = 'base' }: CourseCardProps) {
           {/*  </Button>*/}
           {/*</Group>*/}
         </Stack>
-      </motion.div>
+      </div>
     </UnstyledButton>
   );
 }
 
-type CourseMenuProps = {
+type ActionsMenuProps = {
   course: CourseSummary;
 };
 
-function CourseMenu({ course }: CourseMenuProps) {
+function ActionsMenu({ course }: ActionsMenuProps) {
   const { flowsheet } = useFlowsheetContext();
 
   const removeCourse = useMutation({
     mutationFn: () =>
       flowsheetApi.removeCourses({ flowsheetId: flowsheet.id, courseIds: [course.id] }),
-    mutationKey: ['flowsheet-courses', course.id],
   });
 
   return (

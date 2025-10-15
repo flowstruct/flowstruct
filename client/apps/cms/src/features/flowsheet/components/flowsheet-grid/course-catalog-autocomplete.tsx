@@ -18,7 +18,6 @@ import { MenuTrigger } from '@/shared/components/ui/Menu.tsx';
 import { getCourseDisplayName } from '@/features/course/domain/getCourseDisplayName.ts';
 import { useCourseCatalogSearchResults } from '@/features/course/hooks/use-course-catalog-search-results.ts';
 import { useDisclosure } from '@/shared/hooks/use-disclosure.ts';
-import { motion } from 'framer-motion';
 
 type AddCoursesPopoverProps = { term: number };
 
@@ -28,7 +27,7 @@ export function CourseCatalogAutocomplete({ term }: AddCoursesPopoverProps) {
   const debouncedSearch = useDebounce(search);
   const [selectedKeys, setSelectedKeys] = React.useState<Set<number>>(new Set());
   const courseCatalogSearchResults = useCourseCatalogSearchResults();
-  const dialogDisclosure = useDisclosure();
+  const dialog = useDisclosure();
 
   const placeCourses = useMutation({
     mutationFn: () =>
@@ -40,7 +39,7 @@ export function CourseCatalogAutocomplete({ term }: AddCoursesPopoverProps) {
     onSuccess: () => {
       setSelectedKeys(new Set());
       setSearch('');
-      dialogDisclosure.close();
+      dialog.close();
     },
   });
 
@@ -53,15 +52,21 @@ export function CourseCatalogAutocomplete({ term }: AddCoursesPopoverProps) {
   const suggestCreateCourse = debouncedSearch && (catalogCourses?.results.length ?? 0) > 0;
 
   return (
-    <motion.div layout>
+    <div>
       <DialogTrigger>
-        <Button aria-label="Add courses" onPress={dialogDisclosure.open} variant="ghost" shape="icon" size="none">
+        <Button
+          aria-label="Add courses"
+          onPress={dialog.open}
+          variant="ghost"
+          shape="icon"
+          size="none"
+        >
           <Plus size={14} />
         </Button>
 
         <Popover
-          isOpen={dialogDisclosure.isOpen}
-          onOpenChange={dialogDisclosure.setIsOpen}
+          isOpen={dialog.isOpen}
+          onOpenChange={dialog.setIsOpen}
           aria-label={`Add courses to term ${term}`}
         >
           <Autocomplete inputValue={search} onInputChange={setSearch}>
@@ -175,6 +180,6 @@ export function CourseCatalogAutocomplete({ term }: AddCoursesPopoverProps) {
           )}
         </Popover>
       </DialogTrigger>
-    </motion.div>
+    </div>
   );
 }

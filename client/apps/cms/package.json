@@ -25,7 +25,6 @@
     "@tanstack/react-table": "^8.20.6",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.13",
-    "framer-motion": "^12.23.24",
     "lucide-react": "^0.474.0",
     "react": "^18.3.1",
     "react-aria": "^3.43.2",

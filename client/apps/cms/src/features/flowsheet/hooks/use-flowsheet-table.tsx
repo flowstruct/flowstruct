@@ -161,7 +161,7 @@ function ActionsMenu({ flowsheet }: ActionsMenuProps) {
       </Button>
 
       <Popover hideArrow placement="bottom right" crossOffset={25}>
-        <Menu>
+        <Menu width={200}>
           <MenuItem>
             <Link size={14} />
             Copy page URL

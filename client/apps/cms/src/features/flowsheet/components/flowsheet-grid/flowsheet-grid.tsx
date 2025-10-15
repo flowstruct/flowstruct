@@ -3,7 +3,6 @@ import styles from './flowsheet-grid.module.css';
 import { CourseCard } from '@/features/flowsheet/components/flowsheet-grid/course-card.tsx';
 import { Placement, Term } from '@/features/flowsheet/domain/flowsheet.ts';
 import { CourseCatalogAutocomplete } from '@/features/flowsheet/components/flowsheet-grid/course-catalog-autocomplete.tsx';
-import React from 'react';
 import { Grid2X2Plus } from 'lucide-react';
 import { Button } from '@/shared/components/ui/Button.tsx';
 import { Tooltip, TooltipTrigger } from '@/shared/components/ui/Tooltip.tsx';
