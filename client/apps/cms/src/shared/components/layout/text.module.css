@@ -1,0 +1,65 @@
+/* Text.module.css - depends on your tokens.css already imported globally */
+
+.text {
+    margin: 0;
+    padding: 0;
+    color: var(--text-color-base);
+    word-wrap: break-word;
+}
+
+/* sizes */
+.size-xs { font-size: var(--font-size-xs); }
+.size-sm { font-size: var(--font-size-sm); }
+.size-base { font-size: var(--font-size-base); }
+.size-lg { font-size: var(--font-size-lg); }
+.size-xl { font-size: var(--font-size-xl); }
+
+/* weights */
+.weight-normal { font-weight: 400; }
+.weight-medium { font-weight: 450; }
+.weight-semibold { font-weight: 500; }
+.weight-bold { font-weight: 600; }
+
+/* semantic tones / color variants */
+.tone-default { color: var(--text-color-base); }
+.tone-secondary { color: var(--text-color-secondary); }
+.tone-dimmed { color: var(--text-color-dimmed); }
+.tone-link { color: var(--link-color); }
+.tone-primary { color: var(--primary-color); }
+.tone-invalid { color: var(--invalid-color); }
+
+/* alignment */
+.align-left { text-align: left; }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.align-justify { text-align: justify; }
+
+/* truncation (single line) */
+.truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* multi-line clamp */
+.clamp {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* utility classes for clamp levels (2..6) */
+.clamp-1 { -webkit-line-clamp: 1; }
+.clamp-2 { -webkit-line-clamp: 2; }
+.clamp-3 { -webkit-line-clamp: 3; }
+.clamp-4 { -webkit-line-clamp: 4; }
+.clamp-5 { -webkit-line-clamp: 5; }
+.clamp-6 { -webkit-line-clamp: 6; }
+
+/* subtle helpers */
+.aux { color: var(--text-color-placeholder); font-size: var(--font-size-sm); }
+.link { cursor: pointer; text-decoration: underline; color: var(--link-color); }
+
+/* ensure inherit for inline contexts */
+.inline { display: inline; }
+.block { display: block; }

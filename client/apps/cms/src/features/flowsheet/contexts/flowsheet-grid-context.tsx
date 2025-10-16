@@ -10,6 +10,9 @@ type FlowsheetGridContextValues = {
   clearSelectedCourses: () => void;
   terms: Record<number, Placement[]>;
   createTerm: () => void;
+  onDragCourse: (courseId: number) => void;
+  draggingCourse: number | null;
+  clearDraggingCourse: () => void;
 };
 
 const FlowsheetGridContext = React.createContext<FlowsheetGridContextValues | undefined>(undefined);
@@ -24,6 +27,7 @@ export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) 
   const [allPossibleTermsCount, setAllPossibleTermsCount] = React.useState<number>(
     Math.max(...Object.keys(getFlowsheetTerms(flowsheet)).map(Number))
   );
+  const [draggingCourse, setDragginCourse] = React.useState<number | null>(null);
 
   const toggleSelectCourse = (courseId: number) => {
     setSelectedCourses((prev) => {
@@ -34,6 +38,14 @@ export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) 
 
       return updated;
     });
+  };
+
+  const onDragCourse = (courseId: number) => {
+    setDragginCourse(courseId);
+  };
+
+  const clearDraggingCourse = () => {
+    setDragginCourse(null);
   };
 
   const clearSelectedCourses = () => setSelectedCourses(new Set());
@@ -61,6 +73,9 @@ export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) 
         clearSelectedCourses,
         terms,
         createTerm,
+        onDragCourse,
+        draggingCourse,
+        clearDraggingCourse,
       }}
     >
       {children}

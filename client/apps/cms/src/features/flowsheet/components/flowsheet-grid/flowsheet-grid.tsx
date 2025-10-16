@@ -11,12 +11,15 @@ import { createPortal } from 'react-dom';
 import Group from '@/shared/components/layout/group.tsx';
 import { Stack } from '@/shared/components/layout/stack.tsx';
 import { useFlowsheetGridContext } from '@/features/flowsheet/contexts/flowsheet-grid-context.tsx';
+import { DropIndicator } from '@/features/flowsheet/components/flowsheet-grid/drop-indicator.tsx';
+import { Text } from '@/shared/components/layout/text.tsx';
+import { Box } from '@/shared/components/layout/box.tsx';
 
 export function FlowsheetGrid() {
   const { terms, createTerm } = useFlowsheetGridContext();
 
   return (
-    <div className={styles.grid}>
+    <Box overflow="auto">
       <Group align="start">
         {Object.entries(terms).map(([term, placements]) => (
           <Term
@@ -26,7 +29,7 @@ export function FlowsheetGrid() {
           />
         ))}
 
-        <div className={styles.addTermSection}>
+        <Box position="relative">
           <TooltipTrigger>
             <Button
               variant="ghost"
@@ -39,11 +42,11 @@ export function FlowsheetGrid() {
             </Button>
             <Tooltip>Add term</Tooltip>
           </TooltipTrigger>
-        </div>
+        </Box>
       </Group>
 
       {createPortal(<FlowsheetToolbar />, document.body)}
-    </div>
+    </Box>
   );
 }
 
@@ -56,24 +59,32 @@ function Term({ term, placements }: TermProps) {
   const { flowsheetCourses } = useFlowsheetContext();
 
   return (
-    <section className={styles.term}>
-      <Stack>
-        <div className={styles.termHeader}>
+    <div className={styles.term}>
+      <Stack gap={1}>
+        <Box px={1}>
           <Group justify="between">
-            <p>Term {term}</p>
+            <Text tone="dimmed" weight="medium" size="xs">
+              Term {term}
+            </Text>
+
             <CourseCatalogAutocomplete term={Number(term)} />
           </Group>
-        </div>
+        </Box>
 
         <Stack>
           {placements?.map((p) => {
             const course = flowsheetCourses.byIds[p.course];
             if (!course) return;
 
-            return <CourseCard key={course.id} course={course} />;
+            return (
+              <Box key={course.id} position="relative">
+                <DropIndicator term={term} position={p.position} />
+                <CourseCard course={course} />
+              </Box>
+            );
           })}
         </Stack>
       </Stack>
-    </section>
+    </div>
   );
 }

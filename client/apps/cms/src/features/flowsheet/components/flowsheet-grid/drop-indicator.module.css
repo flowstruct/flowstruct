@@ -1,0 +1,27 @@
+.indicator {
+    z-index: 2;
+    border: 2px solid var(--focus-ring-color);
+    border-radius: var(--radius-1);
+    width: 100%;
+    height: 2px;
+    display: none;
+
+    &[data-is-drop-target=true] {
+        display: block;
+    }
+}
+
+.dropZone {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    pointer-events: none;
+    z-index: 3;
+    width: 100%;
+    height: 100px;
+    top: -54px;
+
+    &[data-is-dragging-course=true] {
+        pointer-events: auto;
+    }
+}

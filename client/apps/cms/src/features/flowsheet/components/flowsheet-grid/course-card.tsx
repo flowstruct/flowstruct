@@ -12,6 +12,7 @@ import { flowsheetApi } from '@/features/flowsheet/api.ts';
 import { useFlowsheetContext } from '@/features/flowsheet/contexts/flowsheet-context.tsx';
 import Group from '@/shared/components/layout/group.tsx';
 import { Stack } from '@/shared/components/layout/stack.tsx';
+import { useDrag } from 'react-aria';
 
 type CourseCardProps = {
   course: CourseSummary;
@@ -19,7 +20,24 @@ type CourseCardProps = {
 };
 
 export function CourseCard({ course, mode = 'base' }: CourseCardProps) {
-  const { toggleSelectCourse, isSelected } = useFlowsheetGridContext();
+  const { toggleSelectCourse, isSelected, onDragCourse, clearDraggingCourse } =
+    useFlowsheetGridContext();
+
+  const { dragProps } = useDrag({
+    getItems() {
+      return [
+        {
+          'text/plan': String(course.id),
+        },
+      ];
+    },
+    onDragStart: () => {
+      onDragCourse(course.id);
+    },
+    onDragEnd: () => {
+      clearDraggingCourse();
+    },
+  });
 
   return (
     <UnstyledButton
@@ -27,7 +45,11 @@ export function CourseCard({ course, mode = 'base' }: CourseCardProps) {
       data-mode={mode}
       onPress={() => toggleSelectCourse(course.id)}
     >
-      <div data-selected={isSelected(course.id) ? true : undefined} className={styles.card}>
+      <div
+        {...dragProps}
+        data-selected={isSelected(course.id) ? true : undefined}
+        className={styles.card}
+      >
         <Stack fill justify="between">
           <Stack gap={1}>
             <Group justify="between">
@@ -42,12 +64,6 @@ export function CourseCard({ course, mode = 'base' }: CourseCardProps) {
 
             <p className={styles.name}>{course.name}</p>
           </Stack>
-
-          {/*<Group justify="end">*/}
-          {/*  <Button size="xs" shape="icon" variant="ghost">*/}
-          {/*    <Link size={12} />*/}
-          {/*  </Button>*/}
-          {/*</Group>*/}
         </Stack>
       </div>
     </UnstyledButton>
