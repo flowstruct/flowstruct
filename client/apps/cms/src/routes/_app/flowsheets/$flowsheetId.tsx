@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { flowsheetQueries } from '@/features/flowsheet/queries.ts';
-import { Header, HeaderMain } from '@/shared/components/header.tsx';
+import { Header } from '@/shared/components/header.tsx';
 import {
   FlowsheetProvider,
   useFlowsheetContext,
@@ -16,6 +16,7 @@ import { FlowsheetStatusIcon } from '@/features/flowsheet/components/flowsheet-s
 import { getProgramDisplayName } from '@/features/program/domain/getProgramDisplayName.ts';
 import { getFlowsheetDisplayName } from '@/features/flowsheet/domain/getFlowsheetDisplayName.ts';
 import { FlowsheetGridProvider } from '@/features/flowsheet/contexts/flowsheet-grid-context.tsx';
+import Group from '@/shared/components/layout/group.tsx';
 
 export const Route = createFileRoute('/_app/flowsheets/$flowsheetId')({
   loader: ({ context: { queryClient }, params: { flowsheetId } }) => {
@@ -27,12 +28,7 @@ export const Route = createFileRoute('/_app/flowsheets/$flowsheetId')({
 
     return (
       <FlowsheetProvider flowsheetId={Number(flowsheetId)}>
-        <Header>
-          <HeaderMain>
-            <RouteBreadcrumbs />
-          </HeaderMain>
-        </Header>
-
+        <RouteHeader />
         <div className={styles.content}>
           <FlowsheetGridProvider>
             <FlowsheetGrid />
@@ -42,6 +38,16 @@ export const Route = createFileRoute('/_app/flowsheets/$flowsheetId')({
     );
   },
 });
+
+function RouteHeader() {
+  return (
+    <Header>
+      <Group>
+        <RouteBreadcrumbs />
+      </Group>
+    </Header>
+  );
+}
 
 export function RouteBreadcrumbs() {
   const { flowsheet } = useFlowsheetContext();

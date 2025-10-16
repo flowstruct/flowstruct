@@ -18,8 +18,9 @@
 }
 
 .selectionCounter {
-    padding: var(--space-1) var(--space-2);
-    border-radius: var(--radius-2);
+    font-size: var(--font-size-xs);
+    padding: 0 var(--space-2);
+    border-radius: var(--radius-1);
     border: 1px solid var(--border-color);
     background: var(--background-color-secondary);
 }

@@ -1,7 +1,7 @@
 import styles from './flowsheet-toolbar.module.css';
 import { useFlowsheetGridContext } from '@/features/flowsheet/contexts/flowsheet-grid-context.tsx';
 import { Button } from '@/shared/components/ui/Button.tsx';
-import { Trash, X } from 'lucide-react';
+import { TagIcon, Trash, X } from 'lucide-react';
 import { Tooltip, TooltipTrigger } from '@/shared/components/ui/Tooltip.tsx';
 import { useFlowsheetContext } from '@/features/flowsheet/contexts/flowsheet-context.tsx';
 import { useMutation } from '@tanstack/react-query';
@@ -45,14 +45,22 @@ export function FlowsheetToolbar() {
           </div>
 
           <TooltipTrigger>
+            <Button variant="flat" shape="icon" size="xs">
+              <TagIcon size={12} />
+            </Button>
+
+            <Tooltip>Remove courses</Tooltip>
+          </TooltipTrigger>
+
+          <TooltipTrigger>
             <Button
               variant="flat"
               shape="icon"
-              size="sm"
+              size="xs"
               isPending={removeCourses.isPending}
               onPress={() => removeCourses.mutate()}
             >
-              <Trash color="red" size={14} />
+              <Trash color="red" size={12} />
             </Button>
 
             <Tooltip>Remove courses</Tooltip>
