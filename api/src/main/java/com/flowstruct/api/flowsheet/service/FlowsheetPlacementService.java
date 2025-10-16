@@ -3,7 +3,6 @@ package com.flowstruct.api.flowsheet.service;
 import com.flowstruct.api.flowsheet.domain.Flowsheet;
 import com.flowstruct.api.flowsheet.domain.Placement;
 import com.flowstruct.api.flowsheet.dto.FlowsheetDto;
-import com.flowstruct.api.flowsheet.dto.PlacementDto;
 import com.flowstruct.api.flowsheet.exception.CourseAlreadyPlacedException;
 import com.flowstruct.api.flowsheet.exception.CourseNotPlacedException;
 import com.flowstruct.api.flowsheet.exception.InvalidCoursePlacement;
@@ -64,26 +63,29 @@ public class FlowsheetPlacementService {
     }
 
     @Transactional
-    public FlowsheetDto movePlacement(
+    public FlowsheetDto moveCourse(
             long flowsheetId,
             long courseId,
-            PlacementDto targetPlacement
+            int targetTerm,
+            int targetPosition
     ) {
         var flowsheet = flowsheetService.findOrThrow(flowsheetId);
 
-        var placementsMap = flowsheet.getPlacementsByCourse();
+        var placementsByCourse = flowsheet.getPlacementsByCourse();
 
-        var oldPlacement = placementsMap.get(courseId);
-        var newPlacement = new Placement(
-                AggregateReference.to(courseId),
-                targetPlacement.term(),
-                targetPlacement.position(),
-                targetPlacement.span()
-        );
+        var oldPlacement = placementsByCourse.get(courseId);
 
         if (oldPlacement == null) {
             throw new CourseNotPlacedException("Course has no initial placement.");
         }
+
+        var newPlacement = new Placement(
+                AggregateReference.to(courseId),
+                targetTerm,
+                targetPosition,
+                oldPlacement.getSpan()
+        );
+
 
         if (placementUtils.comparePlacement(oldPlacement, newPlacement) == 0
                 && oldPlacement.getPosition() == newPlacement.getPosition()) {
@@ -94,7 +96,7 @@ public class FlowsheetPlacementService {
                 .stream()
                 .filter(cp -> Objects.equals(cp.getCourse().getId(), courseId))
                 .allMatch(cp -> {
-                    var prerequisitePlacement = placementsMap.get(cp.getPrerequisite().getId());
+                    var prerequisitePlacement = placementsByCourse.get(cp.getPrerequisite().getId());
 
                     if (prerequisitePlacement == null) {
                         return true;
@@ -104,14 +106,14 @@ public class FlowsheetPlacementService {
                 });
 
         if (!prerequisitesFulfilled) {
-            throw new InvalidCoursePlacement("Invalid course movement.");
+            throw new InvalidCoursePlacement("Course must come after its prerequisites.");
         }
 
         boolean postrequisitesFulfilled = flowsheet.getCoursePrerequisites()
                 .stream()
                 .filter(cp -> Objects.equals(cp.getPrerequisite().getId(), courseId))
                 .allMatch(cp -> {
-                    var postrequisitePlacement = placementsMap.get(cp.getCourse().getId());
+                    var postrequisitePlacement = placementsByCourse.get(cp.getCourse().getId());
 
                     if (postrequisitePlacement == null) {
                         return true;
@@ -121,7 +123,7 @@ public class FlowsheetPlacementService {
                 });
 
         if (!postrequisitesFulfilled) {
-            throw new InvalidCoursePlacement("Cannot move course to this term.");
+            throw new InvalidCoursePlacement("Course must come before its postrequisites.");
         }
 
         placementUtils.deleteCoursePlacement(flowsheet, oldPlacement);
@@ -129,7 +131,6 @@ public class FlowsheetPlacementService {
 
         return flowsheetService.saveAndMap(flowsheet);
     }
-
 
     @Transactional
     public FlowsheetDto resizePlacement(long flowsheetId, long courseId, int span) {

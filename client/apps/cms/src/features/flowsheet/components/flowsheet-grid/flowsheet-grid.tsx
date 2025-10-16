@@ -19,7 +19,7 @@ export function FlowsheetGrid() {
   const { terms, createTerm } = useFlowsheetGridContext();
 
   return (
-    <Box overflow="auto">
+    <Box overflow="auto" overflowY="hidden">
       <Group align="start">
         {Object.entries(terms).map(([term, placements]) => (
           <Term
@@ -83,6 +83,10 @@ function Term({ term, placements }: TermProps) {
               </Box>
             );
           })}
+
+          <Box position="relative">
+            <DropIndicator term={term} position={placements.length + 1} />
+          </Box>
         </Stack>
       </Stack>
     </div>

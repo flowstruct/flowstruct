@@ -25,11 +25,7 @@ export function CourseCard({ course, mode = 'base' }: CourseCardProps) {
 
   const { dragProps } = useDrag({
     getItems() {
-      return [
-        {
-          'text/plan': String(course.id),
-        },
-      ];
+      return [];
     },
     onDragStart: () => {
       onDragCourse(course.id);

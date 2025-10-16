@@ -35,4 +35,22 @@ export const flowsheetApi = {
         courseIds,
       },
     }),
+
+  moveCourse: ({
+    flowsheetId,
+    courseId,
+    term,
+    position,
+  }: {
+    flowsheetId: number;
+    courseId: number;
+    term: number;
+    position: number;
+  }) =>
+    api.put([FLOWSHEET_ENDPOINT, flowsheetId, 'placements', courseId], {
+      params: {
+        term,
+        position,
+      },
+    }),
 };

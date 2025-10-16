@@ -30,13 +30,14 @@ public class FlowsheetPlacementController {
     }
 
     @PutMapping("/{courseId}")
-    public ResponseEntity<FlowsheetDto> movePlacement(
+    public ResponseEntity<FlowsheetDto> moveCourse(
             @PathVariable long flowsheetId,
             @PathVariable long courseId,
-            @Valid @RequestBody PlacementDto targetPlacement
+            @RequestParam(value = "term", defaultValue = "1") int targetTerm,
+            @RequestParam(value = "position", defaultValue = "1") int targetPosition
     ) {
         return new ResponseEntity<>(
-                flowsheetPlacementService.movePlacement(flowsheetId, courseId, targetPlacement),
+                flowsheetPlacementService.moveCourse(flowsheetId, courseId, targetTerm, targetPosition),
                 HttpStatus.OK
         );
     }
