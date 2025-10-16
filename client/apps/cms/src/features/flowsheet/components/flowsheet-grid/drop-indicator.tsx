@@ -16,6 +16,7 @@ type DropIndicatorProps = {
 export function DropIndicator({ term, position }: DropIndicatorProps) {
   const { flowsheet } = useFlowsheetContext();
   const { draggingCourse } = useFlowsheetGridContext();
+  const queryClient = useQueryClient();
 
   const moveCourse = useMutation({
     mutationFn: () =>
@@ -25,8 +26,9 @@ export function DropIndicator({ term, position }: DropIndicatorProps) {
         term,
         position,
       }),
-    onMutate: (_, context) => {
-      context.client.setQueryData(
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: flowsheetKeys.detail(flowsheet.id) });
+      return queryClient.setQueryData(
         flowsheetKeys.detail(flowsheet.id),
         movePlacement(flowsheet, draggingCourse, term, position)
       );
