@@ -13,6 +13,10 @@ type FlowsheetGridContextValues = {
   onDragCourse: (courseId: number) => void;
   draggingCourse: number | null;
   clearDraggingCourse: () => void;
+  focusedCourse: number | null;
+  toggleFocusCourse: (courseId: number) => void;
+  isFocused: (courseId: number) => boolean;
+  clearFocusedCourse: () => void;
 };
 
 const FlowsheetGridContext = React.createContext<FlowsheetGridContextValues | undefined>(undefined);
@@ -23,13 +27,32 @@ type FlowsheetGridProviderProps = {
 
 export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) {
   const { flowsheet } = useFlowsheetContext();
+  const [focusedCourse, setFocusedCourse] = React.useState<number | null>(null);
   const [selectedCourses, setSelectedCourses] = React.useState<Set<number>>(new Set());
+  const [draggingCourse, setDraggingCourse] = React.useState<number | null>(null);
   const [allPossibleTermsCount, setAllPossibleTermsCount] = React.useState<number>(
     Math.max(...Object.keys(getFlowsheetTerms(flowsheet)).map(Number))
   );
-  const [draggingCourse, setDragginCourse] = React.useState<number | null>(null);
+
+  const toggleFocusCourse = (courseId: number) => {
+    if (courseId === focusedCourse) {
+      setFocusedCourse(null);
+      return;
+    }
+
+    setSelectedCourses(new Set());
+    setFocusedCourse(courseId);
+  };
+
+  const isFocused = (courseId: number) => courseId === focusedCourse;
+
+  const clearFocusedCourse = () => setFocusedCourse(null);
 
   const toggleSelectCourse = (courseId: number) => {
+    if (focusedCourse) {
+      setFocusedCourse(null);
+    }
+
     setSelectedCourses((prev) => {
       const updated = new Set(prev);
 
@@ -41,11 +64,11 @@ export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) 
   };
 
   const onDragCourse = (courseId: number) => {
-    setDragginCourse(courseId);
+    setDraggingCourse(courseId);
   };
 
   const clearDraggingCourse = () => {
-    setDragginCourse(null);
+    setDraggingCourse(null);
   };
 
   const clearSelectedCourses = () => setSelectedCourses(new Set());
@@ -76,6 +99,10 @@ export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) 
         onDragCourse,
         draggingCourse,
         clearDraggingCourse,
+        focusedCourse,
+        toggleFocusCourse,
+        isFocused,
+        clearFocusedCourse
       }}
     >
       {children}

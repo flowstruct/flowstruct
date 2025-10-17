@@ -1,50 +1,73 @@
-.button {
-    width: 100%;
-}
-
 .card {
     padding: var(--space-3) var(--space-3);
     background: var(--gray-2);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-2);
-    height: 8rem;
+    height: 7rem;
     user-select: none;
     width: 100%;
     position: relative;
     cursor: pointer;
 
-    &[data-mode=pending] {
-        opacity: 75%;
+    &[data-focused-course=true] {
+        background: var(--primary-2);
+        border: 1px solid var(--primary-7);
+
+        &[data-hovered] {
+            background: var(--primary-2);
+            border-color: var(--primary-8);
+        }
     }
 
-    [slot=actions] {
-        position: absolute;
-        top: var(--space-2);
-        right: var(--space-2);
-    }
-
-    &[data-selected] {
+    &[data-selected-course=true] {
         background: var(--primary-2);
         border: 1px solid var(--focus-ring-color);
-        /*outline-offset: -2px;*/
-        /*transform: translateY(-2px);*/
-        /*box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);*/
+
+        &[data-hovered] {
+            background: var(--primary-2);
+            border-color: var(--primary-6);
+        }
     }
 
-    &[data-hovered]:not([data-selected=true]) {
+    &[data-hovered] {
         border-color: var(--gray-6);
-        background: var(--gray-2);
     }
 }
 
-.code {
-    color: var(--text-color-dimmed);
-    font-weight: 450;
-    font-size: var(--font-size-xs);
+.footerButtons {
+    margin-top: auto;
+    opacity: 0;
+    transform: translateY(0.25rem);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    pointer-events: none;
 }
 
-.name {
-    color: var(--text-color-base);
-    font-size: var(--font-size-xs);
-    transition: color 0.2s ease;
+.card[data-hovered] .footerButtons,
+.card[data-focused] .footerButtons,
+.footerButtons.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.dragPreview {
+    display: flex;
+    gap: var(--space-2);
+    align-items: center;
+    margin-left: var(--space-6);
+    width: 8rem;
+
+    > svg, p {
+        color: var(--primary-contrast);
+    }
+
+    background: var(--primary-11);
+    border-radius: var(--radius-2);
+    box-shadow: var(--shadow-sm);
+    padding: var(--space-2) var(--space-3);
+}
+
+
+.card.dragging {
+    opacity: 0.5;
 }

@@ -20,13 +20,13 @@ export function movePlacement(
   targetTerm: number,
   targetPosition: number
 ): Flowsheet {
-  const oldPlacement = flowsheet.placements.find((p) => p.courseId === courseId);
+  const oldPlacement = flowsheet.placements.find((p) => p.course === courseId);
 
   if (!oldPlacement) {
     return flowsheet;
   }
 
-  let updatedPlacements = flowsheet.placements.filter((p) => p.courseId !== courseId);
+  let updatedPlacements = flowsheet.placements.filter((p) => p.course !== courseId);
 
   updatedPlacements = shiftPositions(
     updatedPlacements,
@@ -38,7 +38,7 @@ export function movePlacement(
   updatedPlacements = shiftPositions(updatedPlacements, targetTerm, targetPosition, +1);
 
   updatedPlacements.push({
-    courseId,
+    course: courseId,
     term: targetTerm,
     position: targetPosition,
     span: oldPlacement.span,

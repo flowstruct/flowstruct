@@ -4,16 +4,12 @@ import com.flowstruct.api.flowsheet.domain.Flowsheet;
 import com.flowstruct.api.flowsheet.domain.Section;
 import com.flowstruct.api.flowsheet.domain.SectionLevel;
 import com.flowstruct.api.flowsheet.domain.SectionType;
-import com.flowstruct.api.flowsheet.dto.FlowsheetDto;
-import com.flowstruct.api.flowsheet.dto.PlacementDto;
-import com.flowstruct.api.flowsheet.dto.SectionDto;
+import com.flowstruct.api.flowsheet.dto.*;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
-import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 public class FlowsheetDtoMapper implements Function<Flowsheet, FlowsheetDto> {
@@ -62,24 +58,14 @@ public class FlowsheetDtoMapper implements Function<Flowsheet, FlowsheetDto> {
                                 p.getSpan()
                         ))
                         .toList(),
-                flowsheet.getCoursePrerequisitesMap().entrySet()
+                flowsheet.getCoursePrerequisites()
                         .stream()
-                        .collect(Collectors.toMap(
-                                Map.Entry::getKey,
-                                e -> e.getValue()
-                                        .stream()
-                                        .map(cp -> cp.getCourse().getId())
-                                        .toList()
-                        )),
-                flowsheet.getCourseCorequisitesMap().entrySet()
+                        .map(cp -> new CoursePrerequisiteDto(cp.getCourse().getId(), cp.getPrerequisite().getId()))
+                        .toList(),
+                flowsheet.getCourseCorequisites()
                         .stream()
-                        .collect(Collectors.toMap(
-                                Map.Entry::getKey,
-                                e -> e.getValue()
-                                        .stream()
-                                        .map(cc -> cc.getCourse().getId())
-                                        .toList()
-                        ))
+                        .map(cc -> new CourseCorequisiteDto(cc.getCourse().getId(), cc.getCorequisite().getId()))
+                        .toList()
         );
     }
 

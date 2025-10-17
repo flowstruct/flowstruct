@@ -73,7 +73,7 @@ public class FlowsheetService {
             return flowsheetDtoMapper.apply(savedFlowsheet);
         } catch (OptimisticLockingFailureException e) {
             throw new OptimisticLockingFailureException(
-                    "This resource has been modified by another user while you were editing. Please refresh to see the latest version."
+                    "This resource has been edited too many times in a short moment."
             );
         }
     }

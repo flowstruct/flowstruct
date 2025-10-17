@@ -2,28 +2,36 @@ import { CourseSummary } from '@/features/course/domain/course.ts';
 import styles from './course-card.module.css';
 import { useFlowsheetGridContext } from '@/features/flowsheet/contexts/flowsheet-grid-context.tsx';
 import { UnstyledButton } from '@/shared/components/ui/UnstyledButton.tsx';
-import { Checkbox } from '@/shared/components/ui/Checkbox.tsx';
-import { Menu, MenuItem, MenuTrigger } from '@/shared/components/ui/Menu.tsx';
 import { Button } from '@/shared/components/ui/Button.tsx';
-import { EllipsisVertical, TagIcon, X } from 'lucide-react';
-import { Popover } from '@/shared/components/ui/Popover.tsx';
-import { useMutation } from '@tanstack/react-query';
-import { flowsheetApi } from '@/features/flowsheet/api.ts';
-import { useFlowsheetContext } from '@/features/flowsheet/contexts/flowsheet-context.tsx';
+import { GripVertical, TagIcon, Trash, Workflow } from 'lucide-react';
 import Group from '@/shared/components/layout/group.tsx';
 import { Stack } from '@/shared/components/layout/stack.tsx';
-import { useDrag } from 'react-aria';
+import { DragPreview, useDrag } from 'react-aria';
+import clsx from 'clsx';
+import React from 'react';
+import { Text } from '@/shared/components/layout/text.tsx';
+import { Checkbox } from '@/shared/components/ui/Checkbox.tsx';
 
 type CourseCardProps = {
   course: CourseSummary;
-  mode?: 'pending' | 'base';
 };
 
-export function CourseCard({ course, mode = 'base' }: CourseCardProps) {
-  const { toggleSelectCourse, isSelected, onDragCourse, clearDraggingCourse } =
-    useFlowsheetGridContext();
+export function CourseCard({ course }: CourseCardProps) {
+  const {
+    focusedCourse,
+    toggleFocusCourse,
+    toggleSelectCourse,
+    isSelected,
+    isFocused,
+    onDragCourse,
+    clearDraggingCourse,
+    selectedCourses,
+  } = useFlowsheetGridContext();
 
-  const { dragProps } = useDrag({
+  const dragPreview = React.useRef(null);
+
+  const { dragProps, isDragging } = useDrag({
+    preview: dragPreview,
     getItems() {
       return [];
     },
@@ -36,65 +44,67 @@ export function CourseCard({ course, mode = 'base' }: CourseCardProps) {
   });
 
   return (
-    <UnstyledButton
-      className={styles.button}
-      data-mode={mode}
-      onPress={() => toggleSelectCourse(course.id)}
-    >
-      <div
-        {...dragProps}
-        data-selected={isSelected(course.id) ? true : undefined}
-        className={styles.card}
+    <>
+      <UnstyledButton
+        onPress={() => {
+          if (isFocused(course.id)) {
+            toggleFocusCourse(course.id);
+            return;
+          }
+
+          toggleSelectCourse(course.id);
+        }}
+        className={clsx(styles.card, isDragging ? styles.dragging : '')}
+        data-focused-course={isFocused(course.id) ? true : undefined}
+        data-selected-course={isSelected(course.id) ? true : undefined}
       >
-        <Stack fill justify="between">
-          <Stack gap={1}>
-            <Group justify="between">
-              <Group>
-                {isSelected(course.id) && <Checkbox isSelected />}
+        <Stack fill gap={1} {...dragProps}>
+          <Group justify="between">
+            <Text as="h3" size="xs" tone="dimmed" weight="medium">
+              {course.code}
+            </Text>
 
-                <h3 className={styles.code}>{course.code}</h3>
-              </Group>
+            <Checkbox
+              onChange={() => toggleSelectCourse(course.id)}
+              isSelected={isSelected(course.id)}
+            />
+          </Group>
 
-              <ActionsMenu course={course} />
+          <Text size="xs">{course.name}</Text>
+
+          {selectedCourses.size === 0 && focusedCourse === null && (
+            <Group justify="end" className={clsx(styles.footerButtons)}>
+              <Button
+                variant="ghost"
+                size="xs"
+                shape="icon"
+                onPress={() => toggleFocusCourse(course.id)}
+              >
+                <Workflow size={15} />
+              </Button>
+
+              <Button variant="ghost" size="xs" shape="icon">
+                <TagIcon size={14} />
+              </Button>
+
+              <Button variant="ghost" size="xs" shape="icon">
+                <Trash size={14} />
+              </Button>
             </Group>
-
-            <p className={styles.name}>{course.name}</p>
-          </Stack>
+          )}
         </Stack>
-      </div>
-    </UnstyledButton>
-  );
-}
+      </UnstyledButton>
 
-type ActionsMenuProps = {
-  course: CourseSummary;
-};
-
-function ActionsMenu({ course }: ActionsMenuProps) {
-  const { flowsheet } = useFlowsheetContext();
-
-  const removeCourse = useMutation({
-    mutationFn: () =>
-      flowsheetApi.removeCourses({ flowsheetId: flowsheet.id, courseIds: [course.id] }),
-  });
-
-  return (
-    <MenuTrigger>
-      <Button variant="ghost" size="xs" shape="icon">
-        <EllipsisVertical size={12} />
-      </Button>
-
-      <Popover placement="bottom right" crossOffset={24}>
-        <Menu>
-          <MenuItem>
-            <TagIcon size={14} /> Assign section
-          </MenuItem>
-
-          <MenuItem onPress={() => removeCourse.mutate()}>
-            <X color="red" size={14} /> Remove
-          </MenuItem>
-        </Menu>
-      </Popover>
-    </MenuTrigger>
+      <DragPreview ref={dragPreview}>
+        {() => (
+          <div className={styles.dragPreview}>
+            <GripVertical size={18} />
+            <Text size="xs" weight="semibold">
+              {course.code}
+            </Text>
+          </div>
+        )}
+      </DragPreview>
+    </>
   );
 }

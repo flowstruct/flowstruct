@@ -16,18 +16,16 @@ type DropIndicatorProps = {
 export function DropIndicator({ term, position }: DropIndicatorProps) {
   const { flowsheet } = useFlowsheetContext();
   const { draggingCourse } = useFlowsheetGridContext();
+
   const queryClient = useQueryClient();
 
   const moveCourse = useMutation({
-    mutationFn: () =>
-      flowsheetApi.moveCourse({
-        flowsheetId: flowsheet.id,
-        courseId: draggingCourse,
-        term,
-        position,
-      }),
+    mutationFn: flowsheetApi.moveCourse,
     onMutate: async () => {
+      if (!draggingCourse) return;
+
       await queryClient.cancelQueries({ queryKey: flowsheetKeys.detail(flowsheet.id) });
+
       return queryClient.setQueryData(
         flowsheetKeys.detail(flowsheet.id),
         movePlacement(flowsheet, draggingCourse, term, position)
@@ -39,13 +37,20 @@ export function DropIndicator({ term, position }: DropIndicatorProps) {
   const { dropProps, isDropTarget } = useDrop({
     ref,
     onDrop: () => {
-      moveCourse.mutate();
+      if (!draggingCourse) return;
+
+      moveCourse.mutate({
+        flowsheetId: flowsheet.id,
+        courseId: draggingCourse,
+        term,
+        position,
+      });
     },
   });
 
   return (
     <div
-      data-is-dragging-course={draggingCourse !== null}
+      data-is-dragging-course={!!draggingCourse}
       {...dropProps}
       ref={ref}
       className={styles.dropZone}

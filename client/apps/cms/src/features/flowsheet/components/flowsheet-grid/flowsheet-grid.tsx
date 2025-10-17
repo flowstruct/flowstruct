@@ -14,12 +14,21 @@ import { useFlowsheetGridContext } from '@/features/flowsheet/contexts/flowsheet
 import { DropIndicator } from '@/features/flowsheet/components/flowsheet-grid/drop-indicator.tsx';
 import { Text } from '@/shared/components/layout/text.tsx';
 import { Box } from '@/shared/components/layout/box.tsx';
+import { useKeyboard } from 'react-aria';
 
 export function FlowsheetGrid() {
-  const { terms, createTerm } = useFlowsheetGridContext();
+  const { terms, createTerm, clearFocusedCourse, clearSelectedCourses } = useFlowsheetGridContext();
+  const { keyboardProps } = useKeyboard({
+    onKeyDown: (e) => {
+      if (e.key === 'Escape') {
+        clearSelectedCourses();
+        clearFocusedCourse();
+      }
+    },
+  });
 
   return (
-    <Box overflow="auto" overflowY="hidden">
+    <Box overflow="auto" overflowY="hidden" {...keyboardProps}>
       <Group align="start">
         {Object.entries(terms).map(([term, placements]) => (
           <Term
@@ -85,7 +94,7 @@ function Term({ term, placements }: TermProps) {
           })}
 
           <Box position="relative">
-            <DropIndicator term={term} position={placements.length + 1} />
+            <DropIndicator term={term} position={placements.length} />
           </Box>
         </Stack>
       </Stack>

@@ -32,6 +32,10 @@ export type Placement = {
   span: number;
 };
 
+type CoursePrerequisite = { course: number; prerequisite: number };
+
+type CourseCorequisite = { course: number; corequisite: number };
+
 export type Flowsheet = {
   id: number;
   year: number;
@@ -40,8 +44,8 @@ export type Flowsheet = {
   program: number;
   sections: Section[];
   placements: Placement[];
-  coursePrerequisites: Record<number, Record<number, CourseRelation>>;
-  courseCorequisites: Record<number, number[]>;
+  coursePrerequisites: CoursePrerequisite[];
+  courseCorequisites: CourseCorequisite[];
   archivedAt: Date;
   archivedBy: number | null;
   createdAt: Date;
