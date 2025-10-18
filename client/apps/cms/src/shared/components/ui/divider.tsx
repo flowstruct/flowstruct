@@ -1,5 +1,9 @@
 import styles from './divider.module.css';
 
-export function Divider() {
-    return <div className={styles.divider} />
+type DividerProps = {
+  orientation?: 'vertical' | 'horizontal';
+};
+
+export function Divider({ orientation = 'horizontal' }: DividerProps) {
+  return <div className={styles.divider} data-orientation={orientation} />;
 }

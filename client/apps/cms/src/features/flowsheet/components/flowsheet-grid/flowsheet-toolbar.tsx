@@ -7,6 +7,9 @@ import { useFlowsheetContext } from '@/features/flowsheet/contexts/flowsheet-con
 import { useMutation } from '@tanstack/react-query';
 import { flowsheetApi } from '@/features/flowsheet/api.ts';
 import Group from '@/shared/components/layout/group.tsx';
+import { Divider } from '@/shared/components/ui/divider.tsx';
+import { Popover } from '@/shared/components/ui/Popover.tsx';
+import React from 'react';
 
 export function FlowsheetToolbar() {
   const { flowsheet } = useFlowsheetContext();
@@ -22,15 +25,19 @@ export function FlowsheetToolbar() {
       clearSelectedCourses();
     },
   });
-
-  if (selectedCourses.size === 0) return;
+  const triggerRef = React.useRef<HTMLDivElement | null>(null);
 
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.toolbar}>
-        <Group>
+    <div className={styles.wrapper} ref={triggerRef}>
+      <Popover
+        triggerRef={triggerRef}
+        isNonModal
+        isOpen={selectedCourses.size > 0}
+        className={styles.toolbar}
+      >
+        <Group gap={3}>
           <div className={styles.selectionCounter}>
-            <Group gap={2}>
+            <Group>
               <p>{selectedCourses.size} selected</p>
 
               <Button
@@ -39,34 +46,38 @@ export function FlowsheetToolbar() {
                 size="none"
                 onPress={() => clearSelectedCourses()}
               >
-                <X size={12} />
+                <X size={14} />
               </Button>
             </Group>
           </div>
 
-          <TooltipTrigger>
-            <Button variant="flat" shape="icon" size="xs">
-              <TagIcon size={12} />
-            </Button>
+          <Divider orientation="vertical" />
 
-            <Tooltip>Remove courses</Tooltip>
-          </TooltipTrigger>
+          <Group>
+            <TooltipTrigger>
+              <Button shape="icon" variant="flat" size="sm">
+                <TagIcon size={14} />
+              </Button>
 
-          <TooltipTrigger>
-            <Button
-              variant="flat"
-              shape="icon"
-              size="xs"
-              isPending={removeCourses.isPending}
-              onPress={() => removeCourses.mutate()}
-            >
-              <Trash color="red" size={12} />
-            </Button>
+              <Tooltip>Tag section</Tooltip>
+            </TooltipTrigger>
 
-            <Tooltip>Remove courses</Tooltip>
-          </TooltipTrigger>
+            <TooltipTrigger>
+              <Button
+                shape="icon"
+                size="sm"
+                variant="flat"
+                isPending={removeCourses.isPending}
+                onPress={() => removeCourses.mutate()}
+              >
+                <Trash color="red" size={14} />
+              </Button>
+
+              <Tooltip>Remove courses</Tooltip>
+            </TooltipTrigger>
+          </Group>
         </Group>
-      </div>
+      </Popover>
     </div>
   );
 }

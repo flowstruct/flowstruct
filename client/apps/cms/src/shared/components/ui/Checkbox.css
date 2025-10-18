@@ -15,7 +15,6 @@
     forced-color-adjust: none;
 
     .checkbox {
-        /*background: var(--background-color);*/
         border: 2px solid var(--border-color);
         transition: all 200ms;
         display: flex;
@@ -80,7 +79,7 @@
 
     &[data-invalid] {
         .checkbox {
-            --checkmark-color: var(--gray-50);
+            --checkmark-color: var(--gray-1);
             border-color: var(--invalid-color);
         }
 

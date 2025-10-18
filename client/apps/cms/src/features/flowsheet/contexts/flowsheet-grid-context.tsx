@@ -6,7 +6,7 @@ import { useFlowsheetContext } from '@/features/flowsheet/contexts/flowsheet-con
 type FlowsheetGridContextValues = {
   selectedCourses: Set<number>;
   toggleSelectCourse: (courseId: number) => void;
-  isSelected: (courseId: number) => boolean;
+  isSelectedCourse: (courseId: number) => boolean;
   clearSelectedCourses: () => void;
   terms: Record<number, Placement[]>;
   createTerm: () => void;
@@ -15,7 +15,7 @@ type FlowsheetGridContextValues = {
   clearDraggingCourse: () => void;
   focusedCourse: number | null;
   toggleFocusCourse: (courseId: number) => void;
-  isFocused: (courseId: number) => boolean;
+  isFocusedCourse: (courseId: number) => boolean;
   clearFocusedCourse: () => void;
 };
 
@@ -40,11 +40,10 @@ export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) 
       return;
     }
 
-    setSelectedCourses(new Set());
     setFocusedCourse(courseId);
   };
 
-  const isFocused = (courseId: number) => courseId === focusedCourse;
+  const isFocusedCourse = (courseId: number) => courseId === focusedCourse;
 
   const clearFocusedCourse = () => setFocusedCourse(null);
 
@@ -73,7 +72,7 @@ export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) 
 
   const clearSelectedCourses = () => setSelectedCourses(new Set());
 
-  const isSelected = (courseId: number) => selectedCourses.has(courseId);
+  const isSelectedCourse = (courseId: number) => selectedCourses.has(courseId);
 
   const terms = React.useMemo(() => {
     const baseTerms = getFlowsheetTerms(flowsheet);
@@ -92,7 +91,7 @@ export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) 
       value={{
         selectedCourses,
         toggleSelectCourse,
-        isSelected,
+        isSelectedCourse,
         clearSelectedCourses,
         terms,
         createTerm,
@@ -101,8 +100,8 @@ export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) 
         clearDraggingCourse,
         focusedCourse,
         toggleFocusCourse,
-        isFocused,
-        clearFocusedCourse
+        isFocusedCourse,
+        clearFocusedCourse,
       }}
     >
       {children}

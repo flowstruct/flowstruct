@@ -52,7 +52,7 @@ export function CourseCatalogAutocomplete({ term }: AddCoursesPopoverProps) {
   const suggestCreateCourse = debouncedSearch && (catalogCourses?.results.length ?? 0) > 0;
 
   return (
-    <div>
+    <>
       <DialogTrigger>
         <Button
           aria-label="Add courses"
@@ -180,6 +180,6 @@ export function CourseCatalogAutocomplete({ term }: AddCoursesPopoverProps) {
           )}
         </Popover>
       </DialogTrigger>
-    </div>
+    </>
   );
 }

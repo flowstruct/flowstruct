@@ -8,46 +8,36 @@
     width: 100%;
     position: relative;
     cursor: pointer;
+    transition: 250ms;
 
-    &[data-focused-course=true] {
-        background: var(--primary-2);
-        border: 1px solid var(--primary-7);
-
-        &[data-hovered] {
-            background: var(--primary-2);
-            border-color: var(--primary-8);
-        }
-    }
-
-    &[data-selected-course=true] {
-        background: var(--primary-2);
-        border: 1px solid var(--focus-ring-color);
-
-        &[data-hovered] {
-            background: var(--primary-2);
-            border-color: var(--primary-6);
-        }
+    &[data-focus-visible] {
+        outline: 2px solid var(--focus-ring-color);
+        outline-offset: -2px;
     }
 
     &[data-hovered] {
         border-color: var(--gray-6);
+
+        .footerButtons {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
     }
 }
 
-.footerButtons {
-    margin-top: auto;
-    opacity: 0;
-    transform: translateY(0.25rem);
-    transition: opacity 0.15s ease, transform 0.15s ease;
-    pointer-events: none;
+.card.dragging {
+    border: 1px solid var(--primary-6);
+    background: var(--primary-2);
 }
 
-.card[data-hovered] .footerButtons,
-.card[data-focused] .footerButtons,
-.footerButtons.visible {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
+.card.focused {
+    border: 1px solid var(--primary-6);
+}
+
+.card.selected {
+    background: var(--primary-2);
+    border: 1px solid var(--primary-6);
 }
 
 .dragPreview {
@@ -65,9 +55,4 @@
     border-radius: var(--radius-2);
     box-shadow: var(--shadow-sm);
     padding: var(--space-2) var(--space-3);
-}
-
-
-.card.dragging {
-    opacity: 0.5;
 }
