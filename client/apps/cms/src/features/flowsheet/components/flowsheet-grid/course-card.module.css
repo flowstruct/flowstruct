@@ -24,6 +24,10 @@
             pointer-events: auto;
         }
     }
+
+    &[data-pressed] {
+        background: var(--gray-a2);
+    }
 }
 
 .card.dragging {

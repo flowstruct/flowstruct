@@ -1,20 +1,14 @@
-import { useFlowsheetContext } from '@/features/flowsheet/contexts/flowsheet-context.tsx';
 import styles from './flowsheet-grid.module.css';
-import { CourseCard } from '@/features/flowsheet/components/flowsheet-grid/course-card.tsx';
-import { Placement, Term } from '@/features/flowsheet/domain/flowsheet.ts';
-import { CourseCatalogAutocomplete } from '@/features/flowsheet/components/flowsheet-grid/course-catalog-autocomplete.tsx';
 import { Grid2X2Plus } from 'lucide-react';
 import { Button } from '@/shared/components/ui/Button.tsx';
 import { Tooltip, TooltipTrigger } from '@/shared/components/ui/Tooltip.tsx';
 import { FlowsheetToolbar } from '@/features/flowsheet/components/flowsheet-grid/flowsheet-toolbar.tsx';
 import { createPortal } from 'react-dom';
 import Group from '@/shared/components/layout/group.tsx';
-import { Stack } from '@/shared/components/layout/stack.tsx';
 import { useFlowsheetGridContext } from '@/features/flowsheet/contexts/flowsheet-grid-context.tsx';
-import { DropIndicator } from '@/features/flowsheet/components/flowsheet-grid/drop-indicator.tsx';
-import { Text } from '@/shared/components/layout/text.tsx';
 import { Box } from '@/shared/components/layout/box.tsx';
 import { useKeyboard } from 'react-aria';
+import { FlowsheetGridTerm } from '@/features/flowsheet/components/flowsheet-grid/flowsheet-grid-term.tsx';
 
 export function FlowsheetGrid() {
   const { terms, createTerm, clearFocusedCourse, clearSelectedCourses } = useFlowsheetGridContext();
@@ -31,7 +25,7 @@ export function FlowsheetGrid() {
     <Box overflow="auto" overflowY="hidden" {...keyboardProps}>
       <Group align="start">
         {Object.entries(terms).map(([term, placements]) => (
-          <Term
+          <FlowsheetGridTerm
             key={term}
             term={Number(term)}
             placements={placements.sort((a, b) => a.position - b.position)}
@@ -56,48 +50,5 @@ export function FlowsheetGrid() {
 
       {createPortal(<FlowsheetToolbar />, document.body)}
     </Box>
-  );
-}
-
-type TermProps = {
-  term: number;
-  placements: Placement[];
-};
-
-function Term({ term, placements }: TermProps) {
-  const { flowsheetCourses } = useFlowsheetContext();
-
-  return (
-    <div className={styles.term}>
-      <Stack gap={1}>
-        <Box px={1}>
-          <Group justify="between">
-            <Text tone="dimmed" weight="medium" size="xs">
-              Term {term}
-            </Text>
-
-            <CourseCatalogAutocomplete term={Number(term)} />
-          </Group>
-        </Box>
-
-        <Stack gap={2}>
-          {placements?.map((p) => {
-            const course = flowsheetCourses.byIds[p.course];
-            if (!course) return;
-
-            return (
-              <Box key={course.id} position="relative">
-                <DropIndicator term={term} position={p.position} />
-                <CourseCard course={course} />
-              </Box>
-            );
-          })}
-
-          <Box position="relative">
-            <DropIndicator term={term} position={placements.length} />
-          </Box>
-        </Stack>
-      </Stack>
-    </div>
   );
 }

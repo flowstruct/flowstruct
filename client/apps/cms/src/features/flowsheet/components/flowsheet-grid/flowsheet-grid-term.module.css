@@ -1,0 +1,37 @@
+.listBox {
+    all: unset;
+    width: 10rem;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    gap: var(--space-2);
+}
+
+.listBoxItem {
+    all: unset;
+}
+
+.dropIndicator.active {
+    outline: 1px solid var(--primary-color);
+}
+
+.dragPreview {
+    max-width: 250px;
+    font-size: var(--font-size-sm);
+    display: flex;
+    font-weight: 450;
+    align-items: center;
+    gap: var(--space-4);
+    border-radius: var(--radius-2);
+    padding: var(--space-1) var(--space-2);
+    color: var(--primary-contrast);
+    background: var(--primary-11);
+}
+
+.dragPreviewItemCount {
+    font-size: var(--font-size-xs);
+    background: white;
+    color: var(--primary-11);
+    padding: 0 var(--space-2);
+    border-radius: var(--radius-1);
+}

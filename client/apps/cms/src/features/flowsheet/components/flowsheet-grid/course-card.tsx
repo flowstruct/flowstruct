@@ -1,10 +1,10 @@
 import { CourseSummary } from '@/features/course/domain/course.ts';
 import styles from './course-card.module.css';
 import { useFlowsheetGridContext } from '@/features/flowsheet/contexts/flowsheet-grid-context.tsx';
-import { GripVertical, Plus, Scaling, TagIcon, Trash } from 'lucide-react';
+import { Plus, Scaling, TagIcon, Trash } from 'lucide-react';
 import Group from '@/shared/components/layout/group.tsx';
 import { Stack } from '@/shared/components/layout/stack.tsx';
-import { DragPreview, useDrag, useFocusRing, useHover, usePress } from 'react-aria';
+import { useFocusRing, useHover, usePress } from 'react-aria';
 import clsx from 'clsx';
 import React from 'react';
 import { Text } from '@/shared/components/layout/text.tsx';
@@ -20,15 +20,10 @@ type CourseCardProps = {
 };
 
 export function CourseCard({ course, ...props }: CourseCardProps) {
-  const {
-    isFocusedCourse,
-    toggleFocusCourse,
-    toggleSelectCourse,
-    isSelectedCourse,
-    validateTerms,
-  } = useFlowsheetGridContext();
+  const { isFocusedCourse, toggleSelectCourse, toggleFocusCourse, isSelectedCourse } =
+    useFlowsheetGridContext();
 
-  const { pressProps } = usePress({
+  const { pressProps, isPressed } = usePress({
     onPress: (e) => {
       if (e.shiftKey || e.ctrlKey) {
         toggleSelectCourse(course.id);
@@ -41,20 +36,6 @@ export function CourseCard({ course, ...props }: CourseCardProps) {
   const { hoverProps, isHovered } = useHover(props);
   const { focusProps, isFocusVisible } = useFocusRing(props);
 
-  const dragPreview = React.useRef(null);
-
-  const { dragProps, isDragging } = useDrag({
-    preview: dragPreview,
-    getItems() {
-      return [{
-        'courseId': String(course.id)
-      }];
-    },
-    onDragStart: () => {
-      validateTerms(course.id);
-    },
-  });
-
   const triggerFocusPopoverRef = React.useRef<HTMLDivElement | null>(null);
 
   return (
@@ -65,17 +46,17 @@ export function CourseCard({ course, ...props }: CourseCardProps) {
         {...focusProps}
         className={clsx(
           styles.card,
-          isDragging ? styles.dragging : '',
           isFocusedCourse(course.id) ? styles.focused : '',
           isSelectedCourse(course.id) ? styles.selected : ''
         )}
         data-hovered={isHovered || undefined}
         data-focused={isFocusVisible || undefined}
+        data-pressed={isPressed || undefined}
         role="button"
         tabIndex={0}
         ref={triggerFocusPopoverRef}
       >
-        <Stack fill gap={1} {...dragProps}>
+        <Stack fill gap={1}>
           <Group justify="between">
             <Text as="h3" size="xs" tone="dimmed" weight="medium">
               {course.code}
@@ -137,17 +118,6 @@ export function CourseCard({ course, ...props }: CourseCardProps) {
           </Group>
         </Box>
       </Popover>
-
-      <DragPreview ref={dragPreview}>
-        {() => (
-          <div className={styles.dragPreview}>
-            <GripVertical size={18} />
-            <Text size="xs" weight="semibold">
-              {course.code}
-            </Text>
-          </div>
-        )}
-      </DragPreview>
     </>
   );
 }

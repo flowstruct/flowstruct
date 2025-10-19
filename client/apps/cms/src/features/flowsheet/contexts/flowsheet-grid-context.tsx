@@ -8,6 +8,7 @@ type FlowsheetGridContextValues = {
   toggleSelectCourse: (courseId: number) => void;
   isSelectedCourse: (courseId: number) => boolean;
   clearSelectedCourses: () => void;
+  onCourseSelectionChange: (selection: Set<number>) => void;
   terms: Record<number, Placement[]>;
   createTerm: () => void;
   validateTerms: (courseId: number) => void;
@@ -62,7 +63,12 @@ export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) 
     });
   };
 
+  const onCourseSelectionChange = (selection: Set<number>) => {
+    setSelectedCourses(selection);
+  };
+
   const validateTerms = (courseId: number) => {
+    console.log(courseId);
     setValidTerms([1, 2, 3]);
   };
 
@@ -89,6 +95,7 @@ export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) 
         toggleSelectCourse,
         isSelectedCourse,
         clearSelectedCourses,
+        onCourseSelectionChange,
         terms,
         validateTerms,
         validTerms,
