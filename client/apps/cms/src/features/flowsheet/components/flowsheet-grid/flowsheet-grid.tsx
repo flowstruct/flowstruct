@@ -80,7 +80,7 @@ function Term({ term, placements }: TermProps) {
           </Group>
         </Box>
 
-        <Stack>
+        <Stack gap={2}>
           {placements?.map((p) => {
             const course = flowsheetCourses.byIds[p.course];
             if (!course) return;

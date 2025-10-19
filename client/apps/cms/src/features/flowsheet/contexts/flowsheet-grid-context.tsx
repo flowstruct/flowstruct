@@ -10,9 +10,8 @@ type FlowsheetGridContextValues = {
   clearSelectedCourses: () => void;
   terms: Record<number, Placement[]>;
   createTerm: () => void;
-  onDragCourse: (courseId: number) => void;
-  draggingCourse: number | null;
-  clearDraggingCourse: () => void;
+  validateTerms: (courseId: number) => void;
+  validTerms: number[] | null;
   focusedCourse: number | null;
   toggleFocusCourse: (courseId: number) => void;
   isFocusedCourse: (courseId: number) => boolean;
@@ -29,10 +28,11 @@ export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) 
   const { flowsheet } = useFlowsheetContext();
   const [focusedCourse, setFocusedCourse] = React.useState<number | null>(null);
   const [selectedCourses, setSelectedCourses] = React.useState<Set<number>>(new Set());
-  const [draggingCourse, setDraggingCourse] = React.useState<number | null>(null);
   const [allPossibleTermsCount, setAllPossibleTermsCount] = React.useState<number>(
     Math.max(...Object.keys(getFlowsheetTerms(flowsheet)).map(Number))
   );
+
+  const [validTerms, setValidTerms] = React.useState<number[] | null>(null);
 
   const toggleFocusCourse = (courseId: number) => {
     if (courseId === focusedCourse) {
@@ -62,12 +62,8 @@ export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) 
     });
   };
 
-  const onDragCourse = (courseId: number) => {
-    setDraggingCourse(courseId);
-  };
-
-  const clearDraggingCourse = () => {
-    setDraggingCourse(null);
+  const validateTerms = (courseId: number) => {
+    setValidTerms([1, 2, 3]);
   };
 
   const clearSelectedCourses = () => setSelectedCourses(new Set());
@@ -94,10 +90,9 @@ export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) 
         isSelectedCourse,
         clearSelectedCourses,
         terms,
+        validateTerms,
+        validTerms,
         createTerm,
-        onDragCourse,
-        draggingCourse,
-        clearDraggingCourse,
         focusedCourse,
         toggleFocusCourse,
         isFocusedCourse,

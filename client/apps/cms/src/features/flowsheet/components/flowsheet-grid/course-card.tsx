@@ -25,8 +25,7 @@ export function CourseCard({ course, ...props }: CourseCardProps) {
     toggleFocusCourse,
     toggleSelectCourse,
     isSelectedCourse,
-    onDragCourse,
-    clearDraggingCourse,
+    validateTerms,
   } = useFlowsheetGridContext();
 
   const { pressProps } = usePress({
@@ -47,13 +46,12 @@ export function CourseCard({ course, ...props }: CourseCardProps) {
   const { dragProps, isDragging } = useDrag({
     preview: dragPreview,
     getItems() {
-      return [];
+      return [{
+        'courseId': String(course.id)
+      }];
     },
     onDragStart: () => {
-      onDragCourse(course.id);
-    },
-    onDragEnd: () => {
-      clearDraggingCourse();
+      validateTerms(course.id);
     },
   });
 
