@@ -1,0 +1,12 @@
+.divider {
+    background-color: var(--border-color);
+}
+
+.divider[data-orientation=horizontal] {
+    height: 1px;
+}
+
+.divider[data-orientation=vertical] {
+    width: 1px;
+    align-self: stretch;
+}

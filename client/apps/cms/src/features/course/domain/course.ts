@@ -44,3 +44,4 @@ export type CourseSummary = Pick<
   | 'updatedAt'
   | 'updatedBy'
 >;
+

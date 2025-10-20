@@ -1,0 +1,20 @@
+.term {
+    min-width: 10rem;
+    max-width: 10rem;
+    user-select: none;
+}
+
+.placeCoursesButton {
+    color: var(--primary-color);
+    font-weight: 500;
+
+    &[data-hovered] {
+        color: var(--text-color-base);
+    }
+}
+
+.addTermButton {
+    position: absolute;
+    top: 0;
+    left: var(--space-2);
+}

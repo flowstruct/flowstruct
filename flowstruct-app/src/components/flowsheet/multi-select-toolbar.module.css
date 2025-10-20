@@ -1,0 +1,27 @@
+
+.wrapper {
+    position: absolute;
+    bottom: var(--space-6);
+    width: 100%;
+}
+
+.toolbar {
+    color: var(--text-color-base);
+    font-size: var(--font-size-sm);
+    margin: 0 auto;
+    width: fit-content;
+    box-shadow: var(--shadow-sm);
+    background: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-2);
+    padding: var(--space-2) var(--space-2);
+}
+
+.selectionCounter {
+    text-wrap: nowrap;
+    font-size: var(--font-size-sm);
+    padding: 0 var(--space-2);
+    border-radius: 0.75rem;
+    border: 1px solid var(--border-color);
+    background: var(--background-color-secondary);
+}
