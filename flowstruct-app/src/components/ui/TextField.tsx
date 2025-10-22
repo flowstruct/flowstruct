@@ -3,8 +3,8 @@ import {
   Group,
   Input,
   TextField as AriaTextField,
-  TextFieldProps as AriaTextFieldProps,
-  ValidationResult,
+  type TextFieldProps as AriaTextFieldProps,
+  type ValidationResult,
 } from 'react-aria-components';
 import { FieldError, Label } from './Form.tsx';
 import { Text } from './Content.tsx';
@@ -19,6 +19,7 @@ export interface TextFieldProps extends AriaTextFieldProps {
   placeholder?: string;
   errorMessage?: string | ((validation: ValidationResult) => string);
   variant?: 'default' | 'transparent';
+  className?: string;
 }
 
 export function TextField({
@@ -28,6 +29,7 @@ export function TextField({
   description,
   placeholder,
   errorMessage,
+  className,
   variant = 'default',
   ...props
 }: TextFieldProps) {
@@ -36,7 +38,7 @@ export function TextField({
       {label && <Label>{label}</Label>}
       <Group style={{ width: width ? '' : '100%' }}>
         {icon}
-        <Input style={{ width: width ?? '' }} placeholder={placeholder} />
+        <Input className={className} style={{ width: width ?? '' }} placeholder={placeholder} />
       </Group>
       {description && <Text slot="description">{description}</Text>}
       <FieldError>{errorMessage}</FieldError>

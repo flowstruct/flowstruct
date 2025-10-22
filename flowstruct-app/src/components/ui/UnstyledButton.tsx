@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { AriaButtonProps, useButton, useFocusRing, useHover } from 'react-aria';
+import { type AriaButtonProps, useButton, useFocusRing, useHover } from 'react-aria';
 import './UnstyledButton.css';
 import clsx from 'clsx';
 

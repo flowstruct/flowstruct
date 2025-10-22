@@ -3,15 +3,15 @@ import {
   Group,
   Input,
   SearchField as AriaSearchField,
-  SearchFieldProps as AriaSearchFieldProps,
-  ValidationResult,
+  type SearchFieldProps as AriaSearchFieldProps,
+  type ValidationResult,
 } from 'react-aria-components';
 import { FieldError, Label } from './Form.tsx';
 import { Text } from './Content.tsx';
 import { X } from 'lucide-react';
 import './SearchField.css';
 import React from 'react';
-import { ProgressCircle } from '@/shared/components/ui/ProgressCircle.tsx';
+import {ProgressCircle} from "./ProgressCircle.tsx";
 
 export interface SearchFieldProps extends AriaSearchFieldProps {
   label?: string;

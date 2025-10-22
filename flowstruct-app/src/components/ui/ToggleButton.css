@@ -1,5 +1,3 @@
-@import "./theme.css";
-
 .react-aria-ToggleButton {
   color: var(--text-color);
   background: var(--button-background);

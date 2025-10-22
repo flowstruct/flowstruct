@@ -1,5 +1,4 @@
 @import "./Dialog.css";
-@import "./theme.css";
 
 .react-aria-Popover {
     border: 1px solid var(--border-color);

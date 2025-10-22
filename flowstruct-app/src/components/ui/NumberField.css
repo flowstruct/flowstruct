@@ -1,5 +1,3 @@
-@import "./theme.css";
-
 .my-stepper-buttons {
     display: flex;
     flex-direction: column;
