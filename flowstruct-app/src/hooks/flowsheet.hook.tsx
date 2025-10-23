@@ -1,16 +1,13 @@
 import React, { useContext } from 'react';
-import type { Flowsheet } from '../types/flowsheet.types.ts';
+import type { Flowsheet } from '../domain/flowsheet.ts';
+import { useLocalStorage } from './local-storage.hook.ts';
 
 type FlowsheetContextValues = {
   flowsheet: Flowsheet;
-  saveFlowsheet: (updatedFlowsheet: Flowsheet) => void;
+  setFlowsheet: (newValue: Flowsheet | ((prev: Flowsheet) => Flowsheet)) => void;
 };
 
 const FlowsheetContext = React.createContext<FlowsheetContextValues | undefined>(undefined);
-
-type FlowsheetProviderProps = {
-  children: React.ReactNode;
-};
 
 const STORAGE_KEY = 'flowstruct';
 
@@ -24,40 +21,15 @@ const emptyFlowsheet: Flowsheet = {
   courses: {},
 };
 
-export function FlowsheetProvider({ children }: FlowsheetProviderProps) {
-  const [flowsheet, setFlowsheet] = React.useState<Flowsheet>(emptyFlowsheet);
+type FlowsheetProviderProps = {
+  children: React.ReactNode;
+};
 
-  const saveFlowsheet = (updatedFlowsheet: Flowsheet) => {
-    setFlowsheet({
-      id: crypto.randomUUID(),
-      program: 'Untitled',
-      year: new Date().getFullYear(),
-      name: '',
-      sections: [],
-      terms: [{ index: 1, placements: [{ type: 'COURSE' as const, course: 'yes', span: 1 }] }],
-      courses: {['yes']: {
-          id: 'yes',
-          code: '',
-          name: 'yeah',
-          creditHours: 0,
-          ects: 0,
-          lectureHours: 0,
-          practicalHours: 0,
-          type: 'F2F',
-          prerequisites: [],
-          corequisites: [],
-        }},
-    });
-    // saveToStorage(STORAGE_KEY, updatedFlowsheet);
-  };
+export function FlowsheetProvider({ children }: FlowsheetProviderProps) {
+  const [flowsheet, setFlowsheet] = useLocalStorage(STORAGE_KEY, emptyFlowsheet);
 
   return (
-    <FlowsheetContext.Provider
-      value={{
-        flowsheet,
-        saveFlowsheet,
-      }}
-    >
+    <FlowsheetContext.Provider value={{ flowsheet, setFlowsheet }}>
       {children}
     </FlowsheetContext.Provider>
   );

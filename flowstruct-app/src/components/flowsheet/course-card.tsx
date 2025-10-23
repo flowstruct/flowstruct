@@ -11,7 +11,7 @@ import { Box } from '../layout/box.tsx';
 import { Button } from '../ui/Button.tsx';
 import { Divider } from '../ui/divider.tsx';
 import { Tooltip, TooltipTrigger } from '../ui/Tooltip.tsx';
-import type { Course } from '../../types/flowsheet.types.ts';
+import type { Course } from '../../domain/flowsheet.ts';
 import { Text } from '../layout/text.tsx';
 import { useFlowsheetGrid } from '../../hooks/flowsheet-grid.hook.tsx';
 

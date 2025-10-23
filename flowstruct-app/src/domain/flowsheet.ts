@@ -1,3 +1,5 @@
+import type { Course } from './course';
+
 export type Section = {
   id: string;
   level: 'University' | 'School' | 'Program';
@@ -16,34 +18,17 @@ export type ElectiveSlot = {
 
 export type Placement =
   | {
+      id: string;
       type: 'COURSE';
       course: string;
       span: number;
     }
   | {
+      id: string;
       type: 'ELECTIVE_SLOT';
       electiveSlot: string;
       span: number;
     };
-
-export const CourseType = {
-  F2F: 'Face-to-Face',
-  BLD: 'Blended',
-  OL: 'Online',
-} as const;
-
-export type Course = {
-  id: string;
-  code: string;
-  name: string;
-  creditHours: number;
-  ects: number;
-  lectureHours: number;
-  practicalHours: number;
-  type: string;
-  prerequisites: string[];
-  corequisites: string[];
-};
 
 export type Flowsheet = {
   id: string;

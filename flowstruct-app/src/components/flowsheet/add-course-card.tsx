@@ -1,4 +1,4 @@
-import { Book, Plus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { Button } from '../ui/Button.tsx';
 import { useDisclosure } from '../../hooks/disclosure.hook.ts';
 import { Form } from '../ui/Form.tsx';
@@ -8,19 +8,20 @@ import styles from './add-course-card.module.css';
 import { UnstyledButton } from '../ui/UnstyledButton.tsx';
 import { TextArea } from 'react-aria-components';
 import { handleSubmit } from '../../utils/handle-submit.ts';
-import type { Course } from '../../types/flowsheet.types.ts';
+import type { Course } from '../../domain/course.ts';
+import { addCourse } from '../../domain/course.ts';
 import { useFlowsheet } from '../../hooks/flowsheet.hook.tsx';
 
 type AddCourseCardProps = {
-  term: number;
+  termIndex: number;
 };
 
-export function AddCourseCard({ term }: AddCourseCardProps) {
-  const { flowsheet, saveFlowsheet } = useFlowsheet();
+export function AddCourseCard({ termIndex }: AddCourseCardProps) {
+  const { setFlowsheet } = useFlowsheet();
   const form = useDisclosure();
 
   const onSubmit = handleSubmit<Course>((data) => {
-    const newCourse: Course = {
+    const course: Course = {
       id: crypto.randomUUID(),
       code: data.code ?? '',
       name: data.name ?? '',
@@ -33,25 +34,7 @@ export function AddCourseCard({ term }: AddCourseCardProps) {
       corequisites: [],
     };
 
-    const newTerms = [...flowsheet.terms];
-
-    if (!newTerms.find((t) => t.index === term)) {
-      newTerms.push({ index: term, placements: [] });
-    }
-
-    const updatedTerms = newTerms.map((t) => {
-      if (t.index !== term) return t;
-      return {
-        ...t,
-        placements: [...t.placements, { type: 'COURSE' as const, course: newCourse.id, span: 1 }],
-      };
-    });
-
-    saveFlowsheet({
-      ...flowsheet,
-      courses: { ...flowsheet.courses, [newCourse.id]: newCourse },
-      terms: updatedTerms,
-    });
+    setFlowsheet((flowsheet) => addCourse({ flowsheet, course, termIndex }));
 
     form.close();
   });
@@ -64,7 +47,6 @@ export function AddCourseCard({ term }: AddCourseCardProps) {
             <Stack gap={1}>
               <TextArea
                 className={styles.courseName}
-                icon={<Book size={14} />}
                 placeholder="Enter course name"
                 name="name"
                 autoFocus

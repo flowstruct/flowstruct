@@ -1,16 +1,11 @@
 import React, { useContext } from 'react';
-import type { Flowsheet, Term } from '../types/flowsheet.types.ts';
-import { useFlowsheet } from './flowsheet.hook.tsx';
 
 type FlowsheetGridContextValues = {
-  flowsheet: Flowsheet;
   selectedCourses: Set<string>;
   toggleSelectCourse: (courseId: string) => void;
   isSelectedCourse: (courseId: string) => boolean;
   clearSelectedCourses: () => void;
   onCourseSelectionChange: (selection: Set<string>) => void;
-  allPossibleTerms: Term[];
-  createTerm: () => void;
   validateTerms: (courseId: string) => void;
   validTerms: Set<number>;
   focusedCourse: string | null;
@@ -26,13 +21,8 @@ type FlowsheetGridProviderProps = {
 };
 
 export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) {
-  const { flowsheet } = useFlowsheet();
-
   const [focusedCourse, setFocusedCourse] = React.useState<string | null>(null);
   const [selectedCourses, setSelectedCourses] = React.useState<Set<string>>(new Set());
-  const [allPossibleTermsCount, setAllPossibleTermsCount] = React.useState<number>(
-    Math.max(...flowsheet.terms.map((t) => t.index), 1)
-  );
   const [validTerms, setValidTerms] = React.useState<Set<number>>(new Set());
 
   const toggleFocusCourse = (courseId: string) => {
@@ -76,34 +66,16 @@ export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) 
 
   const isSelectedCourse = (courseId: string) => selectedCourses.has(courseId);
 
-  const allPossibleTerms = React.useMemo(() => {
-    const existingTerms = Object.fromEntries(
-      flowsheet.terms.map((term) => [term.index, term.placements])
-    );
-    const allPossibleTerms: Term[] = [];
-
-    for (let i = 1; i <= allPossibleTermsCount; i++) {
-      allPossibleTerms.push({ index: i, placements: existingTerms[i] ?? [] });
-    }
-
-    return allPossibleTerms;
-  }, [flowsheet, allPossibleTermsCount]);
-
-  const createTerm = () => setAllPossibleTermsCount((prev) => prev + 1);
-
   return (
     <FlowsheetGridContext.Provider
       value={{
-        flowsheet,
         selectedCourses,
         toggleSelectCourse,
         isSelectedCourse,
         clearSelectedCourses,
         onCourseSelectionChange,
-        allPossibleTerms,
         validateTerms,
         validTerms,
-        createTerm,
         focusedCourse,
         toggleFocusCourse,
         isFocusedCourse,

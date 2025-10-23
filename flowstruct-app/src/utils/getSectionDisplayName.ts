@@ -1,4 +1,4 @@
-import { Section } from '@/features/flowsheet/domain/flowsheet.types.ts';
+import { Section } from '@/features/flowsheet/domain/flowsheet.ts';
 import { getSectionCode } from '@/features/flowsheet/domain/getSectionCode.ts';
 
 export const getSectionDisplayName = (
