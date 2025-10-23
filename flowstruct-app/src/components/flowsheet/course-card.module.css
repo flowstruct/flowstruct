@@ -3,9 +3,8 @@
     background: var(--gray-2);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-2);
-    height: 7rem;
+    height: 6rem;
     user-select: none;
-    width: 100%;
     position: relative;
     cursor: pointer;
     transition: 250ms;

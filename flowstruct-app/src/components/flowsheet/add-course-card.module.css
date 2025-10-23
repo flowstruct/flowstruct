@@ -1,8 +1,40 @@
+/* add-course-card.module.css */
+
 .form {
-    padding: var(--space-2) 0;
-    width: 100%;
-    /*background: blue;*/
+    background: white;
+    padding: var(--space-3);
+    border-radius: var(--radius-2);
+    /*box-shadow: var(--shadow-sm);*/
+    /*transition: box-shadow 0.15s ease;*/
+    border: 1px solid var(--border-color);
+    height: 6rem;
 }
+
+/*.form:focus-within {*/
+/*    box-shadow: var(--shadow-sm);*/
+/*}*/
+
+.courseName,
+.courseCode {
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--text-color-base);
+    width: 100%;
+    padding: var(--space-1) 0;
+    resize: none;
+
+    transition: all 0.15s ease;
+}
+
+.courseName::placeholder,
+.courseCode::placeholder {
+    color: var(--text-color-secondary);
+    opacity: 0.6;
+}
+
 
 .addCourseButton {
     color: var(--text-color-secondary);
@@ -10,15 +42,17 @@
     display: flex;
     align-items: center;
     gap: var(--space-2);
-    padding: var(--space-3) var(--space-2);
+    padding: var(--space-2);
+    transition: color 0.15s ease, background 0.15s ease;
 }
 
-.courseName {
+.addCourseButton:hover {
+    background: var(--highlight-background-hovered);
     color: var(--text-color-base);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-1);
-    font-size: var(--font-size-sm);
-    padding: var(--space-1);
-    min-width: 10rem;
-    max-width: 10rem;
+}
+
+.addCourseButton[data-focused] {
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: -2px;
+    border-radius: var(--radius-2);
 }

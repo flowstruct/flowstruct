@@ -11,7 +11,7 @@ import { Box } from '../layout/box.tsx';
 import { Button } from '../ui/Button.tsx';
 import { Divider } from '../ui/divider.tsx';
 import { Tooltip, TooltipTrigger } from '../ui/Tooltip.tsx';
-import type { Course } from '../../domain/flowsheet.ts';
+import type { Course } from '../../domain/course.ts';
 import { Text } from '../layout/text.tsx';
 import { useFlowsheetGrid } from '../../hooks/flowsheet-grid.hook.tsx';
 
@@ -20,8 +20,13 @@ type CourseCardProps = {
 };
 
 export function CourseCard({ course, ...props }: CourseCardProps) {
-  const { isFocusedCourse, toggleSelectCourse, toggleFocusCourse, isSelectedCourse } =
-    useFlowsheetGrid();
+  const {
+    isFocusedCourse,
+    toggleSelectCourse,
+    toggleFocusCourse,
+    isSelectedCourse,
+    clearFocusedCourse,
+  } = useFlowsheetGrid();
 
   const { pressProps, isPressed } = usePress({
     onPress: (e) => {
@@ -74,8 +79,8 @@ export function CourseCard({ course, ...props }: CourseCardProps) {
 
       <Popover
         triggerRef={triggerFocusPopoverRef}
-        isNonModal
         placement="top"
+        onOpenChange={(isOpen) => (isOpen ? clearFocusedCourse() : toggleFocusCourse(course.id))}
         isOpen={isFocusedCourse(course.id)}
       >
         <Box px={1} py={1}>

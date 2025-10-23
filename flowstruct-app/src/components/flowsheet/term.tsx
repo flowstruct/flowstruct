@@ -15,6 +15,7 @@ import {
   removePlacements,
   reorderPlacements,
 } from '../../domain/placement.ts';
+import type { Course } from '../../domain/course.ts';
 
 type TermProps = {
   term: Term;
