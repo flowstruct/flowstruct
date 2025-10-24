@@ -48,6 +48,8 @@ export function AddCourseCard({ termIndex }: AddCourseCardProps) {
 
     setFlowsheet((flowsheet) => addCourse({ flowsheet, course, termIndex }));
 
+    setFormData(initialFormData);
+
     form.close();
   });
 
