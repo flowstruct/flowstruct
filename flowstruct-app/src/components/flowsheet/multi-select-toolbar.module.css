@@ -20,7 +20,7 @@
 .selectionCounter {
     text-wrap: nowrap;
     font-size: var(--font-size-sm);
-    padding: 0 var(--space-2);
+    padding: var(--space-1) var(--space-2);
     border-radius: 0.75rem;
     border: 1px solid var(--border-color);
     background: var(--background-color-secondary);

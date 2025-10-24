@@ -1,4 +1,4 @@
-import { ArrowLeftToLine, Info, Plus } from 'lucide-react';
+import { ArrowLeftToLine, Plus, Settings2 } from 'lucide-react';
 import { useState } from 'react';
 import { useDisclosure } from '../../hooks/disclosure.hook.ts';
 import { Form } from '../ui/Form.tsx';
@@ -18,6 +18,7 @@ import { Dialog, DialogTrigger } from '../ui/Dialog.tsx';
 import { Popover } from '../ui/Popover.tsx';
 import { NumberField } from '../ui/NumberField.tsx';
 import { Select, SelectItem } from '../ui/Select.tsx';
+import { Tooltip, TooltipTrigger } from '../ui/Tooltip.tsx';
 
 type AddCourseCardProps = {
   termIndex: number;
@@ -138,9 +139,13 @@ export function AddCourseCard({ termIndex }: AddCourseCardProps) {
                 </AriaNumberField>
 
                 <DialogTrigger>
-                  <Button size="xs" shape="icon" variant="ghost">
-                    <Info size={15} />
-                  </Button>
+                  <TooltipTrigger>
+                    <Button size="xs" shape="icon" variant="ghost">
+                      <Settings2 size={15} />
+                    </Button>
+
+                    <Tooltip>Details</Tooltip>
+                  </TooltipTrigger>
 
                   <Popover>
                     <Dialog>
