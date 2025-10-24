@@ -63,7 +63,7 @@ export function CourseCard({ course, ...props }: CourseCardProps) {
       >
         <Stack fill gap={1}>
           <Group justify="between">
-            <Text as="h3" size="xs" tone="dimmed" weight="medium">
+            <Text as="h3" size="xs" tone="dimmed" weight="medium" className={styles.code}>
               {course.code}
             </Text>
 

@@ -2,8 +2,8 @@
 import {
   ListBox as AriaListBox,
   ListBoxItem as AriaListBoxItem,
-  ListBoxItemProps,
-  ListBoxProps as RACListBoxProps,
+  type ListBoxItemProps,
+  type ListBoxProps as RACListBoxProps,
 } from 'react-aria-components';
 
 import './ListBox.css';

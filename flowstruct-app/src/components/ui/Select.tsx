@@ -1,11 +1,11 @@
 'use client';
 import {
   Button,
-  ListBoxItemProps,
+  type ListBoxItemProps,
   Select as AriaSelect,
-  SelectProps as AriaSelectProps,
+  type SelectProps as AriaSelectProps,
   SelectValue,
-  ValidationResult,
+  type ValidationResult,
 } from 'react-aria-components';
 import { ListBox, ListBoxItem } from './ListBox.tsx';
 import { ChevronDown } from 'lucide-react';

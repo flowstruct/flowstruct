@@ -1,42 +1,81 @@
 /* add-course-card.module.css */
 
 .form {
-    background: white;
+    background: var(--gray-2);
     padding: var(--space-3);
     border-radius: var(--radius-2);
-    /*box-shadow: var(--shadow-sm);*/
-    /*transition: box-shadow 0.15s ease;*/
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--gray-2);
     height: 6rem;
 }
 
-/*.form:focus-within {*/
-/*    box-shadow: var(--shadow-sm);*/
-/*}*/
-
-.courseName,
 .courseCode {
     background: transparent;
     border: none;
     outline: none;
-    font-size: var(--font-size-sm);
-    font-weight: 500;
-    color: var(--text-color-base);
+    font-size: var(--font-size-xs);
     width: 100%;
-    padding: var(--space-1) 0;
+    color: var(--text-color-dimmed);
+    font-weight: 500;
+    padding: 0;
+
+    &::placeholder {
+        color: var(--text-color-dimmed);
+        font-weight: 500;
+    }
+}
+
+.courseName {
+    background: transparent;
+    border: none;
+    outline: none;
     resize: none;
+    font-size: var(--font-size-sm);
+    color: var(--text-color-base);
+    font-weight: 400;
+    padding: 0;
+    margin: 0;
+    height: 3.25rem;
 
-    transition: all 0.15s ease;
+    &::placeholder {
+        color: var(--text-color-dimmed);
+    }
 }
 
-.courseName::placeholder,
-.courseCode::placeholder {
-    color: var(--text-color-secondary);
-    opacity: 0.6;
+.creditHours {
+    display: flex;
+    align-items: center;
+    font-size: var(--font-size-xs);
+    padding: 0;
+    color: var(--text-color-placeholder);
+    user-select: none;
+    width: fit-content;
+
+    .creditHoursInput {
+        all: unset;
+        width: 2rem;
+        color: var(--text-color-base);
+    }
 }
 
+.submitButton {
+    all: unset;
+    display: flex;
+    gap: var(--space-2);
+    align-items: center;
+    font-weight: 450;
+    color: var(--primary-color);
+    font-size: var(--font-size-xs);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-1);
+
+    &[data-focused] {
+        outline: 2px solid var(--focus-ring-color);
+        outline-offset: -2px;
+    }
+}
 
 .addCourseButton {
+    all: unset;
     color: var(--text-color-secondary);
     font-size: var(--font-size-sm);
     display: flex;

@@ -1,7 +1,7 @@
 .card {
     padding: var(--space-3) var(--space-3);
     background: var(--gray-2);
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--gray-2);
     border-radius: var(--radius-2);
     height: 6rem;
     user-select: none;
@@ -15,7 +15,7 @@
     }
 
     &[data-hovered] {
-        border-color: var(--gray-6);
+        border-color: var(--gray-4);
 
         .footerButtons {
             opacity: 1;
@@ -59,4 +59,8 @@
     border-radius: var(--radius-2);
     box-shadow: var(--shadow-sm);
     padding: var(--space-2) var(--space-3);
+}
+
+.code {
+    text-transform: uppercase;
 }

@@ -4,8 +4,8 @@ import {
   Group,
   Input,
   NumberField as AriaNumberField,
-  NumberFieldProps as AriaNumberFieldProps,
-  ValidationResult,
+  type NumberFieldProps as AriaNumberFieldProps,
+  type ValidationResult,
 } from 'react-aria-components';
 import { FieldError, Label } from './Form.tsx';
 import { Text } from './Content.tsx';
@@ -18,6 +18,7 @@ export interface NumberFieldProps extends AriaNumberFieldProps {
   description?: string;
   errorMessage?: string | ((validation: ValidationResult) => string);
   icon?: React.ReactNode;
+  showButtons?: boolean;
 }
 
 export function NumberField({
@@ -25,22 +26,25 @@ export function NumberField({
   description,
   errorMessage,
   icon,
+  showButtons = true,
   ...props
 }: NumberFieldProps) {
   return (
     <AriaNumberField {...props}>
-      <Label>{label}</Label>
+      {label && <Label>{label}</Label>}
       <Group>
         {icon}
         <Input />
-        <div className="my-stepper-buttons">
-          <Button slot="increment">
-            <ChevronUp size={12} />
-          </Button>
-          <Button slot="decrement">
-            <ChevronDown size={12} />
-          </Button>
-        </div>
+        {showButtons && (
+          <div className="my-stepper-buttons">
+            <Button slot="increment">
+              <ChevronUp size={12} />
+            </Button>
+            <Button slot="decrement">
+              <ChevronDown size={12} />
+            </Button>
+          </div>
+        )}
       </Group>
       {description && <Text slot="description">{description}</Text>}
       <FieldError>{errorMessage}</FieldError>

@@ -8,24 +8,24 @@ type Props = AriaButtonProps<'button'> & {
 };
 
 export function UnstyledButton(props: Props) {
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLButtonElement>(null);
   const { buttonProps, isPressed } = useButton(props, ref);
   const { hoverProps, isHovered } = useHover(props);
   const { focusProps, isFocused } = useFocusRing(props);
 
   return (
-    <div
-      role="button"
+    <button
+      ref={ref}
       {...buttonProps}
       {...hoverProps}
       {...focusProps}
-      ref={ref}
       className={clsx(['unstyledButton', props.className])}
       data-pressed={isPressed || undefined}
       data-hovered={isHovered || undefined}
       data-focused={isFocused || undefined}
+      {...props}
     >
       {props.children}
-    </div>
+    </button>
   );
 }

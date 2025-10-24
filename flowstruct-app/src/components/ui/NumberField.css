@@ -18,10 +18,11 @@
     width: fit-content;
 
     .react-aria-Group {
+        margin-top: var(--space-1);
         display: flex;
         align-items: center;
         gap: var(--space-2);
-        padding: var(--space-1);
+        padding: 0.15rem var(--space-2);
         border: 1px solid var(--border-color);
         border-radius: var(--radius-1);
 
@@ -44,7 +45,7 @@
         all: unset;
         font-size: var(--font-size-sm);
         min-width: 0;
-        width: 6rem;
+        /*width: 6rem;*/
     }
 
     &[data-invalid] {
