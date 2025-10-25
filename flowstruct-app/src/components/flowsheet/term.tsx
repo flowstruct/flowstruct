@@ -144,13 +144,19 @@ export function Term({ term }: TermProps) {
         dragAndDropHooks={dragAndDropHooks}
         aria-label={`Term ${term.index}`}
         className={styles.listBox}
-        renderEmptyState={({ isDropTarget }) => (
-          <div className={clsx(styles.emptyListBoxState, isDropTarget ? styles.isDropTarget : '')}>
-            <CopyPlus size={14} />
+        renderEmptyState={({ isDropTarget }) => {
+          if (Object.keys(flowsheet.courses).length === 0) return;
 
-            <p>Drop courses here</p>
-          </div>
-        )}
+          return (
+            <div
+              className={clsx(styles.emptyListBoxState, isDropTarget ? styles.isDropTarget : '')}
+            >
+              <CopyPlus size={14} />
+
+              <p>Drop courses here</p>
+            </div>
+          );
+        }}
       >
         {(placement) => {
           switch (placement.type) {
@@ -162,6 +168,7 @@ export function Term({ term }: TermProps) {
                   id={placement.id}
                   textValue={course.name}
                   className={styles.listBoxItem}
+                  key={`${placement.id}-${course.id}`}
                 >
                   <CoursePlacement course={course} placement={placement} />
                 </ListBoxItem>
@@ -195,20 +202,20 @@ type AddCourseCardProps = {
   termIndex: number;
 };
 
-const addCourseData: Course = {
-  id: '',
-  code: '',
-  name: '',
-  creditHours: 3,
-  ects: 0,
-  lectureHours: 0,
-  practicalHours: 0,
-  type: 'F2F',
-  prerequisites: [],
-  corequisites: [],
-};
-
 function AddCoursePlacement({ termIndex }: AddCourseCardProps) {
+  const addCourseData: Course = {
+    id: '',
+    code: '',
+    name: '',
+    creditHours: 3,
+    ects: 0,
+    lectureHours: 0,
+    practicalHours: 0,
+    type: 'F2F',
+    prerequisites: [],
+    corequisites: [],
+  };
+
   const disclosure = useDisclosure();
   const { setFlowsheet } = useFlowsheet();
   const form = useForm(addCourseData);

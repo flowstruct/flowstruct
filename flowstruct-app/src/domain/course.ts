@@ -49,3 +49,18 @@ export const addCourse = ({ flowsheet, course, termIndex }: AddCourseArgs) => {
     terms: updatedTerms,
   };
 };
+
+type EditCourseArgs = {
+  flowsheet: Flowsheet;
+  updatedCourse: Course;
+};
+
+export const editCourse = ({ flowsheet, updatedCourse }: EditCourseArgs) => {
+  return {
+    ...flowsheet,
+    courses: {
+      ...flowsheet.courses,
+      [updatedCourse.id]: updatedCourse,
+    },
+  };
+};

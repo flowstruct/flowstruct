@@ -2,9 +2,9 @@ import { type Course } from '../../domain/course.ts';
 import styles from './course-placement-form.module.css';
 import { Stack } from '../layout/stack.tsx';
 import Group from '../layout/group.tsx';
-import { Input, NumberField as AriaNumberField, TextArea } from 'react-aria-components';
+import { Input, TextArea } from 'react-aria-components';
 import { Button } from '../ui/Button.tsx';
-import { ArrowLeftToLine, Clock, Globe2, Plus, Settings2 } from 'lucide-react';
+import { ArrowLeftToLine, Clock, Globe2, GraduationCap, Settings2 } from 'lucide-react';
 import { DialogTrigger } from '../ui/Dialog.tsx';
 import { Tooltip, TooltipTrigger } from '../ui/Tooltip.tsx';
 import { Popover } from '../ui/Popover.tsx';
@@ -30,7 +30,6 @@ export function CoursePlacementForm({ form, onSubmit, onClose }: CoursePlacement
           <Group justify="between">
             <Input
               required
-              type="text"
               aria-label="Course code"
               name="code"
               placeholder="Course code"
@@ -41,9 +40,82 @@ export function CoursePlacementForm({ form, onSubmit, onClose }: CoursePlacement
               onChange={(e) => form.updateData('code', e.target.value)}
             />
 
-            <Button size="none" variant="ghost" onPress={onClose} shape="icon" excludeFromTabOrder>
-              <ArrowLeftToLine size={15} />
-            </Button>
+            <DialogTrigger>
+              <TooltipTrigger>
+                <Button size="none" shape="icon" variant="ghost">
+                  <Settings2 size={15} />
+                </Button>
+
+                <Tooltip>Details</Tooltip>
+              </TooltipTrigger>
+
+              <Popover>
+                <Box px={5} py={5} pt={4}>
+                  <Stack gap={4}>
+                    <NumberField
+                      autoFocus
+                      icon={<GraduationCap size={14} />}
+                      maxValue={99}
+                      minValue={0}
+                      name="creditHours"
+                      label="Credit hours (Cr.)"
+                      aria-label="Credit hours"
+                      value={form.data.creditHours}
+                      onChange={(value) => form.updateData('creditHours', value)}
+                    />
+
+                    <NumberField
+                      icon={<Clock size={14} />}
+                      maxValue={99}
+                      minValue={0}
+                      name="lectureHours"
+                      label="Lecture hours (Hrs/week)"
+                      aria-label="Lecture hours (hours per week)"
+                      value={form.data.lectureHours}
+                      onChange={(value) => form.updateData('lectureHours', value)}
+                    />
+
+                    <NumberField
+                      icon={<Clock size={14} />}
+                      maxValue={99}
+                      minValue={0}
+                      name="practicalHours"
+                      label="Practical hours (Hrs/week)"
+                      aria-label="Practical hours (hours per week)"
+                      value={form.data.practicalHours}
+                      onChange={(value) => form.updateData('practicalHours', value)}
+                    />
+
+                    <NumberField
+                      icon={<Globe2 size={14} />}
+                      maxValue={99}
+                      minValue={0}
+                      name="ects"
+                      label="ECTS"
+                      aria-label="ECTS"
+                      value={form.data.ects}
+                      onChange={(value) => form.updateData('ects', value)}
+                    />
+
+                    <Select
+                      name="type"
+                      size="sm"
+                      aria-label="Teaching method"
+                      label="Teaching method"
+                      value={form.data.type}
+                      onChange={(key) => form.updateData('type', key as Course['type'])}
+                      items={[
+                        { id: 'F2F', name: 'Face-to-face' },
+                        { id: 'BLD', name: 'Blended' },
+                        { id: 'OL', name: 'Online' },
+                      ]}
+                    >
+                      {(item) => <SelectItem textValue={item.name}>{item.name}</SelectItem>}
+                    </Select>
+                  </Stack>
+                </Box>
+              </Popover>
+            </DialogTrigger>
           </Group>
 
           <TextArea
@@ -60,91 +132,15 @@ export function CoursePlacementForm({ form, onSubmit, onClose }: CoursePlacement
         </Stack>
 
         <Group justify="between">
-          <AriaNumberField
-            name="creditHours"
-            aria-label="Credit hours"
-            value={form.data.creditHours}
-            onChange={(value) => form.updateData('creditHours', value)}
-            minValue={0}
-            maxValue={99}
-            isRequired
-          >
-            <Group gap={1} className={styles.creditHours}>
-              Cr.
-              <Input className={styles.creditHoursInput} />
-            </Group>
-          </AriaNumberField>
+          <Button size="none" variant="ghost" onPress={onClose} shape="icon" excludeFromTabOrder>
+            <ArrowLeftToLine size={15} />
+          </Button>
 
-          <DialogTrigger>
-            <TooltipTrigger>
-              <Button size="xs" shape="icon" variant="ghost">
-                <Settings2 size={15} />
-              </Button>
-
-              <Tooltip>Details</Tooltip>
-            </TooltipTrigger>
-
-            <Popover>
-              <Box px={5} py={5} pt={4}>
-                <Stack gap={4}>
-                  <NumberField
-                    icon={<Clock size={14} />}
-                    maxValue={99}
-                    minValue={0}
-                    name="lectureHours"
-                    label="Lecture hours (hrs/week)"
-                    aria-label="Lecture hours (hours per week)"
-                    value={form.data.lectureHours}
-                    onChange={(value) => form.updateData('lectureHours', value)}
-                  />
-
-                  <NumberField
-                    icon={<Clock size={14} />}
-                    maxValue={99}
-                    minValue={0}
-                    name="practicalHours"
-                    label="Practical hours (hrs/week)"
-                    aria-label="Practical hours (hours per week)"
-                    value={form.data.practicalHours}
-                    onChange={(value) => form.updateData('practicalHours', value)}
-                  />
-
-                  <NumberField
-                    icon={<Globe2 size={14} />}
-                    maxValue={99}
-                    minValue={0}
-                    name="ects"
-                    label="ECTS"
-                    aria-label="ECTS"
-                    value={form.data.ects}
-                    onChange={(value) => form.updateData('ects', value)}
-                  />
-
-                  <Select
-                    name="type"
-                    size="sm"
-                    aria-label="Teaching method"
-                    label="Teaching method"
-                    value={form.data.type}
-                    onChange={(key) => form.updateData('type', key as Course['type'])}
-                    items={[
-                      { id: 'F2F', name: 'Face-to-face' },
-                      { id: 'BLD', name: 'Blended' },
-                      { id: 'OL', name: 'Online' },
-                    ]}
-                  >
-                    {(item) => <SelectItem textValue={item.name}>{item.name}</SelectItem>}
-                  </Select>
-                </Stack>
-              </Box>
-            </Popover>
-          </DialogTrigger>
+          <UnstyledButton type="submit" className={styles.submitButton}>
+            Save
+          </UnstyledButton>
         </Group>
       </Stack>
-
-      <UnstyledButton type="submit" className={styles.submitButton}>
-        <Plus size={15} /> Save
-      </UnstyledButton>
     </Form>
   );
 }

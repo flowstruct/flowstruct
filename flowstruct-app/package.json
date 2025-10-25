@@ -14,7 +14,6 @@
     "react-dom": "^19.1.1",
     "react-aria": "^3.43.2",
     "react-aria-components": "^1.12.2",
-    "react-stately": "^3.42.0",
     "lucide-react": "^0.474.0",
     "clsx": "^2.1.1"
   },
