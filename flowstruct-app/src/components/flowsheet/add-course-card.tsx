@@ -43,6 +43,7 @@ export function AddCourseCard({ termIndex }: AddCourseCardProps) {
     const course: Course = {
       id: crypto.randomUUID(),
       ...formData,
+      code: formData.code.toLocaleUpperCase(),
       prerequisites: [],
       corequisites: [],
     };
@@ -75,7 +76,7 @@ export function AddCourseCard({ termIndex }: AddCourseCardProps) {
     <>
       {!form.isOpen && (
         <UnstyledButton autoFocus className={styles.addCourseButton} onPress={form.open}>
-          <Plus size={12} /> Add course
+          Add course <Plus size={12} />
         </UnstyledButton>
       )}
 
@@ -148,7 +149,7 @@ export function AddCourseCard({ termIndex }: AddCourseCardProps) {
                   </TooltipTrigger>
 
                   <Popover>
-                    <Dialog>
+                    <Box px={5} py={5}>
                       <Stack gap={4}>
                         <NumberField
                           maxValue={99}
@@ -196,7 +197,7 @@ export function AddCourseCard({ termIndex }: AddCourseCardProps) {
                           {(item) => <SelectItem textValue={item.name}>{item.name}</SelectItem>}
                         </Select>
                       </Stack>
-                    </Dialog>
+                    </Box>
                   </Popover>
                 </DialogTrigger>
               </Group>

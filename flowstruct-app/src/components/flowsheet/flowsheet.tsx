@@ -25,30 +25,32 @@ export function Flowsheet() {
   });
 
   return (
-    <Box overflow="auto" overflowY="hidden" {...keyboardProps}>
-      <Group align="start">
-        {terms.map((t) => (
-          <Term key={t.index} term={t} />
-        ))}
+    <>
+      <Box overflow="auto" overflowY="hidden" {...keyboardProps}>
+        <Group align="start">
+          {terms.map((t) => (
+            <Term key={t.index} term={t} />
+          ))}
 
-        <Box position="relative">
-          <TooltipTrigger>
-            <Button
-              variant="ghost"
-              size="xs"
-              shape="icon"
-              className={styles.addTermButton}
-              onPress={createTerm}
-            >
-              <Grid2X2Plus size={15} />
-            </Button>
+          <Box position="relative">
+            <TooltipTrigger>
+              <Button
+                variant="ghost"
+                size="xs"
+                shape="icon"
+                className={styles.addTermButton}
+                onPress={createTerm}
+              >
+                <Grid2X2Plus size={15} />
+              </Button>
 
-            <Tooltip>Add term</Tooltip>
-          </TooltipTrigger>
-        </Box>
-      </Group>
+              <Tooltip>Add term</Tooltip>
+            </TooltipTrigger>
+          </Box>
+        </Group>
+      </Box>
 
       {createPortal(<MultiSelectToolbar />, document.body)}
-    </Box>
+    </>
   );
 }

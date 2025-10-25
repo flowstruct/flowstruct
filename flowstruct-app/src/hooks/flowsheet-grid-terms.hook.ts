@@ -4,9 +4,14 @@ import type { Term } from '../domain/flowsheet.ts';
 
 export const useFlowsheetGridTerms = () => {
   const { flowsheet } = useFlowsheet();
-  const [allPossibleTermsCount, setAllPossibleTermsCount] = React.useState<number>(
-    Math.max(...flowsheet.terms.map((t) => t.index), 1)
+
+  const lastNonEmptyIndex = Math.max(
+    ...flowsheet.terms.filter((term) => term.placements.length > 0).map((term) => term.index),
+    1
   );
+
+  const [allPossibleTermsCount, setAllPossibleTermsCount] =
+    React.useState<number>(lastNonEmptyIndex);
 
   const terms = React.useMemo(() => {
     const existingTerms = Object.fromEntries(

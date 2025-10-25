@@ -15,7 +15,8 @@ import {
   removePlacements,
   reorderPlacements,
 } from '../../domain/placement.ts';
-import type { Course } from '../../domain/course.ts';
+import { CopyPlus } from 'lucide-react';
+import Group from '../layout/group.tsx';
 
 type TermProps = {
   term: Term;
@@ -107,12 +108,15 @@ export function Term({ term }: TermProps) {
     ),
 
     renderDragPreview: (items) => {
-      const firstItem = JSON.parse(items[0].placement) as Course;
+      const firstPlacement = JSON.parse(items[0].placement) as Placement;
+      const displayName =
+        firstPlacement.type === 'COURSE'
+          ? `${flowsheet.courses[firstPlacement.course].code}: ${flowsheet.courses[firstPlacement.course].name}`
+          : 'Elective slot';
 
       return (
         <div className={styles.dragPreview}>
-          {firstItem.code}: {firstItem.name}{' '}
-          <span className={styles.dragPreviewItemCount}>{items.length}</span>
+          {displayName} <span className={styles.dragPreviewItemCount}>{items.length}</span>
         </div>
       );
     },
@@ -121,9 +125,11 @@ export function Term({ term }: TermProps) {
   return (
     <div className={styles.term}>
       <Box px={1}>
-        <Text tone="dimmed" weight="medium" size="xs">
-          Term {term.index}
-        </Text>
+        <Group justify="center">
+          <Text tone="dimmed" weight="medium" size="xs">
+            Term {term.index}
+          </Text>
+        </Group>
       </Box>
 
       <ListBox
@@ -133,6 +139,13 @@ export function Term({ term }: TermProps) {
         dragAndDropHooks={dragAndDropHooks}
         aria-label={`Term ${term.index}`}
         className={styles.listBox}
+        renderEmptyState={({ isDropTarget }) => (
+          <div className={clsx(styles.emptyListBoxState, isDropTarget ? styles.isDropTarget : '')}>
+            <CopyPlus size={14} />
+
+            <p>Drop courses here</p>
+          </div>
+        )}
       >
         {(placement) => {
           switch (placement.type) {
