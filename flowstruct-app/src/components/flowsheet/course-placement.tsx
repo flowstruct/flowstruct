@@ -1,5 +1,5 @@
 import styles from './course-placement.module.css';
-import { Plus, Scaling, TagIcon, Trash } from 'lucide-react';
+import { Pencil, Plus, Scaling, TagIcon, Trash } from 'lucide-react';
 import { useFocusRing, useHover, usePress } from 'react-aria';
 import clsx from 'clsx';
 import React from 'react';
@@ -140,6 +140,14 @@ function CoursePlacementToolbar({ placement }: CoursePlacementToolbarProps) {
           </Button>
 
           <Tooltip>Resize</Tooltip>
+        </TooltipTrigger>
+
+        <TooltipTrigger>
+          <Button size="sm" shape="icon" variant="transparent">
+            <Pencil size={14} />
+          </Button>
+
+          <Tooltip>Edit</Tooltip>
         </TooltipTrigger>
 
         <Divider orientation="vertical" />

@@ -25,7 +25,7 @@ export function MultiSelectToolbar() {
       })
     );
 
-    if (selectedPlacements.has(focusedPlacement)) {
+    if (focusedPlacement && selectedPlacements.has(focusedPlacement)) {
       clearFocusedPlacement();
     }
 

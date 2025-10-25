@@ -1,5 +1,5 @@
 import { DropIndicator, ListBox, ListBoxItem, useDragAndDrop } from 'react-aria-components';
-import { isTextDropItem } from 'react-aria';
+import { isTextDropItem, useKeyboard } from 'react-aria';
 import styles from './term.module.css';
 import clsx from 'clsx';
 import type { Placement, Term } from '../../domain/flowsheet.ts';
@@ -7,7 +7,6 @@ import { useFlowsheet } from '../../hooks/flowsheet.hook.tsx';
 import { Box } from '../layout/box.tsx';
 import { Text } from '../layout/text.tsx';
 import { CoursePlacement } from './course-placement.tsx';
-import { AddCoursePlacement } from './add-course-placement.tsx';
 import { useFlowsheetGrid } from '../../hooks/flowsheet-grid.hook.tsx';
 import {
   appendPlacementsToTerm,
@@ -15,8 +14,14 @@ import {
   removePlacementsFromTerm,
   reorderPlacementsInTerm,
 } from '../../domain/placement.ts';
-import { CopyPlus } from 'lucide-react';
+import { CopyPlus, Plus } from 'lucide-react';
 import Group from '../layout/group.tsx';
+import { addCourse, type Course } from '../../domain/course.ts';
+import { useDisclosure } from '../../hooks/disclosure.hook.ts';
+import { useForm } from '../../hooks/form.hook.ts';
+import { handleSubmit } from '../../utils/handle-submit.ts';
+import { UnstyledButton } from '../ui/UnstyledButton.tsx';
+import { CoursePlacementForm } from './course-placement-form.tsx';
 
 type TermProps = {
   term: Term;
@@ -183,5 +188,70 @@ export function Term({ term }: TermProps) {
 
       <AddCoursePlacement termIndex={term.index} />
     </div>
+  );
+}
+
+type AddCourseCardProps = {
+  termIndex: number;
+};
+
+const addCourseData: Course = {
+  id: '',
+  code: '',
+  name: '',
+  creditHours: 3,
+  ects: 0,
+  lectureHours: 0,
+  practicalHours: 0,
+  type: 'F2F',
+  prerequisites: [],
+  corequisites: [],
+};
+
+function AddCoursePlacement({ termIndex }: AddCourseCardProps) {
+  const disclosure = useDisclosure();
+  const { setFlowsheet } = useFlowsheet();
+  const form = useForm(addCourseData);
+
+  const { keyboardProps } = useKeyboard({
+    onKeyDown: (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        const form = e.currentTarget.querySelector('form');
+        if (form) form.requestSubmit();
+      }
+      if (e.key === 'Escape') {
+        disclosure.close();
+      }
+    },
+  });
+
+  const onSubmit = handleSubmit<Course>(() => {
+    const course: Course = {
+      ...form.data,
+      id: crypto.randomUUID(),
+      code: form.data.code.toUpperCase(),
+    };
+
+    setFlowsheet((flowsheet) => addCourse({ flowsheet, course, termIndex }));
+
+    form.reset();
+    disclosure.close();
+  });
+
+  return (
+    <>
+      {!disclosure.isOpen && (
+        <UnstyledButton autoFocus className={styles.addCourseButton} onPress={disclosure.open}>
+          Add course <Plus size={12} />
+        </UnstyledButton>
+      )}
+
+      {disclosure.isOpen && (
+        <div {...keyboardProps}>
+          <CoursePlacementForm onSubmit={onSubmit} form={form} onClose={disclosure.close} />
+        </div>
+      )}
+    </>
   );
 }
