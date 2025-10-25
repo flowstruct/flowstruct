@@ -7,13 +7,13 @@ import { useFlowsheet } from '../../hooks/flowsheet.hook.tsx';
 import { Box } from '../layout/box.tsx';
 import { Text } from '../layout/text.tsx';
 import { CoursePlacement } from './course-placement.tsx';
-import { AddCourseCard } from './add-course-card.tsx';
+import { AddCoursePlacement } from './add-course-placement.tsx';
 import { useFlowsheetGrid } from '../../hooks/flowsheet-grid.hook.tsx';
 import {
-  appendPlacements,
-  insertPlacements,
-  removePlacements,
-  reorderPlacements,
+  appendPlacementsToTerm,
+  insertPlacementsInTerm,
+  removePlacementsFromTerm,
+  reorderPlacementsInTerm,
 } from '../../domain/placement.ts';
 import { CopyPlus } from 'lucide-react';
 import Group from '../layout/group.tsx';
@@ -47,7 +47,7 @@ export function Term({ term }: TermProps) {
           .map(async (item) => JSON.parse(await item.getText('placement')))
       );
 
-      const updatedFlowsheet = insertPlacements({
+      const updatedFlowsheet = insertPlacementsInTerm({
         flowsheet,
         termIndex: term.index,
         placements: processedItems,
@@ -65,7 +65,7 @@ export function Term({ term }: TermProps) {
           .map(async (item) => JSON.parse(await item.getText('placement')))
       );
 
-      const updatedFlowsheet = appendPlacements({
+      const updatedFlowsheet = appendPlacementsToTerm({
         flowsheet,
         termIndex: term.index,
         placements: processedItems,
@@ -75,7 +75,7 @@ export function Term({ term }: TermProps) {
     },
 
     onReorder(e) {
-      const updatedFlowsheet = reorderPlacements({
+      const updatedFlowsheet = reorderPlacementsInTerm({
         flowsheet,
         termIndex: term.index,
         placementIds: Array.from(e.keys) as string[],
@@ -88,7 +88,7 @@ export function Term({ term }: TermProps) {
 
     onDragEnd(e) {
       if (e.dropOperation === 'move' && !e.isInternal) {
-        const updatedFlowsheet = removePlacements({
+        const updatedFlowsheet = removePlacementsFromTerm({
           flowsheet,
           termIndex: term.index,
           placementIds: Array.from(e.keys) as string[],
@@ -181,7 +181,7 @@ export function Term({ term }: TermProps) {
         }}
       </ListBox>
 
-      <AddCourseCard termIndex={term.index} />
+      <AddCoursePlacement termIndex={term.index} />
     </div>
   );
 }

@@ -1,10 +1,10 @@
-import { ArrowLeftToLine, Plus, Settings2 } from 'lucide-react';
+import { ArrowLeftToLine, Clock, Globe2, Plus, Settings2 } from 'lucide-react';
 import { useState } from 'react';
 import { useDisclosure } from '../../hooks/disclosure.hook.ts';
 import { Form } from '../ui/Form.tsx';
 import Group from '../layout/group.tsx';
 import { Stack } from '../layout/stack.tsx';
-import styles from './add-course-card.module.css';
+import styles from './add-course-placement.module.css';
 import { UnstyledButton } from '../ui/UnstyledButton.tsx';
 import { Input, NumberField as AriaNumberField, TextArea } from 'react-aria-components';
 import { handleSubmit } from '../../utils/handle-submit.ts';
@@ -14,7 +14,7 @@ import { useFlowsheet } from '../../hooks/flowsheet.hook.tsx';
 import { useKeyboard } from 'react-aria';
 import { Button } from '../ui/Button.tsx';
 import { Box } from '../layout/box.tsx';
-import { Dialog, DialogTrigger } from '../ui/Dialog.tsx';
+import { DialogTrigger } from '../ui/Dialog.tsx';
 import { Popover } from '../ui/Popover.tsx';
 import { NumberField } from '../ui/NumberField.tsx';
 import { Select, SelectItem } from '../ui/Select.tsx';
@@ -34,7 +34,7 @@ const initialFormData: Omit<Course, 'id' | 'prerequisites' | 'corequisites'> = {
   type: 'F2F',
 };
 
-export function AddCourseCard({ termIndex }: AddCourseCardProps) {
+export function AddCoursePlacement({ termIndex }: AddCourseCardProps) {
   const { setFlowsheet } = useFlowsheet();
   const form = useDisclosure();
   const [formData, setFormData] = useState(initialFormData);
@@ -149,9 +149,10 @@ export function AddCourseCard({ termIndex }: AddCourseCardProps) {
                   </TooltipTrigger>
 
                   <Popover>
-                    <Box px={5} py={5}>
+                    <Box px={5} py={5} pt={4}>
                       <Stack gap={4}>
                         <NumberField
+                          icon={<Clock size={14} />}
                           maxValue={99}
                           minValue={0}
                           name="lectureHours"
@@ -162,6 +163,7 @@ export function AddCourseCard({ termIndex }: AddCourseCardProps) {
                         />
 
                         <NumberField
+                          icon={<Clock size={14} />}
                           maxValue={99}
                           minValue={0}
                           name="practicalHours"
@@ -172,6 +174,7 @@ export function AddCourseCard({ termIndex }: AddCourseCardProps) {
                         />
 
                         <NumberField
+                          icon={<Globe2 size={14} />}
                           maxValue={99}
                           minValue={0}
                           name="ects"

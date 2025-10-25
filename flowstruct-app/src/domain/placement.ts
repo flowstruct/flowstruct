@@ -4,7 +4,7 @@ const findPlacementIndex = (placements: Placement[], placementId: string): numbe
   return placements.findIndex((p) => p.id === placementId);
 };
 
-type InsertPlacementsArgs = {
+type InsertPlacementsInTermArgs = {
   flowsheet: Flowsheet;
   termIndex: number;
   placements: Placement[];
@@ -12,13 +12,13 @@ type InsertPlacementsArgs = {
   position: 'before' | 'after';
 };
 
-export const insertPlacements = ({
+export const insertPlacementsInTerm = ({
   flowsheet,
   termIndex,
   placements,
   targetPlacementId,
   position,
-}: InsertPlacementsArgs): Flowsheet => {
+}: InsertPlacementsInTermArgs): Flowsheet => {
   const updatedTerms = flowsheet.terms.map((term) => {
     if (term.index !== termIndex) return term;
 
@@ -43,17 +43,17 @@ export const insertPlacements = ({
   };
 };
 
-type AppendPlacementsArgs = {
+type AppendPlacementsToTermArgs = {
   flowsheet: Flowsheet;
   termIndex: number;
   placements: Placement[];
 };
 
-export const appendPlacements = ({
+export const appendPlacementsToTerm = ({
   flowsheet,
   termIndex,
   placements,
-}: AppendPlacementsArgs): Flowsheet => {
+}: AppendPlacementsToTermArgs): Flowsheet => {
   let updatedTerms = [...flowsheet.terms];
 
   if (!updatedTerms.find((t) => t.index === termIndex)) {
@@ -75,7 +75,7 @@ export const appendPlacements = ({
   };
 };
 
-type ReorderPlacementsArgs = {
+type ReorderPlacementsInTermArgs = {
   flowsheet: Flowsheet;
   termIndex: number;
   placementIds: string[];
@@ -83,13 +83,13 @@ type ReorderPlacementsArgs = {
   position: 'before' | 'after';
 };
 
-export const reorderPlacements = ({
+export const reorderPlacementsInTerm = ({
   flowsheet,
   termIndex,
   placementIds,
   targetPlacementId,
   position,
-}: ReorderPlacementsArgs): Flowsheet => {
+}: ReorderPlacementsInTermArgs): Flowsheet => {
   const updatedTerms = flowsheet.terms.map((term) => {
     if (term.index !== termIndex) return term;
 
@@ -125,17 +125,17 @@ export const reorderPlacements = ({
   };
 };
 
-type RemovePlacementsArgs = {
+type RemovePlacementsFromTermArgs = {
   flowsheet: Flowsheet;
   termIndex: number;
   placementIds: string[];
 };
 
-export const removePlacements = ({
+export const removePlacementsFromTerm = ({
   flowsheet,
   termIndex,
   placementIds,
-}: RemovePlacementsArgs): Flowsheet => {
+}: RemovePlacementsFromTermArgs): Flowsheet => {
   const placementIdSet = new Set(placementIds);
 
   const updatedTerms = flowsheet.terms.map((term) => {
@@ -150,5 +150,36 @@ export const removePlacements = ({
   return {
     ...flowsheet,
     terms: updatedTerms,
+  };
+};
+
+type DeletePlacementsArgs = {
+  flowsheet: Flowsheet;
+  placementIds: string[];
+};
+
+export const deletePlacements = ({ flowsheet, placementIds }: DeletePlacementsArgs): Flowsheet => {
+  const placementIdsSet = new Set(placementIds);
+
+  const updatedCourses = { ...flowsheet.courses };
+
+  const updatedTerms = flowsheet.terms.map((term) => {
+    const updatedPlacements = term.placements.filter((p) => {
+      if (!placementIdsSet.has(p.id)) return true;
+
+      if (p.type === 'COURSE') {
+        delete updatedCourses[p.course];
+      }
+      // handle elective slot deletion
+      return false;
+    });
+
+    return { ...term, placements: updatedPlacements };
+  });
+
+  return {
+    ...flowsheet,
+    terms: updatedTerms,
+    courses: updatedCourses,
   };
 };

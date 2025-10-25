@@ -7,11 +7,30 @@ import { Button } from '../ui/Button.tsx';
 import { Divider } from '../ui/divider.tsx';
 import { Tooltip, TooltipTrigger } from '../ui/Tooltip.tsx';
 import { useFlowsheetGrid } from '../../hooks/flowsheet-grid.hook.tsx';
+import { useFlowsheet } from '../../hooks/flowsheet.hook.tsx';
+import { deletePlacements } from '../../domain/placement.ts';
 
 export function MultiSelectToolbar() {
-  const { selectedPlacements, clearSelectedPlacements } = useFlowsheetGrid();
+  const { setFlowsheet } = useFlowsheet();
+  const { selectedPlacements, focusedPlacement, clearSelectedPlacements, clearFocusedPlacement } =
+    useFlowsheetGrid();
 
   const triggerRef = React.useRef<HTMLDivElement | null>(null);
+
+  const handleDeletePlacements = () => {
+    setFlowsheet((flowsheet) =>
+      deletePlacements({
+        flowsheet,
+        placementIds: Array.from(selectedPlacements),
+      })
+    );
+
+    if (selectedPlacements.has(focusedPlacement)) {
+      clearFocusedPlacement();
+    }
+
+    clearSelectedPlacements();
+  };
 
   return (
     <div className={styles.wrapper} ref={triggerRef}>
@@ -49,7 +68,7 @@ export function MultiSelectToolbar() {
             </TooltipTrigger>
 
             <TooltipTrigger>
-              <Button shape="icon" size="sm" variant="flat">
+              <Button shape="icon" size="sm" variant="flat" onPress={handleDeletePlacements}>
                 <Trash color="red" size={14} />
               </Button>
 

@@ -15,6 +15,8 @@ import type { Course } from '../../domain/course.ts';
 import { Text } from '../layout/text.tsx';
 import { useFlowsheetGrid } from '../../hooks/flowsheet-grid.hook.tsx';
 import type { Placement } from '../../domain/flowsheet.ts';
+import { useFlowsheet } from '../../hooks/flowsheet.hook.tsx';
+import { deletePlacements } from '../../domain/placement.ts';
 
 type CourseCardProps = {
   course: Course;
@@ -26,7 +28,7 @@ export function CoursePlacement({ course, placement, ...props }: CourseCardProps
     isFocusedPlacement,
     toggleSelectedPlacement,
     toggleFocusPlacement,
-    isSelectedCourse,
+    isSelectedPlacement,
     clearFocusedPlacement,
   } = useFlowsheetGrid();
 
@@ -54,7 +56,7 @@ export function CoursePlacement({ course, placement, ...props }: CourseCardProps
         className={clsx(
           styles.card,
           isFocusedPlacement(placement.id) ? styles.focused : '',
-          isSelectedCourse(placement.id) ? styles.selected : ''
+          isSelectedPlacement(placement.id) ? styles.selected : ''
         )}
         data-hovered={isHovered || undefined}
         data-focused={isFocusVisible || undefined}
@@ -71,7 +73,7 @@ export function CoursePlacement({ course, placement, ...props }: CourseCardProps
 
             <Checkbox
               onChange={() => toggleSelectedPlacement(placement.id)}
-              isSelected={isSelectedCourse(placement.id)}
+              isSelected={isSelectedPlacement(placement.id)}
             />
           </Group>
 
@@ -87,46 +89,69 @@ export function CoursePlacement({ course, placement, ...props }: CourseCardProps
         }
         isOpen={isFocusedPlacement(placement.id)}
       >
-        <Box px={1} py={1}>
-          <Group gap={1}>
-            <Button size="sm" variant="transparent">
-              <Plus size={14} /> Prerequisite
-            </Button>
-
-            <Button size="sm" variant="transparent">
-              <Plus size={14} /> Corequisite
-            </Button>
-
-            <Divider orientation="vertical" />
-
-            <TooltipTrigger>
-              <Button size="sm" shape="icon" variant="transparent">
-                <TagIcon size={14} />
-              </Button>
-
-              <Tooltip>Assign section</Tooltip>
-            </TooltipTrigger>
-
-            <TooltipTrigger>
-              <Button size="sm" shape="icon" variant="transparent">
-                <Scaling size={14} />
-              </Button>
-
-              <Tooltip>Resize</Tooltip>
-            </TooltipTrigger>
-
-            <Divider orientation="vertical" />
-
-            <TooltipTrigger>
-              <Button size="sm" shape="icon" variant="transparent">
-                <Trash color="red" size={14} />
-              </Button>
-
-              <Tooltip>Remove</Tooltip>
-            </TooltipTrigger>
-          </Group>
-        </Box>
+        <CoursePlacementToolbar placement={placement} />
       </Popover>
     </>
+  );
+}
+
+type CoursePlacementToolbarProps = {
+  placement: Placement;
+};
+
+function CoursePlacementToolbar({ placement }: CoursePlacementToolbarProps) {
+  const { setFlowsheet } = useFlowsheet();
+  const { clearFocusedPlacement, selectedPlacements, toggleSelectedPlacement } = useFlowsheetGrid();
+
+  const handleDeletePlacement = () => {
+    setFlowsheet((flowsheet) => deletePlacements({ flowsheet, placementIds: [placement.id] }));
+
+    clearFocusedPlacement();
+
+    if (selectedPlacements.has(placement.id)) {
+      toggleSelectedPlacement(placement.id);
+    }
+  };
+
+  return (
+    <Box px={1} py={1}>
+      <Group gap={1}>
+        <Button size="sm" variant="transparent">
+          <Plus size={14} /> Prerequisite
+        </Button>
+
+        <Button size="sm" variant="transparent">
+          <Plus size={14} /> Corequisite
+        </Button>
+
+        <Divider orientation="vertical" />
+
+        <TooltipTrigger>
+          <Button size="sm" shape="icon" variant="transparent">
+            <TagIcon size={14} />
+          </Button>
+
+          <Tooltip>Assign section</Tooltip>
+        </TooltipTrigger>
+
+        <TooltipTrigger>
+          <Button size="sm" shape="icon" variant="transparent">
+            <Scaling size={14} />
+          </Button>
+
+          <Tooltip>Resize</Tooltip>
+        </TooltipTrigger>
+
+        <Divider orientation="vertical" />
+
+        <TooltipTrigger>
+          <Button size="sm" shape="icon" variant="transparent" onPress={handleDeletePlacement}>
+            <Trash color="red" size={14} />
+          </Button>
+
+          <Tooltip>Remove</Tooltip>
+        </TooltipTrigger>
+      </Group>
+    </Box>
   );
 }

@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 type FlowsheetGridContextValues = {
   selectedPlacements: Set<string>;
   toggleSelectedPlacement: (placementId: string) => void;
-  isSelectedCourse: (placementId: string) => boolean;
+  isSelectedPlacement: (placementId: string) => boolean;
   clearSelectedPlacements: () => void;
   onCourseSelectionChange: (selection: Set<string>) => void;
   validateTerms: (placementId: string) => void;
@@ -64,14 +64,14 @@ export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) 
 
   const clearSelectedPlacements = () => setSelectedPlacements(new Set());
 
-  const isSelectedCourse = (placementId: string) => selectedPlacements.has(placementId);
+  const isSelectedPlacement = (placementId: string) => selectedPlacements.has(placementId);
 
   return (
     <FlowsheetGridContext.Provider
       value={{
         selectedPlacements,
         toggleSelectedPlacement,
-        isSelectedCourse,
+        isSelectedPlacement,
         clearSelectedPlacements,
         onCourseSelectionChange,
         validateTerms,
