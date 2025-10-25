@@ -1,17 +1,17 @@
 import React, { useContext } from 'react';
 
 type FlowsheetGridContextValues = {
-  selectedCourses: Set<string>;
-  toggleSelectCourse: (courseId: string) => void;
-  isSelectedCourse: (courseId: string) => boolean;
-  clearSelectedCourses: () => void;
+  selectedPlacements: Set<string>;
+  toggleSelectedPlacement: (placementId: string) => void;
+  isSelectedCourse: (placementId: string) => boolean;
+  clearSelectedPlacements: () => void;
   onCourseSelectionChange: (selection: Set<string>) => void;
-  validateTerms: (courseId: string) => void;
+  validateTerms: (placementId: string) => void;
   validTerms: Set<number>;
-  focusedCourse: string | null;
-  toggleFocusCourse: (courseId: string) => void;
-  isFocusedCourse: (courseId: string) => boolean;
-  clearFocusedCourse: () => void;
+  focusedPlacement: string | null;
+  toggleFocusPlacement: (placementId: string) => void;
+  isFocusedPlacement: (placementId: string) => boolean;
+  clearFocusedPlacement: () => void;
 };
 
 const FlowsheetGridContext = React.createContext<FlowsheetGridContextValues | undefined>(undefined);
@@ -21,65 +21,65 @@ type FlowsheetGridProviderProps = {
 };
 
 export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) {
-  const [focusedCourse, setFocusedCourse] = React.useState<string | null>(null);
-  const [selectedCourses, setSelectedCourses] = React.useState<Set<string>>(new Set());
+  const [focusedPlacement, setFocusedPlacement] = React.useState<string | null>(null);
+  const [selectedPlacements, setSelectedPlacements] = React.useState<Set<string>>(new Set());
   const [validTerms, setValidTerms] = React.useState<Set<number>>(new Set());
 
-  const toggleFocusCourse = (courseId: string) => {
-    if (courseId === focusedCourse) {
-      setFocusedCourse(null);
+  const toggleFocusPlacement = (placementId: string) => {
+    if (placementId === focusedPlacement) {
+      setFocusedPlacement(null);
       return;
     }
 
-    setFocusedCourse(courseId);
+    setFocusedPlacement(placementId);
   };
 
-  const isFocusedCourse = (courseId: string) => courseId === focusedCourse;
+  const isFocusedPlacement = (placementId: string) => placementId === focusedPlacement;
 
-  const clearFocusedCourse = () => setFocusedCourse(null);
+  const clearFocusedPlacement = () => setFocusedPlacement(null);
 
-  const toggleSelectCourse = (courseId: string) => {
-    if (focusedCourse) {
-      setFocusedCourse(null);
+  const toggleSelectedPlacement = (placementId: string) => {
+    if (focusedPlacement) {
+      setFocusedPlacement(null);
     }
 
-    setSelectedCourses((prev) => {
+    setSelectedPlacements((prev) => {
       const updated = new Set(prev);
 
-      if (updated.has(courseId)) updated.delete(courseId);
-      else updated.add(courseId);
+      if (updated.has(placementId)) updated.delete(placementId);
+      else updated.add(placementId);
 
       return updated;
     });
   };
 
   const onCourseSelectionChange = (selection: Set<string>) => {
-    setSelectedCourses(selection);
+    setSelectedPlacements(selection);
   };
 
-  const validateTerms = (courseId: string) => {
-    console.log(courseId);
+  const validateTerms = (placementId: string) => {
+    console.log(placementId);
     setValidTerms(new Set());
   };
 
-  const clearSelectedCourses = () => setSelectedCourses(new Set());
+  const clearSelectedPlacements = () => setSelectedPlacements(new Set());
 
-  const isSelectedCourse = (courseId: string) => selectedCourses.has(courseId);
+  const isSelectedCourse = (placementId: string) => selectedPlacements.has(placementId);
 
   return (
     <FlowsheetGridContext.Provider
       value={{
-        selectedCourses,
-        toggleSelectCourse,
+        selectedPlacements,
+        toggleSelectedPlacement,
         isSelectedCourse,
-        clearSelectedCourses,
+        clearSelectedPlacements,
         onCourseSelectionChange,
         validateTerms,
         validTerms,
-        focusedCourse,
-        toggleFocusCourse,
-        isFocusedCourse,
-        clearFocusedCourse,
+        focusedPlacement,
+        toggleFocusPlacement,
+        isFocusedPlacement,
+        clearFocusedPlacement,
       }}
     >
       {children}

@@ -12,14 +12,14 @@ import { useFlowsheetGrid } from '../../hooks/flowsheet-grid.hook.tsx';
 import { useFlowsheetGridTerms } from '../../hooks/flowsheet-grid-terms.hook.ts';
 
 export function Flowsheet() {
-  const { clearFocusedCourse, clearSelectedCourses } = useFlowsheetGrid();
+  const { clearFocusedPlacement, clearSelectedPlacements } = useFlowsheetGrid();
   const { terms, createTerm } = useFlowsheetGridTerms();
 
   const { keyboardProps } = useKeyboard({
     onKeyDown: (e) => {
       if (e.key === 'Escape') {
-        clearSelectedCourses();
-        clearFocusedCourse();
+        clearSelectedPlacements();
+        clearFocusedPlacement();
       }
     },
   });

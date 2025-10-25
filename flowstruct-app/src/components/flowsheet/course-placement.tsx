@@ -1,4 +1,4 @@
-import styles from './course-card.module.css';
+import styles from './course-placement.module.css';
 import { Plus, Scaling, TagIcon, Trash } from 'lucide-react';
 import { useFocusRing, useHover, usePress } from 'react-aria';
 import clsx from 'clsx';
@@ -14,28 +14,30 @@ import { Tooltip, TooltipTrigger } from '../ui/Tooltip.tsx';
 import type { Course } from '../../domain/course.ts';
 import { Text } from '../layout/text.tsx';
 import { useFlowsheetGrid } from '../../hooks/flowsheet-grid.hook.tsx';
+import type { Placement } from '../../domain/flowsheet.ts';
 
 type CourseCardProps = {
   course: Course;
+  placement: Placement;
 };
 
-export function CourseCard({ course, ...props }: CourseCardProps) {
+export function CoursePlacement({ course, placement, ...props }: CourseCardProps) {
   const {
-    isFocusedCourse,
-    toggleSelectCourse,
-    toggleFocusCourse,
+    isFocusedPlacement,
+    toggleSelectedPlacement,
+    toggleFocusPlacement,
     isSelectedCourse,
-    clearFocusedCourse,
+    clearFocusedPlacement,
   } = useFlowsheetGrid();
 
   const { pressProps, isPressed } = usePress({
     onPress: (e) => {
       if (e.shiftKey || e.ctrlKey) {
-        toggleSelectCourse(course.id);
+        toggleSelectedPlacement(placement.id);
         return;
       }
 
-      toggleFocusCourse(course.id);
+      toggleFocusPlacement(placement.id);
     },
   });
   const { hoverProps, isHovered } = useHover(props);
@@ -51,8 +53,8 @@ export function CourseCard({ course, ...props }: CourseCardProps) {
         {...focusProps}
         className={clsx(
           styles.card,
-          isFocusedCourse(course.id) ? styles.focused : '',
-          isSelectedCourse(course.id) ? styles.selected : ''
+          isFocusedPlacement(placement.id) ? styles.focused : '',
+          isSelectedCourse(placement.id) ? styles.selected : ''
         )}
         data-hovered={isHovered || undefined}
         data-focused={isFocusVisible || undefined}
@@ -68,8 +70,8 @@ export function CourseCard({ course, ...props }: CourseCardProps) {
             </Text>
 
             <Checkbox
-              onChange={() => toggleSelectCourse(course.id)}
-              isSelected={isSelectedCourse(course.id)}
+              onChange={() => toggleSelectedPlacement(placement.id)}
+              isSelected={isSelectedCourse(placement.id)}
             />
           </Group>
 
@@ -80,8 +82,10 @@ export function CourseCard({ course, ...props }: CourseCardProps) {
       <Popover
         triggerRef={triggerFocusPopoverRef}
         placement="top"
-        onOpenChange={(isOpen) => (isOpen ? clearFocusedCourse() : toggleFocusCourse(course.id))}
-        isOpen={isFocusedCourse(course.id)}
+        onOpenChange={(isOpen) =>
+          isOpen ? clearFocusedPlacement() : toggleFocusPlacement(placement.id)
+        }
+        isOpen={isFocusedPlacement(placement.id)}
       >
         <Box px={1} py={1}>
           <Group gap={1}>

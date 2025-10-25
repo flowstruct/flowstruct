@@ -6,7 +6,7 @@ import type { Placement, Term } from '../../domain/flowsheet.ts';
 import { useFlowsheet } from '../../hooks/flowsheet.hook.tsx';
 import { Box } from '../layout/box.tsx';
 import { Text } from '../layout/text.tsx';
-import { CourseCard } from './course-card.tsx';
+import { CoursePlacement } from './course-placement.tsx';
 import { AddCourseCard } from './add-course-card.tsx';
 import { useFlowsheetGrid } from '../../hooks/flowsheet-grid.hook.tsx';
 import {
@@ -23,7 +23,7 @@ type TermProps = {
 
 export function Term({ term }: TermProps) {
   const { flowsheet, setFlowsheet } = useFlowsheet();
-  const { selectedCourses } = useFlowsheetGrid();
+  const { selectedPlacements } = useFlowsheetGrid();
 
   const { dragAndDropHooks } = useDragAndDrop<Placement>({
     getItems(_, items) {
@@ -129,7 +129,7 @@ export function Term({ term }: TermProps) {
       <ListBox
         items={term.placements}
         selectionMode="multiple"
-        selectedKeys={selectedCourses}
+        selectedKeys={selectedPlacements}
         dragAndDropHooks={dragAndDropHooks}
         aria-label={`Term ${term.index}`}
         className={styles.listBox}
@@ -145,7 +145,7 @@ export function Term({ term }: TermProps) {
                   textValue={course.name}
                   className={styles.listBoxItem}
                 >
-                  <CourseCard course={course} />
+                  <CoursePlacement course={course} placement={placement} />
                 </ListBoxItem>
               );
             }

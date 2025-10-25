@@ -9,7 +9,7 @@ import { Tooltip, TooltipTrigger } from '../ui/Tooltip.tsx';
 import { useFlowsheetGrid } from '../../hooks/flowsheet-grid.hook.tsx';
 
 export function MultiSelectToolbar() {
-  const { selectedCourses, clearSelectedCourses } = useFlowsheetGrid();
+  const { selectedPlacements, clearSelectedPlacements } = useFlowsheetGrid();
 
   const triggerRef = React.useRef<HTMLDivElement | null>(null);
 
@@ -18,19 +18,19 @@ export function MultiSelectToolbar() {
       <Popover
         triggerRef={triggerRef}
         isNonModal
-        isOpen={selectedCourses.size > 0}
+        isOpen={selectedPlacements.size > 0}
         className={styles.toolbar}
       >
         <Group gap={3}>
           <div className={styles.selectionCounter}>
             <Group>
-              <p>{selectedCourses.size} selected</p>
+              <p>{selectedPlacements.size} selected</p>
 
               <Button
                 variant="ghost"
                 shape="icon"
                 size="none"
-                onPress={() => clearSelectedCourses()}
+                onPress={() => clearSelectedPlacements()}
               >
                 <X size={14} />
               </Button>
