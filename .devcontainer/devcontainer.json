@@ -11,10 +11,6 @@
       ]
     }
   },
-  "postCreateCommand": "pnpm install",
-  "workspaceFolder": "/workspace/flowstruct-app",
-  "workspaceMount": "source=${localWorkspaceFolder}/flowstruct-app,target=/workspace/flowstruct-app,type=bind,consistency=cached",
-  "mounts": [
-    "source=flowstruct-app-node-modules,target=${containerWorkspaceFolder}/node_modules,type=volume"
-  ]
+  "workspaceFolder": "/workspaces/flowstruct/flowstruct-app",
+  "postCreateCommand": "pnpm install"
 }

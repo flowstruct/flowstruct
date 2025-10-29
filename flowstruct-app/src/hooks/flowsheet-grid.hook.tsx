@@ -88,7 +88,7 @@ export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) 
 }
 
 export const useFlowsheetGrid = () => {
-  const context = useContext(FlowsheetGridContext);
+  const context = React.useContext(FlowsheetGridContext);
 
   if (!context) throw new Error('useFlowsheetGrid must be used within FlowsheetGridProvider.');
 
