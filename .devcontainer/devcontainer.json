@@ -1,8 +1,6 @@
 {
   "name": "flowstruct-app",
-  "build": {
-    "dockerfile": "Dockerfile"
-  },
+  "image": "node:22-alpine",
   "customizations": {
     "vscode": {
       "extensions": [
@@ -12,5 +10,5 @@
     }
   },
   "workspaceFolder": "/workspaces/flowstruct/flowstruct-app",
-  "postCreateCommand": "pnpm install"
+  "postCreateCommand": "apk add --no-cache git bash curl && npm install -g pnpm && pnpm install"
 }
