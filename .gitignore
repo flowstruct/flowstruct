@@ -51,6 +51,7 @@ Thumbs.db
 # ──────────────────────────────────────────────────────────
 # Dependencies
 node_modules/
+.pnpm-store
 
 # Build outputs (React, Vite, etc.)
 dist/
