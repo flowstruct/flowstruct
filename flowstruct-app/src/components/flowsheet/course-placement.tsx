@@ -37,7 +37,6 @@ export function CoursePlacement({ course, placement, dragState, ...props }: Cour
     isSelectedPlacement,
     clearFocusedPlacement,
   } = useFlowsheetGrid();
-
   const { pressProps, isPressed } = usePress({
     onPress: (e) => {
       if (e.shiftKey || e.ctrlKey) {
@@ -51,12 +50,10 @@ export function CoursePlacement({ course, placement, dragState, ...props }: Cour
   const { hoverProps, isHovered } = useHover(props);
   const { focusProps, isFocusVisible } = useFocusRing(props);
   const { dragProps } = useDraggableItem({ key: placement.id }, dragState);
-
+  const coursePlacementRef = React.useRef<HTMLDivElement | null>(null);
   const [editCourse, setEditCourse] = React.useState<boolean>(false);
 
   const toggleEditCourse = () => (editCourse ? setEditCourse(false) : setEditCourse(true));
-
-  const coursePlacementRef = React.useRef<HTMLDivElement | null>(null);
 
   return (
     <>

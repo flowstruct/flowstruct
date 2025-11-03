@@ -37,8 +37,32 @@
     background: var(--primary-2);
 }
 
-.dropIndicator.active {
-    outline: 1px solid var(--primary-color);
+.dropIndicator {
+    margin: var(--space-2) 0;
+}
+
+.placementsList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.dropIndicator {
+  width: 100%;
+  margin-left: 0;
+  height: 2px;
+  margin-bottom: -2px;
+  outline: none;
+  background: blue;
+}
+
+.dropIndicator:last-child {
+  margin-bottom: 0;
+  margin-top: -2px;
+}
+
+.dropIndicator.dropTarget {
+  background: var(--primary-color);
 }
 
 .dragPreview {

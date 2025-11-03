@@ -1,0 +1,10 @@
+services:
+  dev:
+    build: .
+    volumes:
+      - ../flowstruct-app:/workspace
+    working_dir: /workspace
+    ports:
+      - "2087:2087"
+    tty: true
+    stdin_open: true

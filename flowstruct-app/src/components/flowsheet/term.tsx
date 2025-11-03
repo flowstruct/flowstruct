@@ -1,12 +1,11 @@
 import { Plus } from 'lucide-react';
 import React from 'react';
-import { useDraggableCollection, useKeyboard } from 'react-aria';
-import { ListBoxItem } from 'react-aria-components';
-import { type DraggableCollectionState } from 'react-stately';
+import { ListDropTargetDelegate, ListKeyboardDelegate, useDraggableCollection, useDropIndicator, useDroppableCollection, useKeyboard, type Placement } from 'react-aria';
+import { type DropIndicatorProps as AriaDropIndicatorProps } from 'react-aria-components';
+import { useDraggableCollectionState, useDroppableCollectionState, useListState, type DraggableCollectionState, type DroppableCollectionState, type ListState } from 'react-stately';
 import { addCourse, type Course } from '../../domain/course.ts';
 import type { Term } from '../../domain/flowsheet.ts';
 import { useDisclosure } from '../../hooks/disclosure.hook.ts';
-import { useFlowsheetGrid } from '../../hooks/flowsheet-grid.hook.tsx';
 import { useFlowsheet } from '../../hooks/flowsheet.hook.tsx';
 import { useForm } from '../../hooks/form.hook.ts';
 import { handleSubmit } from '../../utils/handle-submit.ts';
@@ -17,17 +16,49 @@ import { UnstyledButton } from '../ui/UnstyledButton.tsx';
 import { CoursePlacementForm } from './course-placement-form.tsx';
 import { CoursePlacement } from './course-placement.tsx';
 import styles from './term.module.css';
+import clsx from 'clsx';
 
 type TermProps = {
   term: Term;
-  dragState: DraggableCollectionState;
 };
 
-export function Term({ term, dragState, ...props }: TermProps) {
-  const { flowsheet, setFlowsheet } = useFlowsheet();
+export function Term({ term, ...props }: TermProps) {
+  const { flowsheet } = useFlowsheet();
 
   const ref = React.useRef(null);
+  const state = useListState(props);
+
+  const dragState = useDraggableCollectionState<Placement>({
+    ...props,
+    collection: state.collection,
+    selectionManager: state.selectionManager,
+    getItems: (_, items) => {
+      return items.map(i => {
+        return {
+          placement: JSON.stringify(i)
+        }
+      })
+    }
+  });
+  const dropState = useDroppableCollectionState({
+    ...props,
+    collection: state.collection,
+    selectionManager: state.selectionManager
+  });
+
   useDraggableCollection(props, dragState, ref);
+  const { collectionProps } = useDroppableCollection({
+    ...props,
+    keyboardDelegate: new ListKeyboardDelegate(
+      state.collection,
+      state.disabledKeys,
+      ref
+    ),
+    dropTargetDelegate: new ListDropTargetDelegate(state.collection, ref)
+  },
+    dropState,
+    ref
+  );
 
   return (
     <div className={styles.term}>
@@ -39,21 +70,28 @@ export function Term({ term, dragState, ...props }: TermProps) {
         </Group>
       </Box>
 
-      <div>
+      <div ref={ref} className={styles.placementsList} {...collectionProps}>
         {term.placements.map((placement) => {
           switch (placement.type) {
             case 'COURSE': {
               const course = flowsheet.courses[placement.course];
 
               return (
-                <ListBoxItem
-                  id={placement.id}
-                  textValue={course.name}
-                  className={styles.listBoxItem}
-                  key={`${placement.id}-${course.id}`}
-                >
+                <>
+                  <DropIndicator
+                    target={{ type: 'item', key: placement.id, dropPosition: 'before' }}
+                    dropState={dropState}
+                  />
+
                   <CoursePlacement course={course} dragState={dragState} placement={placement} />
-                </ListBoxItem>
+
+                  {state.collection.getKeyAfter(placement.id) === null && (
+                    <DropIndicator
+                      target={{ type: 'item', key: placement.id, dropPosition: 'after' }}
+                      dropState={dropState}
+                    />
+                  )}
+                </>
               );
             }
 
@@ -74,8 +112,30 @@ export function Term({ term, dragState, ...props }: TermProps) {
           }
         })}
       </div>
+
       <AddCoursePlacement termIndex={term.index} />
     </div>
+  );
+}
+
+interface DropIndicatorProps extends AriaDropIndicatorProps {
+  dropState: DroppableCollectionState;
+}
+
+function DropIndicator({ dropState, ...props }: DropIndicatorProps) {
+  const ref = React.useRef(null);
+  const { dropIndicatorProps, isHidden, isDropTarget } = useDropIndicator(props, dropState, ref);
+
+  if (isHidden) {
+    return null;
+  }
+
+  return (
+    <div
+      {...dropIndicatorProps}
+      ref={ref}
+      className={clsx(styles.dropIndicator, isDropTarget ? styles.dropTarget : '')}
+    />
   );
 }
 
