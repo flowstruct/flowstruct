@@ -1,131 +1,33 @@
-import { DropIndicator, ListBox, ListBoxItem, useDragAndDrop } from 'react-aria-components';
-import { isTextDropItem, useKeyboard } from 'react-aria';
-import styles from './term.module.css';
-import clsx from 'clsx';
-import type { Placement, Term } from '../../domain/flowsheet.ts';
-import { useFlowsheet } from '../../hooks/flowsheet.hook.tsx';
-import { Box } from '../layout/box.tsx';
-import { Text } from '../layout/text.tsx';
-import { CoursePlacement } from './course-placement.tsx';
-import { useFlowsheetGrid } from '../../hooks/flowsheet-grid.hook.tsx';
-import {
-  appendPlacementsToTerm,
-  insertPlacementsInTerm,
-  removePlacementsFromTerm,
-  reorderPlacementsInTerm,
-} from '../../domain/placement.ts';
-import { CopyPlus, Plus } from 'lucide-react';
-import Group from '../layout/group.tsx';
+import { Plus } from 'lucide-react';
+import React from 'react';
+import { useDraggableCollection, useKeyboard } from 'react-aria';
+import { ListBoxItem } from 'react-aria-components';
+import { type DraggableCollectionState } from 'react-stately';
 import { addCourse, type Course } from '../../domain/course.ts';
+import type { Term } from '../../domain/flowsheet.ts';
 import { useDisclosure } from '../../hooks/disclosure.hook.ts';
+import { useFlowsheetGrid } from '../../hooks/flowsheet-grid.hook.tsx';
+import { useFlowsheet } from '../../hooks/flowsheet.hook.tsx';
 import { useForm } from '../../hooks/form.hook.ts';
 import { handleSubmit } from '../../utils/handle-submit.ts';
+import { Box } from '../layout/box.tsx';
+import Group from '../layout/group.tsx';
+import { Text } from '../layout/text.tsx';
 import { UnstyledButton } from '../ui/UnstyledButton.tsx';
 import { CoursePlacementForm } from './course-placement-form.tsx';
+import { CoursePlacement } from './course-placement.tsx';
+import styles from './term.module.css';
 
 type TermProps = {
   term: Term;
+  dragState: DraggableCollectionState;
 };
 
-export function Term({ term }: TermProps) {
+export function Term({ term, dragState, ...props }: TermProps) {
   const { flowsheet, setFlowsheet } = useFlowsheet();
-  const { selectedPlacements } = useFlowsheetGrid();
 
-  const { dragAndDropHooks } = useDragAndDrop<Placement>({
-    getItems(_, items) {
-      return items.map((item) => {
-        return {
-          placement: JSON.stringify(item),
-          'text/plain': item.id,
-        };
-      });
-    },
-
-    acceptedDragTypes: ['placement'],
-
-    getDropOperation: () => 'move',
-
-    async onInsert(e) {
-      const processedItems = await Promise.all(
-        e.items
-          .filter(isTextDropItem)
-          .map(async (item) => JSON.parse(await item.getText('placement')))
-      );
-
-      const updatedFlowsheet = insertPlacementsInTerm({
-        flowsheet,
-        termIndex: term.index,
-        placements: processedItems,
-        targetPlacementId: e.target.key as string,
-        position: e.target.dropPosition === 'before' ? 'before' : 'after',
-      });
-
-      setFlowsheet(updatedFlowsheet);
-    },
-
-    async onRootDrop(e) {
-      const processedItems = await Promise.all(
-        e.items
-          .filter(isTextDropItem)
-          .map(async (item) => JSON.parse(await item.getText('placement')))
-      );
-
-      const updatedFlowsheet = appendPlacementsToTerm({
-        flowsheet,
-        termIndex: term.index,
-        placements: processedItems,
-      });
-
-      setFlowsheet(updatedFlowsheet);
-    },
-
-    onReorder(e) {
-      const updatedFlowsheet = reorderPlacementsInTerm({
-        flowsheet,
-        termIndex: term.index,
-        placementIds: Array.from(e.keys) as string[],
-        targetPlacementId: e.target.key as string,
-        position: e.target.dropPosition === 'before' ? 'before' : 'after',
-      });
-
-      setFlowsheet(updatedFlowsheet);
-    },
-
-    onDragEnd(e) {
-      if (e.dropOperation === 'move' && !e.isInternal) {
-        const updatedFlowsheet = removePlacementsFromTerm({
-          flowsheet,
-          termIndex: term.index,
-          placementIds: Array.from(e.keys) as string[],
-        });
-
-        setFlowsheet(updatedFlowsheet);
-      }
-    },
-
-    renderDropIndicator: (target) => (
-      <DropIndicator
-        target={target}
-        className={({ isDropTarget }) =>
-          clsx(styles.dropIndicator, isDropTarget ? styles.active : '')
-        }
-      />
-    ),
-
-    renderDragPreview: (items) => {
-      const firstPlacement = JSON.parse(items[0].placement) as Placement;
-      const displayName =
-        firstPlacement.type === 'COURSE'
-          ? `${flowsheet.courses[firstPlacement.course].code}: ${flowsheet.courses[firstPlacement.course].name}`
-          : 'Elective slot';
-
-      return (
-        <div className={styles.dragPreview}>
-          {displayName} <span className={styles.dragPreviewItemCount}>{items.length}</span>
-        </div>
-      );
-    },
-  });
+  const ref = React.useRef(null);
+  useDraggableCollection(props, dragState, ref);
 
   return (
     <div className={styles.term}>
@@ -137,28 +39,8 @@ export function Term({ term }: TermProps) {
         </Group>
       </Box>
 
-      <ListBox
-        items={term.placements}
-        selectionMode="multiple"
-        selectedKeys={selectedPlacements}
-        dragAndDropHooks={dragAndDropHooks}
-        aria-label={`Term ${term.index}`}
-        className={styles.listBox}
-        renderEmptyState={({ isDropTarget }) => {
-          if (Object.keys(flowsheet.courses).length === 0) return;
-
-          return (
-            <div
-              className={clsx(styles.emptyListBoxState, isDropTarget ? styles.isDropTarget : '')}
-            >
-              <CopyPlus size={14} />
-
-              <p>Drop courses here</p>
-            </div>
-          );
-        }}
-      >
-        {(placement) => {
+      <div>
+        {term.placements.map((placement) => {
           switch (placement.type) {
             case 'COURSE': {
               const course = flowsheet.courses[placement.course];
@@ -170,7 +52,7 @@ export function Term({ term }: TermProps) {
                   className={styles.listBoxItem}
                   key={`${placement.id}-${course.id}`}
                 >
-                  <CoursePlacement course={course} placement={placement} />
+                  <CoursePlacement course={course} dragState={dragState} placement={placement} />
                 </ListBoxItem>
               );
             }
@@ -190,9 +72,8 @@ export function Term({ term }: TermProps) {
             default:
               return null;
           }
-        }}
-      </ListBox>
-
+        })}
+      </div>
       <AddCoursePlacement termIndex={term.index} />
     </div>
   );

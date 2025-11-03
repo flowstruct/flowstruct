@@ -1,0 +1,9 @@
+services:
+  dev:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.dev
+    working_dir: /workspace
+    volumes:
+      - ./flowstruct-app:/workspace
+    command: pnpm install

@@ -1,6 +1,6 @@
 import styles from './course-placement.module.css';
 import { Pencil, Plus, Scaling, TagIcon, Trash } from 'lucide-react';
-import { useFocusRing, useHover, useKeyboard, usePress } from 'react-aria';
+import { mergeProps, useDraggableItem, useFocusRing, useHover, useKeyboard, usePress } from 'react-aria';
 import clsx from 'clsx';
 import React from 'react';
 import { Stack } from '../layout/stack.tsx';
@@ -21,13 +21,15 @@ import { useForm } from '../../hooks/form.hook.ts';
 import { handleSubmit } from '../../utils/handle-submit.ts';
 import { CoursePlacementForm } from './course-placement-form.tsx';
 import { handleFormKeyboardActions } from '../../utils/handleFormKeyboardActions.ts';
+import type { DraggableCollectionState } from 'react-stately';
 
 type CourseCardProps = {
   course: Course;
   placement: Placement;
+  dragState: DraggableCollectionState;
 };
 
-export function CoursePlacement({ course, placement, ...props }: CourseCardProps) {
+export function CoursePlacement({ course, placement, dragState, ...props }: CourseCardProps) {
   const {
     isFocusedPlacement,
     toggleSelectedPlacement,
@@ -48,6 +50,8 @@ export function CoursePlacement({ course, placement, ...props }: CourseCardProps
   });
   const { hoverProps, isHovered } = useHover(props);
   const { focusProps, isFocusVisible } = useFocusRing(props);
+  const { dragProps } = useDraggableItem({ key: placement.id }, dragState);
+
   const [editCourse, setEditCourse] = React.useState<boolean>(false);
 
   const toggleEditCourse = () => (editCourse ? setEditCourse(false) : setEditCourse(true));
@@ -60,9 +64,7 @@ export function CoursePlacement({ course, placement, ...props }: CourseCardProps
         <EditCoursePlacement course={course} toggleEditCourse={toggleEditCourse} />
       ) : (
         <div
-          {...pressProps}
-          {...hoverProps}
-          {...focusProps}
+          {...mergeProps(pressProps, hoverProps, focusProps, dragProps)}
           className={clsx(
             styles.card,
             isFocusedPlacement(placement.id) ? styles.focused : '',
