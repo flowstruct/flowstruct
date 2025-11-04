@@ -3,14 +3,14 @@ import { ChevronRight } from 'lucide-react';
 import {
   Menu as AriaMenu,
   MenuItem as AriaMenuItem,
-  MenuItemProps,
-  MenuProps,
+  type MenuItemProps,
+  type MenuProps,
   MenuSection as AriaMenuSection,
-  MenuSectionProps,
+  type MenuSectionProps,
   MenuTrigger as AriaMenuTrigger,
-  MenuTriggerProps,
+  type MenuTriggerProps,
   SubmenuTrigger as AriaSubmenuTrigger,
-  SubmenuTriggerProps,
+  type SubmenuTriggerProps,
 } from 'react-aria-components';
 import { Popover } from './Popover.tsx';
 import './Menu.css';
@@ -18,7 +18,7 @@ import React from 'react';
 
 export interface MenuButtonProps<T extends object>
   extends Omit<ExtendedMenuProps<T>, 'width'>,
-    Omit<MenuTriggerProps, 'children'> {
+  Omit<MenuTriggerProps, 'children'> {
   label?: React.ReactNode;
   width?: number;
 }
@@ -44,8 +44,8 @@ export interface ExtendedMenuProps<T extends object> extends MenuProps<T> {
 
 export function Menu<T extends object>({ width, ...props }: ExtendedMenuProps<T>) {
   return (
-    <AriaMenu 
-      {...props} 
+    <AriaMenu
+      {...props}
       style={width ? { width: `${width}px` } : undefined}
     >
       {props.children}

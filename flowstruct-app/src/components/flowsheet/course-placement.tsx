@@ -1,7 +1,7 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import clsx from 'clsx';
-import { Ellipsis, Grip, Pencil, Plus, Scaling, TagIcon, Trash } from 'lucide-react';
+import { ChevronDown, Ellipsis, Grip, Pencil, Plus, Scaling, TagIcon, Trash } from 'lucide-react';
 import React from 'react';
 import { useFocusRing, useHover, useKeyboard, usePress } from 'react-aria';
 import { type Course, editCourse } from '../../domain/course.ts';
@@ -12,15 +12,14 @@ import { useFlowsheet } from '../../hooks/flowsheet.hook.tsx';
 import { useForm } from '../../hooks/form.hook.ts';
 import { handleSubmit } from '../../utils/handle-submit.ts';
 import { handleFormKeyboardActions } from '../../utils/handleFormKeyboardActions.ts';
-import { Box } from '../layout/box.tsx';
 import Group from '../layout/group.tsx';
 import { Stack } from '../layout/stack.tsx';
 import { Text } from '../layout/text.tsx';
 import { Button } from '../ui/Button.tsx';
 import { Checkbox } from '../ui/Checkbox.tsx';
 import { Divider } from '../ui/divider.tsx';
+import { Menu, MenuItem } from '../ui/Menu.tsx';
 import { Popover } from '../ui/Popover.tsx';
-import { Tooltip, TooltipTrigger } from '../ui/Tooltip.tsx';
 import { CoursePlacementForm } from './course-placement-form.tsx';
 import styles from './course-placement.module.css';
 
@@ -42,10 +41,8 @@ export function CoursePlacement({ course, placement, ...props }: CourseCardProps
     onPress: (e) => {
       if (e.shiftKey || e.ctrlKey) {
         toggleSelectedPlacement(placement.id);
-        return;
       }
-      toggleFocusPlacement(placement.id);
-    },
+    }
   });
 
   const { hoverProps, isHovered } = useHover(props);
@@ -73,6 +70,9 @@ export function CoursePlacement({ course, placement, ...props }: CourseCardProps
               isFocusedPlacement(placement.id) && styles.focused,
               isSelectedPlacement(placement.id) && styles.selected
             )}
+            {...pressProps}
+            {...focusProps}
+            {...hoverProps}
             data-hovered={isHovered || undefined}
             data-focused={isFocusVisible || undefined}
             data-pressed={isPressed || undefined}
@@ -99,7 +99,7 @@ export function CoursePlacement({ course, placement, ...props }: CourseCardProps
 
                 <Grip color="gray" {...attributes} {...listeners} size={14} />
                 <Button shape="icon" size="none" variant="ghost" ref={coursePlacementRef} onPress={() => toggleFocusPlacement(placement.id)}>
-                  <Ellipsis color="gray" size={14} />
+                  <ChevronDown color="gray" style={{ 'rotate': isFocusedPlacement(placement.id) ? '180deg' : '', 'transition': '250ms ease-in-out' }} size={14} />
                 </Button>
               </Group>
             </Stack>
@@ -145,49 +145,33 @@ function CoursePlacementToolbar({ placement, toggleEditCourse }: CoursePlacement
   };
 
   return (
-    <Box px={1} py={1}>
-      <Group gap={1}>
-        <Button size="sm" variant="transparent">
+    <>
+      <Menu>
+        <MenuItem>
           <Plus size={14} /> Prerequisite
-        </Button>
+        </MenuItem>
 
-        <Button size="sm" variant="transparent">
+        <MenuItem>
           <Plus size={14} /> Corequisite
-        </Button>
+        </MenuItem>
 
-        <Divider orientation="vertical" />
+        <MenuItem>
+          <TagIcon size={14} /> Assign section
+        </MenuItem>
 
-        <TooltipTrigger>
-          <Button size="sm" shape="icon" variant="transparent">
-            <TagIcon size={14} />
-          </Button>
-          <Tooltip>Assign section</Tooltip>
-        </TooltipTrigger>
+        <MenuItem>
+          <Scaling size={14} /> Resize
+        </MenuItem>
 
-        <TooltipTrigger>
-          <Button size="sm" shape="icon" variant="transparent">
-            <Scaling size={14} />
-          </Button>
-          <Tooltip>Resize</Tooltip>
-        </TooltipTrigger>
+        <MenuItem onPress={handleEditCourse}>
+          <Pencil size={14} /> Edit
+        </MenuItem>
 
-        <TooltipTrigger>
-          <Button size="sm" shape="icon" variant="transparent" onPress={handleEditCourse}>
-            <Pencil size={14} />
-          </Button>
-          <Tooltip>Edit</Tooltip>
-        </TooltipTrigger>
-
-        <Divider orientation="vertical" />
-
-        <TooltipTrigger>
-          <Button size="sm" shape="icon" variant="transparent" onPress={handleDeletePlacement}>
-            <Trash color="red" size={14} />
-          </Button>
-          <Tooltip>Remove</Tooltip>
-        </TooltipTrigger>
-      </Group>
-    </Box>
+        <MenuItem onPress={handleDeletePlacement}>
+          <Trash color="red" size={14} /> Remove
+        </MenuItem>
+      </Menu>
+    </>
   );
 }
 

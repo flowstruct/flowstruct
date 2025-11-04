@@ -19,7 +19,6 @@
     "react-aria": "^3.43.2",
     "react-aria-components": "^1.12.2",
     "react-dom": "^19.1.1",
-    "react-stately": "^3.42.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
