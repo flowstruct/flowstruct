@@ -1,7 +1,7 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import clsx from 'clsx';
-import { ChevronDown, Ellipsis, Grip, Pencil, Plus, Scaling, TagIcon, Trash } from 'lucide-react';
+import { ChevronDown, GripHorizontal, Pencil, Plus, Scaling, TagIcon, Trash } from 'lucide-react';
 import React from 'react';
 import { useFocusRing, useHover, useKeyboard, usePress } from 'react-aria';
 import { type Course, editCourse } from '../../domain/course.ts';
@@ -17,7 +17,6 @@ import { Stack } from '../layout/stack.tsx';
 import { Text } from '../layout/text.tsx';
 import { Button } from '../ui/Button.tsx';
 import { Checkbox } from '../ui/Checkbox.tsx';
-import { Divider } from '../ui/divider.tsx';
 import { Menu, MenuItem } from '../ui/Menu.tsx';
 import { Popover } from '../ui/Popover.tsx';
 import { CoursePlacementForm } from './course-placement-form.tsx';
@@ -73,6 +72,10 @@ export function CoursePlacement({ course, placement, ...props }: CourseCardProps
             {...pressProps}
             {...focusProps}
             {...hoverProps}
+            onContextMenu={(e) => {
+              e.preventDefault();
+              toggleFocusPlacement(placement.id);
+            }}
             data-hovered={isHovered || undefined}
             data-focused={isFocusVisible || undefined}
             data-pressed={isPressed || undefined}
@@ -86,21 +89,21 @@ export function CoursePlacement({ course, placement, ...props }: CourseCardProps
                     {course.code}
                   </Text>
 
-                  <Checkbox
-                    onChange={() => toggleSelectedPlacement(placement.id)}
-                    isSelected={isSelectedPlacement(placement.id)}
-                  />
+                  <Button shape="icon" size="none" variant="ghost" ref={coursePlacementRef} onPress={() => toggleFocusPlacement(placement.id)}>
+                    <ChevronDown color="gray" style={{ 'rotate': isFocusedPlacement(placement.id) ? '180deg' : '', 'transition': '250ms ease-in-out' }} size={14} />
+                  </Button>
                 </Group>
 
                 <Text size="xs">{course.name}</Text>
               </Stack>
 
               <Group justify="between">
+                <GripHorizontal color="gray" {...attributes} {...listeners} size={14} />
 
-                <Grip color="gray" {...attributes} {...listeners} size={14} />
-                <Button shape="icon" size="none" variant="ghost" ref={coursePlacementRef} onPress={() => toggleFocusPlacement(placement.id)}>
-                  <ChevronDown color="gray" style={{ 'rotate': isFocusedPlacement(placement.id) ? '180deg' : '', 'transition': '250ms ease-in-out' }} size={14} />
-                </Button>
+                <Checkbox
+                  onChange={() => toggleSelectedPlacement(placement.id)}
+                  isSelected={isSelectedPlacement(placement.id)}
+                />
               </Group>
             </Stack>
           </div>
@@ -110,6 +113,7 @@ export function CoursePlacement({ course, placement, ...props }: CourseCardProps
 
       <Popover
         triggerRef={coursePlacementRef}
+        isNonModal
         placement="top"
         onOpenChange={(isOpen) =>
           isOpen ? clearFocusedPlacement() : toggleFocusPlacement(placement.id)
