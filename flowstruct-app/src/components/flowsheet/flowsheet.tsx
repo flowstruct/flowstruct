@@ -1,3 +1,5 @@
+import { closestCenter, DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
+import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { Grid2X2Plus } from 'lucide-react';
 import { useKeyboard } from 'react-aria';
 import { createPortal } from 'react-dom';
@@ -23,8 +25,18 @@ export function Flowsheet() {
     },
   });
 
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+  }
   return (
-    <>
+    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragOver={() => { }} onDragEnd={handleDragEnd}>
       <Box overflow="auto" overflowY="hidden" {...keyboardProps}>
         <Group align="start">
           {terms.map((t) => (
@@ -50,6 +62,6 @@ export function Flowsheet() {
       </Box>
 
       {createPortal(<MultiSelectToolbar />, document.body)}
-    </>
+    </DndContext>
   );
 }
