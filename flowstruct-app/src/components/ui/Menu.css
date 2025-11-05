@@ -11,6 +11,7 @@
 .react-aria-MenuItem {
   padding: 0 var(--space-2);
   border-radius: var(--radius-2);
+  font-size: var(--font-size-xs);
   outline: none;
   cursor: default;
   color: var(--text-color);

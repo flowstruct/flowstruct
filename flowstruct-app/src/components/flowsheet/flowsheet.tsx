@@ -1,5 +1,5 @@
-import { closestCenter, DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
-import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { closestCenter, defaultDropAnimationSideEffects, DndContext, DragOverlay, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent, type DropAnimation } from '@dnd-kit/core';
+import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { Grid2X2Plus } from 'lucide-react';
 import { useKeyboard } from 'react-aria';
 import { createPortal } from 'react-dom';
@@ -9,12 +9,13 @@ import { Box } from '../layout/box.tsx';
 import Group from '../layout/group.tsx';
 import { Button } from '../ui/Button.tsx';
 import { Tooltip, TooltipTrigger } from '../ui/Tooltip.tsx';
+import { CoursePlacementPreview } from './course-placement.tsx';
 import styles from './flowsheet.module.css';
 import { MultiSelectToolbar } from './multi-select-toolbar.tsx';
 import { Term } from './term.tsx';
 
 export function Flowsheet() {
-  const { clearFocusedPlacement, clearSelectedPlacements } = useFlowsheetGrid();
+  const { clearFocusedPlacement, clearSelectedPlacements, onMovePlacement, movingPlacement } = useFlowsheetGrid();
   const { terms, createTerm } = useFlowsheetGridTerms();
   const { keyboardProps } = useKeyboard({
     onKeyDown: (e) => {
@@ -34,7 +35,19 @@ export function Flowsheet() {
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
+    onMovePlacement(active.data.current?.placement);
   }
+
+  const dropAnimationConfig: DropAnimation = {
+    sideEffects: defaultDropAnimationSideEffects({
+      styles: {
+        active: {
+          opacity: '0.5',
+        },
+      },
+    }),
+  };
+
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragOver={() => { }} onDragEnd={handleDragEnd}>
       <Box overflow="auto" overflowY="hidden" {...keyboardProps}>
@@ -62,6 +75,18 @@ export function Flowsheet() {
       </Box>
 
       {createPortal(<MultiSelectToolbar />, document.body)}
+
+      <DragOverlay adjustScale={true} dropAnimation={dropAnimationConfig}>
+        {movingPlacement && (
+          <CoursePlacementPreview
+            courseId={
+              movingPlacement.type === 'COURSE'
+                ? movingPlacement.course
+                : 'N/A'
+            }
+          />
+        )}
+      </DragOverlay>
     </DndContext>
   );
 }

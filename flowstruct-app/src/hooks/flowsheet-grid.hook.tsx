@@ -1,4 +1,5 @@
 import React from 'react';
+import type { Placement } from '../domain/flowsheet';
 
 type FlowsheetGridContextValues = {
   selectedPlacements: Set<string>;
@@ -12,6 +13,8 @@ type FlowsheetGridContextValues = {
   toggleFocusPlacement: (placementId: string) => void;
   isFocusedPlacement: (placementId: string) => boolean;
   clearFocusedPlacement: () => void;
+  onMovePlacement: (placement: Placement) => void;
+  movingPlacement: Placement | null;
 };
 
 const FlowsheetGridContext = React.createContext<FlowsheetGridContextValues | undefined>(undefined);
@@ -24,6 +27,7 @@ export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) 
   const [focusedPlacement, setFocusedPlacement] = React.useState<string | null>(null);
   const [selectedPlacements, setSelectedPlacements] = React.useState<Set<string>>(new Set());
   const [validTerms, setValidTerms] = React.useState<Set<number>>(new Set());
+  const [movingPlacement, setMovingPlacement] = React.useState<Placement | null>(null)
 
   const toggleFocusPlacement = (placementId: string) => {
     if (placementId === focusedPlacement) {
@@ -66,6 +70,10 @@ export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) 
 
   const isSelectedPlacement = (placementId: string) => selectedPlacements.has(placementId);
 
+  const onMovePlacement = (placement: Placement) => {
+    setMovingPlacement(placement);
+  }
+
   return (
     <FlowsheetGridContext.Provider
       value={{
@@ -80,6 +88,8 @@ export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) 
         toggleFocusPlacement,
         isFocusedPlacement,
         clearFocusedPlacement,
+        onMovePlacement,
+        movingPlacement
       }}
     >
       {children}

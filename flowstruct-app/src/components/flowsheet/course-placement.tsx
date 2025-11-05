@@ -46,7 +46,13 @@ export function CoursePlacement({ course, placement, ...props }: CourseCardProps
 
   const { hoverProps, isHovered } = useHover(props);
   const { focusProps, isFocusVisible } = useFocusRing(props);
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: placement.id });
+  const { isDragging, attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: placement.id,
+    data: {
+      placement,
+      course
+    }
+  });
 
   const coursePlacementRef = React.useRef<HTMLDivElement | null>(null);
   const [editMode, setEditMode] = React.useState<boolean>(false);
@@ -55,6 +61,7 @@ export function CoursePlacement({ course, placement, ...props }: CourseCardProps
   const cardStyle = {
     transform: CSS.Transform.toString(transform),
     transition,
+    opacity: isDragging ? '0.5' : ''
   };
 
   return (
@@ -89,8 +96,16 @@ export function CoursePlacement({ course, placement, ...props }: CourseCardProps
                     {course.code}
                   </Text>
 
-                  <Button shape="icon" size="none" variant="ghost" ref={coursePlacementRef} onPress={() => toggleFocusPlacement(placement.id)}>
-                    <ChevronDown color="gray" style={{ 'rotate': isFocusedPlacement(placement.id) ? '180deg' : '', 'transition': '250ms ease-in-out' }} size={14} />
+                  <Button shape="icon" size="none" variant="transparent" ref={coursePlacementRef} onPress={() => toggleFocusPlacement(placement.id)}>
+                    <ChevronDown
+                      color="gray"
+                      style={{
+                        'rotate': isFocusedPlacement(placement.id) ? '180deg' : '',
+                        'transition':
+                          '250ms ease-in-out'
+                      }}
+                      size={15}
+                    />
                   </Button>
                 </Group>
 
@@ -98,7 +113,9 @@ export function CoursePlacement({ course, placement, ...props }: CourseCardProps
               </Stack>
 
               <Group justify="between">
-                <GripHorizontal color="gray" {...attributes} {...listeners} size={14} />
+                <Button shape="icon" size="none" variant="transparent" {...attributes} {...listeners}>
+                  <GripHorizontal color="gray" size={15} />
+                </Button>
 
                 <Checkbox
                   onChange={() => toggleSelectedPlacement(placement.id)}
@@ -209,3 +226,39 @@ function EditCoursePlacement({ course, toggleEditCourse }: EditCoursePlacementPr
   );
 }
 
+type CoursePlacementPreviewProps = {
+  courseId: string;
+}
+
+export function CoursePlacementPreview({ courseId }: CoursePlacementPreviewProps) {
+  const { flowsheet } = useFlowsheet();
+  const course = flowsheet.courses[courseId];
+
+  if (!course) {
+    return null;
+  }
+
+  return (
+    <div className={styles.card}>
+      <Stack fill gap={1}>
+        <Stack fill>
+          <Group justify="between">
+            <Text as="h3" size="xs" tone="dimmed" weight="medium" className={styles.code}>
+              {course.code}
+            </Text>
+
+            <ChevronDown size={15} />
+          </Group>
+
+          <Text size="xs">{course.name}</Text>
+        </Stack>
+
+        <Group justify="between">
+          <GripHorizontal color="gray" size={15} />
+
+          <Checkbox />
+        </Group>
+      </Stack>
+    </div>
+  );
+}

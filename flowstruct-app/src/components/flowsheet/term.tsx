@@ -1,9 +1,6 @@
-import clsx from 'clsx';
+import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { Plus } from 'lucide-react';
-import React from 'react';
-import { useDropIndicator, useKeyboard } from 'react-aria';
-import { type DropIndicatorProps as AriaDropIndicatorProps } from 'react-aria-components';
-import { type DroppableCollectionState } from 'react-stately';
+import { useKeyboard } from 'react-aria';
 import { addCourse, type Course } from '../../domain/course.ts';
 import type { Term } from '../../domain/flowsheet.ts';
 import { useDisclosure } from '../../hooks/disclosure.hook.ts';
@@ -17,7 +14,6 @@ import { UnstyledButton } from '../ui/UnstyledButton.tsx';
 import { CoursePlacementForm } from './course-placement-form.tsx';
 import { CoursePlacement } from './course-placement.tsx';
 import styles from './term.module.css';
-import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 
 type TermProps = {
   term: Term;
@@ -69,27 +65,6 @@ export function Term({ term }: TermProps) {
 
       <AddCoursePlacement termIndex={term.index} />
     </div>
-  );
-}
-
-interface DropIndicatorProps extends AriaDropIndicatorProps {
-  dropState: DroppableCollectionState;
-}
-
-function DropIndicator({ dropState, ...props }: DropIndicatorProps) {
-  const ref = React.useRef(null);
-  const { dropIndicatorProps, isHidden, isDropTarget } = useDropIndicator(props, dropState, ref);
-
-  if (isHidden) {
-    return null;
-  }
-
-  return (
-    <div
-      {...dropIndicatorProps}
-      ref={ref}
-      className={clsx(styles.dropIndicator, isDropTarget ? styles.dropTarget : '')}
-    />
   );
 }
 
