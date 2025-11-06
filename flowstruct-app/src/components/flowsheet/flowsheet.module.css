@@ -1,20 +1,54 @@
-.term {
-    min-width: 10rem;
-    max-width: 10rem;
-    user-select: none;
-}
-
 .placeCoursesButton {
-    color: var(--primary-color);
-    font-weight: 500;
+  color: var(--primary-color);
+  font-weight: 500;
 
-    &[data-hovered] {
-        color: var(--text-color-base);
-    }
+  &[data-hovered] {
+    color: var(--text-color-base);
+  }
 }
 
 .addTermButton {
-    position: absolute;
-    top: 0;
-    left: var(--space-2);
+  position: absolute;
+  top: 0;
+  left: var(--space-2);
 }
+
+.term {
+  min-width: 10rem;
+  max-width: 10rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.placementsList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.addCourseButton {
+  all: unset;
+  color: var(--text-color-secondary);
+  font-size: var(--font-size-sm);
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  transition:
+    color 0.15s ease,
+    background 0.15s ease;
+}
+
+.addCourseButton[data-hovered] {
+  background: var(--highlight-background-hovered);
+  color: var(--text-color-base);
+}
+
+.addCourseButton[data-focused] {
+  outline: 2px solid var(--focus-ring-color);
+  outline-offset: -2px;
+  border-radius: var(--radius-2);
+}
+

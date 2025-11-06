@@ -1,44 +1,8 @@
 .term {
-    width: 10rem;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-}
-
-.listBox {
-    all: unset;
-    display: flex;
-    flex-direction: column;
-    padding: 0;
-    gap: var(--space-2);
-}
-
-.listBoxItem {
-    all: unset;
-}
-
-.emptyListBoxState {
-    height: 6rem;
-    border: 2px dashed var(--border-color);
-    border-radius: var(--radius-2);
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-    align-items: center;
-    justify-content: center;
-    font-size: var(--font-size-xs);
-    color: var(--text-color-dimmed);
-    padding: var(--space-3);
-    user-select: none;
-}
-
-.emptyListBoxState.isDropTarget {
-    border: 2px solid var(--primary-color);
-    background: var(--primary-2);
-}
-
-.dropIndicator {
-    margin: var(--space-2) 0;
+  width: 10rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
 }
 
 .placementsList {
@@ -47,64 +11,27 @@
   gap: var(--space-2);
 }
 
-.dropIndicator {
-  width: 100%;
-  margin-left: 0;
-  height: 2px;
-  margin-bottom: -2px;
-  outline: none;
-  background: blue;
-}
-
-.dropIndicator:last-child {
-  margin-bottom: 0;
-  margin-top: -2px;
-}
-
-.dropIndicator.dropTarget {
-  background: var(--primary-color);
-}
-
-.dragPreview {
-    max-width: 250px;
-    font-size: var(--font-size-sm);
-    display: flex;
-    font-weight: 450;
-    align-items: center;
-    gap: var(--space-4);
-    border-radius: var(--radius-2);
-    padding: var(--space-1) var(--space-2);
-    color: var(--primary-contrast);
-    background: var(--primary-11);
-}
-
-.dragPreviewItemCount {
-    font-size: var(--font-size-xs);
-    background: white;
-    color: var(--primary-11);
-    padding: 0 var(--space-2);
-    border-radius: var(--radius-1);
-}
-
 .addCourseButton {
-    all: unset;
-    color: var(--text-color-secondary);
-    font-size: var(--font-size-sm);
-    display: flex;
-    justify-content: end;
-    align-items: center;
-    gap: var(--space-2);
-    padding: var(--space-2);
-    transition: color 0.15s ease, background 0.15s ease;
+  all: unset;
+  color: var(--text-color-secondary);
+  font-size: var(--font-size-sm);
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  transition:
+    color 0.15s ease,
+    background 0.15s ease;
 }
 
 .addCourseButton[data-hovered] {
-    background: var(--highlight-background-hovered);
-    color: var(--text-color-base);
+  background: var(--highlight-background-hovered);
+  color: var(--text-color-base);
 }
 
 .addCourseButton[data-focused] {
-    outline: 2px solid var(--focus-ring-color);
-    outline-offset: -2px;
-    border-radius: var(--radius-2);
+  outline: 2px solid var(--focus-ring-color);
+  outline-offset: -2px;
+  border-radius: var(--radius-2);
 }

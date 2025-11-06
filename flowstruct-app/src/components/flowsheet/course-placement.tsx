@@ -1,4 +1,4 @@
-import { useSortable } from '@dnd-kit/sortable';
+import { useSortable } from '@dnd-kit/react/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import clsx from 'clsx';
 import { ChevronDown, GripHorizontal, Pencil, Plus, Scaling, TagIcon, Trash } from 'lucide-react';
@@ -25,9 +25,10 @@ import styles from './course-placement.module.css';
 type CourseCardProps = {
   course: Course;
   placement: Placement;
+  index: number;
 };
 
-export function CoursePlacement({ course, placement, ...props }: CourseCardProps) {
+export function CoursePlacement({ course, placement, index, ...props }: CourseCardProps) {
   const {
     isFocusedPlacement,
     toggleSelectedPlacement,
@@ -41,35 +42,22 @@ export function CoursePlacement({ course, placement, ...props }: CourseCardProps
       if (e.shiftKey || e.ctrlKey) {
         toggleSelectedPlacement(placement.id);
       }
-    }
+    },
   });
-
   const { hoverProps, isHovered } = useHover(props);
   const { focusProps, isFocusVisible } = useFocusRing(props);
-  const { isDragging, attributes, listeners, setNodeRef, transform, transition } = useSortable({
-    id: placement.id,
-    data: {
-      placement,
-      course
-    }
-  });
 
-  const coursePlacementRef = React.useRef<HTMLDivElement | null>(null);
+  const { handleRef, ref } = useSortable({ id: placement.id, index, group: placement.term });
   const [editMode, setEditMode] = React.useState<boolean>(false);
   const toggleEditCourse = () => setEditMode((prev) => !prev);
-
-  const cardStyle = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? '0.5' : ''
-  };
+  const triggerMenuRef = React.useRef<HTMLDivElement | null>(null);
 
   return (
     <>
       {editMode ? (
         <EditCoursePlacement course={course} toggleEditCourse={toggleEditCourse} />
       ) : (
-        <div ref={setNodeRef} style={cardStyle}>
+        <div ref={ref}>
           <div
             className={clsx(
               styles.card,
@@ -96,13 +84,18 @@ export function CoursePlacement({ course, placement, ...props }: CourseCardProps
                     {course.code}
                   </Text>
 
-                  <Button shape="icon" size="none" variant="transparent" ref={coursePlacementRef} onPress={() => toggleFocusPlacement(placement.id)}>
+                  <Button
+                    ref={triggerMenuRef}
+                    shape="icon"
+                    size="none"
+                    variant="transparent"
+                    onPress={() => toggleFocusPlacement(placement.id)}
+                  >
                     <ChevronDown
                       color="gray"
                       style={{
-                        'rotate': isFocusedPlacement(placement.id) ? '180deg' : '',
-                        'transition':
-                          '250ms ease-in-out'
+                        rotate: isFocusedPlacement(placement.id) ? '180deg' : '',
+                        transition: '250ms ease-in-out',
                       }}
                       size={15}
                     />
@@ -113,9 +106,9 @@ export function CoursePlacement({ course, placement, ...props }: CourseCardProps
               </Stack>
 
               <Group justify="between">
-                <Button shape="icon" size="none" variant="transparent" {...attributes} {...listeners}>
+                <div ref={handleRef}>
                   <GripHorizontal color="gray" size={15} />
-                </Button>
+                </div>
 
                 <Checkbox
                   onChange={() => toggleSelectedPlacement(placement.id)}
@@ -125,11 +118,10 @@ export function CoursePlacement({ course, placement, ...props }: CourseCardProps
             </Stack>
           </div>
         </div>
-
       )}
 
       <Popover
-        triggerRef={coursePlacementRef}
+        triggerRef={triggerMenuRef}
         isNonModal
         placement="top"
         onOpenChange={(isOpen) =>
@@ -228,7 +220,7 @@ function EditCoursePlacement({ course, toggleEditCourse }: EditCoursePlacementPr
 
 type CoursePlacementPreviewProps = {
   courseId: string;
-}
+};
 
 export function CoursePlacementPreview({ courseId }: CoursePlacementPreviewProps) {
   const { flowsheet } = useFlowsheet();

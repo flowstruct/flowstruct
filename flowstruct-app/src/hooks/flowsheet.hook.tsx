@@ -17,7 +17,8 @@ const emptyFlowsheet: Flowsheet = {
   year: new Date().getFullYear(),
   name: '',
   sections: [],
-  terms: [],
+  terms: [{ id: crypto.randomUUID(), name: 'Untitled term' }],
+  placements: [],
   courses: {},
 };
 

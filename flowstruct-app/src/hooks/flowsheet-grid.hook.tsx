@@ -13,7 +13,10 @@ type FlowsheetGridContextValues = {
   toggleFocusPlacement: (placementId: string) => void;
   isFocusedPlacement: (placementId: string) => boolean;
   clearFocusedPlacement: () => void;
-  onMovePlacement: (placement: Placement) => void;
+  movePlacementHandlers: {
+    onMoveStart: (placement: Placement) => void;
+    onMoveEnd: () => void;
+  }
   movingPlacement: Placement | null;
 };
 
@@ -70,8 +73,13 @@ export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) 
 
   const isSelectedPlacement = (placementId: string) => selectedPlacements.has(placementId);
 
-  const onMovePlacement = (placement: Placement) => {
-    setMovingPlacement(placement);
+  const movePlacementHandlers = {
+    onMoveStart: (placement: Placement) => {
+      setMovingPlacement(placement);
+    },
+    onMoveEnd: () => {
+      setMovingPlacement(null);
+    }
   }
 
   return (
@@ -88,7 +96,7 @@ export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) 
         toggleFocusPlacement,
         isFocusedPlacement,
         clearFocusedPlacement,
-        onMovePlacement,
+        movePlacementHandlers,
         movingPlacement
       }}
     >

@@ -1,22 +1,31 @@
-import { closestCenter, defaultDropAnimationSideEffects, DndContext, DragOverlay, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent, type DropAnimation } from '@dnd-kit/core';
-import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
-import { Grid2X2Plus } from 'lucide-react';
+import { type DragOverEvent } from '@dnd-kit/core';
+import { Grid2X2Plus, Plus } from 'lucide-react';
 import { useKeyboard } from 'react-aria';
 import { createPortal } from 'react-dom';
-import { useFlowsheetGridTerms } from '../../hooks/flowsheet-grid-terms.hook.ts';
 import { useFlowsheetGrid } from '../../hooks/flowsheet-grid.hook.tsx';
+import { useFlowsheet } from '../../hooks/flowsheet.hook.tsx';
 import { Box } from '../layout/box.tsx';
 import Group from '../layout/group.tsx';
 import { Button } from '../ui/Button.tsx';
 import { Tooltip, TooltipTrigger } from '../ui/Tooltip.tsx';
-import { CoursePlacementPreview } from './course-placement.tsx';
 import styles from './flowsheet.module.css';
 import { MultiSelectToolbar } from './multi-select-toolbar.tsx';
-import { Term } from './term.tsx';
+import { DragDropProvider } from '@dnd-kit/react';
+import { move } from '@dnd-kit/helpers';
+import { Text } from '../layout/text.tsx';
+import { CoursePlacement } from './course-placement.tsx';
+import type { Term } from '../../domain/flowsheet.ts';
+import type { Course } from '../../domain/course.ts';
+import { useDisclosure } from '../../hooks/disclosure.hook.ts';
+import { useForm } from '../../hooks/form.hook.ts';
+import { handleSubmit } from '../../utils/handle-submit.ts';
+import { UnstyledButton } from '../ui/UnstyledButton.tsx';
+import { CoursePlacementForm } from './course-placement-form.tsx';
 
 export function Flowsheet() {
-  const { clearFocusedPlacement, clearSelectedPlacements, onMovePlacement, movingPlacement } = useFlowsheetGrid();
-  const { terms, createTerm } = useFlowsheetGridTerms();
+  const { flowsheet, setFlowsheet } = useFlowsheet();
+  const { clearFocusedPlacement, clearSelectedPlacements } = useFlowsheetGrid();
+
   const { keyboardProps } = useKeyboard({
     onKeyDown: (e) => {
       if (e.key === 'Escape') {
@@ -26,35 +35,63 @@ export function Flowsheet() {
     },
   });
 
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
+  const handleDragOver = (event: DragOverEvent) => {
+    // handle logic later
+  };
 
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-    onMovePlacement(active.data.current?.placement);
-  }
-
-  const dropAnimationConfig: DropAnimation = {
-    sideEffects: defaultDropAnimationSideEffects({
-      styles: {
-        active: {
-          opacity: '0.5',
-        },
-      },
-    }),
+  const createTerm = () => {
+    setFlowsheet((flowsheet) => ({
+      ...flowsheet,
+      terms: [...flowsheet.terms, { id: crypto.randomUUID(), name: 'Untitled term' }],
+    }));
   };
 
   return (
-    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragOver={() => { }} onDragEnd={handleDragEnd}>
+    <DragDropProvider>
       <Box overflow="auto" overflowY="hidden" {...keyboardProps}>
         <Group align="start">
-          {terms.map((t) => (
-            <Term key={t.index} term={t} />
-          ))}
+          {flowsheet.terms.map((t) => {
+            const placements = flowsheet.placements.filter((p) => p.term === t.id);
+
+            return (
+              <div key={t.id} className={styles.term}>
+                <Box px={1}>
+                  <Group justify="center">
+                    <Text tone="dimmed" weight="medium" size="xs">
+                      {t.name}
+                    </Text>
+                  </Group>
+                </Box>
+
+                <div className={styles.placementsList}>
+                  {placements.map((placement, index) => {
+                    switch (placement.type) {
+                      case 'COURSE': {
+                        const course = flowsheet.courses[placement.course];
+                        return (
+                          <CoursePlacement
+                            key={placement.id}
+                            course={course}
+                            placement={placement}
+                            index={index}
+                          />
+                        );
+                      }
+
+                      // case 'ELECTIVE_SLOT': {
+                      //   return <ElectiveSlotCard ... />;
+                      // }
+
+                      default:
+                        return null;
+                    }
+                  })}
+                </div>
+
+                <AddCoursePlacement term={t} />
+              </div>
+            );
+          })}
 
           <Box position="relative">
             <TooltipTrigger>
@@ -67,7 +104,6 @@ export function Flowsheet() {
               >
                 <Grid2X2Plus size={15} />
               </Button>
-
               <Tooltip>Add term</Tooltip>
             </TooltipTrigger>
           </Box>
@@ -75,18 +111,78 @@ export function Flowsheet() {
       </Box>
 
       {createPortal(<MultiSelectToolbar />, document.body)}
+    </DragDropProvider>
+  );
+}
 
-      <DragOverlay adjustScale={true} dropAnimation={dropAnimationConfig}>
-        {movingPlacement && (
-          <CoursePlacementPreview
-            courseId={
-              movingPlacement.type === 'COURSE'
-                ? movingPlacement.course
-                : 'N/A'
-            }
-          />
-        )}
-      </DragOverlay>
-    </DndContext>
+type AddCourseCardProps = {
+  term: Term;
+};
+
+function AddCoursePlacement({ term }: AddCourseCardProps) {
+  const addCourseData: Course = {
+    id: '',
+    code: '',
+    name: '',
+    creditHours: 3,
+    ects: 0,
+    lectureHours: 0,
+    practicalHours: 0,
+    type: 'F2F',
+    prerequisites: [],
+    corequisites: [],
+  };
+
+  const disclosure = useDisclosure();
+  const { setFlowsheet } = useFlowsheet();
+  const form = useForm(addCourseData);
+
+  const { keyboardProps } = useKeyboard({
+    onKeyDown: (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        const form = e.currentTarget.querySelector('form');
+        if (form) form.requestSubmit();
+      }
+      if (e.key === 'Escape') {
+        disclosure.close();
+      }
+    },
+  });
+
+  const onSubmit = handleSubmit<Course>(() => {
+    const course: Course = {
+      ...form.data,
+      id: crypto.randomUUID(),
+      code: form.data.code.toUpperCase(),
+    };
+
+    setFlowsheet((flowsheet) => ({
+      ...flowsheet,
+      courses: { ...flowsheet.courses, [course.id]: course },
+      placements: [
+        ...flowsheet.placements,
+        { id: crypto.randomUUID(), type: 'COURSE', course: course.id, span: 1, term: term.id },
+      ],
+    }));
+
+    form.reset();
+    disclosure.close();
+  });
+
+  return (
+    <>
+      {!disclosure.isOpen && (
+        <UnstyledButton autoFocus className={styles.addCourseButton} onPress={disclosure.open}>
+          Add course <Plus size={12} />
+        </UnstyledButton>
+      )}
+
+      {disclosure.isOpen && (
+        <div {...keyboardProps}>
+          <CoursePlacementForm onSubmit={onSubmit} form={form} onClose={disclosure.close} />
+        </div>
+      )}
+    </>
   );
 }

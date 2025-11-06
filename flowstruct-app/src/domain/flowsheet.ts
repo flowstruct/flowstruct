@@ -22,12 +22,14 @@ export type Placement =
       type: 'COURSE';
       course: string;
       span: number;
+      term: string;
     }
   | {
       id: string;
       type: 'ELECTIVE_SLOT';
       electiveSlot: string;
       span: number;
+      term: string;
     };
 
 export type Flowsheet = {
@@ -37,10 +39,11 @@ export type Flowsheet = {
   name: string;
   sections: Section[];
   terms: Term[];
+  placements: Placement[];
   courses: Record<string, Course>;
 };
 
 export type Term = {
-  index: number;
-  placements: Placement[];
+  id: string;
+  name: string;
 };

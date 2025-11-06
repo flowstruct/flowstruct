@@ -1,8 +1,8 @@
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { Plus } from 'lucide-react';
 import { useKeyboard } from 'react-aria';
-import { addCourse, type Course } from '../../domain/course.ts';
-import type { Term } from '../../domain/flowsheet.ts';
+import { type Course } from '../../domain/course.ts';
+import type { Placement, Term } from '../../domain/flowsheet.ts';
 import { useDisclosure } from '../../hooks/disclosure.hook.ts';
 import { useFlowsheet } from '../../hooks/flowsheet.hook.tsx';
 import { useForm } from '../../hooks/form.hook.ts';
@@ -17,9 +17,10 @@ import styles from './term.module.css';
 
 type TermProps = {
   term: Term;
+  placements: Placement[];
 };
 
-export function Term({ term }: TermProps) {
+export function Term({ term, placements }: TermProps) {
   const { flowsheet } = useFlowsheet();
 
   return (
@@ -27,52 +28,54 @@ export function Term({ term }: TermProps) {
       <Box px={1}>
         <Group justify="center">
           <Text tone="dimmed" weight="medium" size="xs">
-            Term {term.index}
+            {term.name}
           </Text>
         </Group>
       </Box>
 
-      <SortableContext items={term.placements.map(p => p.id)} strategy={verticalListSortingStrategy}>
-        <div className={styles.placementsList}>
-          {term.placements.map((placement) => {
-            switch (placement.type) {
-              case 'COURSE': {
-                const course = flowsheet.courses[placement.course];
+      <div className={styles.placementsList}>
+        {placements.map((placement, index) => {
+          switch (placement.type) {
+            case 'COURSE': {
+              const course = flowsheet.courses[placement.course];
 
-                return (
-                  <CoursePlacement key={placement.id} course={course} placement={placement} />
-                );
-              }
-
-              // case 'ELECTIVE_SLOT': {
-              //   const slot = flowsheet.sections
-              //     .flatMap((s) => s.courses.includes(placement.electiveSlot) ? [s] : [])
-              //     .at(0);
-              //
-              //   return (
-              //     <ListBoxItem id={placement.id} textValue="Elective Slot" className={styles.listBoxItem}>
-              //       <><ElectiveSlotCard slot={slot} /></>
-              //     </ListBoxItem>
-              //   );
-              // }
-
-              default:
-                return null;
+              return (
+                <CoursePlacement
+                  key={placement.id}
+                  course={course}
+                  placement={placement}
+                  index={index}
+                />
+              );
             }
-          })}
-        </div>
-      </SortableContext>
 
-      <AddCoursePlacement termIndex={term.index} />
+            // case 'ELECTIVE_SLOT': {
+            //   const slot = flowsheet.sections
+            //     .flatMap((s) => s.courses.includes(placement.electiveSlot) ? [s] : [])
+            //     .at(0);
+            //
+            //   return (
+            //     <ListBoxItem id={placement.id} textValue="Elective Slot" className={styles.listBoxItem}>
+            //       <><ElectiveSlotCard slot={slot} /></>
+            //     </ListBoxItem>
+            //   );
+            // }
+
+            default:
+              return null;
+          }
+        })}
+      </div>
+      <AddCoursePlacement term={term} />
     </div>
   );
 }
 
 type AddCourseCardProps = {
-  termIndex: number;
+  term: Term;
 };
 
-function AddCoursePlacement({ termIndex }: AddCourseCardProps) {
+function AddCoursePlacement({ term }: AddCourseCardProps) {
   const addCourseData: Course = {
     id: '',
     code: '',
@@ -110,7 +113,14 @@ function AddCoursePlacement({ termIndex }: AddCourseCardProps) {
       code: form.data.code.toUpperCase(),
     };
 
-    setFlowsheet((flowsheet) => addCourse({ flowsheet, course, termIndex }));
+    setFlowsheet((flowsheet) => ({
+      ...flowsheet,
+      courses: { ...flowsheet.courses, [course.id]: course },
+      placements: [
+        ...flowsheet.placements,
+        { id: crypto.randomUUID(), type: 'COURSE', course: course.id, span: 1, term: term.id },
+      ],
+    }));
 
     form.reset();
     disclosure.close();

@@ -22,31 +22,17 @@ export type Course = {
 type AddCourseArgs = {
   flowsheet: Flowsheet;
   course: Course;
-  termIndex: number;
+  termId: string;
 };
 
-export const addCourse = ({ flowsheet, course, termIndex }: AddCourseArgs) => {
-  const newTerms = [...flowsheet.terms];
-
-  if (!newTerms.find((t) => t.index === termIndex)) {
-    newTerms.push({ index: termIndex, placements: [] });
-  }
-
-  const updatedTerms = newTerms.map((t) => {
-    if (t.index !== termIndex) return t;
-    return {
-      ...t,
-      placements: [
-        ...t.placements,
-        { id: crypto.randomUUID(), type: 'COURSE' as const, course: course.id, span: 1 },
-      ],
-    };
-  });
-
+export const addCourse = ({ flowsheet, course, termId }: AddCourseArgs) => {
   return {
     ...flowsheet,
     courses: { ...flowsheet.courses, [course.id]: course },
-    terms: updatedTerms,
+    placements: [
+      ...flowsheet.placements,
+      { type: 'COURSE', course: course.id, span: 1, term: termId },
+    ],
   };
 };
 
