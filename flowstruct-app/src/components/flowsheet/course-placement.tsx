@@ -1,5 +1,4 @@
 import { useSortable } from '@dnd-kit/react/sortable';
-import { CSS } from '@dnd-kit/utilities';
 import clsx from 'clsx';
 import { ChevronDown, GripHorizontal, Pencil, Plus, Scaling, TagIcon, Trash } from 'lucide-react';
 import React from 'react';
@@ -47,10 +46,17 @@ export function CoursePlacement({ course, placement, index, ...props }: CourseCa
   const { hoverProps, isHovered } = useHover(props);
   const { focusProps, isFocusVisible } = useFocusRing(props);
 
-  const { handleRef, ref } = useSortable({ id: placement.id, index, group: placement.term });
+  const { ref } = useSortable({
+    id: placement.id,
+    data: { placement },
+    index,
+    group: placement.term,
+  });
+
   const [editMode, setEditMode] = React.useState<boolean>(false);
-  const toggleEditCourse = () => setEditMode((prev) => !prev);
   const triggerMenuRef = React.useRef<HTMLDivElement | null>(null);
+
+  const toggleEditCourse = () => setEditMode((prev) => !prev);
 
   return (
     <>
@@ -67,10 +73,6 @@ export function CoursePlacement({ course, placement, index, ...props }: CourseCa
             {...pressProps}
             {...focusProps}
             {...hoverProps}
-            onContextMenu={(e) => {
-              e.preventDefault();
-              toggleFocusPlacement(placement.id);
-            }}
             data-hovered={isHovered || undefined}
             data-focused={isFocusVisible || undefined}
             data-pressed={isPressed || undefined}
@@ -106,7 +108,7 @@ export function CoursePlacement({ course, placement, index, ...props }: CourseCa
               </Stack>
 
               <Group justify="between">
-                <div ref={handleRef}>
+                <div>
                   <GripHorizontal color="gray" size={15} />
                 </div>
 

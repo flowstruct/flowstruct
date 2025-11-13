@@ -1,4 +1,3 @@
-import { type DragOverEvent } from '@dnd-kit/core';
 import { Grid2X2Plus, Plus } from 'lucide-react';
 import { useKeyboard } from 'react-aria';
 import { createPortal } from 'react-dom';
@@ -10,11 +9,10 @@ import { Button } from '../ui/Button.tsx';
 import { Tooltip, TooltipTrigger } from '../ui/Tooltip.tsx';
 import styles from './flowsheet.module.css';
 import { MultiSelectToolbar } from './multi-select-toolbar.tsx';
-import { DragDropProvider } from '@dnd-kit/react';
-import { move } from '@dnd-kit/helpers';
+import { DragDropProvider, useDragDropMonitor, useDroppable } from '@dnd-kit/react';
 import { Text } from '../layout/text.tsx';
 import { CoursePlacement } from './course-placement.tsx';
-import type { Term } from '../../domain/flowsheet.ts';
+import type { Placement, Term } from '../../domain/flowsheet.ts';
 import type { Course } from '../../domain/course.ts';
 import { useDisclosure } from '../../hooks/disclosure.hook.ts';
 import { useForm } from '../../hooks/form.hook.ts';
@@ -35,10 +33,6 @@ export function Flowsheet() {
     },
   });
 
-  const handleDragOver = (event: DragOverEvent) => {
-    // handle logic later
-  };
-
   const createTerm = () => {
     setFlowsheet((flowsheet) => ({
       ...flowsheet,
@@ -47,51 +41,22 @@ export function Flowsheet() {
   };
 
   return (
-    <DragDropProvider>
+    <DragDropProvider
+      onDragOver={({ operation }) => {
+        if (!operation.target || !operation.source) return;
+        if (
+          operation.target.type === 'term' &&
+          operation.target.id !== operation.source.data.term
+        ) {
+          console.log('hey');
+        }
+      }}
+    >
       <Box overflow="auto" overflowY="hidden" {...keyboardProps}>
         <Group align="start">
-          {flowsheet.terms.map((t) => {
-            const placements = flowsheet.placements.filter((p) => p.term === t.id);
-
-            return (
-              <div key={t.id} className={styles.term}>
-                <Box px={1}>
-                  <Group justify="center">
-                    <Text tone="dimmed" weight="medium" size="xs">
-                      {t.name}
-                    </Text>
-                  </Group>
-                </Box>
-
-                <div className={styles.placementsList}>
-                  {placements.map((placement, index) => {
-                    switch (placement.type) {
-                      case 'COURSE': {
-                        const course = flowsheet.courses[placement.course];
-                        return (
-                          <CoursePlacement
-                            key={placement.id}
-                            course={course}
-                            placement={placement}
-                            index={index}
-                          />
-                        );
-                      }
-
-                      // case 'ELECTIVE_SLOT': {
-                      //   return <ElectiveSlotCard ... />;
-                      // }
-
-                      default:
-                        return null;
-                    }
-                  })}
-                </div>
-
-                <AddCoursePlacement term={t} />
-              </div>
-            );
-          })}
+          {flowsheet.terms.map((t) => (
+            <Term term={t} placements={flowsheet.placements.filter((p) => p.term === t.id)} />
+          ))}
 
           <Box position="relative">
             <TooltipTrigger>
@@ -104,6 +69,7 @@ export function Flowsheet() {
               >
                 <Grid2X2Plus size={15} />
               </Button>
+
               <Tooltip>Add term</Tooltip>
             </TooltipTrigger>
           </Box>
@@ -118,6 +84,58 @@ export function Flowsheet() {
 type AddCourseCardProps = {
   term: Term;
 };
+
+type TermProps = {
+  term: Term;
+  placements: Placement[];
+};
+
+function Term({ term, placements }: TermProps) {
+  const { flowsheet } = useFlowsheet();
+  const { isDropTarget, ref } = useDroppable({ id: term.id, type: 'term' });
+
+  return (
+    <div key={term.id} className={styles.term}>
+      <Box px={1}>
+        <Group justify="center">
+          <Text tone="dimmed" weight="medium" size="xs">
+            {term.name}
+          </Text>
+        </Group>
+      </Box>
+
+      <div className={styles.placementsList}>
+        {placements.map((placement, index) => {
+          switch (placement.type) {
+            case 'COURSE': {
+              const course = flowsheet.courses[placement.course];
+
+              return (
+                <CoursePlacement
+                  key={placement.id}
+                  course={course}
+                  placement={placement}
+                  index={index}
+                />
+              );
+            }
+
+            default:
+              return null;
+          }
+        })}
+
+        <div
+          ref={ref}
+          data-is-drop-target={isDropTarget ? true : undefined}
+          className={styles.termDropZone}
+        />
+      </div>
+
+      <AddCoursePlacement term={term} />
+    </div>
+  );
+}
 
 function AddCoursePlacement({ term }: AddCourseCardProps) {
   const addCourseData: Course = {
