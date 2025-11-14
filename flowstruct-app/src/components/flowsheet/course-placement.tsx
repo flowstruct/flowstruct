@@ -34,6 +34,7 @@ export function CoursePlacement({ course, placement, index, ...props }: CourseCa
     toggleFocusPlacement,
     isSelectedPlacement,
     clearFocusedPlacement,
+    movingPlacement,
   } = useFlowsheetGrid();
 
   const { pressProps, isPressed } = usePress({
@@ -51,7 +52,7 @@ export function CoursePlacement({ course, placement, index, ...props }: CourseCa
     data: { placement },
     index,
     group: placement.term,
-    collisionPriority: 1,
+    collisionPriority: movingPlacement?.term === placement.term ? 3 : 1,
   });
 
   const [editMode, setEditMode] = React.useState<boolean>(false);
