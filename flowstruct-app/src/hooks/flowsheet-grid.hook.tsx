@@ -16,8 +16,10 @@ type FlowsheetGridContextValues = {
   movePlacementHandlers: {
     onMoveStart: (placement: Placement) => void;
     onMoveEnd: () => void;
-  }
+    onMoveOverTerm: (termId: string) => void;
+  };
   movingPlacement: Placement | null;
+  movedOverTerm: string | null;
 };
 
 const FlowsheetGridContext = React.createContext<FlowsheetGridContextValues | undefined>(undefined);
@@ -30,8 +32,8 @@ export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) 
   const [focusedPlacement, setFocusedPlacement] = React.useState<string | null>(null);
   const [selectedPlacements, setSelectedPlacements] = React.useState<Set<string>>(new Set());
   const [validTerms, setValidTerms] = React.useState<Set<number>>(new Set());
-  const [movingPlacement, setMovingPlacement] = React.useState<Placement | null>(null)
-
+  const [movingPlacement, setMovingPlacement] = React.useState<Placement | null>(null);
+  const [movedOverTerm, setMovedOverTerm] = React.useState<string | null>(null);
   const toggleFocusPlacement = (placementId: string) => {
     if (placementId === focusedPlacement) {
       setFocusedPlacement(null);
@@ -79,8 +81,11 @@ export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) 
     },
     onMoveEnd: () => {
       setMovingPlacement(null);
-    }
-  }
+    },
+    onMoveOverTerm: (termId: string) => {
+      setMovedOverTerm(termId);
+    },
+  };
 
   return (
     <FlowsheetGridContext.Provider
@@ -97,7 +102,8 @@ export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) 
         isFocusedPlacement,
         clearFocusedPlacement,
         movePlacementHandlers,
-        movingPlacement
+        movingPlacement,
+        movedOverTerm,
       }}
     >
       {children}

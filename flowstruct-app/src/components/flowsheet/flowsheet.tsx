@@ -1,4 +1,4 @@
-import { Grid2X2Plus, Plus } from 'lucide-react';
+import { BetweenHorizonalEnd, Grid2X2Plus, Plus } from 'lucide-react';
 import { useKeyboard } from 'react-aria';
 import { createPortal } from 'react-dom';
 import { useFlowsheetGrid } from '../../hooks/flowsheet-grid.hook.tsx';
@@ -22,7 +22,8 @@ import { CoursePlacementForm } from './course-placement-form.tsx';
 
 export function Flowsheet() {
   const { flowsheet, setFlowsheet } = useFlowsheet();
-  const { clearFocusedPlacement, clearSelectedPlacements } = useFlowsheetGrid();
+  const { clearFocusedPlacement, clearSelectedPlacements, movePlacementHandlers } =
+    useFlowsheetGrid();
 
   const { keyboardProps } = useKeyboard({
     onKeyDown: (e) => {
@@ -42,20 +43,19 @@ export function Flowsheet() {
 
   return (
     <DragDropProvider
-      onDragOver={({ operation }) => {
-        if (!operation.target || !operation.source) return;
-        if (
-          operation.target.type === 'term' &&
-          operation.target.id !== operation.source.data.term
-        ) {
-          console.log('hey');
-        }
+      onDragStart={({ operation }) => {
+        if (!operation.source) return;
+        movePlacementHandlers.onMoveStart(operation.source.data.placement as Placement);
       }}
     >
       <Box overflow="auto" overflowY="hidden" {...keyboardProps}>
         <Group align="start">
           {flowsheet.terms.map((t) => (
-            <Term term={t} placements={flowsheet.placements.filter((p) => p.term === t.id)} />
+            <Term
+              key={t.id}
+              term={t}
+              placements={flowsheet.placements.filter((p) => p.term === t.id)}
+            />
           ))}
 
           <Box position="relative">
@@ -92,7 +92,6 @@ type TermProps = {
 
 function Term({ term, placements }: TermProps) {
   const { flowsheet } = useFlowsheet();
-  const { isDropTarget, ref } = useDroppable({ id: term.id, type: 'term' });
 
   return (
     <div key={term.id} className={styles.term}>
@@ -125,14 +124,34 @@ function Term({ term, placements }: TermProps) {
           }
         })}
 
-        <div
-          ref={ref}
-          data-is-drop-target={isDropTarget ? true : undefined}
-          className={styles.termDropZone}
-        />
+        <TermDropZone term={term} />
       </div>
 
       <AddCoursePlacement term={term} />
+    </div>
+  );
+}
+
+type TermDropZoneProps = {
+  term: Term;
+};
+
+function TermDropZone({ term }: TermDropZoneProps) {
+  const { movingPlacement } = useFlowsheetGrid();
+  const { isDropTarget, ref } = useDroppable({
+    id: term.id,
+    type: 'term',
+    disabled: movingPlacement?.term === term.id,
+    collisionPriority: 2,
+  });
+
+  return (
+    <div
+      ref={ref}
+      data-is-drop-target={isDropTarget ? true : undefined}
+      className={styles.termDropZone}
+    >
+      <BetweenHorizonalEnd size={24} color="gray" />
     </div>
   );
 }

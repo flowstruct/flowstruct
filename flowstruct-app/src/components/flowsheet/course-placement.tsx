@@ -51,6 +51,7 @@ export function CoursePlacement({ course, placement, index, ...props }: CourseCa
     data: { placement },
     index,
     group: placement.term,
+    collisionPriority: 1,
   });
 
   const [editMode, setEditMode] = React.useState<boolean>(false);
