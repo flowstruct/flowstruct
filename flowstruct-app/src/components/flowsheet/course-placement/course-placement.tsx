@@ -1,29 +1,28 @@
 import clsx from 'clsx';
 import { EllipsisVertical, GripHorizontal, Pencil, Plus, Trash } from 'lucide-react';
 import { useFocusRing, useHover, usePress } from 'react-aria';
-import { type Course } from '../../domain/course.ts';
-import type { Placement } from '../../domain/flowsheet.ts';
-import { useDisclosure, type DisclosureReturnResult } from '../../hooks/disclosure.hook.ts';
-import { useFlowsheetGrid } from '../../hooks/flowsheet-grid.hook.tsx';
-import { useForm } from '../../hooks/form.hook.ts';
-import { handleSubmit } from '../../utils/handle-submit.ts';
-import Group from '../layout/group.tsx';
-import { Stack } from '../layout/stack.tsx';
-import { Text } from '../layout/text.tsx';
-import { Button } from '../ui/Button.tsx';
-import { Checkbox } from '../ui/Checkbox.tsx';
-import { Dialog, DialogTrigger } from '../ui/Dialog.tsx';
-import { Menu, MenuItem } from '../ui/Menu.tsx';
-import { Modal } from '../ui/Modal.tsx';
-import { Popover } from '../ui/Popover.tsx';
+import { type Course } from '../../../domain/course.ts';
+import type { Placement } from '../../../domain/flowsheet.ts';
+import { useDisclosure } from '../../../hooks/disclosure.hook.ts';
+import { useFlowsheetGrid } from '../../../hooks/flowsheet-grid.hook.tsx';
+import Group from '../../layout/group.tsx';
+import { Stack } from '../../layout/stack.tsx';
+import { Text } from '../../layout/text.tsx';
+import { Button } from '../../ui/Button.tsx';
+import { Checkbox } from '../../ui/Checkbox.tsx';
+import { Dialog, DialogTrigger } from '../../ui/Dialog.tsx';
+import { Menu, MenuItem } from '../../ui/Menu.tsx';
+import { Modal } from '../../ui/Modal.tsx';
+import { Popover } from '../../ui/Popover.tsx';
 import styles from './course-placement.module.css';
+import { EditCourseForm } from './edit-course-placement-form.tsx';
 
-type CourseCardProps = {
+type CoursePlacementProps = {
   course: Course;
   placement: Placement;
 };
 
-export function CoursePlacement({ course, placement, ...props }: CourseCardProps) {
+export function CoursePlacement({ course, placement, ...props }: CoursePlacementProps) {
   const { toggleSelectedPlacement, isSelectedPlacement } = useFlowsheetGrid();
 
   const { pressProps, isPressed } = usePress({
@@ -57,7 +56,7 @@ export function CoursePlacement({ course, placement, ...props }: CourseCardProps
                   {course.code}
                 </Text>
 
-                <CoursePlacementMenu placement={placement} course={course} />
+                <CoursePlacementMenu course={course} />
               </Group>
 
               <Text size="xs">{course.name}</Text>
@@ -81,28 +80,20 @@ export function CoursePlacement({ course, placement, ...props }: CourseCardProps
 }
 
 type CoursePlacementMenuProps = {
-  placement: Placement;
   course: Course;
 };
 
-function CoursePlacementMenu({ placement, course }: CoursePlacementMenuProps) {
-  const { toggleFocusPlacement } = useFlowsheetGrid();
-
+function CoursePlacementMenu({ course }: CoursePlacementMenuProps) {
   const editModalDisclosure = useDisclosure();
 
   return (
     <>
       <DialogTrigger>
-        <Button
-          shape="icon"
-          size="none"
-          variant="transparent"
-          onPress={() => toggleFocusPlacement(placement.id)}
-        >
+        <Button shape="icon" size="none" variant="transparent">
           <EllipsisVertical color="gray" size={15} />
         </Button>
 
-        <Popover isNonModal placement="top">
+        <Popover placement="top">
           <Menu>
             <MenuItem>
               <Plus size={14} /> Prerequisite
@@ -134,25 +125,4 @@ function CoursePlacementMenu({ placement, course }: CoursePlacementMenuProps) {
       </Modal>
     </>
   );
-}
-
-type EditCourseFormProps = {
-  course: Course;
-  disclosure: DisclosureReturnResult;
-};
-
-function EditCourseForm({ course, disclosure }: EditCourseFormProps) {
-  const form = useForm(course);
-
-  const onSubmit = handleSubmit<Course>(() => {
-    const updatedCourse: Course = {
-      ...form.data,
-      code: form.data.code.toUpperCase(),
-    };
-
-    form.reset();
-    disclosure.close();
-  });
-
-  return <div>yes</div>;
 }

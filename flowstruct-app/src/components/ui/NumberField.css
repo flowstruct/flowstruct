@@ -1,87 +1,87 @@
 .my-stepper-buttons {
-    display: flex;
-    flex-direction: column;
-    margin-right: 0.1rem;
+  display: flex;
+  flex-direction: column;
+  margin-right: 0.1rem;
 
-    .react-aria-Button {
-        background-color: transparent;
-        height: 0.6rem;
+  .react-aria-Button {
+    background-color: transparent;
+    height: 0.6rem;
 
-        > svg {
-            stroke-width: 0.175rem;
-        }
+    > svg {
+      stroke-width: 0.175rem;
     }
+  }
 }
 
 .react-aria-NumberField {
-    color: var(--text-color);
-    width: fit-content;
+  color: var(--text-color);
+  width: 100%;
 
-    .react-aria-Group {
-        margin-top: var(--space-1);
-        display: flex;
-        align-items: center;
-        gap: var(--space-2);
-        padding: 0.15rem var(--space-2);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-1);
+  .react-aria-Group {
+    margin-top: var(--space-1);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: 0.15rem var(--space-2);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-1);
 
-        > svg {
-            color: var(--text-color-secondary);
-        }
-
-        &[data-focus-within] {
-            outline: 1px solid var(--focus-ring-color);
-            border-radius: var(--radius-1);
-
-            .react-aria-Input,
-            .react-aria-Button {
-                border-color: var(--focus-ring-color);
-            }
-        }
+    > svg {
+      color: var(--text-color-secondary);
     }
 
-    .react-aria-Input {
-        all: unset;
-        font-size: var(--font-size-sm);
-        min-width: 0;
-        /*width: 6rem;*/
+    &[data-focus-within] {
+      outline: 1px solid var(--focus-ring-color);
+      border-radius: var(--radius-1);
+
+      .react-aria-Input,
+      .react-aria-Button {
+        border-color: var(--focus-ring-color);
+      }
     }
+  }
 
-    &[data-invalid] {
-        .react-aria-Input,
-        .react-aria-Button {
-            border-color: var(--invalid-color);
-        }
+  .react-aria-Input {
+    all: unset;
+    font-size: var(--font-size-sm);
+    min-width: 0;
+    width: 100%;
+  }
 
-        &:focus-within {
-            .react-aria-Input,
-            .react-aria-Button {
-                border-color: var(--focus-ring-color);
-            }
-        }
-    }
-
-    .react-aria-FieldError {
-        font-size: var(--font-size-xs);
-        color: var(--invalid-color);
-    }
-
-    [slot=description] {
-        font-size: var(--font-size-xs);
-    }
-
+  &[data-invalid] {
+    .react-aria-Input,
     .react-aria-Button {
-        &[data-disabled] {
-            border-color: var(--border-color-disabled);
-            color: var(--text-color-disabled);
-        }
+      border-color: var(--invalid-color);
     }
 
-    .react-aria-Input {
-        &[data-disabled] {
-            border-color: var(--border-color-disabled);
-            color: var(--text-color-disabled);
-        }
+    &:focus-within {
+      .react-aria-Input,
+      .react-aria-Button {
+        border-color: var(--focus-ring-color);
+      }
     }
+  }
+
+  .react-aria-FieldError {
+    font-size: var(--font-size-xs);
+    color: var(--invalid-color);
+  }
+
+  [slot='description'] {
+    font-size: var(--font-size-xs);
+  }
+
+  .react-aria-Button {
+    &[data-disabled] {
+      border-color: var(--border-color-disabled);
+      color: var(--text-color-disabled);
+    }
+  }
+
+  .react-aria-Input {
+    &[data-disabled] {
+      border-color: var(--border-color-disabled);
+      color: var(--text-color-disabled);
+    }
+  }
 }

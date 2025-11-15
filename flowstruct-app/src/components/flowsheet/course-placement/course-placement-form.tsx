@@ -1,19 +1,19 @@
-import { type Course } from '../../domain/course.ts';
+import { type Course } from '../../../domain/course.ts';
 import styles from './course-placement-form.module.css';
-import { Stack } from '../layout/stack.tsx';
-import Group from '../layout/group.tsx';
+import { Stack } from '../../layout/stack.tsx';
+import Group from '../../layout/group.tsx';
 import { Input, TextArea } from 'react-aria-components';
-import { Button } from '../ui/Button.tsx';
+import { Button } from '../../ui/Button.tsx';
 import { ArrowLeftToLine, Clock, Globe2, GraduationCap, Settings2 } from 'lucide-react';
-import { DialogTrigger } from '../ui/Dialog.tsx';
-import { Tooltip, TooltipTrigger } from '../ui/Tooltip.tsx';
-import { Popover } from '../ui/Popover.tsx';
-import { Box } from '../layout/box.tsx';
-import { NumberField } from '../ui/NumberField.tsx';
-import { Select, SelectItem } from '../ui/Select.tsx';
-import { UnstyledButton } from '../ui/UnstyledButton.tsx';
-import { Form } from '../ui/Form.tsx';
-import type { FormReturnResult } from '../../hooks/form.hook.ts';
+import { DialogTrigger } from '../../ui/Dialog.tsx';
+import { Tooltip, TooltipTrigger } from '../../ui/Tooltip.tsx';
+import { Popover } from '../../ui/Popover.tsx';
+import { Box } from '../../layout/box.tsx';
+import { NumberField } from '../../ui/NumberField.tsx';
+import { Select, SelectItem } from '../../ui/Select.tsx';
+import { UnstyledButton } from '../../ui/UnstyledButton.tsx';
+import { Form } from '../../ui/Form.tsx';
+import type { FormReturnResult } from '../../../hooks/form.hook.ts';
 import React from 'react';
 
 type CoursePlacementFormProps = {

@@ -1,0 +1,51 @@
+.header {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  background: var(--highlight-background);
+  width: fit-content;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-1);
+  font-size: var(--font-size-sm);
+  padding: 0 var(--space-2);
+}
+
+.code {
+  all: unset;
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  color: var(--text-color-dimmed);
+}
+
+.code::placeholder {
+  color: var(--text-color-dimmed);
+  font-size: var(--font-size-base);
+}
+
+.name {
+  all: unset;
+  font-size: var(--font-size-xl);
+}
+
+.moreDetails {
+  all: unset;
+  font-weight: 400;
+  display: flex;
+  gap: var(--space-1);
+  align-items: center;
+  font-size: var(--font-size-sm);
+  color: var(--text-color-secondary);
+}
+
+.saveChangesButton {
+  all: unset;
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  font-size: var(--font-size-base);
+  background: var(--button-background);
+  width: fit-content;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-1);
+  color: white;
+}

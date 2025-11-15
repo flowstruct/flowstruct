@@ -20,6 +20,7 @@ export interface TextFieldProps extends AriaTextFieldProps {
   errorMessage?: string | ((validation: ValidationResult) => string);
   variant?: 'default' | 'transparent';
   className?: string;
+  size?: 'sm' | 'md' | 'xl';
 }
 
 export function TextField({
@@ -30,11 +31,17 @@ export function TextField({
   placeholder,
   errorMessage,
   className,
+  size = 'sm',
   variant = 'default',
   ...props
 }: TextFieldProps) {
   return (
-    <AriaTextField style={{ width: width ? '' : '100%' }} data-variant={variant} {...props}>
+    <AriaTextField
+      style={{ width: width ? '' : '100%' }}
+      data-size={size}
+      data-variant={variant}
+      {...props}
+    >
       {label && <Label>{label}</Label>}
       <Group style={{ width: width ? '' : '100%' }}>
         {icon}
