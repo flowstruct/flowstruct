@@ -1,0 +1,294 @@
+import clsx from 'clsx';
+import { CopyPlus, Grid2X2Plus, Plus } from 'lucide-react';
+import { useRef } from 'react';
+import { isTextDropItem, useKeyboard } from 'react-aria';
+import { DropIndicator, GridList, GridListItem, useDragAndDrop } from 'react-aria-components';
+import { createPortal } from 'react-dom';
+import type { Course } from '../../domain/course';
+import type { Placement, Term } from '../../domain/flowsheet';
+import { useCourses } from '../../hooks/courses.hook';
+import { useDisclosure } from '../../hooks/disclosure.hook';
+import { useFlowsheetGrid } from '../../hooks/flowsheet-grid.hook';
+import { useForm } from '../../hooks/form.hook';
+import { usePlacements } from '../../hooks/placements.hook';
+import { useTerms } from '../../hooks/terms.hook';
+import { handleSubmit } from '../../utils/handle-submit';
+import { Box } from '../layout/box';
+import Group from '../layout/group';
+import { Text } from '../layout/text.tsx';
+import { Button } from '../ui/Button';
+import { Tooltip, TooltipTrigger } from '../ui/Tooltip';
+import { UnstyledButton } from '../ui/UnstyledButton';
+import { CoursePlacement } from './course-placement';
+import { CoursePlacementForm } from './course-placement-form';
+import styles from './flowsheet-grid.module.css';
+import { MultiSelectToolbar } from './multi-select-toolbar.tsx';
+import { appendToSection, reorderArray } from '../../utils/array.ts';
+
+export function FlowsheetGrid() {
+  const { movingPlacementRef, clearSelectedPlacements, clearFocusedPlacement } = useFlowsheetGrid();
+  const { terms, setTerms } = useTerms();
+  const { placements, setPlacements } = usePlacements();
+
+  const dragRef = useRef(placements);
+
+  const { keyboardProps } = useKeyboard({
+    onKeyDown: (e) => {
+      if (e.key === 'Escape') {
+        clearSelectedPlacements();
+        clearFocusedPlacement();
+      }
+    },
+  });
+
+  const createTerm = () => {
+    setTerms((terms) => [...terms, { id: crypto.randomUUID(), name: 'Untitled term' }]);
+  };
+
+  return (
+    <>
+      <Box overflow="auto" overflowY="hidden" {...keyboardProps}>
+        <Group align="start">
+          {terms.map((t) => (
+            <Term key={t.id} term={t} placements={placements.filter((p) => p.term === t.id)} />
+          ))}
+
+          <Box position="relative">
+            <TooltipTrigger>
+              <Button
+                variant="ghost"
+                size="xs"
+                shape="icon"
+                className={styles.addTermButton}
+                onPress={createTerm}
+              >
+                <Grid2X2Plus size={15} />
+              </Button>
+              <Tooltip>Add term</Tooltip>
+            </TooltipTrigger>
+          </Box>
+        </Group>
+      </Box>
+
+      {createPortal(<MultiSelectToolbar />, document.body)}
+    </>
+  );
+}
+
+type TermProps = {
+  term: Term;
+  placements: Placement[];
+};
+
+function Term({ term, placements }: TermProps) {
+  const { courses } = useCourses();
+  const { placements: allPlacements, setPlacements } = usePlacements();
+
+  const { dragAndDropHooks } = useDragAndDrop<Placement>({
+    getItems(_, items) {
+      return items.map((item) => {
+        return {
+          placement: JSON.stringify(item),
+          'text/plain': item.id,
+        };
+      });
+    },
+    acceptedDragTypes: ['placement'],
+    getDropOperation: () => 'move',
+
+    async onInsert(e) {
+      const processedItems = await Promise.all(
+        e.items
+          .filter(isTextDropItem)
+          .map(async (item) => JSON.parse(await item.getText('placement')))
+      );
+
+      const sourceItem = processedItems[0];
+      const targetId = e.target.key as string;
+      const dropBefore = e.target.dropPosition === 'before';
+
+      const newPlacements = reorderArray(
+        allPlacements,
+        sourceItem.id,
+        targetId,
+        dropBefore,
+        'term'
+      );
+
+      setPlacements(newPlacements);
+    },
+
+    async onRootDrop(e) {
+      const processedItems = await Promise.all(
+        e.items
+          .filter(isTextDropItem)
+          .map(async (item) => JSON.parse(await item.getText('placement')))
+      );
+
+      const sourceItem = processedItems[0];
+
+      const newPlacements = appendToSection(allPlacements, sourceItem.id, term.id, 'term');
+
+      setPlacements(newPlacements);
+    },
+
+    onReorder(e) {
+      const sourceId = Array.from(e.keys)[0] as string;
+      const targetId = e.target.key as string;
+      const dropBefore = e.target.dropPosition === 'before';
+
+      const newPlacements = reorderArray(allPlacements, sourceId, targetId, dropBefore, 'term');
+
+      setPlacements(newPlacements);
+    },
+
+    renderDropIndicator: (target) => (
+      <DropIndicator
+        target={target}
+        className={({ isDropTarget }) =>
+          clsx(styles.dropIndicator, isDropTarget ? styles.active : '')
+        }
+      />
+    ),
+
+    renderDragPreview: (items) => {
+      const firstPlacement = JSON.parse(items[0].placement) as Placement;
+      const displayName =
+        firstPlacement.type === 'COURSE'
+          ? `${courses[firstPlacement.course].code}: ${courses[firstPlacement.course].name}`
+          : 'Elective slot';
+      return (
+        <div className={styles.dragPreview}>
+          {displayName} <span className={styles.dragPreviewItemCount}>{items.length}</span>
+        </div>
+      );
+    },
+  });
+
+  return (
+    <div key={term.id} className={styles.term}>
+      <Box px={1}>
+        <Group justify="center">
+          <Text tone="dimmed" weight="medium" size="xs">
+            {term.name}
+          </Text>
+        </Group>
+      </Box>
+
+      <GridList
+        items={placements}
+        selectionMode="single"
+        aria-label={term.name}
+        dragAndDropHooks={dragAndDropHooks}
+        renderEmptyState={({ isDropTarget }) => {
+          if (Object.keys(courses).length === 0) return;
+
+          return (
+            <div
+              className={clsx(styles.emptyGridListState, isDropTarget ? styles.isDropTarget : '')}
+            >
+              <CopyPlus size={14} />
+
+              <p>Drop courses here</p>
+            </div>
+          );
+        }}
+        className={styles.gridList}
+      >
+        {(placement) => {
+          if (placement.type === 'COURSE') {
+            const course = courses[placement.course];
+            return (
+              <GridListItem
+                id={placement.id}
+                key={placement.id}
+                textValue={course.name}
+                className={styles.gridListItem}
+              >
+                <CoursePlacement course={course} placement={placement} />
+              </GridListItem>
+            );
+          }
+          return null;
+        }}
+      </GridList>
+
+      <AddCoursePlacement term={term} />
+    </div>
+  );
+}
+
+type AddCourseCardProps = {
+  term: Term;
+};
+
+function AddCoursePlacement({ term }: AddCourseCardProps) {
+  const { setCourses } = useCourses();
+  const { setPlacements } = usePlacements();
+
+  const addCourseData: Course = {
+    id: '',
+    code: '',
+    name: '',
+    creditHours: 3,
+    ects: 0,
+    lectureHours: 0,
+    practicalHours: 0,
+    type: 'F2F',
+    prerequisites: [],
+    corequisites: [],
+  };
+
+  const disclosure = useDisclosure();
+  const form = useForm(addCourseData);
+
+  const { keyboardProps } = useKeyboard({
+    onKeyDown: (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        const formEl = e.currentTarget.querySelector('form');
+        if (formEl) formEl.requestSubmit();
+      }
+      if (e.key === 'Escape') {
+        disclosure.close();
+      }
+    },
+  });
+
+  const onSubmit = handleSubmit<Course>(() => {
+    const course: Course = {
+      ...form.data,
+      id: crypto.randomUUID(),
+      code: form.data.code.toUpperCase(),
+    };
+
+    setPlacements((placements) => [
+      ...placements,
+      { id: crypto.randomUUID(), type: 'COURSE', course: course.id, span: 1, term: term.id },
+    ]);
+
+    setCourses((courses) => ({
+      ...courses,
+      [course.id]: course,
+    }));
+
+    form.reset();
+    disclosure.close();
+  });
+
+  return (
+    <>
+      {!disclosure.isOpen && (
+        <UnstyledButton autoFocus className={styles.addCourseButton} onPress={disclosure.open}>
+          Add course <Plus size={12} />
+        </UnstyledButton>
+      )}
+
+      {disclosure.isOpen && (
+        <div {...keyboardProps}>
+          <CoursePlacementForm onSubmit={onSubmit} form={form} onClose={disclosure.close} />
+        </div>
+      )}
+    </>
+  );
+}

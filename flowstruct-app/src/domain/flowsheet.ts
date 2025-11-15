@@ -1,5 +1,3 @@
-import type { Course } from './course';
-
 export type Section = {
   id: string;
   level: 'University' | 'School' | 'Program';
@@ -37,10 +35,6 @@ export type Flowsheet = {
   program: string;
   year: number;
   name: string;
-  sections: Section[];
-  terms: Term[];
-  placements: Placement[];
-  courses: Record<string, Course>;
 };
 
 export type Term = {

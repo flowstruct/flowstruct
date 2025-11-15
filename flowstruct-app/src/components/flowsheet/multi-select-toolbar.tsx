@@ -1,29 +1,26 @@
-import styles from './multi-select-toolbar.module.css';
 import { TagIcon, Trash, X } from 'lucide-react';
 import React from 'react';
-import { Popover } from '../ui/Popover.tsx';
+import { useFlowsheetGrid } from '../../hooks/flowsheet-grid.hook.tsx';
 import Group from '../layout/group.tsx';
 import { Button } from '../ui/Button.tsx';
 import { Divider } from '../ui/divider.tsx';
+import { Popover } from '../ui/Popover.tsx';
 import { Tooltip, TooltipTrigger } from '../ui/Tooltip.tsx';
-import { useFlowsheetGrid } from '../../hooks/flowsheet-grid.hook.tsx';
-import { useFlowsheet } from '../../hooks/flowsheet.hook.tsx';
-import { deletePlacements } from '../../domain/placement.ts';
+import styles from './multi-select-toolbar.module.css';
 
 export function MultiSelectToolbar() {
-  const { setFlowsheet } = useFlowsheet();
   const { selectedPlacements, focusedPlacement, clearSelectedPlacements, clearFocusedPlacement } =
     useFlowsheetGrid();
 
   const triggerRef = React.useRef<HTMLDivElement | null>(null);
 
   const handleDeletePlacements = () => {
-    setFlowsheet((flowsheet) =>
-      deletePlacements({
-        flowsheet,
-        placementIds: Array.from(selectedPlacements),
-      })
-    );
+    // setFlowsheet((flowsheet) =>
+    //   deletePlacements({
+    //     flowsheet,
+    //     placementIds: Array.from(selectedPlacements),
+    //   })
+    // );
 
     if (focusedPlacement && selectedPlacements.has(focusedPlacement)) {
       clearFocusedPlacement();

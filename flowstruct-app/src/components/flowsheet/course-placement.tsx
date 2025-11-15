@@ -1,4 +1,3 @@
-import { useSortable } from '@dnd-kit/react/sortable';
 import clsx from 'clsx';
 import { ChevronDown, GripHorizontal, Pencil, Plus, Scaling, TagIcon, Trash } from 'lucide-react';
 import React from 'react';
@@ -6,6 +5,7 @@ import { useFocusRing, useHover, useKeyboard, usePress } from 'react-aria';
 import { type Course, editCourse } from '../../domain/course.ts';
 import type { Placement } from '../../domain/flowsheet.ts';
 import { deletePlacements } from '../../domain/placement.ts';
+import { useCourses } from '../../hooks/courses.hook.tsx';
 import { useFlowsheetGrid } from '../../hooks/flowsheet-grid.hook.tsx';
 import { useFlowsheet } from '../../hooks/flowsheet.hook.tsx';
 import { useForm } from '../../hooks/form.hook.ts';
@@ -24,17 +24,15 @@ import styles from './course-placement.module.css';
 type CourseCardProps = {
   course: Course;
   placement: Placement;
-  index: number;
 };
 
-export function CoursePlacement({ course, placement, index, ...props }: CourseCardProps) {
+export function CoursePlacement({ course, placement, ...props }: CourseCardProps) {
   const {
     isFocusedPlacement,
     toggleSelectedPlacement,
     toggleFocusPlacement,
     isSelectedPlacement,
     clearFocusedPlacement,
-    movingPlacement,
   } = useFlowsheetGrid();
 
   const { pressProps, isPressed } = usePress({
@@ -47,82 +45,67 @@ export function CoursePlacement({ course, placement, index, ...props }: CourseCa
   const { hoverProps, isHovered } = useHover(props);
   const { focusProps, isFocusVisible } = useFocusRing(props);
 
-  const { ref } = useSortable({
-    id: placement.id,
-    data: { placement },
-    index,
-    group: placement.term,
-    collisionPriority: movingPlacement?.term === placement.term ? 3 : 1,
-  });
-
-  const [editMode, setEditMode] = React.useState<boolean>(false);
   const triggerMenuRef = React.useRef<HTMLDivElement | null>(null);
-
-  const toggleEditCourse = () => setEditMode((prev) => !prev);
 
   return (
     <>
-      {editMode ? (
-        <EditCoursePlacement course={course} toggleEditCourse={toggleEditCourse} />
-      ) : (
-        <div ref={ref}>
-          <div
-            className={clsx(
-              styles.card,
-              isFocusedPlacement(placement.id) && styles.focused,
-              isSelectedPlacement(placement.id) && styles.selected
-            )}
-            {...pressProps}
-            {...focusProps}
-            {...hoverProps}
-            data-hovered={isHovered || undefined}
-            data-focused={isFocusVisible || undefined}
-            data-pressed={isPressed || undefined}
-            role="button"
-            tabIndex={0}
-          >
-            <Stack fill gap={1}>
-              <Stack fill>
-                <Group justify="between">
-                  <Text as="h3" size="xs" tone="dimmed" weight="medium" className={styles.code}>
-                    {course.code}
-                  </Text>
-
-                  <Button
-                    ref={triggerMenuRef}
-                    shape="icon"
-                    size="none"
-                    variant="transparent"
-                    onPress={() => toggleFocusPlacement(placement.id)}
-                  >
-                    <ChevronDown
-                      color="gray"
-                      style={{
-                        rotate: isFocusedPlacement(placement.id) ? '180deg' : '',
-                        transition: '250ms ease-in-out',
-                      }}
-                      size={15}
-                    />
-                  </Button>
-                </Group>
-
-                <Text size="xs">{course.name}</Text>
-              </Stack>
-
+      <div>
+        <div
+          className={clsx(
+            styles.card,
+            isFocusedPlacement(placement.id) && styles.focused,
+            isSelectedPlacement(placement.id) && styles.selected
+          )}
+          {...pressProps}
+          {...focusProps}
+          {...hoverProps}
+          data-hovered={isHovered || undefined}
+          data-focused={isFocusVisible || undefined}
+          data-pressed={isPressed || undefined}
+          role="button"
+          tabIndex={0}
+        >
+          <Stack fill gap={1}>
+            <Stack fill>
               <Group justify="between">
-                <div>
-                  <GripHorizontal color="gray" size={15} />
-                </div>
+                <Text as="h3" size="xs" tone="dimmed" weight="medium" className={styles.code}>
+                  {course.code}
+                </Text>
 
-                <Checkbox
-                  onChange={() => toggleSelectedPlacement(placement.id)}
-                  isSelected={isSelectedPlacement(placement.id)}
-                />
+                <Button
+                  ref={triggerMenuRef}
+                  shape="icon"
+                  size="none"
+                  variant="transparent"
+                  onPress={() => toggleFocusPlacement(placement.id)}
+                >
+                  <ChevronDown
+                    color="gray"
+                    style={{
+                      rotate: isFocusedPlacement(placement.id) ? '180deg' : '',
+                      transition: '250ms ease-in-out',
+                    }}
+                    size={15}
+                  />
+                </Button>
               </Group>
+
+              <Text size="xs">{course.name}</Text>
             </Stack>
-          </div>
+
+            <Group justify="between">
+              <Button slot="drag" variant="transparent" size="none">
+                <GripHorizontal color="gray" size={15} />
+              </Button>
+
+              <Checkbox
+                onChange={() => toggleSelectedPlacement(placement.id)}
+                isSelected={isSelectedPlacement(placement.id)}
+              />
+            </Group>
+          </Stack>
         </div>
-      )}
+      </div>
 
       <Popover
         triggerRef={triggerMenuRef}
@@ -133,7 +116,7 @@ export function CoursePlacement({ course, placement, index, ...props }: CourseCa
         }
         isOpen={isFocusedPlacement(placement.id)}
       >
-        <CoursePlacementToolbar placement={placement} toggleEditCourse={toggleEditCourse} />
+        <CoursePlacementToolbar placement={placement} />
       </Popover>
     </>
   );
@@ -141,10 +124,9 @@ export function CoursePlacement({ course, placement, index, ...props }: CourseCa
 
 type CoursePlacementToolbarProps = {
   placement: Placement;
-  toggleEditCourse: () => void;
 };
 
-function CoursePlacementToolbar({ placement, toggleEditCourse }: CoursePlacementToolbarProps) {
+function CoursePlacementToolbar({ placement }: CoursePlacementToolbarProps) {
   const { setFlowsheet } = useFlowsheet();
   const { clearFocusedPlacement, selectedPlacements, toggleSelectedPlacement } = useFlowsheetGrid();
 
@@ -157,7 +139,6 @@ function CoursePlacementToolbar({ placement, toggleEditCourse }: CoursePlacement
   };
 
   const handleEditCourse = () => {
-    toggleEditCourse();
     clearFocusedPlacement();
   };
 
@@ -227,8 +208,8 @@ type CoursePlacementPreviewProps = {
 };
 
 export function CoursePlacementPreview({ courseId }: CoursePlacementPreviewProps) {
-  const { flowsheet } = useFlowsheet();
-  const course = flowsheet.courses[courseId];
+  const { courses } = useCourses();
+  const course = courses[courseId];
 
   if (!course) {
     return null;

@@ -13,13 +13,7 @@ type FlowsheetGridContextValues = {
   toggleFocusPlacement: (placementId: string) => void;
   isFocusedPlacement: (placementId: string) => boolean;
   clearFocusedPlacement: () => void;
-  movePlacementHandlers: {
-    onMoveStart: (placement: Placement) => void;
-    onMoveEnd: () => void;
-    onMoveOverTerm: (termId: string) => void;
-  };
-  movingPlacement: Placement | null;
-  movedOverTerm: string | null;
+  movingPlacementRef: React.RefObject<Placement | null>;
 };
 
 const FlowsheetGridContext = React.createContext<FlowsheetGridContextValues | undefined>(undefined);
@@ -32,8 +26,8 @@ export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) 
   const [focusedPlacement, setFocusedPlacement] = React.useState<string | null>(null);
   const [selectedPlacements, setSelectedPlacements] = React.useState<Set<string>>(new Set());
   const [validTerms, setValidTerms] = React.useState<Set<number>>(new Set());
-  const [movingPlacement, setMovingPlacement] = React.useState<Placement | null>(null);
-  const [movedOverTerm, setMovedOverTerm] = React.useState<string | null>(null);
+  const movingPlacementRef = React.useRef<Placement | null>(null);
+
   const toggleFocusPlacement = (placementId: string) => {
     if (placementId === focusedPlacement) {
       setFocusedPlacement(null);
@@ -75,18 +69,6 @@ export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) 
 
   const isSelectedPlacement = (placementId: string) => selectedPlacements.has(placementId);
 
-  const movePlacementHandlers = {
-    onMoveStart: (placement: Placement) => {
-      setMovingPlacement(placement);
-    },
-    onMoveEnd: () => {
-      setMovingPlacement(null);
-    },
-    onMoveOverTerm: (termId: string) => {
-      setMovedOverTerm(termId);
-    },
-  };
-
   return (
     <FlowsheetGridContext.Provider
       value={{
@@ -101,9 +83,7 @@ export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) 
         toggleFocusPlacement,
         isFocusedPlacement,
         clearFocusedPlacement,
-        movePlacementHandlers,
-        movingPlacement,
-        movedOverTerm,
+        movingPlacementRef,
       }}
     >
       {children}
