@@ -1,24 +1,21 @@
 import clsx from 'clsx';
-import { ChevronDown, GripHorizontal, Pencil, Plus, Scaling, TagIcon, Trash } from 'lucide-react';
-import React from 'react';
-import { useFocusRing, useHover, useKeyboard, usePress } from 'react-aria';
-import { type Course, editCourse } from '../../domain/course.ts';
+import { EllipsisVertical, GripHorizontal, Pencil, Plus, Trash } from 'lucide-react';
+import { useFocusRing, useHover, usePress } from 'react-aria';
+import { type Course } from '../../domain/course.ts';
 import type { Placement } from '../../domain/flowsheet.ts';
-import { deletePlacements } from '../../domain/placement.ts';
-import { useCourses } from '../../hooks/courses.hook.tsx';
+import { useDisclosure, type DisclosureReturnResult } from '../../hooks/disclosure.hook.ts';
 import { useFlowsheetGrid } from '../../hooks/flowsheet-grid.hook.tsx';
-import { useFlowsheet } from '../../hooks/flowsheet.hook.tsx';
 import { useForm } from '../../hooks/form.hook.ts';
 import { handleSubmit } from '../../utils/handle-submit.ts';
-import { handleFormKeyboardActions } from '../../utils/handleFormKeyboardActions.ts';
 import Group from '../layout/group.tsx';
 import { Stack } from '../layout/stack.tsx';
 import { Text } from '../layout/text.tsx';
 import { Button } from '../ui/Button.tsx';
 import { Checkbox } from '../ui/Checkbox.tsx';
+import { Dialog, DialogTrigger } from '../ui/Dialog.tsx';
 import { Menu, MenuItem } from '../ui/Menu.tsx';
+import { Modal } from '../ui/Modal.tsx';
 import { Popover } from '../ui/Popover.tsx';
-import { CoursePlacementForm } from './course-placement-form.tsx';
 import styles from './course-placement.module.css';
 
 type CourseCardProps = {
@@ -27,13 +24,7 @@ type CourseCardProps = {
 };
 
 export function CoursePlacement({ course, placement, ...props }: CourseCardProps) {
-  const {
-    isFocusedPlacement,
-    toggleSelectedPlacement,
-    toggleFocusPlacement,
-    isSelectedPlacement,
-    clearFocusedPlacement,
-  } = useFlowsheetGrid();
+  const { toggleSelectedPlacement, isSelectedPlacement } = useFlowsheetGrid();
 
   const { pressProps, isPressed } = usePress({
     onPress: (e) => {
@@ -45,17 +36,11 @@ export function CoursePlacement({ course, placement, ...props }: CourseCardProps
   const { hoverProps, isHovered } = useHover(props);
   const { focusProps, isFocusVisible } = useFocusRing(props);
 
-  const triggerMenuRef = React.useRef<HTMLDivElement | null>(null);
-
   return (
     <>
       <div>
         <div
-          className={clsx(
-            styles.card,
-            isFocusedPlacement(placement.id) && styles.focused,
-            isSelectedPlacement(placement.id) && styles.selected
-          )}
+          className={clsx(styles.card, isSelectedPlacement(placement.id) && styles.selected)}
           {...pressProps}
           {...focusProps}
           {...hoverProps}
@@ -72,22 +57,7 @@ export function CoursePlacement({ course, placement, ...props }: CourseCardProps
                   {course.code}
                 </Text>
 
-                <Button
-                  ref={triggerMenuRef}
-                  shape="icon"
-                  size="none"
-                  variant="transparent"
-                  onPress={() => toggleFocusPlacement(placement.id)}
-                >
-                  <ChevronDown
-                    color="gray"
-                    style={{
-                      rotate: isFocusedPlacement(placement.id) ? '180deg' : '',
-                      transition: '250ms ease-in-out',
-                    }}
-                    size={15}
-                  />
-                </Button>
+                <CoursePlacementMenu placement={placement} course={course} />
               </Group>
 
               <Text size="xs">{course.name}</Text>
@@ -106,136 +76,83 @@ export function CoursePlacement({ course, placement, ...props }: CourseCardProps
           </Stack>
         </div>
       </div>
-
-      <Popover
-        triggerRef={triggerMenuRef}
-        isNonModal
-        placement="top"
-        onOpenChange={(isOpen) =>
-          isOpen ? clearFocusedPlacement() : toggleFocusPlacement(placement.id)
-        }
-        isOpen={isFocusedPlacement(placement.id)}
-      >
-        <CoursePlacementToolbar placement={placement} />
-      </Popover>
     </>
   );
 }
 
-type CoursePlacementToolbarProps = {
+type CoursePlacementMenuProps = {
   placement: Placement;
+  course: Course;
 };
 
-function CoursePlacementToolbar({ placement }: CoursePlacementToolbarProps) {
-  const { setFlowsheet } = useFlowsheet();
-  const { clearFocusedPlacement, selectedPlacements, toggleSelectedPlacement } = useFlowsheetGrid();
+function CoursePlacementMenu({ placement, course }: CoursePlacementMenuProps) {
+  const { toggleFocusPlacement } = useFlowsheetGrid();
 
-  const handleDeletePlacement = () => {
-    setFlowsheet((flowsheet) => deletePlacements({ flowsheet, placementIds: [placement.id] }));
-    clearFocusedPlacement();
-    if (selectedPlacements.has(placement.id)) {
-      toggleSelectedPlacement(placement.id);
-    }
-  };
-
-  const handleEditCourse = () => {
-    clearFocusedPlacement();
-  };
+  const editModalDisclosure = useDisclosure();
 
   return (
     <>
-      <Menu>
-        <MenuItem>
-          <Plus size={14} /> Prerequisite
-        </MenuItem>
+      <DialogTrigger>
+        <Button
+          shape="icon"
+          size="none"
+          variant="transparent"
+          onPress={() => toggleFocusPlacement(placement.id)}
+        >
+          <EllipsisVertical color="gray" size={15} />
+        </Button>
 
-        <MenuItem>
-          <Plus size={14} /> Corequisite
-        </MenuItem>
+        <Popover isNonModal placement="top">
+          <Menu>
+            <MenuItem>
+              <Plus size={14} /> Prerequisite
+            </MenuItem>
 
-        <MenuItem>
-          <TagIcon size={14} /> Assign section
-        </MenuItem>
+            <MenuItem>
+              <Plus size={14} /> Corequisite
+            </MenuItem>
 
-        <MenuItem>
-          <Scaling size={14} /> Resize
-        </MenuItem>
+            <MenuItem onPress={editModalDisclosure.open}>
+              <Pencil size={14} /> Edit
+            </MenuItem>
 
-        <MenuItem onPress={handleEditCourse}>
-          <Pencil size={14} /> Edit
-        </MenuItem>
+            <MenuItem>
+              <Trash color="red" size={14} /> Remove
+            </MenuItem>
+          </Menu>
+        </Popover>
+      </DialogTrigger>
 
-        <MenuItem onPress={handleDeletePlacement}>
-          <Trash color="red" size={14} /> Remove
-        </MenuItem>
-      </Menu>
+      <Modal
+        isOpen={editModalDisclosure.isOpen}
+        onOpenChange={editModalDisclosure.setIsOpen}
+        size="lg"
+      >
+        <Dialog>
+          <EditCourseForm course={course} disclosure={editModalDisclosure} />
+        </Dialog>
+      </Modal>
     </>
   );
 }
 
-type EditCoursePlacementProps = {
+type EditCourseFormProps = {
   course: Course;
-  toggleEditCourse: () => void;
+  disclosure: DisclosureReturnResult;
 };
 
-function EditCoursePlacement({ course, toggleEditCourse }: EditCoursePlacementProps) {
-  const { setFlowsheet } = useFlowsheet();
+function EditCourseForm({ course, disclosure }: EditCourseFormProps) {
   const form = useForm(course);
-
-  const { keyboardProps } = useKeyboard({
-    onKeyDown: (e) => handleFormKeyboardActions(e, toggleEditCourse),
-  });
 
   const onSubmit = handleSubmit<Course>(() => {
     const updatedCourse: Course = {
       ...form.data,
       code: form.data.code.toUpperCase(),
     };
-    setFlowsheet((flowsheet) => editCourse({ flowsheet, updatedCourse }));
+
     form.reset();
-    toggleEditCourse();
+    disclosure.close();
   });
 
-  return (
-    <div {...keyboardProps}>
-      <CoursePlacementForm onSubmit={onSubmit} form={form} onClose={toggleEditCourse} />
-    </div>
-  );
-}
-
-type CoursePlacementPreviewProps = {
-  courseId: string;
-};
-
-export function CoursePlacementPreview({ courseId }: CoursePlacementPreviewProps) {
-  const { courses } = useCourses();
-  const course = courses[courseId];
-
-  if (!course) {
-    return null;
-  }
-
-  return (
-    <div className={styles.card}>
-      <Stack fill gap={1}>
-        <Stack fill>
-          <Group justify="between">
-            <Text as="h3" size="xs" tone="dimmed" weight="medium" className={styles.code}>
-              {course.code}
-            </Text>
-
-            <ChevronDown size={15} />
-          </Group>
-
-          <Text size="xs">{course.name}</Text>
-        </Stack>
-
-        <Group justify="between">
-          <GripHorizontal color="gray" size={15} />
-
-          <Checkbox />
-        </Group>
-      </Stack>
-    </div>
-  );
+  return <div>yes</div>;
 }

@@ -1,7 +1,7 @@
 'use client';
 import {
   Modal as RACModal,
-  ModalOverlayProps as RACModalOverlayProps,
+  type ModalOverlayProps as RACModalOverlayProps,
 } from 'react-aria-components';
 import './Modal.css';
 
