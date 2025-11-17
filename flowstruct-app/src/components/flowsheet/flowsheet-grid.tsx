@@ -1,6 +1,5 @@
 import clsx from 'clsx';
 import { CopyPlus, Grid2X2Plus, Plus } from 'lucide-react';
-import { useRef } from 'react';
 import { isTextDropItem, useKeyboard } from 'react-aria';
 import { DropIndicator, GridList, GridListItem, useDragAndDrop } from 'react-aria-components';
 import { createPortal } from 'react-dom';
@@ -12,6 +11,7 @@ import { useFlowsheetGrid } from '../../hooks/flowsheet-grid.hook';
 import { useForm } from '../../hooks/form.hook';
 import { usePlacements } from '../../hooks/placements.hook';
 import { useTerms } from '../../hooks/terms.hook';
+import { appendToSection, reorderArray } from '../../utils/array.ts';
 import { handleSubmit } from '../../utils/handle-submit';
 import { Box } from '../layout/box';
 import Group from '../layout/group';
@@ -19,18 +19,15 @@ import { Text } from '../layout/text.tsx';
 import { Button } from '../ui/Button';
 import { Tooltip, TooltipTrigger } from '../ui/Tooltip';
 import { UnstyledButton } from '../ui/UnstyledButton';
-import { CoursePlacement } from './course-placement/course-placement.tsx';
 import { CoursePlacementForm } from './course-placement/course-placement-form.tsx';
+import { CoursePlacement } from './course-placement/course-placement.tsx';
 import styles from './flowsheet-grid.module.css';
 import { MultiSelectToolbar } from './multi-select-toolbar.tsx';
-import { appendToSection, reorderArray } from '../../utils/array.ts';
 
 export function FlowsheetGrid() {
-  const { movingPlacementRef, clearSelectedPlacements, clearFocusedPlacement } = useFlowsheetGrid();
+  const { clearSelectedPlacements, clearFocusedPlacement } = useFlowsheetGrid();
   const { terms, setTerms } = useTerms();
-  const { placements, setPlacements } = usePlacements();
-
-  const dragRef = useRef(placements);
+  const { placements } = usePlacements();
 
   const { keyboardProps } = useKeyboard({
     onKeyDown: (e) => {
@@ -180,6 +177,7 @@ function Term({ term, placements }: TermProps) {
         selectionMode="single"
         aria-label={term.name}
         dragAndDropHooks={dragAndDropHooks}
+        dependencies={[courses]}
         renderEmptyState={({ isDropTarget }) => {
           if (Object.keys(courses).length === 0) return;
 

@@ -3,8 +3,10 @@ import type { Course } from '../domain/course.ts';
 import { useLocalStorage } from './local-storage.hook.ts';
 
 type CoursesContextValues = {
-  courses: Course[];
-  setCourses: (newValue: Course[] | ((prev: Course[]) => Course[])) => void;
+  courses: Record<string, Course>;
+  setCourses: (
+    newValue: Record<string, Course> | ((prev: Record<string, Course>) => Record<string, Course>)
+  ) => void;
 };
 
 const CoursesContext = React.createContext<CoursesContextValues | undefined>(undefined);
@@ -16,7 +18,7 @@ type CoursesProviderProps = {
 };
 
 export function CoursesProvider({ children }: CoursesProviderProps) {
-  const [courses, setCourses] = useLocalStorage<Course[]>(STORAGE_KEY, []);
+  const [courses, setCourses] = useLocalStorage<Record<string, Course>>(STORAGE_KEY, {});
 
   return (
     <CoursesContext.Provider value={{ courses, setCourses }}>{children}</CoursesContext.Provider>

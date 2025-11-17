@@ -22,6 +22,7 @@ import { Select, SelectItem } from '../../ui/Select.tsx';
 import { TextField } from '../../ui/TextField';
 import { Divider } from '../../ui/divider.tsx';
 import styles from './edit-course-placement.module.css';
+import { useCourses } from '../../../hooks/courses.hook.tsx';
 
 type EditCourseFormProps = {
   course: Course;
@@ -29,11 +30,19 @@ type EditCourseFormProps = {
 };
 
 export function EditCourseForm({ course, disclosure }: EditCourseFormProps) {
+  const { setCourses } = useCourses();
+
   const onSubmit = handleSubmit<Course>((data) => {
     const updatedCourse: Course = {
       ...data,
       code: data.code.toUpperCase(),
     };
+
+    setCourses((courses) => {
+      const updated = { ...courses };
+      updated[course.id] = updatedCourse;
+      return updated;
+    });
 
     disclosure.close();
   });
@@ -41,7 +50,7 @@ export function EditCourseForm({ course, disclosure }: EditCourseFormProps) {
   return (
     <Form onSubmit={onSubmit}>
       <Stack gap={4}>
-        <Group justify="between">
+        <Group slot="title" justify="between">
           <div className={styles.header}>
             <BookOpen size={14} />
             Edit course info
@@ -78,7 +87,7 @@ export function EditCourseForm({ course, disclosure }: EditCourseFormProps) {
         <Divider />
 
         <Group justify="end">
-          <Button className={styles.saveChangesButton}>
+          <Button type="submit" className={styles.saveChangesButton}>
             <Pencil size={15} /> Save changes
           </Button>
         </Group>
