@@ -16,6 +16,9 @@ import { Modal } from '../../ui/Modal.tsx';
 import { Popover } from '../../ui/Popover.tsx';
 import styles from './course-placement.module.css';
 import { EditCourseForm } from './edit-course-placement-form.tsx';
+import { usePlacements } from '../../../hooks/placements.hook.tsx';
+import { useCourses } from '../../../hooks/courses.hook.tsx';
+import { deletePlacements } from '../../../domain/placement.ts';
 
 type CoursePlacementProps = {
   course: Course;
@@ -56,7 +59,7 @@ export function CoursePlacement({ course, placement, ...props }: CoursePlacement
                   {course.code}
                 </Text>
 
-                <CoursePlacementMenu course={course} />
+                <CoursePlacementMenu course={course} placement={placement} />
               </Group>
 
               <Text size="xs">{course.name}</Text>
@@ -81,10 +84,24 @@ export function CoursePlacement({ course, placement, ...props }: CoursePlacement
 
 type CoursePlacementMenuProps = {
   course: Course;
+  placement: Placement;
 };
 
-function CoursePlacementMenu({ course }: CoursePlacementMenuProps) {
+function CoursePlacementMenu({ course, placement }: CoursePlacementMenuProps) {
   const editModalDisclosure = useDisclosure();
+  const { placements, setPlacements } = usePlacements();
+  const { courses, setCourses } = useCourses();
+
+  const handleDeletePlacement = () => {
+    const deletePlacementResult = deletePlacements({
+      courses,
+      placements,
+      placementIds: [placement.id],
+    });
+
+    setPlacements(deletePlacementResult.placements);
+    setCourses(deletePlacementResult.courses);
+  };
 
   return (
     <>
@@ -107,7 +124,7 @@ function CoursePlacementMenu({ course }: CoursePlacementMenuProps) {
               <Pencil size={14} /> Edit
             </MenuItem>
 
-            <MenuItem>
+            <MenuItem onPress={handleDeletePlacement}>
               <Trash color="red" size={14} /> Remove
             </MenuItem>
           </Menu>

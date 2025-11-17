@@ -1,35 +1,33 @@
-import type { Flowsheet } from './flowsheet.ts';
+import type { Course } from './course.ts';
+import type { Placement } from './flowsheet.ts';
 
 type DeletePlacementsArgs = {
-  flowsheet: Flowsheet;
+  courses: Record<string, Course>;
+  placements: Placement[];
   placementIds: string[];
 };
 
 export const deletePlacements = ({
   courses,
-  terms,
+  placements,
   placementIds,
-}: DeletePlacementsArgs): Flowsheet => {
+}: DeletePlacementsArgs): Pick<DeletePlacementsArgs, 'courses' | 'placements'> => {
   const placementIdsSet = new Set(placementIds);
 
   const updatedCourses = { ...courses };
 
-  const updatedTerms = terms.map((term) => {
-    const updatedPlacements = term.placements.filter((p) => {
-      if (!placementIdsSet.has(p.id)) return true;
+  const updatedPlacements = placements.filter((p) => {
+    if (!placementIdsSet.has(p.id)) return true;
 
-      if (p.type === 'COURSE') {
-        delete updatedCourses[p.course];
-      }
-      // handle elective slot deletion
-      return false;
-    });
-
-    return { ...term, placements: updatedPlacements };
+    if (p.type === 'COURSE') {
+      delete updatedCourses[p.course];
+    }
+    // handle elective slot deletion
+    return false;
   });
 
   return {
-    terms: updatedTerms,
     courses: updatedCourses,
+    placements: updatedPlacements,
   };
 };

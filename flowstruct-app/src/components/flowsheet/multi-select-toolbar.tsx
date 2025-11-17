@@ -7,26 +7,33 @@ import { Divider } from '../ui/divider.tsx';
 import { Popover } from '../ui/Popover.tsx';
 import { Tooltip, TooltipTrigger } from '../ui/Tooltip.tsx';
 import styles from './multi-select-toolbar.module.css';
+import { deletePlacements } from '../../domain/placement.ts';
+import { usePlacements } from '../../hooks/placements.hook.tsx';
+import { useCourses } from '../../hooks/courses.hook.tsx';
 
 export function MultiSelectToolbar() {
   const { selectedPlacements, focusedPlacement, clearSelectedPlacements, clearFocusedPlacement } =
     useFlowsheetGrid();
 
+  const { placements, setPlacements } = usePlacements();
+  const { courses, setCourses } = useCourses();
+
   const triggerRef = React.useRef<HTMLDivElement | null>(null);
 
   const handleDeletePlacements = () => {
-    // setFlowsheet((flowsheet) =>
-    //   deletePlacements({
-    //     flowsheet,
-    //     placementIds: Array.from(selectedPlacements),
-    //   })
-    // );
+    const deletePlacementsResult = deletePlacements({
+      courses,
+      placements,
+      placementIds: Array.from(selectedPlacements),
+    });
 
     if (focusedPlacement && selectedPlacements.has(focusedPlacement)) {
       clearFocusedPlacement();
     }
 
     clearSelectedPlacements();
+    setPlacements(deletePlacementsResult.placements);
+    setCourses(deletePlacementsResult.courses);
   };
 
   return (
