@@ -68,8 +68,16 @@ export function FlowsheetGrid() {
       </Box>
 
       {createPortal(<MultiSelectToolbar />, document.body)}
+
+      <Diagnostic />
     </>
   );
+}
+
+function Diagnostic() {
+  const result = useFlowsheetGrid();
+
+  return <pre>{JSON.stringify(result, null, 2)}</pre>;
 }
 
 type TermProps = {

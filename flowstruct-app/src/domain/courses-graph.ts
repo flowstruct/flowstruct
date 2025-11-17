@@ -1,4 +1,4 @@
-import type { Flowsheet } from './flowsheet.ts';
+import type { Course } from './course.ts';
 
 export type Requisites = {
   prerequisites: Set<string>;
@@ -11,9 +11,9 @@ const traversePrerequisites = (
   course: string,
   visited: Set<string>,
   graph: Map<string, Requisites>,
-  flowsheet: Flowsheet
+  courses: Record<string, Course>
 ) => {
-  const courseMeta = flowsheet.courses[course];
+  const courseMeta = courses[course];
   if (!courseMeta) return;
 
   const courseSequences = graph.get(course)!;
@@ -28,7 +28,7 @@ const traversePrerequisites = (
     if (!graph.has(p)) continue;
 
     if (!visited.has(p)) {
-      traversePrerequisites(p, visited, graph, flowsheet);
+      traversePrerequisites(p, visited, graph, courses);
     }
 
     const prerequisiteCourseSequences = graph.get(p)!;
@@ -72,11 +72,11 @@ const traversePostrequisites = (
   visited.add(course);
 };
 
-export const buildCoursesGraph = (flowsheet: Flowsheet): Map<string, Requisites> => {
+export const buildCoursesGraph = (courses: Record<string, Course>): Map<string, Requisites> => {
   const visitedPrerequisites = new Set<string>();
   const visitedPostrequisites = new Set<string>();
   const graph = new Map<string, Requisites>();
-  const allCourses = Object.values(flowsheet.courses);
+  const allCourses = Object.values(courses);
 
   allCourses.forEach((course) => {
     graph.set(course.id, {
@@ -89,7 +89,7 @@ export const buildCoursesGraph = (flowsheet: Flowsheet): Map<string, Requisites>
 
   allCourses.forEach((c) => {
     if (!visitedPrerequisites.has(c.id)) {
-      traversePrerequisites(c.id, visitedPrerequisites, graph, flowsheet);
+      traversePrerequisites(c.id, visitedPrerequisites, graph, courses);
     }
   });
 
@@ -101,3 +101,23 @@ export const buildCoursesGraph = (flowsheet: Flowsheet): Map<string, Requisites>
 
   return graph;
 };
+
+export type Relationship = 'SELF' | 'PREREQ' | 'PREREQSEQ' | 'COREQ' | 'POSTREQSEQ' | 'UNRELATED';
+
+export function classifyRelationship(
+  sourceId: string,
+  targetId: string,
+  graph: Map<string, Requisites>
+): Relationship {
+  if (sourceId === targetId) return 'SELF';
+
+  const req = graph.get(sourceId);
+  if (!req) return 'UNRELATED';
+
+  if (req.prerequisites.has(targetId)) return 'PREREQ';
+  if (req.prerequisiteSequence.has(targetId)) return 'PREREQSEQ';
+  if (req.corequisites.has(targetId)) return 'COREQ';
+  if (req.postrequisiteSequence.has(targetId)) return 'POSTREQSEQ';
+
+  return 'UNRELATED';
+}

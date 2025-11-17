@@ -1,10 +1,16 @@
 import clsx from 'clsx';
 import { EllipsisVertical, GripHorizontal, Pencil, Plus, Trash } from 'lucide-react';
-import { useFocusRing, useHover, usePress } from 'react-aria';
-import { type Course } from '../../../domain/course.ts';
+import { useFocusRing, useHover, usePress, type PressEvent } from 'react-aria';
+import { canSelectPrerequisite, type Course } from '../../../domain/course.ts';
+import { classifyRelationship, type Relationship } from '../../../domain/courses-graph.ts';
 import type { Placement } from '../../../domain/flowsheet.ts';
+import { deletePlacements } from '../../../domain/placement.ts';
+import { useCoursesGraph } from '../../../hooks/courses-graph.hook.tsx';
+import { useCourses } from '../../../hooks/courses.hook.tsx';
 import { useDisclosure } from '../../../hooks/disclosure.hook.ts';
 import { useFlowsheetGrid } from '../../../hooks/flowsheet-grid.hook.tsx';
+import { usePlacements } from '../../../hooks/placements.hook.tsx';
+import { useTerms } from '../../../hooks/terms.hook.tsx';
 import Group from '../../layout/group.tsx';
 import { Stack } from '../../layout/stack.tsx';
 import { Text } from '../../layout/text.tsx';
@@ -16,9 +22,6 @@ import { Modal } from '../../ui/Modal.tsx';
 import { Popover } from '../../ui/Popover.tsx';
 import styles from './course-placement.module.css';
 import { EditCourseForm } from './edit-course-placement-form.tsx';
-import { usePlacements } from '../../../hooks/placements.hook.tsx';
-import { useCourses } from '../../../hooks/courses.hook.tsx';
-import { deletePlacements } from '../../../domain/placement.ts';
 
 type CoursePlacementProps = {
   course: Course;
@@ -26,59 +29,97 @@ type CoursePlacementProps = {
 };
 
 export function CoursePlacement({ course, placement, ...props }: CoursePlacementProps) {
-  const { toggleSelectedPlacement, isSelectedPlacement } = useFlowsheetGrid();
+  const {
+    toggleFocusPlacement,
+    toggleLinkingMode,
+    linkingMode,
+    focusedPlacement,
+    toggleSelectedPlacement,
+    toggleSelectPrerequisite,
+    isSelectedPlacement,
+  } = useFlowsheetGrid();
+  const { coursesGraph } = useCoursesGraph();
+  const { terms } = useTerms();
+
+  const isSelectable =
+    !linkingMode ||
+    (focusedPlacement &&
+      canSelectPrerequisite({
+        source: placement,
+        target: focusedPlacement,
+        terms,
+        coursesGraph,
+      }));
+
+  const isFocused = focusedPlacement?.id === placement.id;
 
   const { pressProps, isPressed } = usePress({
     onPress: (e) => {
       if (e.shiftKey || e.ctrlKey) {
         toggleSelectedPlacement(placement.id);
+        return;
       }
+
+      if (linkingMode) {
+        if (isFocused) {
+          toggleLinkingMode(placement);
+        } else if (isSelectable) {
+          toggleSelectPrerequisite(course.id);
+        }
+
+        return;
+      }
+
+      toggleFocusPlacement(placement);
     },
   });
   const { hoverProps, isHovered } = useHover(props);
   const { focusProps, isFocusVisible } = useFocusRing(props);
 
+  const classNames = getPlacementClasses({
+    relation: classifyRelationship(course.id, placement.course, coursesGraph),
+    linkingMode,
+    isSelected: isSelectedPlacement(placement.id),
+    isSelectable: isSelectable,
+  });
+
   return (
-    <>
-      <div>
-        <div
-          className={clsx(styles.card, isSelectedPlacement(placement.id) && styles.selected)}
-          {...pressProps}
-          {...focusProps}
-          {...hoverProps}
-          data-hovered={isHovered || undefined}
-          data-focused={isFocusVisible || undefined}
-          data-pressed={isPressed || undefined}
-          role="button"
-          tabIndex={0}
-        >
-          <Stack fill gap={1}>
-            <Stack fill>
-              <Group justify="between">
-                <Text as="h3" size="xs" tone="dimmed" weight="medium" className={styles.code}>
-                  {course.code}
-                </Text>
+    <div
+      {...pressProps}
+      {...focusProps}
+      {...hoverProps}
+      data-hovered={isHovered || undefined}
+      data-focused={isFocusVisible || undefined}
+      data-pressed={isPressed || undefined}
+      role="button"
+      tabIndex={0}
+      className={clsx(classNames)}
+    >
+      <Stack fill gap={1}>
+        <Stack fill>
+          <Group justify="between">
+            <Text as="h3" size="xs" tone="dimmed" weight="medium" className={styles.code}>
+              {course.code}
+            </Text>
 
-                <CoursePlacementMenu course={course} placement={placement} />
-              </Group>
+            <CoursePlacementMenu course={course} placement={placement} />
+          </Group>
 
-              <Text size="xs">{course.name}</Text>
-            </Stack>
+          <Text size="xs">{course.name}</Text>
+        </Stack>
 
-            <Group justify="between">
-              <Button slot="drag" variant="transparent" size="none">
-                <GripHorizontal color="gray" size={15} />
-              </Button>
+        <Group justify="between">
+          <Button slot="drag" variant="transparent" size="none">
+            <GripHorizontal color="gray" size={15} />
+          </Button>
 
-              <Checkbox
-                onChange={() => toggleSelectedPlacement(placement.id)}
-                isSelected={isSelectedPlacement(placement.id)}
-              />
-            </Group>
-          </Stack>
-        </div>
-      </div>
-    </>
+          <Checkbox
+            onChange={() => toggleSelectedPlacement(placement.id)}
+            isSelected={isSelectedPlacement(placement.id)}
+          />
+        </Group>
+      </Stack>
+    </div>
   );
 }
 
@@ -88,6 +129,7 @@ type CoursePlacementMenuProps = {
 };
 
 function CoursePlacementMenu({ course, placement }: CoursePlacementMenuProps) {
+  const { toggleLinkingMode } = useFlowsheetGrid();
   const editModalDisclosure = useDisclosure();
   const { placements, setPlacements } = usePlacements();
   const { courses, setCourses } = useCourses();
@@ -103,6 +145,10 @@ function CoursePlacementMenu({ course, placement }: CoursePlacementMenuProps) {
     setCourses(deletePlacementResult.courses);
   };
 
+  const handleAddPrerequisites = () => {
+    toggleLinkingMode(placement);
+  };
+
   return (
     <>
       <DialogTrigger>
@@ -112,7 +158,7 @@ function CoursePlacementMenu({ course, placement }: CoursePlacementMenuProps) {
 
         <Popover placement="top">
           <Menu>
-            <MenuItem>
+            <MenuItem onPress={handleAddPrerequisites}>
               <Plus size={14} /> Prerequisite
             </MenuItem>
 
@@ -142,4 +188,40 @@ function CoursePlacementMenu({ course, placement }: CoursePlacementMenuProps) {
       </Modal>
     </>
   );
+}
+
+function getPlacementClasses({
+  relation,
+  linkingMode,
+  isSelected,
+  isSelectable,
+}: {
+  relation: Relationship | null;
+  linkingMode: boolean;
+  isSelected: boolean;
+  isSelectable: boolean;
+}) {
+  const classes = [styles.card];
+
+  if (isSelected && !linkingMode) {
+    classes.push(styles.selected);
+  }
+
+  // in normal mode -> highlight based on relation
+  if (!linkingMode && relation) {
+    classes.push(styles[relation]);
+  }
+
+  // in linking mode
+  if (linkingMode) {
+    if (relation === 'PREREQ') {
+      classes.push(styles.selectedPrerequisite);
+    }
+
+    if (!isSelectable) {
+      classes.push(styles.disabled);
+    }
+  }
+
+  return classes;
 }

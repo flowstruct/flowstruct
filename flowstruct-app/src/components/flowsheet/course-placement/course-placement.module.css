@@ -30,40 +30,28 @@
   }
 }
 
-.card.dragging {
-  z-index: 5;
-  border: 1px solid var(--primary-6);
+.card.selected {
   background: var(--primary-2);
+  border: 1px solid var(--primary-6);
 }
 
 .card.focused {
   border: 1px solid var(--primary-6);
 }
 
-.card.selected {
-  background: var(--primary-2);
-  border: 1px solid var(--primary-6);
+.card.PREREQ {
+  background: #fdba74;
 }
 
-.dragPreview {
-  display: flex;
-  gap: var(--space-2);
-  align-items: center;
-  margin-left: var(--space-6);
-  width: 8rem;
+.card.selectedPrerequisite {
+  background: yellow;
+}
 
-  > svg,
-  p {
-    color: var(--primary-contrast);
-  }
-
-  background: var(--primary-11);
-  border-radius: var(--radius-2);
-  box-shadow: var(--shadow-sm);
-  padding: var(--space-2) var(--space-3);
+.disabled {
+  opacity: 0.6;
+  pointer-events: none;
 }
 
 .code {
   text-transform: uppercase;
 }
-

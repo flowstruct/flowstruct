@@ -1,4 +1,5 @@
-import type { Flowsheet } from './flowsheet.ts';
+import type { Requisites } from './courses-graph.ts';
+import type { Flowsheet, Placement, Term } from './flowsheet.ts';
 
 export const CourseType = {
   F2F: 'Face-to-Face',
@@ -18,3 +19,19 @@ export type Course = {
   prerequisites: string[];
   corequisites: string[];
 };
+
+type CanSelectPrerequisiteArgs = {
+  source: Placement;
+  target: Placement;
+  terms: Term[];
+  coursesGraph: Map<string, Requisites>;
+};
+
+export function canSelectPrerequisite({
+  source,
+  target,
+  terms,
+  coursesGraph,
+}: CanSelectPrerequisiteArgs) {
+  return true;
+}

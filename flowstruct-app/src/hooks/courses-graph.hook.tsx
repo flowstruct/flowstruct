@@ -1,6 +1,6 @@
 import React from 'react';
-import { useFlowsheet } from './flowsheet.hook.tsx';
 import { buildCoursesGraph, type Requisites } from '../domain/courses-graph.ts';
+import { useCourses } from './courses.hook.tsx';
 
 type CoursesGraphContextType = {
   coursesGraph: Map<string, Requisites>;
@@ -9,9 +9,9 @@ type CoursesGraphContextType = {
 const CoursesGraphContext = React.createContext<CoursesGraphContextType | undefined>(undefined);
 
 export function CoursesGraphProvider({ children }: { children: React.ReactNode }) {
-  const { flowsheet } = useFlowsheet();
+  const { courses } = useCourses();
 
-  const coursesGraph = React.useMemo(() => buildCoursesGraph(flowsheet), [flowsheet]);
+  const coursesGraph = React.useMemo(() => buildCoursesGraph(courses), [courses]);
 
   return (
     <CoursesGraphContext.Provider value={{ coursesGraph }}>{children}</CoursesGraphContext.Provider>

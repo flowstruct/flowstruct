@@ -7,13 +7,14 @@ type FlowsheetGridContextValues = {
   isSelectedPlacement: (placementId: string) => boolean;
   clearSelectedPlacements: () => void;
   onCourseSelectionChange: (selection: Set<string>) => void;
-  validateTerms: (placementId: string) => void;
-  validTerms: Set<number>;
-  focusedPlacement: string | null;
-  toggleFocusPlacement: (placementId: string) => void;
+  focusedPlacement: Placement | null;
+  toggleFocusPlacement: (placement: Placement) => void;
   isFocusedPlacement: (placementId: string) => boolean;
   clearFocusedPlacement: () => void;
-  movingPlacementRef: React.RefObject<Placement | null>;
+  toggleLinkingMode: (placement: Placement) => void;
+  selectedPrerequisites: Set<string>;
+  linkingMode: boolean;
+  toggleSelectPrerequisite: (prerequisiteId: string) => void;
 };
 
 const FlowsheetGridContext = React.createContext<FlowsheetGridContextValues | undefined>(undefined);
@@ -23,21 +24,48 @@ type FlowsheetGridProviderProps = {
 };
 
 export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) {
-  const [focusedPlacement, setFocusedPlacement] = React.useState<string | null>(null);
+  const [focusedPlacement, setFocusedPlacement] = React.useState<Placement | null>(null);
   const [selectedPlacements, setSelectedPlacements] = React.useState<Set<string>>(new Set());
-  const [validTerms, setValidTerms] = React.useState<Set<number>>(new Set());
-  const movingPlacementRef = React.useRef<Placement | null>(null);
+  const [selectedPrerequisites, setSelectedPrerequisites] = React.useState<Set<string>>(new Set());
+  const [linkingMode, setLinkingMode] = React.useState<boolean>(false);
 
-  const toggleFocusPlacement = (placementId: string) => {
-    if (placementId === focusedPlacement) {
+  const toggleFocusPlacement = (placement: Placement) => {
+    if (placement.id === focusedPlacement?.id) {
       setFocusedPlacement(null);
       return;
     }
 
-    setFocusedPlacement(placementId);
+    setFocusedPlacement(placement);
   };
 
-  const isFocusedPlacement = (placementId: string) => placementId === focusedPlacement;
+  const toggleSelectPrerequisite = (prerequisiteId: string) => {
+    setSelectedPrerequisites((prev) => {
+      const updated = new Set(prev);
+
+      if (updated.has(prerequisiteId)) {
+        updated.delete(prerequisiteId);
+
+        return updated;
+      }
+
+      updated.add(prerequisiteId);
+
+      return updated;
+    });
+  };
+
+  const toggleLinkingMode = (placement: Placement) => {
+    if (linkingMode) {
+      setFocusedPlacement(null);
+      setLinkingMode(false);
+      return;
+    }
+
+    setLinkingMode(true);
+    setFocusedPlacement(placement);
+  };
+
+  const isFocusedPlacement = (placementId: string) => placementId === focusedPlacement?.id;
 
   const clearFocusedPlacement = () => setFocusedPlacement(null);
 
@@ -60,11 +88,6 @@ export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) 
     setSelectedPlacements(selection);
   };
 
-  const validateTerms = (placementId: string) => {
-    console.log(placementId);
-    setValidTerms(new Set());
-  };
-
   const clearSelectedPlacements = () => setSelectedPlacements(new Set());
 
   const isSelectedPlacement = (placementId: string) => selectedPlacements.has(placementId);
@@ -77,13 +100,14 @@ export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) 
         isSelectedPlacement,
         clearSelectedPlacements,
         onCourseSelectionChange,
-        validateTerms,
-        validTerms,
         focusedPlacement,
         toggleFocusPlacement,
         isFocusedPlacement,
         clearFocusedPlacement,
-        movingPlacementRef,
+        toggleLinkingMode,
+        toggleSelectPrerequisite,
+        linkingMode,
+        selectedPrerequisites,
       }}
     >
       {children}
