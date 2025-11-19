@@ -14,21 +14,14 @@ export type ElectiveSlot = {
   section: string;
 };
 
-export type Placement =
-  | {
-      id: string;
-      type: 'COURSE';
-      course: string;
-      span: number;
-      term: string;
-    }
-  | {
-      id: string;
-      type: 'ELECTIVE_SLOT';
-      electiveSlot: string;
-      span: number;
-      term: string;
-    };
+export type Placement = {
+  id: string;
+  type: 'COURSE' | 'ELECTIVE_SLOT';
+  item: string;
+  span: number;
+  term: string;
+  position: number;
+};
 
 export type Flowsheet = {
   id: string;

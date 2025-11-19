@@ -15,10 +15,12 @@ type TermsProviderProps = {
   children: React.ReactNode;
 };
 
+const emptyTerms = [
+  { id: crypto.randomUUID(), name: 'Untitled term' },
+];
+
 export function TermsProvider({ children }: TermsProviderProps) {
-  const [terms, setTerms] = useLocalStorage<Term[]>(STORAGE_KEY, [
-    { id: crypto.randomUUID(), name: 'Untitled term' },
-  ]);
+  const [terms, setTerms] = useLocalStorage<Term[]>(STORAGE_KEY, emptyTerms);
 
   return <TermsContext.Provider value={{ terms, setTerms }}>{children}</TermsContext.Provider>;
 }

@@ -33,5 +33,5 @@ export function canSelectPrerequisite({
   terms,
   coursesGraph,
 }: CanSelectPrerequisiteArgs) {
-  return true;
+  // check target's term less than 
 }

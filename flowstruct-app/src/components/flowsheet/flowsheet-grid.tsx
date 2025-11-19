@@ -23,9 +23,10 @@ import { CoursePlacementForm } from './course-placement/course-placement-form.ts
 import { CoursePlacement } from './course-placement/course-placement.tsx';
 import styles from './flowsheet-grid.module.css';
 import { MultiSelectToolbar } from './multi-select-toolbar.tsx';
+import { reorderPlacements } from '../../domain/placement.ts';
 
 export function FlowsheetGrid() {
-  const { clearSelectedPlacements, clearFocusedPlacement } = useFlowsheetGrid();
+  const { clearSelectedPlacements, clearFocusedPlacement, clearLinkingMode } = useFlowsheetGrid();
   const { terms, setTerms } = useTerms();
   const { placements } = usePlacements();
 
@@ -34,6 +35,7 @@ export function FlowsheetGrid() {
       if (e.key === 'Escape') {
         clearSelectedPlacements();
         clearFocusedPlacement();
+        clearLinkingMode();
       }
     },
   });
@@ -68,16 +70,8 @@ export function FlowsheetGrid() {
       </Box>
 
       {createPortal(<MultiSelectToolbar />, document.body)}
-
-      <Diagnostic />
     </>
   );
-}
-
-function Diagnostic() {
-  const result = useFlowsheetGrid();
-
-  return <pre>{JSON.stringify(result, null, 2)}</pre>;
 }
 
 type TermProps = {
@@ -112,12 +106,11 @@ function Term({ term, placements }: TermProps) {
       const targetId = e.target.key as string;
       const dropBefore = e.target.dropPosition === 'before';
 
-      const newPlacements = reorderArray(
-        allPlacements,
-        sourceItem.id,
+      const newPlacements = reorderPlacements(
+        sourceItem,
         targetId,
-        dropBefore,
-        'term'
+        e.target.dropPosition,
+        allPlacements
       );
 
       setPlacements(newPlacements);
@@ -179,7 +172,6 @@ function Term({ term, placements }: TermProps) {
           </Text>
         </Group>
       </Box>
-
       <GridList
         items={placements}
         selectionMode="single"

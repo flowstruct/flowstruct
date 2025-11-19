@@ -15,6 +15,7 @@ type FlowsheetGridContextValues = {
   selectedPrerequisites: Set<string>;
   linkingMode: boolean;
   toggleSelectPrerequisite: (prerequisiteId: string) => void;
+  clearLinkingMode: () => void;
 };
 
 const FlowsheetGridContext = React.createContext<FlowsheetGridContextValues | undefined>(undefined);
@@ -63,6 +64,7 @@ export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) 
 
     setLinkingMode(true);
     setFocusedPlacement(placement);
+    setSelectedPlacements(new Set());
   };
 
   const isFocusedPlacement = (placementId: string) => placementId === focusedPlacement?.id;
@@ -92,6 +94,8 @@ export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) 
 
   const isSelectedPlacement = (placementId: string) => selectedPlacements.has(placementId);
 
+  const clearLinkingMode = () => setLinkingMode(false);
+
   return (
     <FlowsheetGridContext.Provider
       value={{
@@ -107,6 +111,7 @@ export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) 
         toggleLinkingMode,
         toggleSelectPrerequisite,
         linkingMode,
+        clearLinkingMode,
         selectedPrerequisites,
       }}
     >

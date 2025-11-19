@@ -4,7 +4,7 @@ import { useLocalStorage } from './local-storage.hook.ts';
 
 type PlacementsContextValues = {
   placements: Placement[];
-  setPlacements: (newValue: Placement[] | ((prev: Placement[]) => Placement[])) => void;
+  setPlacements: (newValue: Record<string, Placement> | ((prev: Record<string, Placement>) => Record<string, Placement>)) => void;
 };
 
 const PlacementsContext = React.createContext<PlacementsContextValues | undefined>(undefined);
@@ -16,7 +16,7 @@ type PlacementsProviderProps = {
 };
 
 export function PlacementsProvider({ children }: PlacementsProviderProps) {
-  const [placements, setPlacements] = useLocalStorage<Placement[]>(STORAGE_KEY, []);
+  const [placements, setPlacements] = useLocalStorage<Record<string, Placement>>(STORAGE_KEY, {});
 
   return (
     <PlacementsContext.Provider value={{ placements, setPlacements }}>

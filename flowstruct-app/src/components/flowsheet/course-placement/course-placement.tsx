@@ -1,104 +1,138 @@
-import clsx from 'clsx';
-import { EllipsisVertical, GripHorizontal, Pencil, Plus, Trash } from 'lucide-react';
-import { useFocusRing, useHover, usePress, type PressEvent } from 'react-aria';
-import { canSelectPrerequisite, type Course } from '../../../domain/course.ts';
-import { classifyRelationship, type Relationship } from '../../../domain/courses-graph.ts';
-import type { Placement } from '../../../domain/flowsheet.ts';
-import { deletePlacements } from '../../../domain/placement.ts';
-import { useCoursesGraph } from '../../../hooks/courses-graph.hook.tsx';
-import { useCourses } from '../../../hooks/courses.hook.tsx';
-import { useDisclosure } from '../../../hooks/disclosure.hook.ts';
-import { useFlowsheetGrid } from '../../../hooks/flowsheet-grid.hook.tsx';
-import { usePlacements } from '../../../hooks/placements.hook.tsx';
-import { useTerms } from '../../../hooks/terms.hook.tsx';
-import Group from '../../layout/group.tsx';
-import { Stack } from '../../layout/stack.tsx';
-import { Text } from '../../layout/text.tsx';
-import { Button } from '../../ui/Button.tsx';
-import { Checkbox } from '../../ui/Checkbox.tsx';
-import { Dialog, DialogTrigger } from '../../ui/Dialog.tsx';
-import { Menu, MenuItem } from '../../ui/Menu.tsx';
-import { Modal } from '../../ui/Modal.tsx';
-import { Popover } from '../../ui/Popover.tsx';
-import styles from './course-placement.module.css';
-import { EditCourseForm } from './edit-course-placement-form.tsx';
+import clsx from "clsx";
+import {
+  EllipsisVertical,
+  GripHorizontal,
+  Pencil,
+  Plus,
+  Trash,
+} from "lucide-react";
+import { useFocusRing, useHover, usePress } from "react-aria";
+import { type Course } from "../../../domain/course";
+import type { Placement } from "../../../domain/flowsheet";
+import { deletePlacements, getPlacementState, type PlacementPerms, type PlacementState } from "../../../domain/placement";
+import { useCoursesGraph } from "../../../hooks/courses-graph.hook";
+import { useCourses } from "../../../hooks/courses.hook";
+import { useDisclosure } from "../../../hooks/disclosure.hook";
+import { useFlowsheetGrid } from "../../../hooks/flowsheet-grid.hook";
+import { usePlacements } from "../../../hooks/placements.hook";
+import { useTerms } from "../../../hooks/terms.hook";
+import Group from "../../layout/group";
+import { Stack } from "../../layout/stack";
+import { Text } from "../../layout/text";
+import { Button } from "../../ui/Button";
+import { Checkbox } from "../../ui/Checkbox";
+import { Dialog, DialogTrigger } from "../../ui/Dialog";
+import { Menu, MenuItem } from "../../ui/Menu";
+import { Modal } from "../../ui/Modal";
+import { Popover } from "../../ui/Popover";
+import styles from "./course-placement.module.css";
+import { EditCourseForm } from "./edit-course-placement-form";
+
 
 type CoursePlacementProps = {
   course: Course;
   placement: Placement;
 };
 
-export function CoursePlacement({ course, placement, ...props }: CoursePlacementProps) {
+export function CoursePlacement({ course, placement }: CoursePlacementProps) {
   const {
     toggleFocusPlacement,
     toggleLinkingMode,
     linkingMode,
     focusedPlacement,
     toggleSelectedPlacement,
-    toggleSelectPrerequisite,
     isSelectedPlacement,
+    selectedPlacements,
   } = useFlowsheetGrid();
+
   const { coursesGraph } = useCoursesGraph();
   const { terms } = useTerms();
+  const { courses, setCourses } = useCourses();
 
-  const isSelectable =
-    !linkingMode ||
-    (focusedPlacement &&
-      canSelectPrerequisite({
-        source: placement,
-        target: focusedPlacement,
-        terms,
-        coursesGraph,
-      }));
+  const state = getPlacementState({
+    placement,
+    focusedPlacement,
+    selectedPlacements,
+    terms,
+    graph: coursesGraph,
+  });
 
-  const isFocused = focusedPlacement?.id === placement.id;
+  const perms = {
+    exitLinkingMode: state.isFocused && linkingMode,
+    togglePrerequisite: !state.isFocused && linkingMode && state.prerequisiteAllowed,
+    toggleSelect: !linkingMode,
+    toggleFocus: !linkingMode,
+  };
+
+  const classes = getPlacementClasses(state, perms);
+
+  const togglePrerequisite = () => {
+    if (!focusedPlacement || !perms.togglePrerequisite) return;
+
+    const updatedCourse = courses[focusedPlacement.course];
+    if (!updatedCourse) return;
+
+    if (updatedCourse.prerequisites.includes(course.id)) {
+      updatedCourse.prerequisites = updatedCourse.prerequisites.filter(
+        (pr) => pr !== course.id
+      );
+    } else {
+      updatedCourse.prerequisites.push(course.id);
+    }
+
+    setCourses({ ...courses });
+  };
 
   const { pressProps, isPressed } = usePress({
     onPress: (e) => {
-      if (e.shiftKey || e.ctrlKey) {
+
+      if ((e.ctrlKey || e.shiftKey) && perms.toggleSelect) {
         toggleSelectedPlacement(placement.id);
         return;
       }
 
-      if (linkingMode) {
-        if (isFocused) {
-          toggleLinkingMode(placement);
-        } else if (isSelectable) {
-          toggleSelectPrerequisite(course.id);
-        }
-
+      if (perms.togglePrerequisite) {
+        togglePrerequisite();
         return;
       }
 
-      toggleFocusPlacement(placement);
+      if (perms.exitLinkingMode) {
+        toggleLinkingMode(placement);
+        return;
+      }
+
+      if (perms.toggleFocus) {
+        toggleFocusPlacement(placement);
+        return;
+      }
     },
   });
-  const { hoverProps, isHovered } = useHover(props);
-  const { focusProps, isFocusVisible } = useFocusRing(props);
 
-  const classNames = getPlacementClasses({
-    relation: classifyRelationship(course.id, placement.course, coursesGraph),
-    linkingMode,
-    isSelected: isSelectedPlacement(placement.id),
-    isSelectable: isSelectable,
-  });
+  const { hoverProps, isHovered } = useHover({});
+  const { focusProps, isFocusVisible } = useFocusRing({});
 
   return (
     <div
       {...pressProps}
-      {...focusProps}
       {...hoverProps}
+      {...focusProps}
+      tabIndex={0}
+      role="button"
       data-hovered={isHovered || undefined}
       data-focused={isFocusVisible || undefined}
       data-pressed={isPressed || undefined}
-      role="button"
-      tabIndex={0}
-      className={clsx(classNames)}
+      className={clsx(classes)}
     >
       <Stack fill gap={1}>
         <Stack fill>
           <Group justify="between">
-            <Text as="h3" size="xs" tone="dimmed" weight="medium" className={styles.code}>
+            <Text
+              as="h3"
+              size="xs"
+              tone="dimmed"
+              weight="medium"
+              className={styles.code}
+            >
               {course.code}
             </Text>
 
@@ -110,7 +144,7 @@ export function CoursePlacement({ course, placement, ...props }: CoursePlacement
 
         <Group justify="between">
           <Button slot="drag" variant="transparent" size="none">
-            <GripHorizontal color="gray" size={15} />
+            <GripHorizontal size={15} color="gray" />
           </Button>
 
           <Checkbox
@@ -135,30 +169,26 @@ function CoursePlacementMenu({ course, placement }: CoursePlacementMenuProps) {
   const { courses, setCourses } = useCourses();
 
   const handleDeletePlacement = () => {
-    const deletePlacementResult = deletePlacements({
+    const res = deletePlacements({
       courses,
       placements,
       placementIds: [placement.id],
     });
 
-    setPlacements(deletePlacementResult.placements);
-    setCourses(deletePlacementResult.courses);
-  };
-
-  const handleAddPrerequisites = () => {
-    toggleLinkingMode(placement);
+    setPlacements(res.placements);
+    setCourses(res.courses);
   };
 
   return (
     <>
       <DialogTrigger>
         <Button shape="icon" size="none" variant="transparent">
-          <EllipsisVertical color="gray" size={15} />
+          <EllipsisVertical size={15} color="gray" />
         </Button>
 
         <Popover placement="top">
           <Menu>
-            <MenuItem onPress={handleAddPrerequisites}>
+            <MenuItem onPress={() => toggleLinkingMode(placement)}>
               <Plus size={14} /> Prerequisite
             </MenuItem>
 
@@ -171,7 +201,7 @@ function CoursePlacementMenu({ course, placement }: CoursePlacementMenuProps) {
             </MenuItem>
 
             <MenuItem onPress={handleDeletePlacement}>
-              <Trash color="red" size={14} /> Remove
+              <Trash size={14} color="red" /> Remove
             </MenuItem>
           </Menu>
         </Popover>
@@ -190,37 +220,23 @@ function CoursePlacementMenu({ course, placement }: CoursePlacementMenuProps) {
   );
 }
 
-function getPlacementClasses({
-  relation,
-  linkingMode,
-  isSelected,
-  isSelectable,
-}: {
-  relation: Relationship | null;
-  linkingMode: boolean;
-  isSelected: boolean;
-  isSelectable: boolean;
-}) {
+function getPlacementClasses(state: PlacementState, perms: PlacementPerms) {
   const classes = [styles.card];
 
-  if (isSelected && !linkingMode) {
+  if (perms.exitLinkingMode) {
+    classes.push(styles.focused);
+  }
+
+  if (perms.togglePrerequisite && state.relation === 'PREREQ') {
+    classes.push(styles.selectedPrerequisite);
+  }
+
+  if (perms.toggleSelect && state.isSelected) {
     classes.push(styles.selected);
   }
 
-  // in normal mode -> highlight based on relation
-  if (!linkingMode && relation) {
-    classes.push(styles[relation]);
-  }
-
-  // in linking mode
-  if (linkingMode) {
-    if (relation === 'PREREQ') {
-      classes.push(styles.selectedPrerequisite);
-    }
-
-    if (!isSelectable) {
-      classes.push(styles.disabled);
-    }
+  if (perms.toggleFocus && state.isFocused) {
+    classes.push(styles.focused);
   }
 
   return classes;
