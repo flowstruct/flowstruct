@@ -5,7 +5,7 @@ import { DropIndicator, GridList, GridListItem, useDragAndDrop } from 'react-ari
 import { createPortal } from 'react-dom';
 import type { Course } from '../../domain/course';
 import type { Placement, Term } from '../../domain/flowsheet';
-import { addPlacement, appendToTerm, reorderPlacements } from '../../domain/placement.ts';
+import { appendToTerm, reorderPlacements } from '../../domain/placement.ts';
 import { useCourses } from '../../hooks/courses.hook';
 import { useDisclosure } from '../../hooks/disclosure.hook';
 import { useFlowsheetGrid } from '../../hooks/flowsheet-grid.hook';

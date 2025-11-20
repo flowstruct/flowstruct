@@ -27,7 +27,7 @@ export function MultiSelectToolbar() {
       placementIds: Array.from(selectedPlacements),
     });
 
-    if (focusedPlacement && selectedPlacements.has(focusedPlacement)) {
+    if (focusedPlacement && selectedPlacements.has(focusedPlacement.id)) {
       clearFocusedPlacement();
     }
 

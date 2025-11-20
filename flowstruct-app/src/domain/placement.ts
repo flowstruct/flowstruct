@@ -4,32 +4,56 @@ import type { Placement, Term } from './flowsheet.ts';
 
 type DeletePlacementsArgs = {
   courses: Record<string, Course>;
-  placements: Placement[];
+  placements: Record<string, Placement>;
   placementIds: string[];
 };
 
-export const deletePlacements = ({
+export function deletePlacements({
   courses,
   placements,
   placementIds,
-}: DeletePlacementsArgs): Pick<DeletePlacementsArgs, 'courses' | 'placements'> => {
+}: DeletePlacementsArgs): Pick<DeletePlacementsArgs, "courses" | "placements"> {
   const placementIdsSet = new Set(placementIds);
 
   const updatedCourses = { ...courses };
 
-  const updatedPlacements = placements.filter((p) => {
-    if (!placementIdsSet.has(p.id)) return true;
+  const remainingEntries = Object.entries(placements).filter(([id, p]) => {
+    if (!placementIdsSet.has(id)) return true;
 
-    if (p.type === 'COURSE') {
+    if (p.type === "COURSE") {
       delete updatedCourses[p.item];
     }
-    // handle elective slot deletion
+
     return false;
   });
 
+  const remainingPlacements: Record<string, Placement> = {};
+  for (const [id, p] of remainingEntries) {
+    remainingPlacements[id] = p;
+  }
+
+  const byTerm: Record<string, Placement[]> = {};
+  for (const p of Object.values(remainingPlacements)) {
+    if (!byTerm[p.term]) byTerm[p.term] = [];
+    byTerm[p.term].push(p);
+  }
+
+  const normalized: Record<string, Placement> = { ...remainingPlacements };
+
+  for (const term in byTerm) {
+    const items = byTerm[term].sort((a, b) => a.position - b.position);
+
+    items.forEach((p, index) => {
+      normalized[p.id] = {
+        ...p,
+        position: index + 1,
+      };
+    });
+  }
+
   return {
     courses: updatedCourses,
-    placements: updatedPlacements,
+    placements: normalized,
   };
 };
 
@@ -143,8 +167,4 @@ export function appendToTerm(placement: Placement, targetTerm: string, placement
   };
 
   return next;
-}
-
-export function addPlacement(placement: Placement, termId: string, placements: Record<string, Placement>) {
-  return appendToTerm(placement, termId, next);
 }
