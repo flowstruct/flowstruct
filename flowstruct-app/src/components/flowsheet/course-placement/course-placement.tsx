@@ -69,7 +69,7 @@ export function CoursePlacement({ course, placement }: CoursePlacementProps) {
   const togglePrerequisite = () => {
     if (!focusedPlacement || !perms.togglePrerequisite) return;
 
-    const updatedCourse = courses[focusedPlacement.course];
+    const updatedCourse = courses[focusedPlacement.item];
     if (!updatedCourse) return;
 
     if (updatedCourse.prerequisites.includes(course.id)) {

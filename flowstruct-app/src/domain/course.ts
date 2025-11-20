@@ -1,5 +1,5 @@
 import type { Requisites } from './courses-graph.ts';
-import type { Flowsheet, Placement, Term } from './flowsheet.ts';
+import type { Term } from './flowsheet.ts';
 
 export const CourseType = {
   F2F: 'Face-to-Face',
@@ -21,17 +21,18 @@ export type Course = {
 };
 
 type CanSelectPrerequisiteArgs = {
-  source: Placement;
-  target: Placement;
+  sourceId: string;
+  targetId: string;
   terms: Term[];
   coursesGraph: Map<string, Requisites>;
 };
 
 export function canSelectPrerequisite({
-  source,
-  target,
+  sourceId,
+  targetId,
   terms,
   coursesGraph,
 }: CanSelectPrerequisiteArgs) {
+  return true;
   // check target's term less than 
 }

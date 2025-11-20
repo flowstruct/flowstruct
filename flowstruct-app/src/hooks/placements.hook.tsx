@@ -3,7 +3,7 @@ import type { Placement } from '../domain/flowsheet.ts';
 import { useLocalStorage } from './local-storage.hook.ts';
 
 type PlacementsContextValues = {
-  placements: Placement[];
+  placements: Record<string, Placement>;
   setPlacements: (newValue: Record<string, Placement> | ((prev: Record<string, Placement>) => Record<string, Placement>)) => void;
 };
 

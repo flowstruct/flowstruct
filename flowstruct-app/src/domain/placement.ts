@@ -1,7 +1,6 @@
-import type { PressEvent } from 'react-aria';
 import { canSelectPrerequisite, type Course } from './course.ts';
-import type { Placement, Term } from './flowsheet.ts';
 import { classifyRelationship, type Relationship, type Requisites } from './courses-graph.ts';
+import type { Placement, Term } from './flowsheet.ts';
 
 type DeletePlacementsArgs = {
   courses: Record<string, Course>;
@@ -22,7 +21,7 @@ export const deletePlacements = ({
     if (!placementIdsSet.has(p.id)) return true;
 
     if (p.type === 'COURSE') {
-      delete updatedCourses[p.course];
+      delete updatedCourses[p.item];
     }
     // handle elective slot deletion
     return false;
@@ -56,10 +55,10 @@ export function getPlacementState({
 }): PlacementState {
   const isFocused = focusedPlacement?.id === placement.id;
   const isSelected = selectedPlacements.has(placement.id);
-  const prerequisiteAllowed = focusedPlacement ? canSelectPrerequisite({ source: placement.course, target: focusedPlacement.course, terms, coursesGraph: graph }) : false;
+  const prerequisiteAllowed = focusedPlacement ? canSelectPrerequisite({ sourceId: placement.item, targetId: focusedPlacement.item, terms, coursesGraph: graph }) : false;
 
   const relation = focusedPlacement
-    ? classifyRelationship(focusedPlacement.course, placement.course, graph)
+    ? classifyRelationship(focusedPlacement.item, placement.item, graph)
     : "UNRELATED";
 
   return {
@@ -80,35 +79,39 @@ export function reorderPlacements(
   dropLocation: 'before' | 'after',
   placements: Record<string, Placement>
 ): Record<string, Placement> {
+  if (sourceId === targetId) return placements;
+
   const source = placements[sourceId];
   const target = placements[targetId];
 
   if (!source || !target) return placements;
 
-  // clone into a fresh output record
-  const next: Record<string, Placement> = { ...placements };
+  const next = { ...placements };
 
-  // 1. Remove source from source term (shift down everything after it)
-  Object.values(next).forEach(p => {
-    if (p.term === source.term && p.position > source.position) {
+  const sourceTermPlacements = Object.values(next).filter(p => p.term === source.term);
+
+  sourceTermPlacements.forEach(p => {
+    if (p.position >= source.position) {
       next[p.id] = { ...p, position: p.position - 1 };
     }
   });
 
-  // 2. Compute new insertion position
-  const insertPos =
-    dropLocation === 'before'
-      ? target.position
-      : target.position + 1;
+  const targetTermPlacements = Object.values(next).filter(p => p.term === target.term);
 
-  // 3. Shift up target term placements to make space
-  Object.values(next).forEach(p => {
-    if (p.term === target.term && p.position >= insertPos) {
+  let insertPos = dropLocation === 'before'
+    ? target.position
+    : target.position + 1;
+
+  if (insertPos >= targetTermPlacements.length + 1 && source.term === target.term) {
+    insertPos = target.position;
+  }
+
+  targetTermPlacements.forEach(p => {
+    if (p.position >= insertPos) {
       next[p.id] = { ...p, position: p.position + 1 };
     }
   });
 
-  // 4. Move source into target term
   next[sourceId] = {
     ...next[sourceId],
     term: target.term,
@@ -118,15 +121,30 @@ export function reorderPlacements(
   return next;
 }
 
-function shiftPlacements(placements: Placement[], delta: number) {
+export function appendToTerm(placement: Placement, targetTerm: string, placements: Record<string, Placement>) {
+  const next = { ...placements };
 
+  if (placement.term !== targetTerm) {
+    const sourceTermPlacements = Object.values(next).filter(p => p.term === placement.term);
 
-}
-
-function insertPlacement(inserted: Placement, position: number, placements: Placement[]) {
-  if (position > placements.length + 1) {
-    return placements;
+    sourceTermPlacements.forEach(p => {
+      if (p.position >= placement.position) {
+        next[p.id] = { ...p, position: p.position - 1 };
+      }
+    });
   }
 
-  placements
+  const targetTermPlacements = Object.values(next).filter(p => p.term === targetTerm);
+
+  next[placement.id] = {
+    ...placement,
+    term: targetTerm,
+    position: targetTermPlacements.length + 1
+  };
+
+  return next;
+}
+
+export function addPlacement(placement: Placement, termId: string, placements: Record<string, Placement>) {
+  return appendToTerm(placement, termId, next);
 }

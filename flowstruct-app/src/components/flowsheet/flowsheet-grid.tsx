@@ -5,13 +5,13 @@ import { DropIndicator, GridList, GridListItem, useDragAndDrop } from 'react-ari
 import { createPortal } from 'react-dom';
 import type { Course } from '../../domain/course';
 import type { Placement, Term } from '../../domain/flowsheet';
+import { addPlacement, appendToTerm, reorderPlacements } from '../../domain/placement.ts';
 import { useCourses } from '../../hooks/courses.hook';
 import { useDisclosure } from '../../hooks/disclosure.hook';
 import { useFlowsheetGrid } from '../../hooks/flowsheet-grid.hook';
 import { useForm } from '../../hooks/form.hook';
 import { usePlacements } from '../../hooks/placements.hook';
 import { useTerms } from '../../hooks/terms.hook';
-import { appendToSection, reorderArray } from '../../utils/array.ts';
 import { handleSubmit } from '../../utils/handle-submit';
 import { Box } from '../layout/box';
 import Group from '../layout/group';
@@ -23,7 +23,6 @@ import { CoursePlacementForm } from './course-placement/course-placement-form.ts
 import { CoursePlacement } from './course-placement/course-placement.tsx';
 import styles from './flowsheet-grid.module.css';
 import { MultiSelectToolbar } from './multi-select-toolbar.tsx';
-import { reorderPlacements } from '../../domain/placement.ts';
 
 export function FlowsheetGrid() {
   const { clearSelectedPlacements, clearFocusedPlacement, clearLinkingMode } = useFlowsheetGrid();
@@ -49,9 +48,16 @@ export function FlowsheetGrid() {
       <Box overflow="auto" overflowY="hidden" {...keyboardProps}>
         <Group align="start">
           {terms.map((t) => (
-            <Term key={t.id} term={t} placements={placements.filter((p) => p.term === t.id)} />
+            <Term
+              key={t.id}
+              term={t}
+              placements={
+                Object.values(placements)
+                  .filter((p) => p.term === t.id)
+                  .sort((p1, p2) => p1.position - p2.position)
+              }
+            />
           ))}
-
           <Box position="relative">
             <TooltipTrigger>
               <Button
@@ -96,24 +102,26 @@ function Term({ term, placements }: TermProps) {
     getDropOperation: () => 'move',
 
     async onInsert(e) {
+      if (e.target.dropPosition === 'on') return;
+
       const processedItems = await Promise.all(
         e.items
           .filter(isTextDropItem)
           .map(async (item) => JSON.parse(await item.getText('placement')))
       );
 
-      const sourceItem = processedItems[0];
+      const sourceId = processedItems[0].id;
       const targetId = e.target.key as string;
-      const dropBefore = e.target.dropPosition === 'before';
 
-      const newPlacements = reorderPlacements(
-        sourceItem,
+      console.log(e.target.dropPosition)
+      const reorderedPlacements = reorderPlacements(
+        sourceId,
         targetId,
         e.target.dropPosition,
         allPlacements
       );
 
-      setPlacements(newPlacements);
+      setPlacements(reorderedPlacements);
     },
 
     async onRootDrop(e) {
@@ -123,21 +131,28 @@ function Term({ term, placements }: TermProps) {
           .map(async (item) => JSON.parse(await item.getText('placement')))
       );
 
-      const sourceItem = processedItems[0];
+      const sourceId = processedItems[0];
 
-      const newPlacements = appendToSection(allPlacements, sourceItem.id, term.id, 'term');
+      const reorderedPlacements = appendToTerm(sourceId, term.id, allPlacements);
 
-      setPlacements(newPlacements);
+      setPlacements(reorderedPlacements);
     },
 
     onReorder(e) {
       const sourceId = Array.from(e.keys)[0] as string;
       const targetId = e.target.key as string;
-      const dropBefore = e.target.dropPosition === 'before';
 
-      const newPlacements = reorderArray(allPlacements, sourceId, targetId, dropBefore, 'term');
+      if (e.target.dropPosition === 'on') return;
 
-      setPlacements(newPlacements);
+      console.log(e.target.dropPosition)
+      const reorderedPlacements = reorderPlacements(
+        sourceId,
+        targetId,
+        e.target.dropPosition,
+        allPlacements
+      );
+
+      setPlacements(reorderedPlacements);
     },
 
     renderDropIndicator: (target) => (
@@ -153,7 +168,7 @@ function Term({ term, placements }: TermProps) {
       const firstPlacement = JSON.parse(items[0].placement) as Placement;
       const displayName =
         firstPlacement.type === 'COURSE'
-          ? `${courses[firstPlacement.course].code}: ${courses[firstPlacement.course].name}`
+          ? `${courses[firstPlacement.item].code}: ${courses[firstPlacement.item].name}`
           : 'Elective slot';
       return (
         <div className={styles.dragPreview}>
@@ -195,7 +210,8 @@ function Term({ term, placements }: TermProps) {
       >
         {(placement) => {
           if (placement.type === 'COURSE') {
-            const course = courses[placement.course];
+
+            const course = courses[placement.item];
             return (
               <GridListItem
                 id={placement.id}
@@ -222,7 +238,7 @@ type AddCourseCardProps = {
 
 function AddCoursePlacement({ term }: AddCourseCardProps) {
   const { setCourses } = useCourses();
-  const { setPlacements } = usePlacements();
+  const { placements, setPlacements } = usePlacements();
 
   const addCourseData: Course = {
     id: '',
@@ -260,10 +276,18 @@ function AddCoursePlacement({ term }: AddCourseCardProps) {
       code: form.data.code.toUpperCase(),
     };
 
-    setPlacements((placements) => [
-      ...placements,
-      { id: crypto.randomUUID(), type: 'COURSE', course: course.id, span: 1, term: term.id },
-    ]);
+    const newPlacement: Placement = {
+      id: crypto.randomUUID(),
+      type: 'COURSE',
+      item: course.id,
+      span: 1,
+      term: term.id,
+      position: 0
+    };
+
+    const reorderedPlacements = appendToTerm(newPlacement, term.id, placements);
+
+    setPlacements(reorderedPlacements);
 
     setCourses((courses) => ({
       ...courses,
@@ -289,4 +313,5 @@ function AddCoursePlacement({ term }: AddCourseCardProps) {
       )}
     </>
   );
+  console.log(insertPos)
 }
