@@ -51,11 +51,9 @@ export function FlowsheetGrid() {
             <Term
               key={t.id}
               term={t}
-              placements={
-                Object.values(placements)
-                  .filter((p) => p.term === t.id)
-                  .sort((p1, p2) => p1.position - p2.position)
-              }
+              placements={Object.values(placements)
+                .filter((p) => p.term === t.id)
+                .sort((p1, p2) => p1.position - p2.position)}
             />
           ))}
           <Box position="relative">
@@ -113,7 +111,7 @@ function Term({ term, placements }: TermProps) {
       const sourceId = processedItems[0].id;
       const targetId = e.target.key as string;
 
-      console.log(e.target.dropPosition)
+      console.log(e.target.dropPosition);
       const reorderedPlacements = reorderPlacements(
         sourceId,
         targetId,
@@ -144,7 +142,6 @@ function Term({ term, placements }: TermProps) {
 
       if (e.target.dropPosition === 'on') return;
 
-      console.log(e.target.dropPosition)
       const reorderedPlacements = reorderPlacements(
         sourceId,
         targetId,
@@ -187,6 +184,7 @@ function Term({ term, placements }: TermProps) {
           </Text>
         </Group>
       </Box>
+
       <GridList
         items={placements}
         selectionMode="single"
@@ -210,8 +208,8 @@ function Term({ term, placements }: TermProps) {
       >
         {(placement) => {
           if (placement.type === 'COURSE') {
-
             const course = courses[placement.item];
+
             return (
               <GridListItem
                 id={placement.id}
@@ -282,7 +280,7 @@ function AddCoursePlacement({ term }: AddCourseCardProps) {
       item: course.id,
       span: 1,
       term: term.id,
-      position: 0
+      position: 0,
     };
 
     const reorderedPlacements = appendToTerm(newPlacement, term.id, placements);
@@ -313,5 +311,5 @@ function AddCoursePlacement({ term }: AddCourseCardProps) {
       )}
     </>
   );
-  console.log(insertPos)
+  console.log(insertPos);
 }

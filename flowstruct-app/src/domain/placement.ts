@@ -1,4 +1,4 @@
-import { canSelectPrerequisite, type Course } from './course.ts';
+import { validatePrerequisite, type Course } from './course.ts';
 import { classifyRelationship, type Relationship, type Requisites } from './courses-graph.ts';
 import type { Placement, Term } from './flowsheet.ts';
 
@@ -12,7 +12,7 @@ export function deletePlacements({
   courses,
   placements,
   placementIds,
-}: DeletePlacementsArgs): Pick<DeletePlacementsArgs, "courses" | "placements"> {
+}: DeletePlacementsArgs): Pick<DeletePlacementsArgs, 'courses' | 'placements'> {
   const placementIdsSet = new Set(placementIds);
 
   const updatedCourses = { ...courses };
@@ -20,7 +20,7 @@ export function deletePlacements({
   const remainingEntries = Object.entries(placements).filter(([id, p]) => {
     if (!placementIdsSet.has(id)) return true;
 
-    if (p.type === "COURSE") {
+    if (p.type === 'COURSE') {
       delete updatedCourses[p.item];
     }
 
@@ -55,7 +55,7 @@ export function deletePlacements({
     courses: updatedCourses,
     placements: normalized,
   };
-};
+}
 
 export type PlacementState = {
   isFocused: boolean;
@@ -74,19 +74,26 @@ export function getPlacementState({
   placement: Placement;
   focusedPlacement: Placement | null;
   selectedPlacements: Set<string>;
-  terms: Term[];
+  terms: Record<string, Term>;
   graph: Map<string, Requisites>;
 }): PlacementState {
   const isFocused = focusedPlacement?.id === placement.id;
+
   const isSelected = selectedPlacements.has(placement.id);
-  const prerequisiteAllowed = focusedPlacement ? canSelectPrerequisite({ sourceId: placement.item, targetId: focusedPlacement.item, terms, coursesGraph: graph }) : false;
+
+  const prerequisiteAllowed = focusedPlacement
+    ? validatePrerequisite(placement.item, focusedPlacement.item, graph, terms)
+    : false;
 
   const relation = focusedPlacement
     ? classifyRelationship(focusedPlacement.item, placement.item, graph)
-    : "UNRELATED";
+    : 'UNRELATED';
 
   return {
-    isFocused, isSelected, prerequisiteAllowed, relation
+    isFocused,
+    isSelected,
+    prerequisiteAllowed,
+    relation,
   };
 }
 
@@ -112,58 +119,60 @@ export function reorderPlacements(
 
   const next = { ...placements };
 
-  const sourceTermPlacements = Object.values(next).filter(p => p.term === source.term);
+  const sourceTermPlacements = Object.values(next).filter((p) => p.term === source.term);
 
-  sourceTermPlacements.forEach(p => {
+  for (const p of sourceTermPlacements) {
     if (p.position >= source.position) {
       next[p.id] = { ...p, position: p.position - 1 };
     }
-  });
+  }
 
-  const targetTermPlacements = Object.values(next).filter(p => p.term === target.term);
+  const targetTermPlacements = Object.values(next).filter((p) => p.term === target.term);
 
-  let insertPos = dropLocation === 'before'
-    ? target.position
-    : target.position + 1;
+  let insertPos = dropLocation === 'before' ? target.position : target.position + 1;
 
   if (insertPos >= targetTermPlacements.length + 1 && source.term === target.term) {
     insertPos = target.position;
   }
 
-  targetTermPlacements.forEach(p => {
+  for (const p of targetTermPlacements) {
     if (p.position >= insertPos) {
       next[p.id] = { ...p, position: p.position + 1 };
     }
-  });
+  }
 
   next[sourceId] = {
     ...next[sourceId],
     term: target.term,
-    position: insertPos
+    position: insertPos,
   };
 
   return next;
 }
 
-export function appendToTerm(placement: Placement, targetTerm: string, placements: Record<string, Placement>) {
+export function appendToTerm(
+  placement: Placement,
+  targetTerm: string,
+  placements: Record<string, Placement>
+) {
   const next = { ...placements };
 
   if (placement.term !== targetTerm) {
-    const sourceTermPlacements = Object.values(next).filter(p => p.term === placement.term);
+    const sourceTermPlacements = Object.values(next).filter((p) => p.term === placement.term);
 
-    sourceTermPlacements.forEach(p => {
+    for (const p of sourceTermPlacements) {
       if (p.position >= placement.position) {
         next[p.id] = { ...p, position: p.position - 1 };
       }
-    });
+    }
   }
 
-  const targetTermPlacements = Object.values(next).filter(p => p.term === targetTerm);
+  const targetTermPlacements = Object.values(next).filter((p) => p.term === targetTerm);
 
   next[placement.id] = {
     ...placement,
     term: targetTerm,
-    position: targetTermPlacements.length + 1
+    position: targetTermPlacements.length + 1,
   };
 
   return next;

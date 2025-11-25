@@ -20,19 +20,14 @@ export type Course = {
   corequisites: string[];
 };
 
-type CanSelectPrerequisiteArgs = {
-  sourceId: string;
-  targetId: string;
-  terms: Term[];
-  coursesGraph: Map<string, Requisites>;
-};
+export function validatePrerequisite(
+  sourceId: string,
+  targetId: string,
+  coursesGraph: Map<string, Requisites>,
+  terms: Record<string, Term>
+) {
+  const sourceRequisites = coursesGraph.get(sourceId);
+  const targetRequisites = coursesGraph.get(targetId);
 
-export function canSelectPrerequisite({
-  sourceId,
-  targetId,
-  terms,
-  coursesGraph,
-}: CanSelectPrerequisiteArgs) {
   return true;
-  // check target's term less than 
 }

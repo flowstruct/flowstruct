@@ -1,33 +1,31 @@
-import clsx from "clsx";
+import clsx from 'clsx';
+import { EllipsisVertical, GripHorizontal, Pencil, Plus, Trash } from 'lucide-react';
+import { useFocusRing, useHover, usePress } from 'react-aria';
+import { validatePrerequisite, type Course } from '../../../domain/course';
+import type { Placement } from '../../../domain/flowsheet';
 import {
-  EllipsisVertical,
-  GripHorizontal,
-  Pencil,
-  Plus,
-  Trash,
-} from "lucide-react";
-import { useFocusRing, useHover, usePress } from "react-aria";
-import { type Course } from "../../../domain/course";
-import type { Placement } from "../../../domain/flowsheet";
-import { deletePlacements, getPlacementState, type PlacementPerms, type PlacementState } from "../../../domain/placement";
-import { useCoursesGraph } from "../../../hooks/courses-graph.hook";
-import { useCourses } from "../../../hooks/courses.hook";
-import { useDisclosure } from "../../../hooks/disclosure.hook";
-import { useFlowsheetGrid } from "../../../hooks/flowsheet-grid.hook";
-import { usePlacements } from "../../../hooks/placements.hook";
-import { useTerms } from "../../../hooks/terms.hook";
-import Group from "../../layout/group";
-import { Stack } from "../../layout/stack";
-import { Text } from "../../layout/text";
-import { Button } from "../../ui/Button";
-import { Checkbox } from "../../ui/Checkbox";
-import { Dialog, DialogTrigger } from "../../ui/Dialog";
-import { Menu, MenuItem } from "../../ui/Menu";
-import { Modal } from "../../ui/Modal";
-import { Popover } from "../../ui/Popover";
-import styles from "./course-placement.module.css";
-import { EditCourseForm } from "./edit-course-placement-form";
-
+  deletePlacements,
+  getPlacementState,
+  type PlacementPerms,
+  type PlacementState,
+} from '../../../domain/placement';
+import { useCoursesGraph } from '../../../hooks/courses-graph.hook';
+import { useCourses } from '../../../hooks/courses.hook';
+import { useDisclosure } from '../../../hooks/disclosure.hook';
+import { useFlowsheetGrid } from '../../../hooks/flowsheet-grid.hook';
+import { usePlacements } from '../../../hooks/placements.hook';
+import { useTerms } from '../../../hooks/terms.hook';
+import Group from '../../layout/group';
+import { Stack } from '../../layout/stack';
+import { Text } from '../../layout/text';
+import { Button } from '../../ui/Button';
+import { Checkbox } from '../../ui/Checkbox';
+import { Dialog, DialogTrigger } from '../../ui/Dialog';
+import { Menu, MenuItem } from '../../ui/Menu';
+import { Modal } from '../../ui/Modal';
+import { Popover } from '../../ui/Popover';
+import styles from './course-placement.module.css';
+import { EditCourseForm } from './edit-course-placement-form';
 
 type CoursePlacementProps = {
   course: Course;
@@ -73,9 +71,7 @@ export function CoursePlacement({ course, placement }: CoursePlacementProps) {
     if (!updatedCourse) return;
 
     if (updatedCourse.prerequisites.includes(course.id)) {
-      updatedCourse.prerequisites = updatedCourse.prerequisites.filter(
-        (pr) => pr !== course.id
-      );
+      updatedCourse.prerequisites = updatedCourse.prerequisites.filter((pr) => pr !== course.id);
     } else {
       updatedCourse.prerequisites.push(course.id);
     }
@@ -85,7 +81,6 @@ export function CoursePlacement({ course, placement }: CoursePlacementProps) {
 
   const { pressProps, isPressed } = usePress({
     onPress: (e) => {
-
       if ((e.ctrlKey || e.shiftKey) && perms.toggleSelect) {
         toggleSelectedPlacement(placement.id);
         return;
@@ -126,13 +121,7 @@ export function CoursePlacement({ course, placement }: CoursePlacementProps) {
       <Stack fill gap={1}>
         <Stack fill>
           <Group justify="between">
-            <Text
-              as="h3"
-              size="xs"
-              tone="dimmed"
-              weight="medium"
-              className={styles.code}
-            >
+            <Text as="h3" size="xs" tone="dimmed" weight="medium" className={styles.code}>
               {course.code}
             </Text>
 

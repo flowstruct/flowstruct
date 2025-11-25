@@ -4,7 +4,9 @@ import { useLocalStorage } from './local-storage.hook.ts';
 
 type TermsContextValues = {
   terms: Term[];
-  setTerms: (newValue: Term[] | ((prev: Term[]) => Term[])) => void;
+  setTerms: (
+    newValue: Record<string, Term> | ((prev: Record<string, Term>) => Record<string, Term>)
+  ) => void;
 };
 
 const TermsContext = React.createContext<TermsContextValues | undefined>(undefined);
@@ -15,12 +17,16 @@ type TermsProviderProps = {
   children: React.ReactNode;
 };
 
-const emptyTerms = [
-  { id: crypto.randomUUID(), name: 'Untitled term' },
-];
+const emptyTerms = () => {
+  const id = crypto.randomUUID();
+
+  return {
+    id: { id, name: 'Untitled term' },
+  };
+};
 
 export function TermsProvider({ children }: TermsProviderProps) {
-  const [terms, setTerms] = useLocalStorage<Term[]>(STORAGE_KEY, emptyTerms);
+  const [terms, setTerms] = useLocalStorage<Record<string, Term>>(STORAGE_KEY, emptyTerms());
 
   return <TermsContext.Provider value={{ terms, setTerms }}>{children}</TermsContext.Provider>;
 }

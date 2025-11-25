@@ -33,4 +33,5 @@ export type Flowsheet = {
 export type Term = {
   id: string;
   name: string;
+  position: number;
 };
