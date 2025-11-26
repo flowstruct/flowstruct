@@ -111,13 +111,13 @@ export function classifyRelationship(
 ): Relationship {
   if (sourceId === targetId) return 'SELF';
 
-  const req = graph.get(sourceId);
-  if (!req) return 'UNRELATED';
+  const source = graph.get(sourceId);
+  if (!source) return 'UNRELATED';
 
-  if (req.prerequisites.has(targetId)) return 'PREREQ';
-  if (req.prerequisiteSequence.has(targetId)) return 'PREREQSEQ';
-  if (req.corequisites.has(targetId)) return 'COREQ';
-  if (req.postrequisiteSequence.has(targetId)) return 'POSTREQSEQ';
+  if (source.prerequisites.has(targetId)) return 'PREREQ';
+  if (source.prerequisiteSequence.has(targetId)) return 'PREREQSEQ';
+  if (source.corequisites.has(targetId)) return 'COREQ';
+  if (source.postrequisiteSequence.has(targetId)) return 'POSTREQSEQ';
 
   return 'UNRELATED';
 }

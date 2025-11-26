@@ -3,7 +3,7 @@ import type { Term } from '../domain/flowsheet.ts';
 import { useLocalStorage } from './local-storage.hook.ts';
 
 type TermsContextValues = {
-  terms: Term[];
+  terms: Record<string, Term>;
   setTerms: (
     newValue: Record<string, Term> | ((prev: Record<string, Term>) => Record<string, Term>)
   ) => void;
@@ -17,12 +17,13 @@ type TermsProviderProps = {
   children: React.ReactNode;
 };
 
-const emptyTerms = () => {
-  const id = crypto.randomUUID();
+const emptyTerms = (): Record<string, Term> => {
+  const terms: Record<string, Term> = {};
 
-  return {
-    id: { id, name: 'Untitled term' },
-  };
+  const id = crypto.randomUUID();
+  terms[id] = { id, name: 'Untitled term', position: 1 };
+
+  return terms;
 };
 
 export function TermsProvider({ children }: TermsProviderProps) {

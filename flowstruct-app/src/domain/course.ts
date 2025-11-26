@@ -1,5 +1,5 @@
-import type { Requisites } from './courses-graph.ts';
-import type { Term } from './flowsheet.ts';
+import { classifyRelationship, type Requisites } from './courses-graph.ts';
+import type { Placement, Term } from './flowsheet.ts';
 
 export const CourseType = {
   F2F: 'Face-to-Face',
@@ -21,13 +21,18 @@ export type Course = {
 };
 
 export function validatePrerequisite(
-  sourceId: string,
-  targetId: string,
-  coursesGraph: Map<string, Requisites>,
+  source: Placement,
+  target: Placement,
+  graph: Map<string, Requisites>,
   terms: Record<string, Term>
 ) {
-  const sourceRequisites = coursesGraph.get(sourceId);
-  const targetRequisites = coursesGraph.get(targetId);
+  if (source.id === target.id) return false;
+
+  const targetAheadOfSource = terms[source.term].position >= terms[target.term].position;
+  const targetRelationToSource = classifyRelationship(target.item, source.item, graph);
+  const isCyclic = targetRelationToSource === 'POSTREQSEQ';
+
+  if (targetAheadOfSource || isCyclic) return false;
 
   return true;
 }

@@ -81,13 +81,13 @@ export function getPlacementState({
 
   const isSelected = selectedPlacements.has(placement.id);
 
-  const prerequisiteAllowed = focusedPlacement
-    ? validatePrerequisite(placement.item, focusedPlacement.item, graph, terms)
-    : false;
-
   const relation = focusedPlacement
     ? classifyRelationship(focusedPlacement.item, placement.item, graph)
     : 'UNRELATED';
+
+  const prerequisiteAllowed = focusedPlacement
+    ? validatePrerequisite(focusedPlacement, placement, graph, terms)
+    : false;
 
   return {
     isFocused,

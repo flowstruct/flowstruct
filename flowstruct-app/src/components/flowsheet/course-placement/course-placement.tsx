@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import { EllipsisVertical, GripHorizontal, Pencil, Plus, Trash } from 'lucide-react';
 import { useFocusRing, useHover, usePress } from 'react-aria';
-import { validatePrerequisite, type Course } from '../../../domain/course';
+import { type Course } from '../../../domain/course';
 import type { Placement } from '../../../domain/flowsheet';
 import {
   deletePlacements,
@@ -141,6 +141,7 @@ export function CoursePlacement({ course, placement }: CoursePlacementProps) {
             isSelected={isSelectedPlacement(placement.id)}
           />
         </Group>
+        {JSON.stringify(state.prerequisiteAllowed)}
       </Stack>
     </div>
   );

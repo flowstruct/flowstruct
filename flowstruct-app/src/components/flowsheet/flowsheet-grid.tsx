@@ -28,7 +28,6 @@ export function FlowsheetGrid() {
   const { clearSelectedPlacements, clearFocusedPlacement, clearLinkingMode } = useFlowsheetGrid();
   const { terms, setTerms } = useTerms();
   const { placements } = usePlacements();
-
   const { keyboardProps } = useKeyboard({
     onKeyDown: (e) => {
       if (e.key === 'Escape') {
@@ -40,22 +39,32 @@ export function FlowsheetGrid() {
   });
 
   const createTerm = () => {
-    setTerms((terms) => [...terms, { id: crypto.randomUUID(), name: 'Untitled term' }]);
+    setTerms((prev) => {
+      const updated = { ...prev };
+
+      const id = crypto.randomUUID();
+      updated[id] = { id, name: 'untitled term', position: Object.keys(updated).length + 1 };
+
+      return updated;
+    });
   };
 
   return (
     <>
       <Box overflow="auto" overflowY="hidden" {...keyboardProps}>
         <Group align="start">
-          {terms.map((t) => (
-            <Term
-              key={t.id}
-              term={t}
-              placements={Object.values(placements)
-                .filter((p) => p.term === t.id)
-                .sort((p1, p2) => p1.position - p2.position)}
-            />
-          ))}
+          {Object.values(terms)
+            .sort((t1, t2) => t1.position - t2.position)
+            .map((t) => (
+              <Term
+                key={t.id}
+                term={t}
+                placements={Object.values(placements)
+                  .filter((p) => p.term === t.id)
+                  .sort((p1, p2) => p1.position - p2.position)}
+              />
+            ))}
+
           <Box position="relative">
             <TooltipTrigger>
               <Button
@@ -67,6 +76,7 @@ export function FlowsheetGrid() {
               >
                 <Grid2X2Plus size={15} />
               </Button>
+
               <Tooltip>Add term</Tooltip>
             </TooltipTrigger>
           </Box>
@@ -111,7 +121,6 @@ function Term({ term, placements }: TermProps) {
       const sourceId = processedItems[0].id;
       const targetId = e.target.key as string;
 
-      console.log(e.target.dropPosition);
       const reorderedPlacements = reorderPlacements(
         sourceId,
         targetId,
@@ -311,5 +320,4 @@ function AddCoursePlacement({ term }: AddCourseCardProps) {
       )}
     </>
   );
-  console.log(insertPos);
 }
