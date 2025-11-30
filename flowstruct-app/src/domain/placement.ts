@@ -1,6 +1,6 @@
 import type { FlowsheetGridState } from '../hooks/flowsheet-grid.hook.tsx';
 import { validatePrerequisite, type Course } from './course.ts';
-import { classifyRelationship, type Relationship, type Requisites } from './courses-graph.ts';
+import { classifyRelationship, type Requisites } from './courses-graph.ts';
 import type { Placement, Term } from './flowsheet.ts';
 
 type DeletePlacementsArgs = {
@@ -58,50 +58,63 @@ export function deletePlacements({
   };
 }
 
-export type PlacementState =
-  'LINK_SOURCE'
-  | 'AVAILABLE_LINK'
-  | 'DISABLED_LINK'
+export type PlacementVisualState =
+  | 'NORMAL'
+  | 'FOCUSED'
   | 'SELECTED'
-  | 'FOCUSED';
+  | 'LINK_SOURCE'
+  | 'ACTIVE_LINK'
+  | 'AVAILABLE_LINK'
+  | 'DISABLED_LINK';
 
 export function getPlacementState({
   placement,
   state,
+  placements,
   terms,
   graph,
 }: {
   placement: Placement;
   state: FlowsheetGridState;
+  placements: Record<string, Placement>;
   terms: Record<string, Term>;
   graph: Map<string, Requisites>;
-}): PlacementState {
-  if (placement.id === state.focused) return 'FOCUSED';
+}): PlacementVisualState {
 
-  if (placement.id === state.linking) return 'LINK_SOURCE';
+  const isFocused = state.focused === placement.id;
+  const isSelected = state.selected.has(placement.id);
+  const isLinkSource = state.linkSource === placement.id;
 
-  const relation = focusedPlacement
-    ? classifyRelationship(focusedPlacement.item, placement.item, graph)
-    : 'UNRELATED';
 
-  const prerequisiteAllowed = focusedPlacement
-    ? validatePrerequisite(focusedPlacement, placement, graph, terms)
-    : false;
+  if (isFocused) return 'FOCUSED';
+  if (isSelected) return 'SELECTED';
+  if (isLinkSource) return 'LINK_SOURCE';
 
-  return {
-    isFocused,
-    isSelected,
-    prerequisiteAllowed,
-    relation,
-  };
+  // if (state.focused) {
+  //   const source = placements[state.focused].item;
+  //   const target = placement.item;
+  //
+  //   const relation = classifyRelationship(source, target, graph);
+  //
+  //   if (relation === 'PREREQ') return relation;
+  // }
+
+  if (state.linkSource) {
+    const source = placements[state.linkSource!];
+    const target = placements[placement.id];
+
+    if (!source || !target) return 'DISABLED_LINK';
+
+    const allowed = validatePrerequisite(source, target, graph, terms);
+    const relation = classifyRelationship(source.item, target.item, graph);
+
+    if (relation === 'PREREQ') return 'ACTIVE_LINK';
+
+    return allowed ? 'AVAILABLE_LINK' : 'DISABLED_LINK';
+  }
+
+  return 'NORMAL';
 }
-
-export type PlacementPerms = {
-  exitLinkingMode: boolean;
-  togglePrerequisite: boolean;
-  toggleSelect: boolean;
-  toggleFocus: boolean;
-};
 
 export function reorderPlacements(
   sourceId: string,

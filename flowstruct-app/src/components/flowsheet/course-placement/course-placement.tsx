@@ -1,13 +1,10 @@
-import clsx from 'clsx';
 import { EllipsisVertical, GripHorizontal, Pencil, Plus, Trash } from 'lucide-react';
 import { useFocusRing, useHover, usePress } from 'react-aria';
 import { type Course } from '../../../domain/course';
 import type { Placement } from '../../../domain/flowsheet';
 import {
   deletePlacements,
-  getPlacementState,
-  type PlacementPerms,
-  type PlacementState,
+  getPlacementState
 } from '../../../domain/placement';
 import { useCoursesGraph } from '../../../hooks/courses-graph.hook';
 import { useCourses } from '../../../hooks/courses.hook';
@@ -33,36 +30,20 @@ type CoursePlacementProps = {
 };
 
 export function CoursePlacement({ course, placement }: CoursePlacementProps) {
-  const {
-    toggleFocusPlacement,
-    toggleLinkingMode,
-    linkingMode,
-    focusedPlacement,
-    toggleSelectedPlacement,
-    isSelectedPlacement,
-    selectedPlacements,
-  } = useFlowsheetGrid();
+  const { state, dispatch } = useFlowsheetGrid();
 
   const { coursesGraph } = useCoursesGraph();
   const { terms } = useTerms();
   const { courses, setCourses } = useCourses();
+  const { placements } = usePlacements();
 
-  const state = getPlacementState({
+  const placementState = getPlacementState({
     placement,
-    focusedPlacement,
-    selectedPlacements,
+    state,
+    placements,
     terms,
     graph: coursesGraph,
   });
-
-  const perms = {
-    exitLinkingMode: state.isFocused && linkingMode,
-    togglePrerequisite: !state.isFocused && linkingMode && state.prerequisiteAllowed,
-    toggleSelect: !linkingMode,
-    toggleFocus: !linkingMode,
-  };
-
-  const classes = getPlacementClasses(state, perms);
 
   const togglePrerequisite = () => {
     if (!focusedPlacement || !perms.togglePrerequisite) return;
@@ -116,7 +97,8 @@ export function CoursePlacement({ course, placement }: CoursePlacementProps) {
       data-hovered={isHovered || undefined}
       data-focused={isFocusVisible || undefined}
       data-pressed={isPressed || undefined}
-      className={clsx(classes)}
+      data-state={placementState}
+      className={styles.card}
     >
       <Stack fill gap={1}>
         <Stack fill>
@@ -141,7 +123,7 @@ export function CoursePlacement({ course, placement }: CoursePlacementProps) {
             isSelected={isSelectedPlacement(placement.id)}
           />
         </Group>
-        {JSON.stringify(state.prerequisiteAllowed)}
+        {JSON.stringify(placementState)}
       </Stack>
     </div>
   );
@@ -208,26 +190,4 @@ function CoursePlacementMenu({ course, placement }: CoursePlacementMenuProps) {
       </Modal>
     </>
   );
-}
-
-function getPlacementClasses(state: PlacementState, perms: PlacementPerms) {
-  const classes = [styles.card];
-
-  if (perms.exitLinkingMode) {
-    classes.push(styles.focused);
-  }
-
-  if (perms.togglePrerequisite && state.relation === 'PREREQ') {
-    classes.push(styles.selectedPrerequisite);
-  }
-
-  if (perms.toggleSelect && state.isSelected) {
-    classes.push(styles.selected);
-  }
-
-  if (perms.toggleFocus && state.isFocused) {
-    classes.push(styles.focused);
-  }
-
-  return classes;
 }

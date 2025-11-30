@@ -7,10 +7,10 @@ export type FlowsheetGridState = {
 };
 
 type FlowsheetGridAction =
-  | { type: "TOGGLE_SELECT"; placementId: string }
+  | { type: "TOGGLE_SELECT"; payload: { placementId: string } }
   | { type: "CLEAR_SELECTED" }
-  | { type: "TOGGLE_FOCUS"; placementId: string }
-  | { type: "TOGGLE_LINKING"; placementId: string };
+  | { type: "TOGGLE_FOCUS"; payload: { placementId: string } }
+  | { type: "TOGGLE_LINKING"; payload: { placementId: string } };
 
 const initialState: FlowsheetGridState = {
   selected: new Set(),
@@ -21,35 +21,55 @@ const initialState: FlowsheetGridState = {
 function reducer(state: FlowsheetGridState, action: FlowsheetGridAction): FlowsheetGridState {
   switch (action.type) {
     case "TOGGLE_SELECT": {
+      const id = action.payload.placementId;
       const next = new Set(state.selected);
-      if (next.has(action.placementId)) next.delete(action.placementId);
-      else next.add(action.placementId);
-      return { ...state, selected: next, focused: null, linkSource: null };
+
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+
+      return {
+        ...state,
+        selected: next,
+        focused: null,
+        linkSource: null,
+      };
     }
 
     case "CLEAR_SELECTED":
       return { ...state, selected: new Set() };
 
-    case "TOGGLE_FOCUS":
-      return {
-        ...state,
-        focused: state.focused === action.placementId ? null : action.placementId,
-      };
+    case "TOGGLE_FOCUS": {
+      const id = action.payload.placementId;
 
-    case "TOGGLE_LINKING":
       return {
         ...state,
-        linkSource: state.linking ? null : action.placementId,
-        focused: state.linking ? null : action.placementId,
+        focused: state.focused === id ? null : id,
+      };
+    }
+
+    case "TOGGLE_LINKING": {
+      const id = action.payload.placementId;
+
+      const isLinking = state.linkSource !== null;
+
+      return {
+        ...state,
+        linkSource: isLinking ? null : id,
+        focused: isLinking ? null : id,
         selected: new Set(),
       };
+    }
 
     default:
       return state;
   }
 }
 
-const FlowsheetGridContext = React.createContext<any>(undefined);
+type FlowsheetGridContextValues = {
+  state: FlowsheetGridState;
+  dispatch: React.ActionDispatch<[action: FlowsheetGridAction]>
+}
+const FlowsheetGridContext = React.createContext<FlowsheetGridContextValues | undefined>(undefined);
 
 export function FlowsheetGridProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = React.useReducer(reducer, initialState);
@@ -62,7 +82,9 @@ export function FlowsheetGridProvider({ children }: { children: React.ReactNode 
 }
 
 export function useFlowsheetGrid() {
-  const ctx = React.useContext(FlowsheetGridContext);
-  if (!ctx) throw new Error("useFlowsheetGrid must be used inside provider");
-  return ctx;
+  const context = React.useContext(FlowsheetGridContext);
+
+  if (!context) throw new Error("useFlowsheetGrid must be used inside provider");
+
+  return context;
 }
