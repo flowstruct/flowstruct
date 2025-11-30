@@ -1,129 +1,68 @@
-import React from 'react';
-import type { Placement } from '../domain/flowsheet';
+import React from "react";
 
-type FlowsheetGridContextValues = {
-  selectedPlacements: Set<string>;
-  toggleSelectedPlacement: (placementId: string) => void;
-  isSelectedPlacement: (placementId: string) => boolean;
-  clearSelectedPlacements: () => void;
-  onCourseSelectionChange: (selection: Set<string>) => void;
-  focusedPlacement: Placement | null;
-  toggleFocusPlacement: (placement: Placement) => void;
-  isFocusedPlacement: (placementId: string) => boolean;
-  clearFocusedPlacement: () => void;
-  toggleLinkingMode: (placement: Placement) => void;
-  selectedPrerequisites: Set<string>;
-  linkingMode: boolean;
-  toggleSelectPrerequisite: (prerequisiteId: string) => void;
-  clearLinkingMode: () => void;
+export type FlowsheetGridState = {
+  selected: Set<string>;
+  focused: string | null;
+  linkSource: string | null;
 };
 
-const FlowsheetGridContext = React.createContext<FlowsheetGridContextValues | undefined>(undefined);
+type FlowsheetGridAction =
+  | { type: "TOGGLE_SELECT"; placementId: string }
+  | { type: "CLEAR_SELECTED" }
+  | { type: "TOGGLE_FOCUS"; placementId: string }
+  | { type: "TOGGLE_LINKING"; placementId: string };
 
-type FlowsheetGridProviderProps = {
-  children: React.ReactNode;
+const initialState: FlowsheetGridState = {
+  selected: new Set(),
+  focused: null,
+  linkSource: null,
 };
 
-export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) {
-  const [focusedPlacement, setFocusedPlacement] = React.useState<Placement | null>(null);
-  const [selectedPlacements, setSelectedPlacements] = React.useState<Set<string>>(new Set());
-  const [selectedPrerequisites, setSelectedPrerequisites] = React.useState<Set<string>>(new Set());
-  const [linkingMode, setLinkingMode] = React.useState<boolean>(false);
-
-  const toggleFocusPlacement = (placement: Placement) => {
-    if (placement.id === focusedPlacement?.id) {
-      setFocusedPlacement(null);
-      return;
+function reducer(state: FlowsheetGridState, action: FlowsheetGridAction): FlowsheetGridState {
+  switch (action.type) {
+    case "TOGGLE_SELECT": {
+      const next = new Set(state.selected);
+      if (next.has(action.placementId)) next.delete(action.placementId);
+      else next.add(action.placementId);
+      return { ...state, selected: next, focused: null, linkSource: null };
     }
 
-    setFocusedPlacement(placement);
-  };
+    case "CLEAR_SELECTED":
+      return { ...state, selected: new Set() };
 
-  const toggleSelectPrerequisite = (prerequisiteId: string) => {
-    setSelectedPrerequisites((prev) => {
-      const updated = new Set(prev);
+    case "TOGGLE_FOCUS":
+      return {
+        ...state,
+        focused: state.focused === action.placementId ? null : action.placementId,
+      };
 
-      if (updated.has(prerequisiteId)) {
-        updated.delete(prerequisiteId);
+    case "TOGGLE_LINKING":
+      return {
+        ...state,
+        linkSource: state.linking ? null : action.placementId,
+        focused: state.linking ? null : action.placementId,
+        selected: new Set(),
+      };
 
-        return updated;
-      }
+    default:
+      return state;
+  }
+}
 
-      updated.add(prerequisiteId);
+const FlowsheetGridContext = React.createContext<any>(undefined);
 
-      return updated;
-    });
-  };
-
-  const toggleLinkingMode = (placement: Placement) => {
-    if (linkingMode) {
-      setFocusedPlacement(null);
-      setLinkingMode(false);
-      return;
-    }
-
-    setLinkingMode(true);
-    setFocusedPlacement(placement);
-    setSelectedPlacements(new Set());
-  };
-
-  const isFocusedPlacement = (placementId: string) => placementId === focusedPlacement?.id;
-
-  const clearFocusedPlacement = () => setFocusedPlacement(null);
-
-  const toggleSelectedPlacement = (placementId: string) => {
-    if (focusedPlacement) {
-      setFocusedPlacement(null);
-    }
-
-    setSelectedPlacements((prev) => {
-      const updated = new Set(prev);
-
-      if (updated.has(placementId)) updated.delete(placementId);
-      else updated.add(placementId);
-
-      return updated;
-    });
-  };
-
-  const onCourseSelectionChange = (selection: Set<string>) => {
-    setSelectedPlacements(selection);
-  };
-
-  const clearSelectedPlacements = () => setSelectedPlacements(new Set());
-
-  const isSelectedPlacement = (placementId: string) => selectedPlacements.has(placementId);
-
-  const clearLinkingMode = () => setLinkingMode(false);
+export function FlowsheetGridProvider({ children }: { children: React.ReactNode }) {
+  const [state, dispatch] = React.useReducer(reducer, initialState);
 
   return (
-    <FlowsheetGridContext.Provider
-      value={{
-        selectedPlacements,
-        toggleSelectedPlacement,
-        isSelectedPlacement,
-        clearSelectedPlacements,
-        onCourseSelectionChange,
-        focusedPlacement,
-        toggleFocusPlacement,
-        isFocusedPlacement,
-        clearFocusedPlacement,
-        toggleLinkingMode,
-        toggleSelectPrerequisite,
-        linkingMode,
-        clearLinkingMode,
-        selectedPrerequisites,
-      }}
-    >
+    <FlowsheetGridContext.Provider value={{ state, dispatch }}>
       {children}
     </FlowsheetGridContext.Provider>
   );
 }
 
-export const useFlowsheetGrid = () => {
-  const context = React.useContext(FlowsheetGridContext);
-
-  if (!context) throw new Error('useFlowsheetGrid must be used within FlowsheetGridProvider.');
-
-  return context;
-};
+export function useFlowsheetGrid() {
+  const ctx = React.useContext(FlowsheetGridContext);
+  if (!ctx) throw new Error("useFlowsheetGrid must be used inside provider");
+  return ctx;
+}

@@ -1,3 +1,4 @@
+import type { FlowsheetGridState } from '../hooks/flowsheet-grid.hook.tsx';
 import { validatePrerequisite, type Course } from './course.ts';
 import { classifyRelationship, type Relationship, type Requisites } from './courses-graph.ts';
 import type { Placement, Term } from './flowsheet.ts';
@@ -57,29 +58,27 @@ export function deletePlacements({
   };
 }
 
-export type PlacementState = {
-  isFocused: boolean;
-  isSelected: boolean;
-  relation: Relationship;
-  prerequisiteAllowed: boolean;
-};
+export type PlacementState =
+  'LINK_SOURCE'
+  | 'AVAILABLE_LINK'
+  | 'DISABLED_LINK'
+  | 'SELECTED'
+  | 'FOCUSED';
 
 export function getPlacementState({
   placement,
-  focusedPlacement,
-  selectedPlacements,
+  state,
   terms,
   graph,
 }: {
   placement: Placement;
-  focusedPlacement: Placement | null;
-  selectedPlacements: Set<string>;
+  state: FlowsheetGridState;
   terms: Record<string, Term>;
   graph: Map<string, Requisites>;
 }): PlacementState {
-  const isFocused = focusedPlacement?.id === placement.id;
+  if (placement.id === state.focused) return 'FOCUSED';
 
-  const isSelected = selectedPlacements.has(placement.id);
+  if (placement.id === state.linking) return 'LINK_SOURCE';
 
   const relation = focusedPlacement
     ? classifyRelationship(focusedPlacement.item, placement.item, graph)
