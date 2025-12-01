@@ -3,15 +3,13 @@ import { useFocusRing, useHover, usePress } from 'react-aria';
 import { type Course } from '../../../domain/course';
 import type { Placement } from '../../../domain/flowsheet';
 import {
-  deletePlacements,
-  getPlacementState
+  deletePlacements
 } from '../../../domain/placement';
-import { useCoursesGraph } from '../../../hooks/courses-graph.hook';
 import { useCourses } from '../../../hooks/courses.hook';
 import { useDisclosure } from '../../../hooks/disclosure.hook';
 import { useFlowsheetGrid } from '../../../hooks/flowsheet-grid.hook';
+import { usePlacement } from '../../../hooks/placement.hook';
 import { usePlacements } from '../../../hooks/placements.hook';
-import { useTerms } from '../../../hooks/terms.hook';
 import Group from '../../layout/group';
 import { Stack } from '../../layout/stack';
 import { Text } from '../../layout/text';
@@ -31,24 +29,19 @@ type CoursePlacementProps = {
 
 export function CoursePlacement({ course, placement }: CoursePlacementProps) {
   const { state, dispatch } = useFlowsheetGrid();
+  const placementState = usePlacement(placement);
 
-  const { coursesGraph } = useCoursesGraph();
-  const { terms } = useTerms();
   const { courses, setCourses } = useCourses();
   const { placements } = usePlacements();
 
-  const placementState = getPlacementState({
-    placement,
-    state,
-    placements,
-    terms,
-    graph: coursesGraph,
-  });
-
   const togglePrerequisite = () => {
-    if (!focusedPlacement || !perms.togglePrerequisite) return;
+    if (placementState !== 'AVAILABLE_LINK' && placementState !== 'ACTIVE_LINK') return;
 
-    const updatedCourse = courses[focusedPlacement.item];
+    if (!state.linkSource) return;
+
+    const sourcePlacement = placements[state.linkSource];
+    const updatedCourse = courses[sourcePlacement.item];
+
     if (!updatedCourse) return;
 
     if (updatedCourse.prerequisites.includes(course.id)) {
@@ -62,23 +55,27 @@ export function CoursePlacement({ course, placement }: CoursePlacementProps) {
 
   const { pressProps, isPressed } = usePress({
     onPress: (e) => {
-      if ((e.ctrlKey || e.shiftKey) && perms.toggleSelect) {
-        toggleSelectedPlacement(placement.id);
+      if ((e.ctrlKey || e.shiftKey) && placementState === 'NORMAL') {
+        dispatch({ type: 'TOGGLE_SELECT', payload: { placementId: placement.id } });
         return;
       }
 
-      if (perms.togglePrerequisite) {
+      if (placementState === 'SELECTABLE' || placementState === 'SELECTED') {
+        dispatch({ type: 'TOGGLE_SELECT', payload: { placementId: placement.id } });
+      }
+
+      if (placementState === 'ACTIVE_LINK' || placementState === 'AVAILABLE_LINK') {
         togglePrerequisite();
         return;
       }
 
-      if (perms.exitLinkingMode) {
-        toggleLinkingMode(placement);
+      if (placementState === 'LINK_SOURCE') {
+        dispatch({ type: 'TOGGLE_LINKING', payload: { placementId: placement.id } });
         return;
       }
 
-      if (perms.toggleFocus) {
-        toggleFocusPlacement(placement);
+      if (placementState === 'FOCUSED' || placementState === 'NORMAL') {
+        dispatch({ type: 'TOGGLE_FOCUS', payload: { placementId: placement.id } });
         return;
       }
     },
@@ -119,8 +116,8 @@ export function CoursePlacement({ course, placement }: CoursePlacementProps) {
           </Button>
 
           <Checkbox
-            onChange={() => toggleSelectedPlacement(placement.id)}
-            isSelected={isSelectedPlacement(placement.id)}
+            onChange={() => dispatch({ type: 'TOGGLE_SELECT', payload: { placementId: placement.id } })}
+            isSelected={state.selected.has(placement.id)}
           />
         </Group>
         {JSON.stringify(placementState)}
@@ -135,8 +132,10 @@ type CoursePlacementMenuProps = {
 };
 
 function CoursePlacementMenu({ course, placement }: CoursePlacementMenuProps) {
-  const { toggleLinkingMode } = useFlowsheetGrid();
+  const { dispatch } = useFlowsheetGrid();
+
   const editModalDisclosure = useDisclosure();
+
   const { placements, setPlacements } = usePlacements();
   const { courses, setCourses } = useCourses();
 
@@ -160,7 +159,7 @@ function CoursePlacementMenu({ course, placement }: CoursePlacementMenuProps) {
 
         <Popover placement="top">
           <Menu>
-            <MenuItem onPress={() => toggleLinkingMode(placement)}>
+            <MenuItem onPress={() => dispatch({ type: 'TOGGLE_LINKING', payload: { placementId: placement.id } })}>
               <Plus size={14} /> Prerequisite
             </MenuItem>
 

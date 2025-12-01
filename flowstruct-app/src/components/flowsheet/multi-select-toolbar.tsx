@@ -12,8 +12,7 @@ import { usePlacements } from '../../hooks/placements.hook.tsx';
 import { useCourses } from '../../hooks/courses.hook.tsx';
 
 export function MultiSelectToolbar() {
-  const { selectedPlacements, focusedPlacement, clearSelectedPlacements, clearFocusedPlacement } =
-    useFlowsheetGrid();
+  const { state, dispatch } = useFlowsheetGrid();
 
   const { placements, setPlacements } = usePlacements();
   const { courses, setCourses } = useCourses();
@@ -24,14 +23,11 @@ export function MultiSelectToolbar() {
     const deletePlacementsResult = deletePlacements({
       courses,
       placements,
-      placementIds: Array.from(selectedPlacements),
+      placementIds: Array.from(state.selected),
     });
 
-    if (focusedPlacement && selectedPlacements.has(focusedPlacement.id)) {
-      clearFocusedPlacement();
-    }
+    dispatch({ type: 'CLEAR_SELECTED' });
 
-    clearSelectedPlacements();
     setPlacements(deletePlacementsResult.placements);
     setCourses(deletePlacementsResult.courses);
   };
@@ -41,19 +37,19 @@ export function MultiSelectToolbar() {
       <Popover
         triggerRef={triggerRef}
         isNonModal
-        isOpen={selectedPlacements.size > 0}
+        isOpen={state.selected.size > 0}
         className={styles.toolbar}
       >
         <Group gap={3}>
           <div className={styles.selectionCounter}>
             <Group>
-              <p>{selectedPlacements.size} selected</p>
+              <p>{state.selected.size} selected</p>
 
               <Button
                 variant="ghost"
                 shape="icon"
                 size="none"
-                onPress={() => clearSelectedPlacements()}
+                onPress={() => dispatch({ type: 'CLEAR_SELECTED' })}
               >
                 <X size={14} />
               </Button>

@@ -25,15 +25,15 @@ import styles from './flowsheet-grid.module.css';
 import { MultiSelectToolbar } from './multi-select-toolbar.tsx';
 
 export function FlowsheetGrid() {
-  const { clearSelectedPlacements, clearFocusedPlacement, clearLinkingMode } = useFlowsheetGrid();
+  const { dispatch } = useFlowsheetGrid();
+
   const { terms, setTerms } = useTerms();
   const { placements } = usePlacements();
+
   const { keyboardProps } = useKeyboard({
     onKeyDown: (e) => {
       if (e.key === 'Escape') {
-        clearSelectedPlacements();
-        clearFocusedPlacement();
-        clearLinkingMode();
+        dispatch({ type: 'RESET_STATE' });
       }
     },
   });

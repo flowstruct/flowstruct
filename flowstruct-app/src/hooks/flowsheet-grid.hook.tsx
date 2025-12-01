@@ -10,7 +10,8 @@ type FlowsheetGridAction =
   | { type: "TOGGLE_SELECT"; payload: { placementId: string } }
   | { type: "CLEAR_SELECTED" }
   | { type: "TOGGLE_FOCUS"; payload: { placementId: string } }
-  | { type: "TOGGLE_LINKING"; payload: { placementId: string } };
+  | { type: "TOGGLE_LINKING"; payload: { placementId: string } }
+  | { type: "RESET_STATE" };
 
 const initialState: FlowsheetGridState = {
   selected: new Set(),
@@ -55,9 +56,13 @@ function reducer(state: FlowsheetGridState, action: FlowsheetGridAction): Flowsh
       return {
         ...state,
         linkSource: isLinking ? null : id,
-        focused: isLinking ? null : id,
+        focused: null,
         selected: new Set(),
       };
+    }
+
+    case "RESET_STATE": {
+      return initialState;
     }
 
     default:

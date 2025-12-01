@@ -62,6 +62,7 @@ export type PlacementVisualState =
   | 'NORMAL'
   | 'FOCUSED'
   | 'SELECTED'
+  | 'SELECTABLE'
   | 'LINK_SOURCE'
   | 'ACTIVE_LINK'
   | 'AVAILABLE_LINK'
@@ -80,26 +81,31 @@ export function getPlacementState({
   terms: Record<string, Term>;
   graph: Map<string, Requisites>;
 }): PlacementVisualState {
+  if (state.selected.size > 0) {
+    const isSelected = state.selected.has(placement.id);
 
-  const isFocused = state.focused === placement.id;
-  const isSelected = state.selected.has(placement.id);
-  const isLinkSource = state.linkSource === placement.id;
+    if (isSelected) return 'SELECTED';
 
+    return 'SELECTABLE';
+  }
 
-  if (isFocused) return 'FOCUSED';
-  if (isSelected) return 'SELECTED';
-  if (isLinkSource) return 'LINK_SOURCE';
+  if (state.focused) {
+    const isFocused = state.focused === placement.id;
 
-  // if (state.focused) {
-  //   const source = placements[state.focused].item;
-  //   const target = placement.item;
-  //
-  //   const relation = classifyRelationship(source, target, graph);
-  //
-  //   if (relation === 'PREREQ') return relation;
-  // }
+    if (isFocused) return 'FOCUSED';
+    // const source = placements[state.focused].item;
+    // const target = placement.item;
+    //
+    // const relation = classifyRelationship(source, target, graph);
+    //
+    // if (relation === 'PREREQ') return relation;
+  }
 
   if (state.linkSource) {
+    const isLinkSource = state.linkSource === placement.id;
+
+    if (isLinkSource) return 'LINK_SOURCE';
+
     const source = placements[state.linkSource!];
     const target = placements[placement.id];
 

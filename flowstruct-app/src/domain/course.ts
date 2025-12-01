@@ -28,7 +28,7 @@ export function validatePrerequisite(
 ) {
   if (source.id === target.id) return false;
 
-  const targetAheadOfSource = terms[source.term].position >= terms[target.term].position;
+  const targetAheadOfSource = terms[target.term].position >= terms[source.term].position;
   const targetRelationToSource = classifyRelationship(target.item, source.item, graph);
   const isCyclic = targetRelationToSource === 'POSTREQSEQ';
 
