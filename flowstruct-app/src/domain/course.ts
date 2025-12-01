@@ -1,4 +1,4 @@
-import { classifyRelationship, type Requisites } from './courses-graph.ts';
+import { classifyRelationship, type CourseRelation, type Requisites } from './courses-graph.ts';
 import type { Placement, Term } from './flowsheet.ts';
 
 export const CourseType = {
@@ -23,14 +23,13 @@ export type Course = {
 export function validatePrerequisite(
   source: Placement,
   target: Placement,
-  graph: Map<string, Requisites>,
-  terms: Record<string, Term>
+  terms: Record<string, Term>,
+  relation: CourseRelation
 ) {
   if (source.id === target.id) return false;
 
   const targetAheadOfSource = terms[target.term].position >= terms[source.term].position;
-  const targetRelationToSource = classifyRelationship(target.item, source.item, graph);
-  const isCyclic = targetRelationToSource === 'POSTREQSEQ';
+  const isCyclic = relation === 'POSTREQSEQ';
 
   if (targetAheadOfSource || isCyclic) return false;
 

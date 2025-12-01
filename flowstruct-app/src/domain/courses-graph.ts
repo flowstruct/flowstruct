@@ -33,8 +33,6 @@ const traversePrerequisites = (
 
     const prerequisiteCourseSequences = graph.get(p)!;
 
-    courseSequences.prerequisites.add(p);
-
     prerequisiteCourseSequences.prerequisiteSequence.forEach((id) =>
       courseSequences.prerequisiteSequence.add(id)
     );
@@ -80,8 +78,8 @@ export const buildCoursesGraph = (courses: Record<string, Course>): Map<string, 
 
   allCourses.forEach((course) => {
     graph.set(course.id, {
-      prerequisites: new Set(),
-      corequisites: new Set(),
+      prerequisites: new Set(course.prerequisites),
+      corequisites: new Set(course.corequisites),
       prerequisiteSequence: new Set(),
       postrequisiteSequence: new Set(),
     });
@@ -102,13 +100,13 @@ export const buildCoursesGraph = (courses: Record<string, Course>): Map<string, 
   return graph;
 };
 
-export type Relationship = 'SELF' | 'PREREQ' | 'PREREQSEQ' | 'COREQ' | 'POSTREQSEQ' | 'UNRELATED';
+export type CourseRelation = 'SELF' | 'PREREQ' | 'PREREQSEQ' | 'COREQ' | 'POSTREQSEQ' | 'UNRELATED';
 
 export function classifyRelationship(
   sourceId: string,
   targetId: string,
   graph: Map<string, Requisites>
-): Relationship {
+): CourseRelation {
   if (sourceId === targetId) return 'SELF';
 
   const source = graph.get(sourceId);

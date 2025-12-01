@@ -29,14 +29,13 @@ type EditCourseFormProps = {
   disclosure: DisclosureReturnResult;
 };
 
-// TODO: fix course edit bug not providing id
 export function EditCourseForm({ course, disclosure }: EditCourseFormProps) {
   const { setCourses } = useCourses();
 
   const onSubmit = handleSubmit<Course>((data) => {
     const updatedCourse: Course = {
+      ...course,
       ...data,
-      id: course.id,
       code: data.code.toUpperCase(),
     };
 

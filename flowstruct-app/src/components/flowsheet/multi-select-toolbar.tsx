@@ -60,14 +60,6 @@ export function MultiSelectToolbar() {
 
           <Group>
             <TooltipTrigger>
-              <Button shape="icon" variant="flat" size="sm">
-                <TagIcon size={14} />
-              </Button>
-
-              <Tooltip>Tag section</Tooltip>
-            </TooltipTrigger>
-
-            <TooltipTrigger>
               <Button shape="icon" size="sm" variant="flat" onPress={handleDeletePlacements}>
                 <Trash color="red" size={14} />
               </Button>

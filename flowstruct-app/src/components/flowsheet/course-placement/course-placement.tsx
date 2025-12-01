@@ -35,8 +35,6 @@ export function CoursePlacement({ course, placement }: CoursePlacementProps) {
   const { placements } = usePlacements();
 
   const togglePrerequisite = () => {
-    if (placementState !== 'AVAILABLE_LINK' && placementState !== 'ACTIVE_LINK') return;
-
     if (!state.linkSource) return;
 
     const sourcePlacement = placements[state.linkSource];
@@ -53,6 +51,23 @@ export function CoursePlacement({ course, placement }: CoursePlacementProps) {
     setCourses({ ...courses });
   };
 
+  const toggleCorequisite = () => {
+    if (!state.linkSource) return;
+
+    const sourcePlacement = placements[state.linkSource];
+    const updatedCourse = courses[sourcePlacement.item];
+
+    if (!updatedCourse) return;
+
+    if (updatedCourse.corequisites.includes(course.id)) {
+      updatedCourse.corequisites = updatedCourse.corequisites.filter((pr) => pr !== course.id);
+    } else {
+      updatedCourse.corequisites.push(course.id);
+    }
+
+    setCourses({ ...courses });
+  }
+
   const { pressProps, isPressed } = usePress({
     onPress: (e) => {
       if ((e.ctrlKey || e.shiftKey) && placementState === 'NORMAL') {
@@ -64,17 +79,22 @@ export function CoursePlacement({ course, placement }: CoursePlacementProps) {
         dispatch({ type: 'TOGGLE_SELECT', payload: { placementId: placement.id } });
       }
 
-      if (placementState === 'ACTIVE_LINK' || placementState === 'AVAILABLE_LINK') {
+      if (placementState === 'PREREQ_LINK' || placementState === 'AVAILABLE_LINK' && state.linkType === 'PREREQ') {
         togglePrerequisite();
         return;
       }
 
-      if (placementState === 'LINK_SOURCE') {
-        dispatch({ type: 'TOGGLE_LINKING', payload: { placementId: placement.id } });
+      if (placementState === 'COREQ_LINK' || placementState === 'AVAILABLE_LINK' && state.linkType === 'COREQ') {
+        toggleCorequisite();
         return;
       }
 
-      if (placementState === 'FOCUSED' || placementState === 'NORMAL') {
+      if (placementState === 'LINK_SOURCE') {
+        dispatch({ type: 'TOGGLE_LINKING', payload: { placementId: placement.id, type: null } });
+        return;
+      }
+
+      if (state.focused || placementState === 'NORMAL') {
         dispatch({ type: 'TOGGLE_FOCUS', payload: { placementId: placement.id } });
         return;
       }
@@ -159,19 +179,19 @@ function CoursePlacementMenu({ course, placement }: CoursePlacementMenuProps) {
 
         <Popover placement="top">
           <Menu>
-            <MenuItem onPress={() => dispatch({ type: 'TOGGLE_LINKING', payload: { placementId: placement.id } })}>
+            <MenuItem aria-label="Add prerequiste" onPress={() => dispatch({ type: 'TOGGLE_LINKING', payload: { placementId: placement.id, type: 'PREREQ' } })}>
               <Plus size={14} /> Prerequisite
             </MenuItem>
 
-            <MenuItem>
+            <MenuItem aria-label="Add corequisite" onPress={() => dispatch({ type: 'TOGGLE_LINKING', payload: { placementId: placement.id, type: 'COREQ' } })}>
               <Plus size={14} /> Corequisite
             </MenuItem>
 
-            <MenuItem onPress={editModalDisclosure.open}>
+            <MenuItem aria-label="Edit details" onPress={editModalDisclosure.open}>
               <Pencil size={14} /> Edit
             </MenuItem>
 
-            <MenuItem onPress={handleDeletePlacement}>
+            <MenuItem aria-label="Remove placement" onPress={handleDeletePlacement}>
               <Trash size={14} color="red" /> Remove
             </MenuItem>
           </Menu>

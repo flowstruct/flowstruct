@@ -1,6 +1,6 @@
 import type { FlowsheetGridState } from '../hooks/flowsheet-grid.hook.tsx';
 import { validatePrerequisite, type Course } from './course.ts';
-import { classifyRelationship, type Requisites } from './courses-graph.ts';
+import { classifyRelationship, type CourseRelation, type Requisites } from './courses-graph.ts';
 import type { Placement, Term } from './flowsheet.ts';
 
 type DeletePlacementsArgs = {
@@ -64,9 +64,11 @@ export type PlacementVisualState =
   | 'SELECTED'
   | 'SELECTABLE'
   | 'LINK_SOURCE'
-  | 'ACTIVE_LINK'
+  | 'PREREQ_LINK'
+  | 'COREQ_LINK'
   | 'AVAILABLE_LINK'
-  | 'DISABLED_LINK';
+  | 'DISABLED_LINK'
+  | CourseRelation;
 
 export function getPlacementState({
   placement,
@@ -93,12 +95,13 @@ export function getPlacementState({
     const isFocused = state.focused === placement.id;
 
     if (isFocused) return 'FOCUSED';
-    // const source = placements[state.focused].item;
-    // const target = placement.item;
-    //
-    // const relation = classifyRelationship(source, target, graph);
-    //
-    // if (relation === 'PREREQ') return relation;
+
+    const source = placements[state.focused].item;
+    const target = placement.item;
+
+    const relation = classifyRelationship(source, target, graph);
+
+    return relation;
   }
 
   if (state.linkSource) {
@@ -111,12 +114,21 @@ export function getPlacementState({
 
     if (!source || !target) return 'DISABLED_LINK';
 
-    const allowed = validatePrerequisite(source, target, graph, terms);
     const relation = classifyRelationship(source.item, target.item, graph);
 
-    if (relation === 'PREREQ') return 'ACTIVE_LINK';
+    if (state.linkType === 'PREREQ') {
+      if (relation === 'PREREQ') return 'PREREQ_LINK';
 
-    return allowed ? 'AVAILABLE_LINK' : 'DISABLED_LINK';
+      const allowed = validatePrerequisite(source, target, terms, relation);
+
+      return allowed ? 'AVAILABLE_LINK' : 'DISABLED_LINK';
+    }
+
+    if (state.linkType === 'COREQ') {
+      if (relation === 'COREQ') return 'COREQ_LINK';
+
+      return 'AVAILABLE_LINK';
+    }
   }
 
   return 'NORMAL';

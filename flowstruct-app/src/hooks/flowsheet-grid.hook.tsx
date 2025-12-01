@@ -1,22 +1,26 @@
 import React from "react";
 
+export type LinkType = 'PREREQ' | 'COREQ';
+
 export type FlowsheetGridState = {
   selected: Set<string>;
   focused: string | null;
   linkSource: string | null;
+  linkType: LinkType | null;
 };
 
 type FlowsheetGridAction =
   | { type: "TOGGLE_SELECT"; payload: { placementId: string } }
   | { type: "CLEAR_SELECTED" }
   | { type: "TOGGLE_FOCUS"; payload: { placementId: string } }
-  | { type: "TOGGLE_LINKING"; payload: { placementId: string } }
+  | { type: "TOGGLE_LINKING"; payload: { placementId: string, type: LinkType | null } }
   | { type: "RESET_STATE" };
 
 const initialState: FlowsheetGridState = {
   selected: new Set(),
   focused: null,
   linkSource: null,
+  linkType: null
 };
 
 function reducer(state: FlowsheetGridState, action: FlowsheetGridAction): FlowsheetGridState {
@@ -50,12 +54,12 @@ function reducer(state: FlowsheetGridState, action: FlowsheetGridAction): Flowsh
 
     case "TOGGLE_LINKING": {
       const id = action.payload.placementId;
-
-      const isLinking = state.linkSource !== null;
+      const type = action.payload.type;
 
       return {
         ...state,
-        linkSource: isLinking ? null : id,
+        linkType: state.linkSource === id ? null : type,
+        linkSource: state.linkSource === id ? null : id,
         focused: null,
         selected: new Set(),
       };
