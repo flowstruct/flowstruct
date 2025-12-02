@@ -23,6 +23,8 @@ import { CoursePlacementForm } from './course-placement/course-placement-form.ts
 import { CoursePlacement } from './course-placement/course-placement.tsx';
 import styles from './flowsheet-grid.module.css';
 import { MultiSelectToolbar } from './multi-select-toolbar.tsx';
+import { useCoursesGraph } from '../../hooks/courses-graph.hook.tsx';
+import { calculateAllowedTerms } from '../../domain/term.ts';
 
 export function FlowsheetGrid() {
   const { dispatch } = useFlowsheetGrid();
@@ -94,9 +96,11 @@ type TermProps = {
 };
 
 function Term({ term, placements }: TermProps) {
-  const { dispatch } = useFlowsheetGrid();
+  const { state, dispatch } = useFlowsheetGrid();
   const { courses } = useCourses();
   const { placements: allPlacements, setPlacements } = usePlacements();
+  const { terms } = useTerms();
+  const { coursesGraph } = useCoursesGraph();
 
   const { dragAndDropHooks } = useDragAndDrop<Placement>({
     getItems(_, items) {
@@ -111,7 +115,11 @@ function Term({ term, placements }: TermProps) {
     getDropOperation: () => 'move',
 
     async onDragStart(e) {
-      dispatch({ type: 'MOVE_START', payload: { placementId: Array.from(e.keys)[0] as string } })
+      const placement = allPlacements[Array.from(e.keys)[0] as string];
+
+      const allowedTerms = calculateAllowedTerms(placement.item, terms, coursesGraph, allPlacements);
+
+      dispatch({ type: 'MOVE_START', payload: { placementId: placement.id, allowedTerms } });
     },
 
     async onDragEnd() {
@@ -130,6 +138,8 @@ function Term({ term, placements }: TermProps) {
       const sourceId = processedItems[0].id;
       const targetId = e.target.key as string;
 
+      if (!state.allowedTerms.has(term.id)) return;
+
       const reorderedPlacements = reorderPlacements(
         sourceId,
         targetId,
@@ -141,6 +151,8 @@ function Term({ term, placements }: TermProps) {
     },
 
     async onRootDrop(e) {
+      if (!state.allowedTerms.has(term.id)) return;
+
       const processedItems = await Promise.all(
         e.items
           .filter(isTextDropItem)

@@ -67,7 +67,7 @@ export type PlacementVisualState =
   | 'PREREQ_LINK'
   | 'COREQ_LINK'
   | 'AVAILABLE_LINK'
-  | 'DISABLED_LINK'
+  | 'DISABLED'
   | 'MOVING'
   | CourseRelation;
 
@@ -87,7 +87,9 @@ export function getPlacementState({
   if (state.moving) {
     if (state.moving === placement.id) return 'MOVING';
 
+    const allowedMoveTarget = state.allowedTerms.has(placement.term);
 
+    if (!allowedMoveTarget) return 'DISABLED'
   }
 
   if (state.selected.size > 0) {
@@ -119,7 +121,7 @@ export function getPlacementState({
     const source = placements[state.linkSource!];
     const target = placements[placement.id];
 
-    if (!source || !target) return 'DISABLED_LINK';
+    if (!source || !target) return 'DISABLED';
 
     const relation = classifyRelationship(source.item, target.item, graph);
 
@@ -128,7 +130,7 @@ export function getPlacementState({
 
       const allowed = validatePrerequisite(source, target, terms, relation);
 
-      return allowed ? 'AVAILABLE_LINK' : 'DISABLED_LINK';
+      return allowed ? 'AVAILABLE_LINK' : 'DISABLED';
     }
 
     if (state.linkType === 'COREQ') {
