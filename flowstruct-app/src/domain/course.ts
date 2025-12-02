@@ -1,4 +1,4 @@
-import { classifyRelationship, type CourseRelation, type Requisites } from './courses-graph.ts';
+import { type CourseRelation } from './courses-graph.ts';
 import type { Placement, Term } from './flowsheet.ts';
 
 export const CourseType = {

@@ -5,6 +5,7 @@ export type LinkType = 'PREREQ' | 'COREQ';
 export type FlowsheetGridState = {
   selected: Set<string>;
   focused: string | null;
+  moving: string | null;
   linkSource: string | null;
   linkType: LinkType | null;
 };
@@ -14,11 +15,14 @@ type FlowsheetGridAction =
   | { type: "CLEAR_SELECTED" }
   | { type: "TOGGLE_FOCUS"; payload: { placementId: string } }
   | { type: "TOGGLE_LINKING"; payload: { placementId: string, type: LinkType | null } }
+  | { type: "MOVE_START"; payload: { placementId: string } }
+  | { type: "MOVE_END"; }
   | { type: "RESET_STATE" };
 
 const initialState: FlowsheetGridState = {
   selected: new Set(),
   focused: null,
+  moving: null,
   linkSource: null,
   linkType: null
 };
@@ -63,6 +67,19 @@ function reducer(state: FlowsheetGridState, action: FlowsheetGridAction): Flowsh
         focused: null,
         selected: new Set(),
       };
+    }
+
+    case "MOVE_START": {
+      const id = action.payload.placementId;
+
+      return {
+        ...initialState,
+        moving: id
+      }
+    }
+
+    case "MOVE_END": {
+      return initialState;
     }
 
     case "RESET_STATE": {

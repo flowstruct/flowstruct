@@ -94,6 +94,7 @@ type TermProps = {
 };
 
 function Term({ term, placements }: TermProps) {
+  const { dispatch } = useFlowsheetGrid();
   const { courses } = useCourses();
   const { placements: allPlacements, setPlacements } = usePlacements();
 
@@ -108,6 +109,14 @@ function Term({ term, placements }: TermProps) {
     },
     acceptedDragTypes: ['placement'],
     getDropOperation: () => 'move',
+
+    async onDragStart(e) {
+      dispatch({ type: 'MOVE_START', payload: { placementId: Array.from(e.keys)[0] as string } })
+    },
+
+    async onDragEnd() {
+      dispatch({ type: 'MOVE_END' });
+    },
 
     async onInsert(e) {
       if (e.target.dropPosition === 'on') return;

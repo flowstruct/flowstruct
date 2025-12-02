@@ -68,6 +68,7 @@ export type PlacementVisualState =
   | 'COREQ_LINK'
   | 'AVAILABLE_LINK'
   | 'DISABLED_LINK'
+  | 'MOVING'
   | CourseRelation;
 
 export function getPlacementState({
@@ -83,6 +84,12 @@ export function getPlacementState({
   terms: Record<string, Term>;
   graph: Map<string, Requisites>;
 }): PlacementVisualState {
+  if (state.moving) {
+    if (state.moving === placement.id) return 'MOVING';
+
+
+  }
+
   if (state.selected.size > 0) {
     const isSelected = state.selected.has(placement.id);
 
