@@ -120,14 +120,14 @@ export function CoursePlacement({ course, placement }: CoursePlacementProps) {
       <Stack fill gap={1}>
         <Stack fill>
           <Group justify="between">
-            <Text as="h3" size="xs" tone="dimmed" weight="medium" className={styles.code}>
+            <p className={styles.code}>
               {course.code}
-            </Text>
+            </p>
 
             <CoursePlacementMenu course={course} placement={placement} />
           </Group>
 
-          <Text size="xs">{course.name}</Text>
+          <p className={styles.name}>{course.name}</p>
         </Stack>
 
         <Group justify="between">
@@ -135,12 +135,13 @@ export function CoursePlacement({ course, placement }: CoursePlacementProps) {
             <GripHorizontal size={15} color="gray" />
           </Button>
 
-          <Checkbox
-            onChange={() => dispatch({ type: 'TOGGLE_SELECT', payload: { placementId: placement.id } })}
-            isSelected={state.selected.has(placement.id)}
-          />
+          {(isHovered || state.selected.has(placement.id)) && (
+            <Checkbox
+              onChange={() => dispatch({ type: 'TOGGLE_SELECT', payload: { placementId: placement.id } })}
+              isSelected={state.selected.has(placement.id)}
+            />
+          )}
         </Group>
-        {JSON.stringify(placementState)}
       </Stack>
     </div>
   );

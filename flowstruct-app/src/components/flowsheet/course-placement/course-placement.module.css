@@ -28,6 +28,48 @@
   &[data-pressed] {
     background: var(--gray-a2);
   }
+
+  &[data-state=FOCUSED] {
+    background: var(--primary-2);
+    border: 1px solid var(--primary-6);
+  }
+
+  &[data-state=PREREQ] {
+    background: #fdba74;
+  }
+
+  &[data-state=PREREQSEQ] {
+    background: #fef08a;
+  }
+
+  &[data-state=POSTREQSEQ] {
+    background: #075985;
+
+    .code {
+      color: var(--primary-contrast);
+    }
+
+    .name {
+      color: var(--primary-contrast);
+    }
+  }
+
+  &[data-state=DISABLED] {
+    opacity: 0.5;
+  }
+
+  &[data-state=PREREQ_LINK] {
+    border: 1px solid #fdba74;
+  }
+
+  &[data-state=COREQ_LINK] {
+    border: 1px solid var(--gray-8);
+  }
+
+  &[data-state=LINK_SOURCE] {
+    background: var(--primary-2);
+    border: 1px solid var(--primary-6);
+  }
 }
 
 .card.selected {
@@ -37,10 +79,6 @@
 
 .card.focused {
   border: 1px solid var(--primary-6);
-}
-
-.card.PREREQ {
-  background: #fdba74;
 }
 
 .card.selectedPrerequisite {
@@ -53,5 +91,13 @@
 }
 
 .code {
+  color: var(--text-color-dimmed);
+  font-weight: 450;
+  font-size: var(--font-size-xs);
   text-transform: uppercase;
+}
+
+.name {
+  color: var(--text-color-base);
+  font-size: var(--font-size-sm);
 }
