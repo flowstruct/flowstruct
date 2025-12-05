@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5433/flowstruct
+    url: ${DATASOURCE_URL:jdbc:postgresql://localhost:5433/flowstruct}
     username: flowstruct
     password: flowstruct
   flyway:
@@ -10,11 +10,6 @@ spring:
   config:
     activate:
       on-profile: dev
-
-logging:
-  level:
-    org:
-      springframework: DEBUG
 
 secure: false
 

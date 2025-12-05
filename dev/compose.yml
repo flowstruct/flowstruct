@@ -1,0 +1,45 @@
+services:
+  client:
+    build:
+      context: ../client
+      dockerfile: dev.Dockerfile
+    working_dir: /client
+    command: sh -c "pnpm install && pnpm start:cms --host && pnpm start:content --host"
+    volumes:
+      - ../client:/client
+    ports:
+      - 5173:5173
+      - 4321:4321
+    environment:
+      NODE_ENV: development
+      VITE_PROXY_TARGET: http://api:8080
+    depends_on:
+      - api
+
+  api:
+    build:
+      context: ../api
+      dockerfile: dev.Dockerfile
+    working_dir: /api
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      DATASOURCE_URL: jdbc:postgresql://database/flowstruct
+    command: ./mvnw spring-boot:run
+    depends_on:
+      - database
+
+  database:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: flowstruct
+      POSTGRES_USER: flowstruct
+      POSTGRES_PASSWORD: flowstruct
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+
+volumes:
+  pgdata:
