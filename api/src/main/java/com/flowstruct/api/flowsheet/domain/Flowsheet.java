@@ -24,65 +24,62 @@ import java.util.stream.Collectors;
 @Table("flowsheet")
 public class Flowsheet {
 
-    @Id
-    private Long id;
+  @Id
+  private Long id;
 
-    private int year;
+  private int year;
 
-    private String name;
+  private String name;
 
-    private AggregateReference<Program, Long> program;
+  private AggregateReference<Program, Long> program;
 
-    private FlowsheetSnapshot approvedFlowsheet;
+  private FlowsheetSnapshot approvedFlowsheet;
 
-    private Instant archivedAt;
+  private Instant archivedAt;
 
-    private Long archivedBy;
+  private Long archivedBy;
 
-    @Version
-    private Long version;
+  @Version
+  private Long version;
 
-    @CreatedDate
-    private Instant createdAt;
+  @CreatedDate
+  private Instant createdAt;
 
-    @LastModifiedDate
-    private Instant updatedAt;
+  @LastModifiedDate
+  private Instant updatedAt;
 
-    @LastModifiedBy
-    private Long updatedBy;
+  @LastModifiedBy
+  private Long updatedBy;
 
-    @MappedCollection(idColumn = "flowsheet")
-    private Set<Section> sections = new HashSet<>();
+  @MappedCollection(idColumn = "flowsheet")
+  private Set<Section> sections = new HashSet<>();
 
-    @MappedCollection(idColumn = "flowsheet")
-    private Set<Placement> placements = new HashSet<>();
+  @MappedCollection(idColumn = "flowsheet")
+  private Set<Term> terms = new HashSet<>();
 
-    @MappedCollection(idColumn = "flowsheet")
-    private Set<CoursePrerequisite> coursePrerequisites = new HashSet<>();
+  @MappedCollection(idColumn = "flowsheet")
+  private Set<CoursePrerequisite> coursePrerequisites = new HashSet<>();
 
-    @MappedCollection(idColumn = "flowsheet")
-    private Set<CourseCorequisite> courseCorequisites = new HashSet<>();
+  @MappedCollection(idColumn = "flowsheet")
+  private Set<CourseCorequisite> courseCorequisites = new HashSet<>();
 
-    public Map<Long, List<CoursePrerequisite>> getCoursePrerequisitesMap() {
-        return coursePrerequisites
-                .stream()
-                .collect(Collectors.groupingBy(coursePrerequisite ->
-                        coursePrerequisite.getCourse().getId()
-                ));
-    }
+  public Map<Long, List<CoursePrerequisite>> getCoursePrerequisitesMap() {
+    return coursePrerequisites
+        .stream()
+        .collect(Collectors.groupingBy(coursePrerequisite -> coursePrerequisite.getCourse().getId()));
+  }
 
-    public Map<Long, List<CourseCorequisite>> getCourseCorequisitesMap() {
-        return courseCorequisites
-                .stream()
-                .collect(Collectors.groupingBy(courseCorequisite ->
-                        courseCorequisite.getCourse().getId()
-                ));
-    }
+  public Map<Long, List<CourseCorequisite>> getCourseCorequisitesMap() {
+    return courseCorequisites
+        .stream()
+        .collect(Collectors.groupingBy(courseCorequisite -> courseCorequisite.getCourse().getId()));
+  }
 
-    public Map<Long, Placement> getPlacementsByCourse() {
-        return placements.stream().collect(Collectors.toUnmodifiableMap(
-                p -> p.getCourse().getId(),
-                p -> p
-        ));
-    }
+  public Map<Long, Placement> getPlacementsByCourse() {
+    return terms.stream()
+        .flatMap(t -> t.getPlacements().stream())
+        .collect(Collectors.toUnmodifiableMap(
+            p -> p.getCourse().getId(),
+            p -> p));
+  }
 }

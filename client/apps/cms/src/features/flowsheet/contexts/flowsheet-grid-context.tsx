@@ -1,119 +1,120 @@
-import React, { useContext } from 'react';
-import { Placement } from '@/features/flowsheet/domain/flowsheet.ts';
-import { getFlowsheetTerms } from '@/features/flowsheet/domain/getFlowsheetTerms';
-import { useFlowsheetContext } from '@/features/flowsheet/contexts/flowsheet-context.tsx';
+import React from "react";
+
+export type LinkType = 'PREREQ' | 'COREQ';
+
+export type FlowsheetGridState = {
+  selected: Set<number>;
+  focused: number | null;
+  moving: number | null;
+  linkSource: number | null;
+  linkType: LinkType | null;
+  allowedTerms: Set<number>;
+};
+
+type FlowsheetGridAction =
+  | { type: "TOGGLE_SELECT"; payload: { courseId: number } }
+  | { type: "CLEAR_SELECTED" }
+  | { type: "TOGGLE_FOCUS"; payload: { courseId: number } }
+  | { type: "TOGGLE_LINKING"; payload: { courseId: number, type: LinkType | null } }
+  | { type: "MOVE_START"; payload: { courseId: number, allowedTerms: Set<number> } }
+  | { type: "MOVE_END"; }
+  | { type: "RESET_STATE" };
+
+const initialState: FlowsheetGridState = {
+  selected: new Set(),
+  focused: null,
+  moving: null,
+  linkSource: null,
+  linkType: null,
+  allowedTerms: new Set()
+};
+
+function reducer(state: FlowsheetGridState, action: FlowsheetGridAction): FlowsheetGridState {
+  switch (action.type) {
+    case "TOGGLE_SELECT": {
+      const id = action.payload.courseId;
+      const next = new Set(state.selected);
+
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+
+      return {
+        ...state,
+        selected: next,
+        focused: null,
+        linkSource: null,
+      };
+    }
+
+    case "CLEAR_SELECTED":
+      return { ...state, selected: new Set() };
+
+    case "TOGGLE_FOCUS": {
+      const id = action.payload.courseId;
+
+      return {
+        ...state,
+        focused: state.focused === id ? null : id,
+      };
+    }
+
+    case "TOGGLE_LINKING": {
+      const id = action.payload.courseId;
+      const type = action.payload.type;
+
+      return {
+        ...state,
+        linkType: state.linkSource === id ? null : type,
+        linkSource: state.linkSource === id ? null : id,
+        focused: null,
+        selected: new Set(),
+      };
+    }
+
+    case "MOVE_START": {
+      const id = action.payload.courseId;
+      const allowedTerms = action.payload.allowedTerms;
+
+      return {
+        ...initialState,
+        moving: id,
+        allowedTerms
+      }
+    }
+
+    case "MOVE_END": {
+      return initialState;
+    }
+
+    case "RESET_STATE": {
+      return initialState;
+    }
+
+    default:
+      return state;
+  }
+}
 
 type FlowsheetGridContextValues = {
-  selectedCourses: Set<number>;
-  toggleSelectCourse: (courseId: number) => void;
-  isSelectedCourse: (courseId: number) => boolean;
-  clearSelectedCourses: () => void;
-  onCourseSelectionChange: (selection: Set<number>) => void;
-  terms: Record<number, Placement[]>;
-  createTerm: () => void;
-  validateTerms: (courseId: number) => void;
-  validTerms: number[] | null;
-  focusedCourse: number | null;
-  toggleFocusCourse: (courseId: number) => void;
-  isFocusedCourse: (courseId: number) => boolean;
-  clearFocusedCourse: () => void;
-};
-
+  state: FlowsheetGridState;
+  dispatch: React.ActionDispatch<[action: FlowsheetGridAction]>
+}
 const FlowsheetGridContext = React.createContext<FlowsheetGridContextValues | undefined>(undefined);
 
-type FlowsheetGridProviderProps = {
-  children: React.ReactNode;
-};
-
-export function FlowsheetGridProvider({ children }: FlowsheetGridProviderProps) {
-  const { flowsheet } = useFlowsheetContext();
-  const [focusedCourse, setFocusedCourse] = React.useState<number | null>(null);
-  const [selectedCourses, setSelectedCourses] = React.useState<Set<number>>(new Set());
-  const [allPossibleTermsCount, setAllPossibleTermsCount] = React.useState<number>(
-    Math.max(...Object.keys(getFlowsheetTerms(flowsheet)).map(Number))
-  );
-
-  const [validTerms, setValidTerms] = React.useState<number[] | null>(null);
-
-  const toggleFocusCourse = (courseId: number) => {
-    if (courseId === focusedCourse) {
-      setFocusedCourse(null);
-      return;
-    }
-
-    setFocusedCourse(courseId);
-  };
-
-  const isFocusedCourse = (courseId: number) => courseId === focusedCourse;
-
-  const clearFocusedCourse = () => setFocusedCourse(null);
-
-  const toggleSelectCourse = (courseId: number) => {
-    if (focusedCourse) {
-      setFocusedCourse(null);
-    }
-
-    setSelectedCourses((prev) => {
-      const updated = new Set(prev);
-
-      if (updated.has(courseId)) updated.delete(courseId);
-      else updated.add(courseId);
-
-      return updated;
-    });
-  };
-
-  const onCourseSelectionChange = (selection: Set<number>) => {
-    setSelectedCourses(selection);
-  };
-
-  const validateTerms = (courseId: number) => {
-    console.log(courseId);
-    setValidTerms([1, 2, 3]);
-  };
-
-  const clearSelectedCourses = () => setSelectedCourses(new Set());
-
-  const isSelectedCourse = (courseId: number) => selectedCourses.has(courseId);
-
-  const terms = React.useMemo(() => {
-    const baseTerms = getFlowsheetTerms(flowsheet);
-
-    for (let i = 1; i <= allPossibleTermsCount; i++) {
-      baseTerms[i] = [...(baseTerms[i] ?? [])];
-    }
-
-    return baseTerms;
-  }, [flowsheet.placements, allPossibleTermsCount]);
-
-  const createTerm = () => setAllPossibleTermsCount((prev) => prev + 1);
+export function FlowsheetGridProvider({ children }: { children: React.ReactNode }) {
+  const [state, dispatch] = React.useReducer(reducer, initialState);
 
   return (
-    <FlowsheetGridContext.Provider
-      value={{
-        selectedCourses,
-        toggleSelectCourse,
-        isSelectedCourse,
-        clearSelectedCourses,
-        onCourseSelectionChange,
-        terms,
-        validateTerms,
-        validTerms,
-        createTerm,
-        focusedCourse,
-        toggleFocusCourse,
-        isFocusedCourse,
-        clearFocusedCourse,
-      }}
-    >
+    <FlowsheetGridContext.Provider value={{ state, dispatch }}>
       {children}
     </FlowsheetGridContext.Provider>
   );
 }
 
-export const useFlowsheetGridContext = () => {
-  const context = useContext(FlowsheetGridContext);
-  if (!context)
-    throw new Error('useFlowsheetGridContext must be used within FlowsheetGridProvider.');
+export function useFlowsheetGridContext() {
+  const context = React.useContext(FlowsheetGridContext);
+
+  if (!context) throw new Error("useFlowsheetGridContext must be used inside provider");
+
   return context;
-};
+}

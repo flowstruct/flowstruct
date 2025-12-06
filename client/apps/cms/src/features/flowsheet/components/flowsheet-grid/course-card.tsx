@@ -14,23 +14,48 @@ import { Button } from '@/shared/components/ui/Button.tsx';
 import { Box } from '@/shared/components/layout/box.tsx';
 import { Divider } from '@/shared/components/ui/divider.tsx';
 import { Tooltip, TooltipTrigger } from '@/shared/components/ui/Tooltip.tsx';
+import { usePlacement } from '@/features/flowsheet/hooks/use-placement';
+import { Placement } from '@/features/flowsheet/domain/flowsheet';
 
 type CourseCardProps = {
   course: CourseSummary;
+  placement: Placement;
 };
 
-export function CourseCard({ course, ...props }: CourseCardProps) {
-  const { isFocusedCourse, toggleSelectCourse, toggleFocusCourse, isSelectedCourse } =
-    useFlowsheetGridContext();
+export function CourseCard({ course, placement, ...props }: CourseCardProps) {
+  const { state, dispatch } = useFlowsheetGridContext();
+  const placementState = usePlacement(placement);
 
   const { pressProps, isPressed } = usePress({
     onPress: (e) => {
-      if (e.shiftKey || e.ctrlKey) {
-        toggleSelectCourse(course.id);
+      if ((e.ctrlKey || e.shiftKey) && placementState === 'NORMAL') {
+        dispatch({ type: 'TOGGLE_SELECT', payload: { courseId: course.id } });
         return;
       }
 
-      toggleFocusCourse(course.id);
+      if (placementState === 'SELECTABLE' || placementState === 'SELECTED') {
+        dispatch({ type: 'TOGGLE_SELECT', payload: { courseId: course.id } });
+      }
+
+      if (placementState === 'PREREQ_LINK' || placementState === 'AVAILABLE_LINK' && state.linkType === 'PREREQ') {
+        console.log('toggled prereq');
+        return;
+      }
+
+      if (placementState === 'COREQ_LINK' || placementState === 'AVAILABLE_LINK' && state.linkType === 'COREQ') {
+        console.log('toggled coreq');
+        return;
+      }
+
+      if (placementState === 'LINK_SOURCE') {
+        dispatch({ type: 'TOGGLE_LINKING', payload: { courseId: course.id, type: null } });
+        return;
+      }
+
+      if (state.focused || placementState === 'NORMAL') {
+        dispatch({ type: 'TOGGLE_FOCUS', payload: { courseId: course.id } });
+        return;
+      }
     },
   });
   const { hoverProps, isHovered } = useHover(props);
@@ -44,14 +69,11 @@ export function CourseCard({ course, ...props }: CourseCardProps) {
         {...pressProps}
         {...hoverProps}
         {...focusProps}
-        className={clsx(
-          styles.card,
-          isFocusedCourse(course.id) ? styles.focused : '',
-          isSelectedCourse(course.id) ? styles.selected : ''
-        )}
+        className={styles.card}
         data-hovered={isHovered || undefined}
         data-focused={isFocusVisible || undefined}
         data-pressed={isPressed || undefined}
+        data-state={placementState}
         role="button"
         tabIndex={0}
         ref={triggerFocusPopoverRef}
@@ -64,7 +86,7 @@ export function CourseCard({ course, ...props }: CourseCardProps) {
 
             <Checkbox
               onChange={() => toggleSelectCourse(course.id)}
-              isSelected={isSelectedCourse(course.id)}
+              isSelected={state.selected.has(placement.id)}
             />
           </Group>
 

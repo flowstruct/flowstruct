@@ -15,18 +15,15 @@ import org.springframework.data.relational.core.mapping.Table;
 @Table("placement")
 public class Placement {
 
-    private AggregateReference<Course, Long> course;
+  private AggregateReference<Course, Long> course;
 
-    private int term;
+  private int position;
 
-    private int position;
+  private int span;
 
-    private int span;
-
-    public Placement(Placement other) {
-        this.course = other.course;
-        this.term = other.term;
-        this.position = other.position;
-        this.span = other.span;
-    }
+  public Placement(Placement other) {
+    this.course = other.course;
+    this.position = other.position;
+    this.span = other.span;
+  }
 }

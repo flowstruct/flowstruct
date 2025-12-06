@@ -14,33 +14,33 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FlowsheetSnapshot {
-    private int year;
-    private String name;
-    private AggregateReference<Program, Long> program;
-    private Set<Section> sections;
-    private Set<Placement> placements;
-    private Set<CoursePrerequisite> coursePrerequisites;
-    private Set<CourseCorequisite> courseCorequisites;
-    private Long version;
+  private int year;
+  private String name;
+  private AggregateReference<Program, Long> program;
+  private Set<Section> sections;
+  private Set<Term> terms;
+  private Set<CoursePrerequisite> coursePrerequisites;
+  private Set<CourseCorequisite> courseCorequisites;
+  private Long version;
 
-    public FlowsheetSnapshot(Flowsheet flowsheet) {
-        this.year = flowsheet.getYear();
-        this.name = flowsheet.getName();
-        this.program = flowsheet.getProgram();
-        this.version = flowsheet.getVersion();
+  public FlowsheetSnapshot(Flowsheet flowsheet) {
+    this.year = flowsheet.getYear();
+    this.name = flowsheet.getName();
+    this.program = flowsheet.getProgram();
+    this.version = flowsheet.getVersion();
 
-        this.sections = flowsheet.getSections().stream()
-                .map(Section::new)
-                .collect(Collectors.toSet());
+    this.sections = flowsheet.getSections().stream()
+        .map(Section::new)
+        .collect(Collectors.toSet());
 
-        this.placements = new HashSet<>(flowsheet.getPlacements());
+    this.terms = new HashSet<>(flowsheet.getTerms());
 
-        this.coursePrerequisites = flowsheet.getCoursePrerequisites().stream()
-                .map(CoursePrerequisite::new)
-                .collect(Collectors.toSet());
+    this.coursePrerequisites = flowsheet.getCoursePrerequisites().stream()
+        .map(CoursePrerequisite::new)
+        .collect(Collectors.toSet());
 
-        this.courseCorequisites = flowsheet.getCourseCorequisites().stream()
-                .map(CourseCorequisite::new)
-                .collect(Collectors.toSet());
-    }
+    this.courseCorequisites = flowsheet.getCourseCorequisites().stream()
+        .map(CourseCorequisite::new)
+        .collect(Collectors.toSet());
+  }
 }

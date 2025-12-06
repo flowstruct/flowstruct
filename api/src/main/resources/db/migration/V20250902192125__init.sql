@@ -83,7 +83,26 @@ CREATE TABLE section_course
     section INT NOT NULL,
     course  INT NOT NULL,
     PRIMARY KEY (section, course),
-    FOREIGN KEY (section) REFERENCES section (id),
+    FOREIGN KEY (course) REFERENCES course (id)
+);
+
+CREATE TABLE term
+(
+    id        SERIAL PRIMARY KEY,
+    flowsheet INT          NOT NULL,
+    position  INT          NOT NULL,
+    year      INT          NOT NULL,
+    name      VARCHAR(255) NOT NULL,
+    UNIQUE (flowsheet, year, position)
+);
+
+CREATE TABLE placement
+(
+    term     INT NOT NULL,
+    course   INT NOT NULL,
+    position INT NOT NULL DEFAULT (1),
+    span     INT NOT NULL DEFAULT (1),
+    PRIMARY KEY (term, course),
     FOREIGN KEY (course) REFERENCES course (id)
 );
 
@@ -108,16 +127,12 @@ CREATE TABLE course_corequisite
     FOREIGN KEY (corequisite) REFERENCES course (id)
 );
 
-CREATE TABLE placement
-(
-    flowsheet INT NOT NULL,
-    course    INT NOT NULL,
-    term      INT NOT NULL DEFAULT (1),
-    position  INT NOT NULL DEFAULT (1),
-    span      INT NOT NULL DEFAULT (1),
-    PRIMARY KEY (flowsheet, course),
-    FOREIGN KEY (course) REFERENCES course (id)
-);
+CREATE INDEX idx_section_flowsheet ON section (flowsheet);
+CREATE INDEX idx_term_flowsheet ON term (flowsheet);
+CREATE INDEX idx_placement_term ON placement (term);
+CREATE INDEX idx_section_course_section ON section_course (section);
+CREATE INDEX idx_course_prerequisite_flowsheet ON course_prerequisite (flowsheet);
+CREATE INDEX idx_course_corequisite_flowsheet ON course_corequisite (flowsheet);
 
 INSERT INTO "user" (username, email, role, password)
 VALUES ('flowstruct', 'admin@flowstruct.com', 'ADMIN', '$2a$12$Pny61LESAXFDjnkgczhJ8eIC3HbEnlQyvW8FQ5mpoJc5ODks1zG.i');

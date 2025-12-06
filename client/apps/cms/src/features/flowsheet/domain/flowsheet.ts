@@ -10,10 +10,7 @@ export enum SectionType {
   Remedial = 'Remedial',
 }
 
-export enum CourseRelation {
-  AND = 'AND',
-  OR = 'OR',
-}
+export type CourseRelation = 'SELF' | 'PREREQ' | 'PREREQSEQ' | 'COREQ' | 'POSTREQSEQ' | 'UNRELATED';
 
 export type Section = {
   id: number;
@@ -26,7 +23,8 @@ export type Section = {
 };
 
 export type Placement = {
-  course: number;
+  item: number;
+  type: 'COURSE' | 'ELECTIVE';
   term: number;
   position: number;
   span: number;
@@ -43,6 +41,7 @@ export type Flowsheet = {
   status: string;
   program: number;
   sections: Section[];
+  terms: Term[];
   placements: Placement[];
   coursePrerequisites: CoursePrerequisite[];
   courseCorequisites: CourseCorequisite[];
@@ -69,4 +68,9 @@ export type FlowsheetSummary = Pick<
 
 export type ArchiveStatus = 'all' | 'active' | 'archived';
 
-export type Term = number;
+export type Term = {
+  id: number;
+  year: number;
+  position: number;
+  name: string;
+};

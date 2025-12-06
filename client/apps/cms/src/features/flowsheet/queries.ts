@@ -26,6 +26,15 @@ export const flowsheetQueries = {
     queryOptions({
       queryKey: flowsheetKeys.detail(flowsheetId),
       queryFn: () => flowsheetApi.getFlowsheet(flowsheetId),
+      select: (data) => ({
+        ...data,
+        placementsByCourse: Object.fromEntries(
+          data.placements.map((p) => [p.course, p])
+        ),
+        termsById: Object.fromEntries(
+          data.terms.map((t) => [t.id, t])
+        ),
+      })
     }),
 
   courseCollection: (flowsheetId: number) =>

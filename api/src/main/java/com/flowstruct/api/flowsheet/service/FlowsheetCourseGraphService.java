@@ -1,127 +1,124 @@
 package com.flowstruct.api.flowsheet.service;
 
-import com.flowstruct.api.course.exception.CourseNotFoundException;
-import com.flowstruct.api.flowsheet.domain.*;
-import com.flowstruct.api.flowsheet.dto.FlowsheetDto;
-import com.flowstruct.api.flowsheet.exception.SectionNotFoundException;
-import com.flowstruct.api.flowsheet.utils.CourseGraphUtils;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import com.flowstruct.api.course.exception.CourseNotFoundException;
+import com.flowstruct.api.flowsheet.domain.CourseCorequisite;
+import com.flowstruct.api.flowsheet.domain.CoursePrerequisite;
+import com.flowstruct.api.flowsheet.domain.Relation;
+import com.flowstruct.api.flowsheet.dto.FlowsheetDto;
+import com.flowstruct.api.flowsheet.utils.CourseGraphUtils;
+
+import lombok.RequiredArgsConstructor;
 
 @PreAuthorize("hasRole('ROLE_EDITOR')")
 @RequiredArgsConstructor
 @Service
 public class FlowsheetCourseGraphService {
-    private final FlowsheetService flowsheetService;
-    private final CourseGraphUtils courseGraphUtils;
+  private final FlowsheetService flowsheetService;
+  private final CourseGraphUtils courseGraphUtils;
 
-    @Transactional
-    public FlowsheetDto linkPrerequisitesToCourse(
-            long flowsheetId,
-            long courseId,
-            List<Long> prerequisites,
-            Relation relation
-    ) {
-        var flowsheet = flowsheetService.findOrThrow(flowsheetId);
+  @Transactional
+  public FlowsheetDto linkPrerequisitesToCourse(
+      long flowsheetId,
+      long courseId,
+      List<Long> prerequisites,
+      Relation relation) {
+    var flowsheet = flowsheetService.findOrThrow(flowsheetId);
 
-        courseGraphUtils.validatePrerequisites(courseId, flowsheet, prerequisites);
+    courseGraphUtils.validatePrerequisites(courseId, flowsheet, prerequisites);
 
-        for (var prerequisite : prerequisites) {
-            flowsheet.getCoursePrerequisites().add(
-                    new CoursePrerequisite(
-                            AggregateReference.to(courseId),
-                            AggregateReference.to(prerequisite),
-                            relation
-                    )
-            );
-        }
-
-        return flowsheetService.saveAndMap(flowsheet);
+    for (var prerequisite : prerequisites) {
+      flowsheet.getCoursePrerequisites().add(
+          new CoursePrerequisite(
+              AggregateReference.to(courseId),
+              AggregateReference.to(prerequisite),
+              relation));
     }
 
-    @Transactional
-    public FlowsheetDto linkCorequisitesToCourse(
-            long flowsheetId,
-            long courseId,
-            List<Long> corequisiteIds
-    ) {
-        var flowsheet = flowsheetService.findOrThrow(flowsheetId);
+    return flowsheetService.saveAndMap(flowsheet);
+  }
 
-        for (var corequisiteId : corequisiteIds) {
-            flowsheet.getCourseCorequisites().add(
-                    new CourseCorequisite(
-                            AggregateReference.to(courseId),
-                            AggregateReference.to(corequisiteId)
-                    )
-            );
-        }
+  @Transactional
+  public FlowsheetDto linkCorequisitesToCourse(
+      long flowsheetId,
+      long courseId,
+      List<Long> corequisiteIds) {
+    var flowsheet = flowsheetService.findOrThrow(flowsheetId);
 
-        return flowsheetService.saveAndMap(flowsheet);
+    for (var corequisiteId : corequisiteIds) {
+      flowsheet.getCourseCorequisites().add(
+          new CourseCorequisite(
+              AggregateReference.to(courseId),
+              AggregateReference.to(corequisiteId)));
     }
 
-    @Transactional
-    public FlowsheetDto unlinkCorequisitesFromCourse(
-            long flowsheetId,
-            long courseId,
-            long corequisiteId
-    ) {
-        var flowsheet = flowsheetService.findOrThrow(flowsheetId);
+    return flowsheetService.saveAndMap(flowsheet);
+  }
 
-        boolean removed = flowsheet.getCourseCorequisites().removeIf(courseCorequisite ->
-                courseCorequisite.getCourse().getId() == courseId && courseCorequisite.getCorequisite().getId() == corequisiteId
-        );
+  @Transactional
+  public FlowsheetDto unlinkCorequisitesFromCourse(
+      long flowsheetId,
+      long courseId,
+      long corequisiteId) {
+    var flowsheet = flowsheetService.findOrThrow(flowsheetId);
 
-        if (!removed) throw new CourseNotFoundException("Corequisite not found");
+    boolean removed = flowsheet.getCourseCorequisites()
+        .removeIf(courseCorequisite -> courseCorequisite.getCourse().getId() == courseId
+            && courseCorequisite.getCorequisite().getId() == corequisiteId);
 
-        return flowsheetService.saveAndMap(flowsheet);
-    }
+    if (!removed)
+      throw new CourseNotFoundException("Corequisite not found");
 
-    @Transactional
-    public FlowsheetDto unlinkPrerequisitesFromCourse(
-            long flowsheetId,
-            long courseId,
-            long prerequisiteId
-    ) {
-        var flowsheet = flowsheetService.findOrThrow(flowsheetId);
+    return flowsheetService.saveAndMap(flowsheet);
+  }
 
-        boolean removed = flowsheet.getCoursePrerequisites().removeIf(coursePrerequisite ->
-                coursePrerequisite.getCourse().getId() == courseId
-                        && coursePrerequisite.getPrerequisite().getId() == prerequisiteId
-        );
+  @Transactional
+  public FlowsheetDto unlinkPrerequisitesFromCourse(
+      long flowsheetId,
+      long courseId,
+      long prerequisiteId) {
+    var flowsheet = flowsheetService.findOrThrow(flowsheetId);
 
-        if (!removed) throw new CourseNotFoundException("Prerequisite not found");
+    boolean removed = flowsheet.getCoursePrerequisites()
+        .removeIf(coursePrerequisite -> coursePrerequisite.getCourse().getId() == courseId
+            && coursePrerequisite.getPrerequisite().getId() == prerequisiteId);
 
-        return flowsheetService.saveAndMap(flowsheet);
-    }
+    if (!removed)
+      throw new CourseNotFoundException("Prerequisite not found");
 
-    @Transactional
-    public FlowsheetDto moveCourseToSection(
-            long flowsheetId,
-            List<Long> courseIds,
-            long targetSectionId
-    ) {
-        var flowsheet = flowsheetService.findOrThrow(flowsheetId);
+    return flowsheetService.saveAndMap(flowsheet);
+  }
 
-        var targetSection = flowsheet.getSections().stream()
-                .filter(section -> section.getId() == targetSectionId)
-                .findFirst()
-                .orElseThrow(() -> new SectionNotFoundException("Target section not found"));
-
-        for (long courseId : courseIds) {
-            flowsheet.getSections().forEach(section -> section.removeCourse(courseId));
-
-            if (targetSection.getType() == SectionType.Elective || targetSection.getType() == SectionType.Remedial) {
-                flowsheet.getPlacements().remove(courseId);
-            }
-
-            targetSection.addCourse(courseId);
-        }
-
-        return flowsheetService.saveAndMap(flowsheet);
-    }
+  // @Transactional
+  // public FlowsheetDto moveCourseToSection(
+  // long flowsheetId,
+  // List<Long> courseIds,
+  // long targetSectionId
+  // ) {
+  // var flowsheet = flowsheetService.findOrThrow(flowsheetId);
+  //
+  // var targetSection = flowsheet.getSections().stream()
+  // .filter(section -> section.getId() == targetSectionId)
+  // .findFirst()
+  // .orElseThrow(() -> new SectionNotFoundException("Target section not found"));
+  //
+  // for (long courseId : courseIds) {
+  // flowsheet.getSections().forEach(section -> section.removeCourse(courseId));
+  //
+  // if (targetSection.getType() == SectionType.Elective ||
+  // targetSection.getType() == SectionType.Remedial) {
+  // flowsheet.getPlacements().remove(courseId);
+  // }
+  //
+  // targetSection.addCourse(courseId);
+  // }
+  //
+  // return flowsheetService.saveAndMap(flowsheet);
+  // }
 }

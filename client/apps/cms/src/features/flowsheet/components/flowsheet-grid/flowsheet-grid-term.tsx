@@ -2,7 +2,7 @@ import { Placement } from '@/features/flowsheet/domain/flowsheet.ts';
 import { useFlowsheetContext } from '@/features/flowsheet/contexts/flowsheet-context.tsx';
 import { useFlowsheetGridContext } from '@/features/flowsheet/contexts/flowsheet-grid-context.tsx';
 import { useListData } from 'react-stately';
-import { DropIndicator, ListBox, ListBoxItem, useDragAndDrop } from 'react-aria-components';
+import { DropIndicator, GridList, GridListItem, ListBox, ListBoxItem, useDragAndDrop } from 'react-aria-components';
 import { CourseSummary } from '@/features/course/domain/course.ts';
 import { isTextDropItem } from 'react-aria';
 import { Stack } from '@/shared/components/layout/stack.tsx';
@@ -22,10 +22,10 @@ type TermListBoxProps = {
 
 export function FlowsheetGridTerm({ term, placements }: TermListBoxProps) {
   const { flowsheetCourses } = useFlowsheetContext();
-  const { selectedCourses } = useFlowsheetGridContext();
+  const { state } = useFlowsheetGridContext();
 
   const list = useListData({
-    initialItems: placements.map((p) => flowsheetCourses.byIds[p.course]),
+    initialItems: placements
   });
 
   const { dragAndDropHooks } = useDragAndDrop<CourseSummary>({
@@ -108,21 +108,29 @@ export function FlowsheetGridTerm({ term, placements }: TermListBoxProps) {
         </Group>
       </Box>
 
-      <ListBox
+      <GridList
         items={list.items}
         selectionMode="multiple"
-        selectedKeys={selectedCourses}
+        selectedKeys={state.selected}
         dragAndDropHooks={dragAndDropHooks}
         renderEmptyState={() => <EmptyState />}
         aria-label={`Term ${term}`}
         className={styles.listBox}
       >
-        {(item) => (
-          <ListBoxItem textValue={item.name} className={styles.listBoxItem}>
-            <CourseCard course={item} />
-          </ListBoxItem>
-        )}
-      </ListBox>
+        {(placement) => {
+          if (placement.type === 'COURSE') {
+            const course = flowsheetCourses.byIds[placement.item];
+
+            if (!course) return;
+
+            return (
+              <GridListItem textValue={course.name} className={styles.listBoxItem}>
+                <CourseCard course={course} placement={placement} />
+              </GridListItem>
+            );
+          }
+        }}
+      </GridList>
     </Stack>
   );
 }
