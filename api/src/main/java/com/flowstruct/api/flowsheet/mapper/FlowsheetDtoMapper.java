@@ -55,6 +55,7 @@ public class FlowsheetDtoMapper implements Function<Flowsheet, FlowsheetDto> {
                 .thenComparing(Term::getPosition))
             .map(t -> new TermDto(
                 t.getId(),
+                t.getYear(),
                 t.getPosition(),
                 t.getName(),
                 t.getPlacements()

@@ -5,6 +5,8 @@ import java.util.List;
 public record TermDto(
     long id,
 
+    int year,
+
     int position,
 
     String name,
