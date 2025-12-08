@@ -5,8 +5,7 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { flowsheetQueries } from '@/features/flowsheet/queries.ts';
 
 interface FlowsheetResult extends Flowsheet {
-  placementsByCourse: { [k: string]: Placement };
-  termsById: { [k: string]: Term };
+  termAndPlacementByCourse: Record<number, { term: Term; placement: Placement }>;
 }
 
 type FlowsheetContextValues = {

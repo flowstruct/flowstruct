@@ -1,21 +1,20 @@
 import { CourseSummary } from '@/features/course/domain/course.ts';
-import styles from './course-card.module.css';
 import { useFlowsheetGridContext } from '@/features/flowsheet/contexts/flowsheet-grid-context.tsx';
-import { Plus, Scaling, TagIcon, Trash } from 'lucide-react';
+import { Placement } from '@/features/flowsheet/domain/flowsheet';
+import { usePlacement } from '@/features/flowsheet/hooks/use-placement';
+import { Box } from '@/shared/components/layout/box.tsx';
 import Group from '@/shared/components/layout/group.tsx';
 import { Stack } from '@/shared/components/layout/stack.tsx';
-import { useFocusRing, useHover, usePress } from 'react-aria';
-import clsx from 'clsx';
-import React from 'react';
 import { Text } from '@/shared/components/layout/text.tsx';
-import { Checkbox } from '@/shared/components/ui/Checkbox.tsx';
-import { Popover } from '@/shared/components/ui/Popover.tsx';
 import { Button } from '@/shared/components/ui/Button.tsx';
-import { Box } from '@/shared/components/layout/box.tsx';
+import { Checkbox } from '@/shared/components/ui/Checkbox.tsx';
 import { Divider } from '@/shared/components/ui/divider.tsx';
+import { Popover } from '@/shared/components/ui/Popover.tsx';
 import { Tooltip, TooltipTrigger } from '@/shared/components/ui/Tooltip.tsx';
-import { usePlacement } from '@/features/flowsheet/hooks/use-placement';
-import { Placement } from '@/features/flowsheet/domain/flowsheet';
+import { Plus, Scaling, TagIcon, Trash } from 'lucide-react';
+import React from 'react';
+import { useFocusRing, useHover, usePress } from 'react-aria';
+import styles from './course-card.module.css';
 
 type CourseCardProps = {
   course: CourseSummary;
@@ -37,12 +36,18 @@ export function CourseCard({ course, placement, ...props }: CourseCardProps) {
         dispatch({ type: 'TOGGLE_SELECT', payload: { courseId: course.id } });
       }
 
-      if (placementState === 'PREREQ_LINK' || placementState === 'AVAILABLE_LINK' && state.linkType === 'PREREQ') {
+      if (
+        placementState === 'PREREQ_LINK' ||
+        (placementState === 'AVAILABLE_LINK' && state.linkType === 'PREREQ')
+      ) {
         console.log('toggled prereq');
         return;
       }
 
-      if (placementState === 'COREQ_LINK' || placementState === 'AVAILABLE_LINK' && state.linkType === 'COREQ') {
+      if (
+        placementState === 'COREQ_LINK' ||
+        (placementState === 'AVAILABLE_LINK' && state.linkType === 'COREQ')
+      ) {
         console.log('toggled coreq');
         return;
       }
@@ -85,8 +90,8 @@ export function CourseCard({ course, placement, ...props }: CourseCardProps) {
             </Text>
 
             <Checkbox
-              onChange={() => toggleSelectCourse(course.id)}
-              isSelected={state.selected.has(placement.id)}
+              onChange={() => dispatch({ type: 'TOGGLE_SELECT', payload: { courseId: course.id } })}
+              isSelected={state.selected.has(course.id)}
             />
           </Group>
 
@@ -98,7 +103,7 @@ export function CourseCard({ course, placement, ...props }: CourseCardProps) {
         triggerRef={triggerFocusPopoverRef}
         isNonModal
         placement="top"
-        isOpen={isFocusedCourse(course.id)}
+        isOpen={state.focused === course.id}
       >
         <Box px={1} py={1}>
           <Group gap={1}>

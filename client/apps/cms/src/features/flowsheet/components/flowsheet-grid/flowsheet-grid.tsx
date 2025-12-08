@@ -8,15 +8,18 @@ import Group from '@/shared/components/layout/group.tsx';
 import { useFlowsheetGridContext } from '@/features/flowsheet/contexts/flowsheet-grid-context.tsx';
 import { Box } from '@/shared/components/layout/box.tsx';
 import { useKeyboard } from 'react-aria';
-import { FlowsheetGridTerm } from '@/features/flowsheet/components/flowsheet-grid/flowsheet-grid-term.tsx';
+import { Term } from '@/features/flowsheet/components/flowsheet-grid/term';
+import { useFlowsheetContext } from '@/features/flowsheet/contexts/flowsheet-context';
+import { TermProvider } from '@/features/flowsheet/contexts/term-context';
 
 export function FlowsheetGrid() {
-  const { terms, createTerm, clearFocusedCourse, clearSelectedCourses } = useFlowsheetGridContext();
+  const { flowsheet } = useFlowsheetContext();
+  const { dispatch } = useFlowsheetGridContext();
+
   const { keyboardProps } = useKeyboard({
     onKeyDown: (e) => {
       if (e.key === 'Escape') {
-        clearSelectedCourses();
-        clearFocusedCourse();
+        dispatch({ type: 'RESET_STATE' });
       }
     },
   });
@@ -24,25 +27,18 @@ export function FlowsheetGrid() {
   return (
     <Box overflow="auto" overflowY="hidden" {...keyboardProps}>
       <Group align="start">
-        {Object.entries(terms).map(([term, placements]) => (
-          <FlowsheetGridTerm
-            key={term}
-            term={Number(term)}
-            placements={placements.sort((a, b) => a.position - b.position)}
-          />
+        {flowsheet.terms.map((t) => (
+          <TermProvider key={t.id} term={t}>
+            <Term />
+          </TermProvider>
         ))}
 
         <Box position="relative">
           <TooltipTrigger>
-            <Button
-              variant="ghost"
-              size="xs"
-              shape="icon"
-              className={styles.addTermButton}
-              onPress={createTerm}
-            >
+            <Button variant="ghost" size="xs" shape="icon" className={styles.addTermButton}>
               <Grid2X2Plus size={15} />
             </Button>
+
             <Tooltip>Add term</Tooltip>
           </TooltipTrigger>
         </Box>

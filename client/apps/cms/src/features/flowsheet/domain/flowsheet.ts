@@ -22,10 +22,16 @@ export type Section = {
   courses: number[];
 };
 
+export type Term = {
+  id: number;
+  year: number;
+  position: number;
+  name: string;
+  placements: Placement[];
+};
+
 export type Placement = {
-  item: number;
-  type: 'COURSE' | 'ELECTIVE';
-  term: number;
+  course: number;
   position: number;
   span: number;
 };
@@ -42,7 +48,6 @@ export type Flowsheet = {
   program: number;
   sections: Section[];
   terms: Term[];
-  placements: Placement[];
   coursePrerequisites: CoursePrerequisite[];
   courseCorequisites: CourseCorequisite[];
   archivedAt: Date;
@@ -67,10 +72,3 @@ export type FlowsheetSummary = Pick<
 >;
 
 export type ArchiveStatus = 'all' | 'active' | 'archived';
-
-export type Term = {
-  id: number;
-  year: number;
-  position: number;
-  name: string;
-};

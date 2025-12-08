@@ -13,16 +13,16 @@ import React from 'react';
 
 export function FlowsheetToolbar() {
   const { flowsheet } = useFlowsheetContext();
-  const { selectedCourses, clearSelectedCourses } = useFlowsheetGridContext();
+  const { state, dispatch } = useFlowsheetGridContext();
 
   const removeCourses = useMutation({
     mutationFn: () =>
       flowsheetApi.removeCourses({
         flowsheetId: flowsheet.id,
-        courseIds: Array.from(selectedCourses),
+        courseIds: Array.from(state.selected),
       }),
     onSuccess: () => {
-      clearSelectedCourses();
+      dispatch({ type: 'RESET_STATE' });
     },
   });
   const triggerRef = React.useRef<HTMLDivElement | null>(null);
@@ -32,19 +32,19 @@ export function FlowsheetToolbar() {
       <Popover
         triggerRef={triggerRef}
         isNonModal
-        isOpen={selectedCourses.size > 0}
+        isOpen={state.selected.size > 0}
         className={styles.toolbar}
       >
         <Group gap={3}>
           <div className={styles.selectionCounter}>
             <Group>
-              <p>{selectedCourses.size} selected</p>
+              <p>{state.selected.size} selected</p>
 
               <Button
                 variant="ghost"
                 shape="icon"
                 size="none"
-                onPress={() => clearSelectedCourses()}
+                onPress={() => dispatch({ type: 'CLEAR_SELECTED' })}
               >
                 <X size={14} />
               </Button>

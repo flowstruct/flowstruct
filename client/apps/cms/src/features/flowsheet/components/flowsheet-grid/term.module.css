@@ -1,0 +1,13 @@
+.listBox {
+    all: unset;
+    width: 10rem;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    gap: var(--space-2);
+}
+
+.listBoxItem {
+    all: unset;
+}
+

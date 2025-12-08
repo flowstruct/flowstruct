@@ -75,14 +75,14 @@ public class FlowsheetPlacementService {
       int targetPosition) {
     var flowsheet = flowsheetService.findOrThrow(flowsheetId);
 
-    Map<Long, TermPlacementPair> placementsByCourse = flowsheet.getTerms().stream()
+    Map<Long, TermPlacementPair> termAndPlacementByCourse = flowsheet.getTerms().stream()
         .flatMap(term -> term.getPlacements().stream()
             .map(placement -> Map.entry(
                 placement.getCourse().getId(),
                 new TermPlacementPair(term, placement))))
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-    var oldPair = placementsByCourse.get(courseId);
+    var oldPair = termAndPlacementByCourse.get(courseId);
 
     if (oldPair == null) {
       throw new CourseNotPlacedException("Course has no initial placement.");
@@ -110,7 +110,7 @@ public class FlowsheetPlacementService {
         .stream()
         .filter(cp -> Objects.equals(cp.getCourse().getId(), courseId))
         .allMatch(cp -> {
-          var prereqPair = placementsByCourse.get(cp.getPrerequisite().getId());
+          var prereqPair = termAndPlacementByCourse.get(cp.getPrerequisite().getId());
 
           if (prereqPair == null) {
             return true;
@@ -127,7 +127,7 @@ public class FlowsheetPlacementService {
         .stream()
         .filter(cp -> Objects.equals(cp.getPrerequisite().getId(), courseId))
         .allMatch(cp -> {
-          var postreqPair = placementsByCourse.get(cp.getCourse().getId());
+          var postreqPair = termAndPlacementByCourse.get(cp.getCourse().getId());
 
           if (postreqPair == null) {
             return true;

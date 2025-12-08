@@ -1,8 +1,7 @@
-import { Requisites } from "@/features/flowsheet/contexts/courses-graph-context";
-import { FlowsheetGridState } from "@/features/flowsheet/contexts/flowsheet-grid-context";
-import { classifyRelationship } from "@/features/flowsheet/domain/classifyRelationship";
-import { Placement, Term } from "@/features/flowsheet/domain/flowsheet";
-import { validatePrerequisite } from "@/features/flowsheet/domain/validatePrerequisite";
+import { Requisites } from '@/features/flowsheet/contexts/courses-graph-context';
+import { FlowsheetGridState } from '@/features/flowsheet/contexts/flowsheet-grid-context';
+import { classifyRelationship } from '@/features/flowsheet/domain/classifyRelationship';
+import { Placement, Term } from '@/features/flowsheet/domain/flowsheet';
 
 export type PlacementState =
   | 'NORMAL'
@@ -18,27 +17,27 @@ export type PlacementState =
 
 export function getPlacementState({
   placement,
+  term,
   state,
-  placements,
-  terms,
+  termAndPlacementByCourse,
   graph,
 }: {
   placement: Placement;
+  term: Term;
   state: FlowsheetGridState;
-  placements: Record<number, Placement>;
-  terms: Record<number, Term>;
+  termAndPlacementByCourse: Record<number, { term: Term; placement: Placement }>;
   graph: Map<number, Requisites>;
 }): PlacementState {
   if (state.moving) {
-    if (state.moving === placement.item) return 'MOVING';
+    if (state.moving === placement.course) return 'MOVING';
 
-    const allowedMoveTarget = state.allowedTerms.has(placement.term);
+    const allowedMoveTarget = state.allowedTerms.has(term.id);
 
-    if (!allowedMoveTarget) return 'DISABLED'
+    if (!allowedMoveTarget) return 'DISABLED';
   }
 
   if (state.selected.size > 0) {
-    const isSelected = state.selected.has(placement.item);
+    const isSelected = state.selected.has(placement.course);
 
     if (isSelected) return 'SELECTED';
 
@@ -46,21 +45,32 @@ export function getPlacementState({
   }
 
   if (state.linkSource) {
-    const isLinkSource = state.linkSource === placement.item;
+    const isLinkSource = state.linkSource === placement.course;
 
     if (isLinkSource) return 'LINK_SOURCE';
 
-    const source = placements[state.linkSource!];
-    const target = placements[placement.item];
+    const source = termAndPlacementByCourse[state.linkSource!];
+    const target = termAndPlacementByCourse[placement.course];
 
     if (!source || !target) return 'DISABLED';
 
-    const relation = classifyRelationship(source.item, target.item, graph);
+    const relation = classifyRelationship(source.placement.course, target.placement.course, graph);
 
     if (state.linkType === 'PREREQ') {
       if (relation === 'PREREQ') return 'PREREQ_LINK';
 
-      const allowed = validatePrerequisite(source, target, terms, relation);
+      let allowed = true;
+
+      if (source.placement.course === target.placement.course) {
+        allowed = false;
+      }
+
+      const targetAheadOfSource = source.term.position >= target.term.position;
+      const isCyclic = relation === 'POSTREQSEQ';
+
+      if (targetAheadOfSource || isCyclic) {
+        allowed = false;
+      }
 
       return allowed ? 'AVAILABLE_LINK' : 'DISABLED';
     }

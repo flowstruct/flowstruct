@@ -28,13 +28,10 @@ export const flowsheetQueries = {
       queryFn: () => flowsheetApi.getFlowsheet(flowsheetId),
       select: (data) => ({
         ...data,
-        placementsByCourse: Object.fromEntries(
-          data.placements.map((p) => [p.course, p])
+        termAndPlacementByCourse: Object.fromEntries(
+          data.terms.flatMap((t) => t.placements.map((p) => [p.course, { term: t, placement: p }]))
         ),
-        termsById: Object.fromEntries(
-          data.terms.map((t) => [t.id, t])
-        ),
-      })
+      }),
     }),
 
   courseCollection: (flowsheetId: number) =>
@@ -42,7 +39,7 @@ export const flowsheetQueries = {
       queryKey: flowsheetKeys.courseCollection(flowsheetId),
       queryFn: async ({ client }) => {
         const flowsheet = await client.fetchQuery(flowsheetQueries.detail(flowsheetId));
-        const courseIds = flowsheet.placements.map((p) => p.course);
+        const courseIds = flowsheet.terms.flatMap((t) => t.placements.map((p) => p.course));
 
         return courseApi.getCourses(courseIds);
       },

@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 export type LinkType = 'PREREQ' | 'COREQ';
 
@@ -12,13 +12,13 @@ export type FlowsheetGridState = {
 };
 
 type FlowsheetGridAction =
-  | { type: "TOGGLE_SELECT"; payload: { courseId: number } }
-  | { type: "CLEAR_SELECTED" }
-  | { type: "TOGGLE_FOCUS"; payload: { courseId: number } }
-  | { type: "TOGGLE_LINKING"; payload: { courseId: number, type: LinkType | null } }
-  | { type: "MOVE_START"; payload: { courseId: number, allowedTerms: Set<number> } }
-  | { type: "MOVE_END"; }
-  | { type: "RESET_STATE" };
+  | { type: 'TOGGLE_SELECT'; payload: { courseId: number } }
+  | { type: 'CLEAR_SELECTED' }
+  | { type: 'TOGGLE_FOCUS'; payload: { courseId: number } }
+  | { type: 'TOGGLE_LINKING'; payload: { courseId: number; type: LinkType | null } }
+  | { type: 'MOVE_START'; payload: { courseId: number; allowedTerms: Set<number> } }
+  | { type: 'MOVE_END' }
+  | { type: 'RESET_STATE' };
 
 const initialState: FlowsheetGridState = {
   selected: new Set(),
@@ -26,12 +26,12 @@ const initialState: FlowsheetGridState = {
   moving: null,
   linkSource: null,
   linkType: null,
-  allowedTerms: new Set()
+  allowedTerms: new Set(),
 };
 
 function reducer(state: FlowsheetGridState, action: FlowsheetGridAction): FlowsheetGridState {
   switch (action.type) {
-    case "TOGGLE_SELECT": {
+    case 'TOGGLE_SELECT': {
       const id = action.payload.courseId;
       const next = new Set(state.selected);
 
@@ -46,10 +46,10 @@ function reducer(state: FlowsheetGridState, action: FlowsheetGridAction): Flowsh
       };
     }
 
-    case "CLEAR_SELECTED":
+    case 'CLEAR_SELECTED':
       return { ...state, selected: new Set() };
 
-    case "TOGGLE_FOCUS": {
+    case 'TOGGLE_FOCUS': {
       const id = action.payload.courseId;
 
       return {
@@ -58,7 +58,7 @@ function reducer(state: FlowsheetGridState, action: FlowsheetGridAction): Flowsh
       };
     }
 
-    case "TOGGLE_LINKING": {
+    case 'TOGGLE_LINKING': {
       const id = action.payload.courseId;
       const type = action.payload.type;
 
@@ -71,22 +71,22 @@ function reducer(state: FlowsheetGridState, action: FlowsheetGridAction): Flowsh
       };
     }
 
-    case "MOVE_START": {
+    case 'MOVE_START': {
       const id = action.payload.courseId;
       const allowedTerms = action.payload.allowedTerms;
 
       return {
         ...initialState,
         moving: id,
-        allowedTerms
-      }
+        allowedTerms,
+      };
     }
 
-    case "MOVE_END": {
+    case 'MOVE_END': {
       return initialState;
     }
 
-    case "RESET_STATE": {
+    case 'RESET_STATE': {
       return initialState;
     }
 
@@ -97,8 +97,8 @@ function reducer(state: FlowsheetGridState, action: FlowsheetGridAction): Flowsh
 
 type FlowsheetGridContextValues = {
   state: FlowsheetGridState;
-  dispatch: React.ActionDispatch<[action: FlowsheetGridAction]>
-}
+  dispatch: React.Dispatch<FlowsheetGridAction>;
+};
 const FlowsheetGridContext = React.createContext<FlowsheetGridContextValues | undefined>(undefined);
 
 export function FlowsheetGridProvider({ children }: { children: React.ReactNode }) {
@@ -114,7 +114,7 @@ export function FlowsheetGridProvider({ children }: { children: React.ReactNode 
 export function useFlowsheetGridContext() {
   const context = React.useContext(FlowsheetGridContext);
 
-  if (!context) throw new Error("useFlowsheetGridContext must be used inside provider");
+  if (!context) throw new Error('useFlowsheetGridContext must be used inside provider');
 
   return context;
 }
