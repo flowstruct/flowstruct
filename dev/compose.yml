@@ -20,13 +20,14 @@ services:
     build:
       context: ../api
       dockerfile: dev.Dockerfile
-    working_dir: /api
     ports:
       - "8080:8080"
     environment:
       SPRING_PROFILES_ACTIVE: dev
       DATASOURCE_URL: jdbc:postgresql://database/flowstruct
     command: ./mvnw spring-boot:run
+    volumes:
+      - ../api/src:/api/src
     depends_on:
       - database
 
