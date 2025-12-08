@@ -3,10 +3,9 @@ services:
     build:
       context: ../client
       dockerfile: dev.Dockerfile
-    working_dir: /client
-    command: sh -c "pnpm install && pnpm start:cms --host && pnpm start:content --host"
+    command: sh -c "pnpm start:cms --host && pnpm start:content --host"
     volumes:
-      - ../client:/client
+      - ../client/src:/app
     ports:
       - 5173:5173
       - 4321:4321
@@ -21,13 +20,13 @@ services:
       context: ../api
       dockerfile: dev.Dockerfile
     ports:
-      - "8080:8080"
+      - 8080:8080
     environment:
       SPRING_PROFILES_ACTIVE: dev
       DATASOURCE_URL: jdbc:postgresql://database/flowstruct
     command: ./mvnw spring-boot:run
     volumes:
-      - ../api/src:/api/src
+      - ../api/src:/app
     depends_on:
       - database
 

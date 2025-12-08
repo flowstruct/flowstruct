@@ -1,6 +1,7 @@
 FROM node:20-alpine
 
-RUN npm install -g pnpm
+WORKDIR /app
+RUN npm install -g pnpm && pnpm install
 
 EXPOSE 5173
 EXPOSE 4321

@@ -1,6 +1,6 @@
 FROM eclipse-temurin:21-jdk-alpine
 
-WORKDIR /api
+WORKDIR /app
 
 COPY --chmod=0755 mvnw .
 COPY mvnw.cmd .
