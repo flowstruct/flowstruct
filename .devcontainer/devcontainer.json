@@ -1,14 +1,9 @@
 {
-  "name": "flowstruct-app",
+  "name": "client",
   "image": "node:22-alpine",
-  "customizations": {
-    "vscode": {
-      "extensions": [
-        "esbenp.prettier-vscode",
-        "dbaeumer.vscode-eslint"
-      ]
-    }
-  },
-  "workspaceFolder": "/workspaces/flowstruct/flowstruct-app",
-  "postCreateCommand": "apk add --no-cache git bash curl && npm install -g pnpm && pnpm install"
+  "workspaceFolder": "/workspace/client",
+  "workspaceMount": "source=${localWorkspaceFolder}/client,target=/workspace/client,type=bind,consistency=cached",
+  "postCreateCommand": "corepack enable && pnpm install",
+  "postStartCommand": "pnpm start:cms --host",
+  "appPort": 5173
 }

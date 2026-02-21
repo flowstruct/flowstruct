@@ -4,7 +4,6 @@ import { Popover } from '@/shared/components/ui/Popover.tsx';
 import { GridList, GridListItem } from '@/shared/components/ui/GridList.tsx';
 import { ListEmptyState } from '@/shared/components/ui/ListBox.tsx';
 import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
-import { courseQueries } from '@/features/course/queries.ts';
 import React from 'react';
 import { useDebounce } from '@/shared/hooks/use-debounce.ts';
 import { SearchField } from '@/shared/components/ui/SearchField.tsx';
@@ -18,6 +17,7 @@ import { MenuTrigger } from '@/shared/components/ui/Menu.tsx';
 import { getCourseDisplayName } from '@/features/course/domain/getCourseDisplayName.ts';
 import { useCourseCatalogSearchResults } from '@/features/course/hooks/use-course-catalog-search-results.ts';
 import { useDisclosure } from '@/shared/hooks/use-disclosure.ts';
+import { courseQueries } from '@/features/course/queries';
 
 type AddCoursesPopoverProps = { term: number };
 
@@ -48,7 +48,6 @@ export function CourseCatalogAutocomplete({ term }: AddCoursesPopoverProps) {
     isFetching,
     fetchNextPage,
   } = useInfiniteQuery(courseQueries.catalog({ filter: debouncedSearch }));
-
   const suggestCreateCourse = debouncedSearch && (catalogCourses?.results.length ?? 0) > 0;
 
   return (
