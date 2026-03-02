@@ -1,9 +1,14 @@
 {
-  "name": "client",
-  "image": "node:22-alpine",
-  "workspaceFolder": "/workspace/client",
-  "workspaceMount": "source=${localWorkspaceFolder}/client,target=/workspace/client,type=bind,consistency=cached",
-  "postCreateCommand": "corepack enable && pnpm install",
-  "postStartCommand": "pnpm start:cms --host",
-  "appPort": 5173
+  "name": "flowstruct",
+  "dockerComposeFile": "compose.yml",
+  "service": "dev",
+  "features": {
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "21"
+    }
+  },
+  "postCreateCommand": {
+    "api": "cd api && ./mvnw -q -DskipTests dependency:resolve dependency:resolve-plugins",
+    "client":  "cd client && pnpm install"
+  }
 }

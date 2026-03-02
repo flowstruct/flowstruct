@@ -1,0 +1,25 @@
+services:
+  dev:
+    image: mcr.microsoft.com/devcontainers/typescript-node
+    volumes:
+      - ..:/workspaces/flowstruct:cached
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      NODE_ENV: development
+      DATASOURCE_URL: jdbc:postgresql://db/flowstruct
+    ports:
+      - 5173:5173
+      - 8080:8080
+    command: sleep infinity
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: flowstruct
+      POSTGRES_USER: flowstruct
+      POSTGRES_PASSWORD: flowstruct
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

@@ -17,31 +17,27 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/users/me")
 public class MyController {
-    private final MyService myService;
-    private final CookieService cookieService;
+  private final MyService myService;
+  private final CookieService cookieService;
 
-    @GetMapping
-    public ResponseEntity<UserDto> getMe() {
-        return new ResponseEntity<>(myService.getMe(), HttpStatus.OK);
-    }
+  @GetMapping
+  public ResponseEntity<UserDto> getMe() {
+    return new ResponseEntity<>(myService.getMe(), HttpStatus.OK);
+  }
 
-    @PutMapping
-    public ResponseEntity<UserDto> editMyDetails(
-            @Valid @RequestBody UserDetailsDto details,
-            HttpServletResponse response
-    ) {
-        UserWithTokenDto userWithToken = myService.editMyDetails(details);
-        cookieService.createAuthCookie(response, userWithToken.token());
+  @PutMapping
+  public ResponseEntity<UserDto> editMyDetails(
+      @Valid @RequestBody UserDetailsDto details, HttpServletResponse response) {
+    UserWithTokenDto userWithToken = myService.editMyDetails(details);
+    cookieService.createAuthCookie(response, userWithToken.token());
 
-        return new ResponseEntity<>(
-                userWithToken.user(),
-                HttpStatus.OK
-        );
-    }
+    return new ResponseEntity<>(userWithToken.user(), HttpStatus.OK);
+  }
 
-    @PutMapping("/password")
-    public ResponseEntity<Void> changeMyPassword(@Valid @RequestBody MyPasswordResetDto passwordDetails) {
-        myService.changeMyPassword(passwordDetails);
-        return ResponseEntity.noContent().build();
-    }
+  @PutMapping("/password")
+  public ResponseEntity<Void> changeMyPassword(
+      @Valid @RequestBody MyPasswordResetDto passwordDetails) {
+    myService.changeMyPassword(passwordDetails);
+    return ResponseEntity.noContent().build();
+  }
 }

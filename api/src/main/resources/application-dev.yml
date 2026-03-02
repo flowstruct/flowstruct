@@ -12,6 +12,3 @@ spring:
       on-profile: dev
 
 secure: false
-
-api:
-  key: super-secret-api-key
