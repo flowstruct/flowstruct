@@ -15,6 +15,73 @@ export type PlacementState =
   | 'DISABLED'
   | 'MOVING';
 
+function getMovingState({
+  placement,
+  term,
+  state,
+}: {
+  placement: Placement;
+  term: Term;
+  state: FlowsheetGridState;
+}): PlacementState | null {
+  if (!state.moving) return null;
+  if (state.moving === placement.course) return 'MOVING';
+  if (!state.allowedTerms.has(term.id)) return 'DISABLED';
+  return null;
+}
+
+function getSelectionState({
+  placement,
+  state,
+}: {
+  placement: Placement;
+  state: FlowsheetGridState;
+}): PlacementState | null {
+  if (state.selected.size === 0) return null;
+  if (state.selected.has(placement.course)) return 'SELECTED';
+  return 'SELECTABLE';
+}
+
+function getLinkState({
+  placement,
+  state,
+  termAndPlacementByCourse,
+  graph,
+}: {
+  placement: Placement;
+  state: FlowsheetGridState;
+  termAndPlacementByCourse: Record<number, { term: Term; placement: Placement }>;
+  graph: Map<number, Requisites>;
+}): PlacementState | null {
+  const linkSourceId = state.linkSource;
+  if (!linkSourceId) return null;
+  if (linkSourceId === placement.course) return 'LINK_SOURCE';
+
+  const source = termAndPlacementByCourse[linkSourceId];
+  const target = termAndPlacementByCourse[placement.course];
+  if (!source || !target) return 'DISABLED';
+
+  const relation = classifyRelationship(source.placement.course, target.placement.course, graph);
+
+  if (state.linkType === 'PREREQ') {
+    if (relation === 'PREREQ') return 'PREREQ_LINK';
+
+    const targetAheadOfSource = source.term.position >= target.term.position;
+    const isCyclic = relation === 'POSTREQSEQ';
+    const sameCourse = source.placement.course === target.placement.course;
+
+    const allowed = !targetAheadOfSource && !isCyclic && !sameCourse;
+    return allowed ? 'AVAILABLE_LINK' : 'DISABLED';
+  }
+
+  if (state.linkType === 'COREQ') {
+    if (relation === 'COREQ') return 'COREQ_LINK';
+    return 'AVAILABLE_LINK';
+  }
+
+  return null;
+}
+
 export function getPlacementState({
   placement,
   term,
@@ -28,59 +95,10 @@ export function getPlacementState({
   termAndPlacementByCourse: Record<number, { term: Term; placement: Placement }>;
   graph: Map<number, Requisites>;
 }): PlacementState {
-  if (state.moving) {
-    if (state.moving === placement.course) return 'MOVING';
-
-    const allowedMoveTarget = state.allowedTerms.has(term.id);
-
-    if (!allowedMoveTarget) return 'DISABLED';
-  }
-
-  if (state.selected.size > 0) {
-    const isSelected = state.selected.has(placement.course);
-
-    if (isSelected) return 'SELECTED';
-
-    return 'SELECTABLE';
-  }
-
-  if (state.linkSource) {
-    const isLinkSource = state.linkSource === placement.course;
-
-    if (isLinkSource) return 'LINK_SOURCE';
-
-    const source = termAndPlacementByCourse[state.linkSource!];
-    const target = termAndPlacementByCourse[placement.course];
-
-    if (!source || !target) return 'DISABLED';
-
-    const relation = classifyRelationship(source.placement.course, target.placement.course, graph);
-
-    if (state.linkType === 'PREREQ') {
-      if (relation === 'PREREQ') return 'PREREQ_LINK';
-
-      let allowed = true;
-
-      if (source.placement.course === target.placement.course) {
-        allowed = false;
-      }
-
-      const targetAheadOfSource = source.term.position >= target.term.position;
-      const isCyclic = relation === 'POSTREQSEQ';
-
-      if (targetAheadOfSource || isCyclic) {
-        allowed = false;
-      }
-
-      return allowed ? 'AVAILABLE_LINK' : 'DISABLED';
-    }
-
-    if (state.linkType === 'COREQ') {
-      if (relation === 'COREQ') return 'COREQ_LINK';
-
-      return 'AVAILABLE_LINK';
-    }
-  }
-
-  return 'NORMAL';
+  return (
+    getMovingState({ placement, term, state }) ??
+    getSelectionState({ placement, state }) ??
+    getLinkState({ placement, state, termAndPlacementByCourse, graph }) ??
+    'NORMAL'
+  );
 }

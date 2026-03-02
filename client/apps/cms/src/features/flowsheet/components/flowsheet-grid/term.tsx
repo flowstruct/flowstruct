@@ -7,15 +7,98 @@ import Group from '@/shared/components/layout/group.tsx';
 import { Stack } from '@/shared/components/layout/stack.tsx';
 import { Text } from '@/shared/components/layout/text.tsx';
 import { SquarePlus } from 'lucide-react';
-import { GridList, GridListItem } from 'react-aria-components';
+import {
+  DropIndicator,
+  GridList,
+  GridListItem,
+  isTextDropItem,
+  useDragAndDrop,
+  useListData,
+} from 'react-aria-components';
 import styles from './term.module.css';
-import { useTermContext } from '@/features/flowsheet/contexts/term-context';
+import { CourseSummary } from '@/features/course/domain/course';
+import clsx from 'clsx';
+import { Term as TermType } from '@/features/flowsheet/domain/flowsheet';
 
-export function Term() {
+type TermProps = {
+  term: TermType;
+};
+
+export function Term({ term }: TermProps) {
   const { flowsheetCourses } = useFlowsheetContext();
   const { state } = useFlowsheetGridContext();
-  const { term, dragAndDropHooks } = useTermContext();
 
+  const list = useListData({
+    initialItems: term.placements,
+  });
+
+  const { dragAndDropHooks } = useDragAndDrop<CourseSummary>({
+    getItems(_, items) {
+      return items.map((item) => {
+        return {
+          course: JSON.stringify(item),
+          'text/plain': item.name,
+        };
+      });
+    },
+
+    acceptedDragTypes: ['course'],
+
+    getDropOperation: () => 'move',
+
+    async onInsert(e) {
+      const processedItems = await Promise.all(
+        e.items.filter(isTextDropItem).map(async (item) => JSON.parse(await item.getText('course')))
+      );
+
+      if (e.target.dropPosition === 'before') {
+        list.insertBefore(e.target.key, ...processedItems);
+      } else if (e.target.dropPosition === 'after') {
+        list.insertAfter(e.target.key, ...processedItems);
+      }
+    },
+
+    async onRootDrop(e) {
+      const processedItems = await Promise.all(
+        e.items.filter(isTextDropItem).map(async (item) => JSON.parse(await item.getText('course')))
+      );
+      list.append(...processedItems);
+    },
+
+    onReorder(e) {
+      if (e.target.dropPosition === 'before') {
+        list.moveBefore(e.target.key, e.keys);
+      } else if (e.target.dropPosition === 'after') {
+        list.moveAfter(e.target.key, e.keys);
+      }
+    },
+
+    onDragEnd(e) {
+      if (e.dropOperation === 'move' && !e.isInternal) {
+        list.remove(...e.keys);
+      }
+    },
+
+    renderDropIndicator: (target) => (
+      <DropIndicator
+        target={target}
+        className={({ isDropTarget }) =>
+          clsx(styles.dropIndicator, isDropTarget ? styles.active : '')
+        }
+      />
+    ),
+
+    renderDragPreview: (items) => {
+      const firstItem = JSON.parse(items[0].course) as CourseSummary;
+
+      return (
+        <div className={styles.dragPreview}>
+          {firstItem.code}: {firstItem.name}{' '}
+          <span className={styles.dragPreviewItemCount}>{items.length}</span>
+        </div>
+      );
+    },
+  });
   return (
     <Stack gap={1}>
       <Box px={1}>

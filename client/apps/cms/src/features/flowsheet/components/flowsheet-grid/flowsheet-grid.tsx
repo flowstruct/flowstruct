@@ -28,9 +28,7 @@ export function FlowsheetGrid() {
     <Box overflow="auto" overflowY="hidden" {...keyboardProps}>
       <Group align="start">
         {flowsheet.terms.map((t) => (
-          <TermProvider key={t.id} term={t}>
-            <Term />
-          </TermProvider>
+          <Term term={t} />
         ))}
 
         <Box position="relative">
