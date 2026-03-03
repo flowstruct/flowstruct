@@ -17,16 +17,14 @@ import {
 } from 'react-aria-components';
 import styles from './term.module.css';
 import { CourseSummary } from '@/features/course/domain/course';
+import { useTermContext } from '@/features/flowsheet/contexts/term-context.tsx';
 import clsx from 'clsx';
-import { Term as TermType } from '@/features/flowsheet/domain/flowsheet';
 
-type TermProps = {
-  term: TermType;
-};
-
-export function Term({ term }: TermProps) {
+export function Term() {
   const { flowsheetCourses } = useFlowsheetContext();
   const { state } = useFlowsheetGridContext();
+  const { term } = useTermContext();
+  console.log(term);
 
   const list = useListData({
     initialItems: term.placements,
@@ -99,15 +97,16 @@ export function Term({ term }: TermProps) {
       );
     },
   });
+
   return (
     <Stack gap={1}>
       <Box px={1}>
         <Group justify="between">
           <Text tone="dimmed" weight="medium" size="xs">
-            {term.name}
+            {term.name ?? 'Untitled Semester'}
           </Text>
 
-          <CourseCatalogAutocomplete term={Number(term)} />
+          <CourseCatalogAutocomplete />
         </Group>
       </Box>
 

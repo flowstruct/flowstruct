@@ -18,23 +18,23 @@ import { getCourseDisplayName } from '@/features/course/domain/getCourseDisplayN
 import { useCourseCatalogSearchResults } from '@/features/course/hooks/use-course-catalog-search-results.ts';
 import { useDisclosure } from '@/shared/hooks/use-disclosure.ts';
 import { courseQueries } from '@/features/course/queries';
+import { useTermContext } from '@/features/flowsheet/contexts/term-context.tsx';
 
-type AddCoursesPopoverProps = { term: number };
-
-export function CourseCatalogAutocomplete({ term }: AddCoursesPopoverProps) {
+export function CourseCatalogAutocomplete() {
   const { flowsheet, flowsheetCourses } = useFlowsheetContext();
   const [search, setSearch] = React.useState('');
   const debouncedSearch = useDebounce(search);
   const [selectedKeys, setSelectedKeys] = React.useState<Set<number>>(new Set());
   const courseCatalogSearchResults = useCourseCatalogSearchResults();
   const dialog = useDisclosure();
+  const { term } = useTermContext();
 
   const placeCourses = useMutation({
     mutationFn: () =>
       flowsheetApi.placeCourses({
         flowsheetId: flowsheet.id,
         courseIds: Array.from(selectedKeys),
-        term,
+        term: term.id,
       }),
     onSuccess: () => {
       setSelectedKeys(new Set());
