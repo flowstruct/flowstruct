@@ -22,15 +22,14 @@ export const flowsheetApi = {
     courseIds: number[];
     term: number;
   }) =>
-    api.post<Flowsheet>([FLOWSHEET_ENDPOINT, flowsheetId, 'placements'], {
+    api.post<Flowsheet>([FLOWSHEET_ENDPOINT, flowsheetId, 'terms', term], {
       params: {
         courseIds,
-        term,
       },
     }),
 
   removeCourses: ({ flowsheetId, courseIds }: { flowsheetId: number; courseIds: number[] }) =>
-    api.delete([FLOWSHEET_ENDPOINT, flowsheetId, 'placements'], {
+    api.delete([FLOWSHEET_ENDPOINT, flowsheetId, 'terms'], {
       params: {
         courseIds,
       },
@@ -47,9 +46,9 @@ export const flowsheetApi = {
     term: number;
     position: number;
   }) =>
-    api.put([FLOWSHEET_ENDPOINT, flowsheetId, 'placements', courseId], {
+    api.put([FLOWSHEET_ENDPOINT, flowsheetId, 'terms', term], {
       params: {
-        term,
+        courseId,
         position,
       },
     }),

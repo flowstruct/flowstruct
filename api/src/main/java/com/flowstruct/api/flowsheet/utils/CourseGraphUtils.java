@@ -2,141 +2,149 @@ package com.flowstruct.api.flowsheet.utils;
 
 import com.flowstruct.api.course.domain.CourseSequences;
 import com.flowstruct.api.flowsheet.domain.CoursePrerequisite;
-import com.flowstruct.api.flowsheet.domain.Relation;
 import com.flowstruct.api.flowsheet.domain.Flowsheet;
+import com.flowstruct.api.flowsheet.domain.Relation;
 import com.flowstruct.api.flowsheet.exception.CyclicDependencyException;
-import org.springframework.stereotype.Service;
-
 import java.util.*;
+import org.springframework.stereotype.Service;
 
 @Service
 public class CourseGraphUtils {
-    public Map<Long, CourseSequences> buildFlowsheetSequences(
-            Map<Long, Map<Long, Relation>> coursePrerequisites,
-            List<Long> courseIds
-    ) {
-        Set<Long> visited = new HashSet<>();
-        Map<Long, CourseSequences> courseSequencesMap = new HashMap<>();
+  public Map<Long, CourseSequences> buildFlowsheetSequences(
+      Map<Long, Map<Long, Relation>> coursePrerequisites, List<Long> courseIds) {
+    Set<Long> visited = new HashSet<>();
+    Map<Long, CourseSequences> courseSequencesMap = new HashMap<>();
 
-        for (var courseId : courseIds) {
-            courseSequencesMap.put(
-                    courseId,
-                    new CourseSequences(new HashSet<>(), new HashSet<>(), 1)
-            );
-        }
-
-        for (var courseId : courseIds) {
-            if (!visited.contains(courseId)) {
-                traversePrerequisites(courseId, coursePrerequisites, visited, courseSequencesMap);
-            }
-        }
-
-        visited.clear();
-
-        for (var courseId : courseIds) {
-            if (!visited.contains(courseId)) {
-                traversePostrequisites(courseId, visited, courseSequencesMap);
-            }
-        }
-
-        return courseSequencesMap;
+    for (var courseId : courseIds) {
+      courseSequencesMap.put(courseId, new CourseSequences(new HashSet<>(), new HashSet<>(), 1));
     }
 
-    public void validatePrerequisites(
-            long parentCourseId,
-            Flowsheet flowsheet,
-            List<Long> prerequisites
-    ) {
-        var coursePrerequisitesMap = flowsheet.getCoursePrerequisitesMap();
-
-        Set<Long> visited = new HashSet<>();
-
-        for (var prerequisite : prerequisites) {
-            if (!visited.contains(prerequisite)) {
-                detectCycle(parentCourseId, prerequisite, visited, coursePrerequisitesMap);
-            }
-        }
+    for (var courseId : courseIds) {
+      if (!visited.contains(courseId)) {
+        traversePrerequisites(courseId, coursePrerequisites, visited, courseSequencesMap);
+      }
     }
 
-    private void detectCycle(
-            long originalCourseId,
-            long prerequisiteId,
-            Set<Long> visited,
-            Map<Long, List<CoursePrerequisite>> coursePrerequisitesMap
-    ) {
-        if (visited.contains(prerequisiteId)) return;
+    visited.clear();
 
-        if (originalCourseId == prerequisiteId) throw new CyclicDependencyException("Cycle detected.");
-
-        var prerequisites = coursePrerequisitesMap.get(prerequisiteId);
-
-        if (prerequisites == null) return;
-
-        for (var prerequisite : prerequisites) {
-            if (!visited.contains(prerequisite.getPrerequisite().getId())) {
-                detectCycle(originalCourseId, prerequisite.getPrerequisite().getId(), visited, coursePrerequisitesMap);
-            }
-        }
-
-        visited.add(prerequisiteId);
+    for (var courseId : courseIds) {
+      if (!visited.contains(courseId)) {
+        traversePostrequisites(courseId, visited, courseSequencesMap);
+      }
     }
 
-    private void traversePrerequisites(
-            long courseId,
-            Map<Long, Map<Long, Relation>> coursePrerequisites,
-            Set<Long> visited,
-            Map<Long, CourseSequences> courseSequencesMap
-    ) {
-        if (coursePrerequisites.get(courseId) == null) return;
+    return courseSequencesMap;
+  }
 
-        var prerequisites = coursePrerequisites.get(courseId).entrySet();
+  public void validatePrerequisites(
+      long parentCourseId, Flowsheet flowsheet, List<Long> prerequisites) {
+    var coursePrerequisitesMap = flowsheet.getCoursePrerequisitesMap();
 
-        for (var prerequisite : prerequisites) {
-            var prerequisiteId = prerequisite.getKey();
+    Set<Long> visited = new HashSet<>();
 
-            if (!visited.contains(prerequisiteId)) {
-                traversePrerequisites(prerequisiteId, coursePrerequisites, visited, courseSequencesMap);
-            }
+    for (var prerequisite : prerequisites) {
+      if (!visited.contains(prerequisite)) {
+        detectCycle(parentCourseId, prerequisite, visited, coursePrerequisitesMap);
+      }
+    }
+  }
 
-            var courseSequences = courseSequencesMap.get(courseId);
-            var prerequisiteCourseSequences = courseSequencesMap.get(prerequisiteId);
+  private void detectCycle(
+      long originalCourseId,
+      long prerequisiteId,
+      Set<Long> visited,
+      Map<Long, List<CoursePrerequisite>> coursePrerequisitesMap) {
+    if (visited.contains(prerequisiteId)) return;
 
-            courseSequences.getPrerequisiteSequence()
-                    .addAll(prerequisiteCourseSequences.getPrerequisiteSequence());
+    if (originalCourseId == prerequisiteId) throw new CyclicDependencyException("Cycle detected.");
 
-            courseSequences.getPrerequisiteSequence().add(prerequisiteId);
+    var prerequisites = coursePrerequisitesMap.get(prerequisiteId);
 
-            prerequisiteCourseSequences.getPostrequisiteSequence().add(courseId);
+    if (prerequisites == null) return;
 
-            if (courseSequences.getLevel() <= prerequisiteCourseSequences.getLevel()) {
-                courseSequences.setLevel(prerequisiteCourseSequences.getLevel() + 1);
-            }
-        }
-
-        visited.add(courseId);
+    for (var prerequisite : prerequisites) {
+      if (!visited.contains(prerequisite.getPrerequisite().getId())) {
+        detectCycle(
+            originalCourseId,
+            prerequisite.getPrerequisite().getId(),
+            visited,
+            coursePrerequisitesMap);
+      }
     }
 
-    private void traversePostrequisites(
-            long courseId,
-            Set<Long> visited,
-            Map<Long, CourseSequences> courseSequencesMap
-    ) {
-        var courseSequences = courseSequencesMap.get(courseId);
+    visited.add(prerequisiteId);
+  }
 
-        var postrequisiteCourses = new HashSet<>(courseSequences.getPostrequisiteSequence());
+  private void traversePrerequisites(
+      long courseId,
+      Map<Long, Map<Long, Relation>> coursePrerequisites,
+      Set<Long> visited,
+      Map<Long, CourseSequences> courseSequencesMap) {
+    if (coursePrerequisites.get(courseId) == null) return;
 
-        for (var postrequisiteId : postrequisiteCourses) {
-            if (!visited.contains(postrequisiteId)) {
-                traversePostrequisites(postrequisiteId, visited, courseSequencesMap);
-            }
+    var prerequisites = coursePrerequisites.get(courseId).entrySet();
 
-            var postrequisiteCourseSequences = courseSequencesMap.get(postrequisiteId);
+    for (var prerequisite : prerequisites) {
+      var prerequisiteId = prerequisite.getKey();
 
-            courseSequences.getPostrequisiteSequence().add(postrequisiteId);
-            courseSequences.getPostrequisiteSequence()
-                    .addAll(postrequisiteCourseSequences.getPostrequisiteSequence());
-        }
+      if (!visited.contains(prerequisiteId)) {
+        traversePrerequisites(prerequisiteId, coursePrerequisites, visited, courseSequencesMap);
+      }
 
-        visited.add(courseId);
+      var courseSequences = courseSequencesMap.get(courseId);
+      var prerequisiteCourseSequences = courseSequencesMap.get(prerequisiteId);
+
+      courseSequences
+          .getPrerequisiteSequence()
+          .addAll(prerequisiteCourseSequences.getPrerequisiteSequence());
+
+      courseSequences.getPrerequisiteSequence().add(prerequisiteId);
+
+      prerequisiteCourseSequences.getPostrequisiteSequence().add(courseId);
+
+      if (courseSequences.getLevel() <= prerequisiteCourseSequences.getLevel()) {
+        courseSequences.setLevel(prerequisiteCourseSequences.getLevel() + 1);
+      }
     }
+
+    visited.add(courseId);
+  }
+
+  private void traversePostrequisites(
+      long courseId, Set<Long> visited, Map<Long, CourseSequences> courseSequencesMap) {
+    var courseSequences = courseSequencesMap.get(courseId);
+
+    var postrequisiteCourses = new HashSet<>(courseSequences.getPostrequisiteSequence());
+
+    for (var postrequisiteId : postrequisiteCourses) {
+      if (!visited.contains(postrequisiteId)) {
+        traversePostrequisites(postrequisiteId, visited, courseSequencesMap);
+      }
+
+      var postrequisiteCourseSequences = courseSequencesMap.get(postrequisiteId);
+
+      courseSequences.getPostrequisiteSequence().add(postrequisiteId);
+      courseSequences
+          .getPostrequisiteSequence()
+          .addAll(postrequisiteCourseSequences.getPostrequisiteSequence());
+    }
+
+    visited.add(courseId);
+  }
+
+  public void removeRequisiteLinks(Flowsheet flowsheet, long courseId) {
+    flowsheet
+        .getCoursePrerequisites()
+        .removeIf(
+            cp ->
+                Objects.equals(cp.getCourse().getId(), courseId)
+                    || Objects.equals(cp.getPrerequisite().getId(), courseId));
+
+    flowsheet
+        .getCourseCorequisites()
+        .removeIf(
+            cc ->
+                Objects.equals(cc.getCourse().getId(), courseId)
+                    || Objects.equals(cc.getCorequisite().getId(), courseId));
+  }
 }

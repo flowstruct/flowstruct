@@ -92,7 +92,7 @@ CREATE TABLE term
     flowsheet INT          NOT NULL,
     position  INT          NOT NULL,
     year      INT          NOT NULL,
-    name      VARCHAR(255) NOT NULL,
+    name      VARCHAR(255),
     UNIQUE (flowsheet, year, position)
 );
 

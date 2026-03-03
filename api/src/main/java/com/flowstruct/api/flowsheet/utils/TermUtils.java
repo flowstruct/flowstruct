@@ -5,11 +5,10 @@ import com.flowstruct.api.flowsheet.domain.Term;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PlacementUtils {
+public class TermUtils {
 
   public void insertCoursePlacement(Term term, Placement placement) {
-    if (placement == null || term == null)
-      return;
+    if (placement == null || term == null) return;
 
     shiftPositions(term, placement.getPosition(), +1);
 
@@ -17,8 +16,7 @@ public class PlacementUtils {
   }
 
   public void deleteCoursePlacement(Term term, Placement placement) {
-    if (placement == null || term == null)
-      return;
+    if (placement == null || term == null) return;
 
     term.getPlacements().remove(placement);
 
@@ -36,8 +34,7 @@ public class PlacementUtils {
   }
 
   private void shiftPositions(Term term, int fromPosition, int delta) {
-    term.getPlacements()
-        .stream()
+    term.getPlacements().stream()
         .filter(p -> p.getPosition() >= fromPosition)
         .forEach(p -> p.setPosition(p.getPosition() + delta));
   }

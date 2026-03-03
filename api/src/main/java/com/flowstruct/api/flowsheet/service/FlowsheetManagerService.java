@@ -1,33 +1,33 @@
 package com.flowstruct.api.flowsheet.service;
 
-import java.time.Instant;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.springframework.data.jdbc.core.mapping.AggregateReference;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.flowstruct.api.common.exception.AlreadyApprovedException;
 import com.flowstruct.api.common.exception.InvalidDetailsException;
 import com.flowstruct.api.flowsheet.domain.Flowsheet;
 import com.flowstruct.api.flowsheet.domain.FlowsheetSnapshot;
 import com.flowstruct.api.flowsheet.domain.Section;
+import com.flowstruct.api.flowsheet.domain.Term;
 import com.flowstruct.api.flowsheet.dto.FlowsheetDetailsDto;
 import com.flowstruct.api.flowsheet.dto.FlowsheetDto;
 import com.flowstruct.api.flowsheet.exception.FlowsheetNotFoundException;
 import com.flowstruct.api.user.service.UserService;
-
+import java.time.Instant;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jdbc.core.mapping.AggregateReference;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @PreAuthorize("hasRole('ROLE_EDITOR')")
 @RequiredArgsConstructor
 @Service
 public class FlowsheetManagerService {
+
   private final FlowsheetService flowsheetService;
+
   private final UserService userService;
 
   @Transactional
@@ -64,26 +64,28 @@ public class FlowsheetManagerService {
       throw new InvalidDetailsException("Cloned study plan must come from the same program.");
     }
 
-    Set<Section> sectionClones = flowsheetToClone.getSections().stream()
-        .peek(section -> section.setId(null))
-        .collect(Collectors.toSet());
+    Set<Section> sectionClones =
+        flowsheetToClone.getSections().stream()
+            .peek(section -> section.setId(null))
+            .collect(Collectors.toSet());
 
-    Flowsheet flowsheetClone = new Flowsheet(
-        null,
-        cloneDetails.year(),
-        cloneDetails.name(),
-        flowsheetToClone.getProgram(),
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        sectionClones,
-        flowsheetToClone.getTerms(),
-        flowsheetToClone.getCoursePrerequisites(),
-        flowsheetToClone.getCourseCorequisites());
+    Flowsheet flowsheetClone =
+        new Flowsheet(
+            null,
+            cloneDetails.year(),
+            cloneDetails.name(),
+            flowsheetToClone.getProgram(),
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            sectionClones,
+            flowsheetToClone.getTerms(),
+            flowsheetToClone.getCoursePrerequisites(),
+            flowsheetToClone.getCourseCorequisites());
 
     return flowsheetService.saveAndMap(flowsheetClone);
   }
@@ -100,22 +102,23 @@ public class FlowsheetManagerService {
 
   @Transactional
   public FlowsheetDto createFlowsheet(FlowsheetDetailsDto details) {
-    Flowsheet flowsheet = new Flowsheet(
-        null,
-        details.year(),
-        details.name().trim(),
-        AggregateReference.to(details.program()),
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        new HashSet<>(),
-        new HashSet<>(),
-        new HashSet<>(),
-        new HashSet<>());
+    Flowsheet flowsheet =
+        new Flowsheet(
+            null,
+            details.year(),
+            details.name().trim(),
+            AggregateReference.to(details.program()),
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            new HashSet<>(),
+            new HashSet<>(Set.of(new Term())),
+            new HashSet<>(),
+            new HashSet<>());
 
     return flowsheetService.saveAndMap(flowsheet);
   }
@@ -159,7 +162,8 @@ public class FlowsheetManagerService {
     var flowsheet = flowsheetService.findOrThrow(flowsheetId);
     FlowsheetSnapshot lastApprovedStudyPlan = flowsheet.getApprovedFlowsheet();
 
-    if (lastApprovedStudyPlan != null && Objects.equals(lastApprovedStudyPlan.getVersion(), flowsheet.getVersion())) {
+    if (lastApprovedStudyPlan != null
+        && Objects.equals(lastApprovedStudyPlan.getVersion(), flowsheet.getVersion())) {
       throw new AlreadyApprovedException("This version has already been approved.");
     }
 
