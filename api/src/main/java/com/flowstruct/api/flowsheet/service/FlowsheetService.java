@@ -1,11 +1,5 @@
 package com.flowstruct.api.flowsheet.service;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.dao.OptimisticLockingFailureException;
-import org.springframework.stereotype.Service;
-
 import com.flowstruct.api.flowsheet.domain.Flowsheet;
 import com.flowstruct.api.flowsheet.dto.FlowsheetDto;
 import com.flowstruct.api.flowsheet.dto.FlowsheetSummaryDto;
@@ -13,8 +7,11 @@ import com.flowstruct.api.flowsheet.exception.FlowsheetNotFoundException;
 import com.flowstruct.api.flowsheet.mapper.FlowsheetDtoMapper;
 import com.flowstruct.api.flowsheet.mapper.FlowsheetSummaryDtoMapper;
 import com.flowstruct.api.flowsheet.repository.FlowsheetRepository;
-
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
@@ -35,35 +32,36 @@ public class FlowsheetService {
       return Optional.empty();
     }
 
-    var approvedFlowsheet = new Flowsheet(
-        flowsheet.getId(),
-        flowsheet.getApprovedFlowsheet().getYear(),
-        flowsheet.getApprovedFlowsheet().getName(),
-        flowsheet.getApprovedFlowsheet().getProgram(),
-        flowsheet.getApprovedFlowsheet(),
-        null,
-        null,
-        flowsheet.getApprovedFlowsheet().getVersion(),
-        flowsheet.getCreatedAt(),
-        flowsheet.getUpdatedAt(),
-        flowsheet.getUpdatedBy(),
-        flowsheet.getApprovedFlowsheet().getSections(),
-        flowsheet.getApprovedFlowsheet().getTerms(),
-        flowsheet.getApprovedFlowsheet().getCoursePrerequisites(),
-        flowsheet.getApprovedFlowsheet().getCourseCorequisites());
+    var approvedFlowsheet =
+        new Flowsheet(
+            flowsheet.getId(),
+            flowsheet.getApprovedFlowsheet().getYear(),
+            flowsheet.getApprovedFlowsheet().getName(),
+            flowsheet.getApprovedFlowsheet().getProgram(),
+            flowsheet.getApprovedFlowsheet(),
+            null,
+            null,
+            flowsheet.getApprovedFlowsheet().getVersion(),
+            flowsheet.getCreatedAt(),
+            flowsheet.getUpdatedAt(),
+            flowsheet.getUpdatedBy(),
+            flowsheet.getApprovedFlowsheet().getSections(),
+            flowsheet.getApprovedFlowsheet().getTerms(),
+            flowsheet.getApprovedFlowsheet().getCoursePrerequisites(),
+            flowsheet.getApprovedFlowsheet().getCourseCorequisites());
 
     return Optional.of(flowsheetDtoMapper.apply(approvedFlowsheet));
   }
 
   public List<FlowsheetSummaryDto> getAllFlowsheets() {
-    return flowsheetRepository.findAllFlowsheetSummaries()
-        .stream()
+    return flowsheetRepository.findAllFlowsheetSummaries().stream()
         .map(flowsheetSummaryDtoMapper)
         .toList();
   }
 
   public Flowsheet findOrThrow(long flowsheetId) {
-    return flowsheetRepository.findById(flowsheetId)
+    return flowsheetRepository
+        .findById(flowsheetId)
         .orElseThrow(() -> new FlowsheetNotFoundException("Flowsheet was not found."));
   }
 

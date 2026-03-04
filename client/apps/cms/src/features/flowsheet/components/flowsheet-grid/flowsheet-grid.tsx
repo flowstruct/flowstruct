@@ -29,7 +29,7 @@ export function FlowsheetGrid() {
       <Group align="start">
         {flowsheet.terms.map((t) => (
           <TermProvider key={t.id} term={t}>
-            <Term term={t} />
+            <Term />
           </TermProvider>
         ))}
 

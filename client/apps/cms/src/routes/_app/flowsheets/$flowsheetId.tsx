@@ -17,6 +17,7 @@ import { getProgramDisplayName } from '@/features/program/domain/getProgramDispl
 import { getFlowsheetDisplayName } from '@/features/flowsheet/domain/getFlowsheetDisplayName.ts';
 import { FlowsheetGridProvider } from '@/features/flowsheet/contexts/flowsheet-grid-context.tsx';
 import Group from '@/shared/components/layout/group.tsx';
+import { FlowsheetCoursesGraphProvider } from '@/features/flowsheet/contexts/courses-graph-context';
 
 export const Route = createFileRoute('/_app/flowsheets/$flowsheetId')({
   loader: ({ context: { queryClient }, params: { flowsheetId } }) => {
@@ -28,12 +29,14 @@ export const Route = createFileRoute('/_app/flowsheets/$flowsheetId')({
 
     return (
       <FlowsheetProvider flowsheetId={Number(flowsheetId)}>
-        <RouteHeader />
-        <div className={styles.content}>
-          <FlowsheetGridProvider>
-            <FlowsheetGrid />
-          </FlowsheetGridProvider>
-        </div>
+        <FlowsheetCoursesGraphProvider>
+          <RouteHeader />
+          <div className={styles.content}>
+            <FlowsheetGridProvider>
+              <FlowsheetGrid />
+            </FlowsheetGridProvider>
+          </div>
+        </FlowsheetCoursesGraphProvider>
       </FlowsheetProvider>
     );
   },

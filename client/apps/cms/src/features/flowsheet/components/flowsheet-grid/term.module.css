@@ -35,3 +35,21 @@
   padding: 0 var(--space-2);
   border-radius: var(--radius-1);
 }
+
+.skeletonCard {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #eee 25%, #ddd 50%, #eee 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite;
+  border-radius: 8px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}

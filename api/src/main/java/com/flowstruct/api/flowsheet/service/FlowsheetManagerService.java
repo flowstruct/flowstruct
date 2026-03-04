@@ -116,7 +116,7 @@ public class FlowsheetManagerService {
             null,
             null,
             new HashSet<>(),
-            new HashSet<>(Set.of(new Term())),
+            new HashSet<>(Set.of(new Term(null, 1, null, new HashSet<>()))),
             new HashSet<>(),
             new HashSet<>());
 

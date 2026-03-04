@@ -24,7 +24,6 @@ export function Term() {
   const { flowsheetCourses } = useFlowsheetContext();
   const { state } = useFlowsheetGridContext();
   const { term } = useTermContext();
-  console.log(term);
 
   const list = useListData({
     initialItems: term.placements,
@@ -109,23 +108,32 @@ export function Term() {
           <CourseCatalogAutocomplete />
         </Group>
       </Box>
-
       <GridList
         items={term.placements}
-        selectionMode="multiple"
+        selectionMode="single"
         selectedKeys={state.selected}
         dragAndDropHooks={dragAndDropHooks}
         renderEmptyState={() => <EmptyState />}
-        aria-label={`Term ${term}`}
+        aria-label={`Term ${term.id}`}
         className={styles.listBox}
       >
         {(placement) => {
           const course = flowsheetCourses.byIds[placement.course];
 
-          if (!course) return;
+          if (!course) {
+            return (
+              <GridListItem
+                id={`skeleton-${placement.course}`}
+                textValue=""
+                className={styles.listBoxItem}
+              >
+                <div className={styles.skeletonCard} />
+              </GridListItem>
+            );
+          }
 
           return (
-            <GridListItem textValue={course.name} className={styles.listBoxItem}>
+            <GridListItem id={course.id} textValue={course.name} className={styles.listBoxItem}>
               <CourseCard course={course} placement={placement} />
             </GridListItem>
           );
