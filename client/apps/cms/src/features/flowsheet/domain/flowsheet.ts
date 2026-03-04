@@ -24,8 +24,7 @@ export type Section = {
 
 export type Term = {
   id: number;
-  year: number;
-  position: number;
+  termNumber: number;
   name: string;
   placements: Placement[];
 };

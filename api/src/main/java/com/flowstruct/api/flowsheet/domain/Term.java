@@ -2,15 +2,13 @@ package com.flowstruct.api.flowsheet.domain;
 
 import java.util.HashSet;
 import java.util.Set;
-
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.MappedCollection;
-import org.springframework.data.relational.core.mapping.Table;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.MappedCollection;
+import org.springframework.data.relational.core.mapping.Table;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,12 +17,9 @@ import lombok.Setter;
 @Table("term")
 public class Term {
 
-  @Id
-  private Long id;
+  @Id private Long id;
 
-  private int position;
-
-  private int year;
+  private int termNumber;
 
   private String name;
 
@@ -33,8 +28,7 @@ public class Term {
 
   public Term(Term other) {
     this.id = other.id;
-    this.position = other.position;
-    this.year = other.year;
+    this.termNumber = other.termNumber;
     this.placements = other.placements;
   }
 }

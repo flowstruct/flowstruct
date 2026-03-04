@@ -17,5 +17,4 @@ public record FlowsheetDto(
     List<SectionDto> sections,
     List<TermDto> terms,
     List<CoursePrerequisiteDto> coursePrerequisites,
-    List<CourseCorequisiteDto> courseCorequisites) {
-}
+    List<CourseCorequisiteDto> courseCorequisites) {}

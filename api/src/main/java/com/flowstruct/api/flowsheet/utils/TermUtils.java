@@ -24,13 +24,7 @@ public class TermUtils {
   }
 
   public int compareTerms(Term t1, Term t2) {
-    int yearComparison = Integer.compare(t1.getYear(), t2.getYear());
-
-    if (yearComparison != 0) {
-      return yearComparison;
-    }
-
-    return Integer.compare(t1.getPosition(), t2.getPosition());
+    return Integer.compare(t1.getTermNumber(), t2.getTermNumber());
   }
 
   private void shiftPositions(Term term, int fromPosition, int delta) {

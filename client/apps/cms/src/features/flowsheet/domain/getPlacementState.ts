@@ -66,7 +66,7 @@ function getLinkState({
   if (state.linkType === 'PREREQ') {
     if (relation === 'PREREQ') return 'PREREQ_LINK';
 
-    const targetAheadOfSource = source.term.position >= target.term.position;
+    const targetAheadOfSource = source.term.termNumber >= target.term.termNumber;
     const isCyclic = relation === 'POSTREQSEQ';
     const sameCourse = source.placement.course === target.placement.course;
 

@@ -90,10 +90,9 @@ CREATE TABLE term
 (
     id        SERIAL PRIMARY KEY,
     flowsheet INT          NOT NULL,
-    position  INT          NOT NULL,
-    year      INT          NOT NULL,
+    term_number  INT          NOT NULL,
     name      VARCHAR(255),
-    UNIQUE (flowsheet, year, position)
+    UNIQUE (flowsheet, term_number)
 );
 
 CREATE TABLE placement

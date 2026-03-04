@@ -7,22 +7,22 @@ import com.flowstruct.api.flowsheet.domain.SectionLevel;
 import com.flowstruct.api.flowsheet.domain.SectionType;
 import com.flowstruct.api.flowsheet.domain.Term;
 import com.flowstruct.api.flowsheet.dto.*;
-import org.springframework.stereotype.Service;
-
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.function.Function;
+import org.springframework.stereotype.Service;
 
 @Service
 public class FlowsheetDtoMapper implements Function<Flowsheet, FlowsheetDto> {
 
   @Override
   public FlowsheetDto apply(Flowsheet flowsheet) {
-    String status = flowsheet.getApprovedFlowsheet() == null
-        ? "NEW"
-        : !Objects.equals(flowsheet.getApprovedFlowsheet().getVersion(), flowsheet.getVersion())
-            ? "DRAFT"
-            : "APPROVED";
+    String status =
+        flowsheet.getApprovedFlowsheet() == null
+            ? "NEW"
+            : !Objects.equals(flowsheet.getApprovedFlowsheet().getVersion(), flowsheet.getVersion())
+                ? "DRAFT"
+                : "APPROVED";
 
     return new FlowsheetDto(
         flowsheet.getId(),
@@ -35,55 +35,52 @@ public class FlowsheetDtoMapper implements Function<Flowsheet, FlowsheetDto> {
         flowsheet.getCreatedAt(),
         flowsheet.getUpdatedAt(),
         flowsheet.getUpdatedBy(),
-        flowsheet.getSections()
-            .stream()
+        flowsheet.getSections().stream()
             .sorted(Comparator.comparing(this::getSectionCode))
-            .map(sec -> new SectionDto(
-                sec.getId(),
-                sec.getLevel(),
-                sec.getType(),
-                sec.getRequiredCreditHours(),
-                sec.getName(),
-                sec.getPosition(),
-                sec.getCourses().stream()
-                    .map(sectionCourse -> sectionCourse.getCourse().getId())
-                    .toList()))
+            .map(
+                sec ->
+                    new SectionDto(
+                        sec.getId(),
+                        sec.getLevel(),
+                        sec.getType(),
+                        sec.getRequiredCreditHours(),
+                        sec.getName(),
+                        sec.getPosition(),
+                        sec.getCourses().stream()
+                            .map(sectionCourse -> sectionCourse.getCourse().getId())
+                            .toList()))
             .toList(),
-        flowsheet.getTerms()
-            .stream()
-            .sorted(Comparator.comparing((Term t) -> t.getYear())
-                .thenComparing(Term::getPosition))
-            .map(t -> new TermDto(
-                t.getId(),
-                t.getYear(),
-                t.getPosition(),
-                t.getName(),
-                t.getPlacements()
-                    .stream()
-                    .sorted(Comparator.comparing(Placement::getPosition))
-                    .map(p -> new PlacementDto(
-                        p.getCourse().getId(),
-                        p.getPosition(),
-                        p.getSpan()))
-                    .toList()))
+        flowsheet.getTerms().stream()
+            .sorted(Comparator.comparing(Term::getTermNumber))
+            .map(
+                t ->
+                    new TermDto(
+                        t.getId(),
+                        t.getTermNumber(),
+                        t.getName(),
+                        t.getPlacements().stream()
+                            .sorted(Comparator.comparing(Placement::getPosition))
+                            .map(
+                                p ->
+                                    new PlacementDto(
+                                        p.getCourse().getId(), p.getPosition(), p.getSpan()))
+                            .toList()))
             .toList(),
-        flowsheet.getCoursePrerequisites()
-            .stream()
-            .map(cp -> new CoursePrerequisiteDto(
-                cp.getCourse().getId(),
-                cp.getPrerequisite().getId()))
+        flowsheet.getCoursePrerequisites().stream()
+            .map(
+                cp ->
+                    new CoursePrerequisiteDto(cp.getCourse().getId(), cp.getPrerequisite().getId()))
             .toList(),
-        flowsheet.getCourseCorequisites()
-            .stream()
-            .map(cc -> new CourseCorequisiteDto(
-                cc.getCourse().getId(),
-                cc.getCorequisite().getId()))
+        flowsheet.getCourseCorequisites().stream()
+            .map(
+                cc -> new CourseCorequisiteDto(cc.getCourse().getId(), cc.getCorequisite().getId()))
             .toList());
   }
 
   private String getSectionCode(Section section) {
     return getSectionLevelCode(section.getLevel())
-        + "." + getSectionTypeCode(section.getType())
+        + "."
+        + getSectionTypeCode(section.getType())
         + (section.getPosition() > 0 ? "." + section.getPosition() : "");
   }
 
