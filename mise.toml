@@ -21,6 +21,9 @@ depends = ["deps:*"]
 [tasks.db]
 run = "cd api && docker compose up"
 
+[tasks."db:down"]
+run = "cd api && docker compose down -v"
+
 [tasks.api]
 run = "cd api && mvn spring-boot:run"
 

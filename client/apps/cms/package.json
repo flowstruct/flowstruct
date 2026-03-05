@@ -11,6 +11,8 @@
     "test": "echo \"cms: no tests defined\" && exit 0"
   },
   "dependencies": {
+    "@dnd-kit/abstract": "^0.3.2",
+    "@dnd-kit/react": "^0.3.2",
     "@hookform/resolvers": "^5.1.0",
     "@mantine/core": "^8.0.0",
     "@mantine/dates": "^8.0.0",

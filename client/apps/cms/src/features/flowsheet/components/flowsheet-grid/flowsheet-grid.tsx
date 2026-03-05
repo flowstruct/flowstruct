@@ -11,6 +11,7 @@ import { useKeyboard } from 'react-aria';
 import { Term } from '@/features/flowsheet/components/flowsheet-grid/term';
 import { useFlowsheetContext } from '@/features/flowsheet/contexts/flowsheet-context';
 import { TermProvider } from '@/features/flowsheet/contexts/term-context';
+import { DragDropProvider } from '@dnd-kit/react';
 
 export function FlowsheetGrid() {
   const { flowsheet } = useFlowsheetContext();
@@ -27,11 +28,13 @@ export function FlowsheetGrid() {
   return (
     <Box overflow="auto" overflowY="hidden" {...keyboardProps}>
       <Group align="start">
-        {flowsheet.terms.map((t) => (
-          <TermProvider key={t.id} term={t}>
-            <Term />
-          </TermProvider>
-        ))}
+        <DragDropProvider>
+          {flowsheet.terms.map((t) => (
+            <TermProvider key={t.id} term={t}>
+              <Term />
+            </TermProvider>
+          ))}
+        </DragDropProvider>
 
         <Box position="relative">
           <TooltipTrigger>

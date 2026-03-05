@@ -1,4 +1,4 @@
-.listBox {
+.placements {
   all: unset;
   width: 10rem;
   display: flex;
@@ -7,42 +7,13 @@
   gap: var(--space-2);
 }
 
-.listBoxItem {
-  all: unset;
-}
-
-.dropIndicator.active {
-  outline: 1px solid var(--primary-color);
-}
-
-.dragPreview {
-  max-width: 250px;
-  font-size: var(--font-size-sm);
-  display: flex;
-  font-weight: 450;
-  align-items: center;
-  gap: var(--space-4);
-  border-radius: var(--radius-2);
-  padding: var(--space-1) var(--space-2);
-  color: var(--primary-contrast);
-  background: var(--primary-11);
-}
-
-.dragPreviewItemCount {
-  font-size: var(--font-size-xs);
-  background: white;
-  color: var(--primary-11);
-  padding: 0 var(--space-2);
-  border-radius: var(--radius-1);
-}
-
 .skeletonCard {
-  height: 100%;
+  height: 7rem;
   width: 100%;
-  background: linear-gradient(90deg, #eee 25%, #ddd 50%, #eee 75%);
+  border-radius: var(--radius-2);
+  background: linear-gradient(90deg, #f1f1f1 25%, #f4f4f4 50%, #f1f1f1 75%);
   background-size: 200% 100%;
   animation: shimmer 1.2s infinite;
-  border-radius: 8px;
 }
 
 @keyframes shimmer {

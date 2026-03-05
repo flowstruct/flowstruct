@@ -15,6 +15,8 @@ import { Plus, Scaling, TagIcon, Trash } from 'lucide-react';
 import React from 'react';
 import { useFocusRing, useHover, usePress } from 'react-aria';
 import styles from './course-card.module.css';
+import { useSortable } from '@dnd-kit/react/sortable';
+import { useTermContext } from '@/features/flowsheet/contexts/term-context';
 
 type CourseCardProps = {
   course: CourseSummary;
@@ -23,8 +25,16 @@ type CourseCardProps = {
 
 export function CourseCard({ course, placement, ...props }: CourseCardProps) {
   const { state, dispatch } = useFlowsheetGridContext();
+  const { term } = useTermContext();
+  const triggerFocusPopoverRef = React.useRef<HTMLDivElement | null>(null);
   const placementState = usePlacement(placement);
-
+  const { ref, isDragging } = useSortable({
+    id: course.id,
+    index: placement.position,
+    type: 'placement',
+    accept: 'placement',
+    group: term.id,
+  });
   const { pressProps, isPressed } = usePress({
     onPress: (e) => {
       if ((e.ctrlKey || e.shiftKey) && placementState === 'NORMAL') {
@@ -66,10 +76,8 @@ export function CourseCard({ course, placement, ...props }: CourseCardProps) {
   const { hoverProps, isHovered } = useHover(props);
   const { focusProps, isFocusVisible } = useFocusRing(props);
 
-  const triggerFocusPopoverRef = React.useRef<HTMLDivElement | null>(null);
-
   return (
-    <>
+    <div ref={ref}>
       <div
         {...pressProps}
         {...hoverProps}
@@ -78,6 +86,7 @@ export function CourseCard({ course, placement, ...props }: CourseCardProps) {
         data-hovered={isHovered || undefined}
         data-focused={isFocusVisible || undefined}
         data-pressed={isPressed || undefined}
+        data-dragging={isDragging}
         data-state={placementState}
         role="button"
         tabIndex={0}
@@ -145,6 +154,6 @@ export function CourseCard({ course, placement, ...props }: CourseCardProps) {
           </Group>
         </Box>
       </Popover>
-    </>
+    </div>
   );
 }
