@@ -16,8 +16,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class FlowsheetService {
+
   private final FlowsheetRepository flowsheetRepository;
+
   private final FlowsheetDtoMapper flowsheetDtoMapper;
+
   private final FlowsheetSummaryDtoMapper flowsheetSummaryDtoMapper;
 
   public FlowsheetDto getFlowsheet(long flowsheetId) {

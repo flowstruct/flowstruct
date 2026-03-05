@@ -22,6 +22,8 @@ export type Section = {
   courses: number[];
 };
 
+export const TERM_NAMES = ['First Semester', 'Second Semester', 'Summer Semester'] as const;
+
 export type Term = {
   id: number;
   termNumber: number;

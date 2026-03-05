@@ -21,6 +21,11 @@ public class FlowsheetTermController {
 
   private final FlowsheetTermService flowsheetTermService;
 
+  @PostMapping
+  public ResponseEntity<FlowsheetDto> addTerm(@PathVariable long flowsheetId) {
+    return new ResponseEntity<>(flowsheetTermService.addTerm(flowsheetId), HttpStatus.OK);
+  }
+
   @PostMapping("/{termId}")
   public ResponseEntity<FlowsheetDto> placeCourses(
       @PathVariable long flowsheetId,

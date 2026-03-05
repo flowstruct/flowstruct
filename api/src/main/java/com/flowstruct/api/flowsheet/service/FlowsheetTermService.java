@@ -33,6 +33,22 @@ public class FlowsheetTermService {
   private final CourseGraphUtils courseGraphUtils;
 
   @Transactional
+  public FlowsheetDto addTerm(long flowsheetId) {
+    Flowsheet flowsheet = flowsheetService.findOrThrow(flowsheetId);
+
+    int nextTermNumber =
+        flowsheet.getTerms().stream().mapToInt(Term::getTermNumber).max().orElse(0) + 1;
+
+    Term term = new Term();
+    term.setTermNumber(nextTermNumber);
+    term.setName("");
+
+    flowsheet.getTerms().add(term);
+
+    return flowsheetService.saveAndMap(flowsheet);
+  }
+
+  @Transactional
   public FlowsheetDto placeCourses(long flowsheetId, List<Long> courseIds, long termId) {
     Flowsheet flowsheet = flowsheetService.findOrThrow(flowsheetId);
 

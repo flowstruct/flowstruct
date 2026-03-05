@@ -14,7 +14,6 @@ import React from 'react';
 export function FlowsheetToolbar() {
   const { flowsheet } = useFlowsheetContext();
   const { state, dispatch } = useFlowsheetGridContext();
-
   const removeCourses = useMutation({
     mutationFn: () =>
       flowsheetApi.removeCourses({

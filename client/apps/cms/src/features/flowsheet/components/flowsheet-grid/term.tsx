@@ -11,6 +11,7 @@ import { useTermContext } from '@/features/flowsheet/contexts/term-context.tsx';
 import { useDelayedSkeleton } from '@/shared/hooks/use-delayed-skeleton';
 import { flowsheetQueries } from '../../queries';
 import { Placement } from '@/features/flowsheet/domain/flowsheet';
+import { getTermDisplayName } from '@/features/flowsheet/domain/getTermDisplayName';
 
 export function Term() {
   const { term } = useTermContext();
@@ -20,7 +21,7 @@ export function Term() {
       <Box px={1}>
         <Group justify="between">
           <Text tone="dimmed" weight="medium" size="xs">
-            {term.name ?? 'Untitled Semester'}
+            {getTermDisplayName(term)}
           </Text>
 
           <CourseCatalogAutocomplete />
