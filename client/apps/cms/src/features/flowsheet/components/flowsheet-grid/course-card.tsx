@@ -30,7 +30,7 @@ export function CourseCard({ course, placement, ...props }: CourseCardProps) {
   const placementState = usePlacement(placement);
   const { ref, isDragging } = useSortable({
     id: course.id,
-    index: placement.position,
+    index: placement.position - 1,
     type: 'placement',
     accept: 'placement',
     group: term.id,
