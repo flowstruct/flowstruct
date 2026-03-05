@@ -5,13 +5,16 @@ import { Box } from '@/shared/components/layout/box.tsx';
 import Group from '@/shared/components/layout/group.tsx';
 import { Stack } from '@/shared/components/layout/stack.tsx';
 import { Text } from '@/shared/components/layout/text.tsx';
-import { SquarePlus } from 'lucide-react';
+import { Ellipsis, SquarePlus, X } from 'lucide-react';
 import styles from './term.module.css';
 import { useTermContext } from '@/features/flowsheet/contexts/term-context.tsx';
 import { useDelayedSkeleton } from '@/shared/hooks/use-delayed-skeleton';
 import { flowsheetQueries } from '../../queries';
 import { Placement } from '@/features/flowsheet/domain/flowsheet';
 import { getTermDisplayName } from '@/features/flowsheet/domain/getTermDisplayName';
+import { Button } from '@/shared/components/ui/Button';
+import { Menu, MenuItem, MenuTrigger } from '@/shared/components/ui/Menu';
+import { Popover } from '@/shared/components/ui/Popover';
 
 export function Term() {
   const { term } = useTermContext();
@@ -24,7 +27,7 @@ export function Term() {
             {getTermDisplayName(term)}
           </Text>
 
-          <CourseCatalogAutocomplete />
+          <TermOptions />
         </Group>
       </Box>
 
@@ -33,6 +36,8 @@ export function Term() {
           <PlacementCard key={p.course} placement={p} />
         ))}
       </div>
+
+      <CourseCatalogAutocomplete />
     </Stack>
   );
 }
@@ -51,6 +56,27 @@ function PlacementCard({ placement }: PlacementCardProps) {
   }
 
   return <CourseCard course={course} placement={placement} />;
+}
+
+function TermOptions() {
+  const { term } = useTermContext();
+
+  return (
+    <MenuTrigger>
+      <Button variant="ghost" size="none">
+        <Ellipsis size={15} />
+      </Button>
+
+      <Popover placement="bottom end">
+        <Menu>
+          <MenuItem>
+            <X color="red" size={14} />
+            <span>Delete</span>
+          </MenuItem>
+        </Menu>
+      </Popover>
+    </MenuTrigger>
+  );
 }
 
 function EmptyState() {

@@ -69,13 +69,10 @@ public class FlowsheetTermService {
                   throw new NoSuchElementException("Term was not found.");
                 });
 
-    int delta = courseIds.size();
+    int maxPosition =
+        term.getPlacements().stream().mapToInt(Placement::getPosition).max().orElse(0);
 
-    for (var placement : term.getPlacements()) {
-      placement.setPosition(placement.getPosition() + delta);
-    }
-
-    int position = 1;
+    int position = maxPosition + 1;
     for (var courseId : courseIds) {
       Placement newPlacement = new Placement(AggregateReference.to(courseId), position++, 1);
       term.getPlacements().add(newPlacement);

@@ -58,7 +58,7 @@ export function CourseCatalogAutocomplete() {
           onPress={dialog.open}
           variant="ghost"
           shape="icon"
-          size="none"
+          size="xs"
         >
           <Plus size={14} />
         </Button>
