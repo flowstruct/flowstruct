@@ -8,8 +8,6 @@
 }
 
 .addTermButton {
-  position: absolute;
-  top: 0;
   left: var(--space-2);
+  top: calc(-1 * var(--space-1));
 }
-

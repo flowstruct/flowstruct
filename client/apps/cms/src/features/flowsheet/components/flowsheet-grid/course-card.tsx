@@ -17,6 +17,9 @@ import { useFocusRing, useHover, usePress } from 'react-aria';
 import styles from './course-card.module.css';
 import { useSortable } from '@dnd-kit/react/sortable';
 import { useTermContext } from '@/features/flowsheet/contexts/term-context';
+import { useMutation } from '@tanstack/react-query';
+import { flowsheetApi } from '@/features/flowsheet/api';
+import { useFlowsheetContext } from '@/features/flowsheet/contexts/flowsheet-context';
 
 type CourseCardProps = {
   course: CourseSummary;
@@ -24,6 +27,7 @@ type CourseCardProps = {
 };
 
 export function CourseCard({ course, placement, ...props }: CourseCardProps) {
+  const { flowsheet } = useFlowsheetContext();
   const { state, dispatch } = useFlowsheetGridContext();
   const { term } = useTermContext();
   const triggerFocusPopoverRef = React.useRef<HTMLDivElement | null>(null);
@@ -75,6 +79,11 @@ export function CourseCard({ course, placement, ...props }: CourseCardProps) {
   });
   const { hoverProps, isHovered } = useHover(props);
   const { focusProps, isFocusVisible } = useFocusRing(props);
+
+  const removeCourse = useMutation({
+    mutationFn: () =>
+      flowsheetApi.removeCourses({ flowsheetId: flowsheet.id, courseIds: [course.id] }),
+  });
 
   return (
     <div ref={ref}>
@@ -145,7 +154,13 @@ export function CourseCard({ course, placement, ...props }: CourseCardProps) {
             <Divider orientation="vertical" />
 
             <TooltipTrigger>
-              <Button size="sm" shape="icon" variant="transparent">
+              <Button
+                size="sm"
+                shape="icon"
+                variant="transparent"
+                onPress={() => removeCourse.mutate()}
+                isPending={removeCourse.isPending}
+              >
                 <Trash color="red" size={14} />
               </Button>
 

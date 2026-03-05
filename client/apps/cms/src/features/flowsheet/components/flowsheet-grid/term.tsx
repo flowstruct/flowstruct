@@ -5,6 +5,8 @@ import { Box } from '@/shared/components/layout/box.tsx';
 import Group from '@/shared/components/layout/group.tsx';
 import { Stack } from '@/shared/components/layout/stack.tsx';
 import { Text } from '@/shared/components/layout/text.tsx';
+import { useMutation } from '@tanstack/react-query';
+import { flowsheetApi } from '@/features/flowsheet/api';
 import { Ellipsis, SquarePlus, X } from 'lucide-react';
 import styles from './term.module.css';
 import { useTermContext } from '@/features/flowsheet/contexts/term-context.tsx';
@@ -60,16 +62,21 @@ function PlacementCard({ placement }: PlacementCardProps) {
 
 function TermOptions() {
   const { term } = useTermContext();
+  const { flowsheet } = useFlowsheetContext();
+
+  const deleteTerm = useMutation({
+    mutationFn: () => flowsheetApi.deleteTerm({ flowsheetId: flowsheet.id, termId: term.id }),
+  });
 
   return (
     <MenuTrigger>
-      <Button variant="ghost" size="none">
+      <Button variant="ghost" size="none" isPending={deleteTerm.isPending}>
         <Ellipsis size={15} />
       </Button>
 
       <Popover placement="bottom end">
         <Menu>
-          <MenuItem>
+          <MenuItem onAction={() => deleteTerm.mutate()}>
             <X color="red" size={14} />
             <span>Delete</span>
           </MenuItem>

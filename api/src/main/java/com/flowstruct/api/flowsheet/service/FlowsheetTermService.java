@@ -194,9 +194,38 @@ public class FlowsheetTermService {
   }
 
   @Transactional
+  public FlowsheetDto deleteTerm(long flowsheetId, long termId) {
+    Flowsheet flowsheet = flowsheetService.findOrThrow(flowsheetId);
+
+    Term term =
+        flowsheet.getTerms().stream()
+            .filter(t -> t.getId() == termId)
+            .findFirst()
+            .orElseThrow(
+                () -> {
+                  throw new NoSuchElementException("Term was not found.");
+                });
+
+    List<Long> courseIds =
+        term.getPlacements().stream().map(p -> p.getCourse().getId()).collect(Collectors.toList());
+
+    removeCoursesFromFlowsheet(flowsheet, courseIds);
+
+    flowsheet.getTerms().remove(term);
+
+    return flowsheetService.saveAndMap(flowsheet);
+  }
+
+  @Transactional
   public FlowsheetDto removePlacements(long flowsheetId, List<Long> courseIds) {
     Flowsheet flowsheet = flowsheetService.findOrThrow(flowsheetId);
 
+    removeCoursesFromFlowsheet(flowsheet, courseIds);
+
+    return flowsheetService.saveAndMap(flowsheet);
+  }
+
+  private void removeCoursesFromFlowsheet(Flowsheet flowsheet, List<Long> courseIds) {
     Map<Long, TermPlacementPair> termAndPlacementByCourse =
         flowsheet.getTerms().stream()
             .flatMap(
@@ -216,7 +245,5 @@ public class FlowsheetTermService {
         termUtils.deleteCoursePlacement(pair.term, pair.placement);
       }
     }
-
-    return flowsheetService.saveAndMap(flowsheet);
   }
 }

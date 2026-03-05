@@ -55,4 +55,7 @@ export const flowsheetApi = {
 
   addTerm: ({ flowsheetId }: { flowsheetId: number }) =>
     api.post<Flowsheet>([FLOWSHEET_ENDPOINT, flowsheetId, 'terms']),
+
+  deleteTerm: ({ flowsheetId, termId }: { flowsheetId: number; termId: number }) =>
+    api.delete<Flowsheet>([FLOWSHEET_ENDPOINT, flowsheetId, 'terms', termId]),
 };

@@ -61,6 +61,7 @@ function AddTermButton() {
           shape="icon"
           className={styles.addTermButton}
           onPress={() => addTerm.mutate()}
+          isPending={addTerm.isPending}
         >
           <Grid2X2Plus size={15} />
         </Button>
