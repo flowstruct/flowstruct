@@ -58,4 +58,30 @@ export const flowsheetApi = {
 
   deleteTerm: ({ flowsheetId, termId }: { flowsheetId: number; termId: number }) =>
     api.delete<Flowsheet>([FLOWSHEET_ENDPOINT, flowsheetId, 'terms', termId]),
+
+  linkPrerequisites: ({
+    flowsheetId,
+    courseId,
+    prerequisiteIds,
+  }: {
+    flowsheetId: number;
+    courseId: number;
+    prerequisiteIds: number[];
+  }) =>
+    api.post<Flowsheet>([FLOWSHEET_ENDPOINT, flowsheetId, 'graph', courseId, 'prerequisites'], {
+      params: { prerequisiteIds },
+    }),
+
+  unlinkPrerequisites: ({
+    flowsheetId,
+    courseId,
+    prerequisiteIds,
+  }: {
+    flowsheetId: number;
+    courseId: number;
+    prerequisiteIds: number[];
+  }) =>
+    api.delete<Flowsheet>([FLOWSHEET_ENDPOINT, flowsheetId, 'graph', courseId, 'prerequisites'], {
+      params: { prerequisiteIds },
+    }),
 };

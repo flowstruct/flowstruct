@@ -12,14 +12,15 @@ import { Divider } from '@/shared/components/ui/divider.tsx';
 import { Popover } from '@/shared/components/ui/Popover.tsx';
 import { Tooltip, TooltipTrigger } from '@/shared/components/ui/Tooltip.tsx';
 import { Plus, Scaling, TagIcon, Trash } from 'lucide-react';
-import React from 'react';
-import { useFocusRing, useHover, usePress } from 'react-aria';
+import { useFocusRing, usePress } from 'react-aria';
 import styles from './course-card.module.css';
 import { useSortable } from '@dnd-kit/react/sortable';
 import { useTermContext } from '@/features/flowsheet/contexts/term-context';
 import { useMutation } from '@tanstack/react-query';
 import { flowsheetApi } from '@/features/flowsheet/api';
 import { useFlowsheetContext } from '@/features/flowsheet/contexts/flowsheet-context';
+import React from 'react';
+import { mergeRefs } from '@/shared/utils/mergeRefs';
 
 type CourseCardProps = {
   course: CourseSummary;
@@ -30,76 +31,102 @@ export function CourseCard({ course, placement, ...props }: CourseCardProps) {
   const { flowsheet } = useFlowsheetContext();
   const { state, dispatch } = useFlowsheetGridContext();
   const { term } = useTermContext();
-  const triggerFocusPopoverRef = React.useRef<HTMLDivElement | null>(null);
   const placementState = usePlacement(placement);
-  const { ref, isDragging } = useSortable({
+  const { ref: sortableRef, isDragging } = useSortable({
     id: course.id,
     index: placement.position - 1,
     type: 'placement',
     accept: 'placement',
     group: term.id,
   });
-  const { pressProps, isPressed } = usePress({
-    onPress: (e) => {
-      if ((e.ctrlKey || e.shiftKey) && placementState === 'NORMAL') {
-        dispatch({ type: 'TOGGLE_SELECT', payload: { courseId: course.id } });
-        return;
-      }
+  const optionsTriggerRef = React.useRef(null);
+  const [optionsIsOpen, setOptionsOpen] = React.useState(false);
 
-      if (placementState === 'SELECTABLE' || placementState === 'SELECTED') {
-        dispatch({ type: 'TOGGLE_SELECT', payload: { courseId: course.id } });
-      }
-
-      if (
-        placementState === 'PREREQ_LINK' ||
-        (placementState === 'AVAILABLE_LINK' && state.linkType === 'PREREQ')
-      ) {
-        console.log('toggled prereq');
-        return;
-      }
-
-      if (
-        placementState === 'COREQ_LINK' ||
-        (placementState === 'AVAILABLE_LINK' && state.linkType === 'COREQ')
-      ) {
-        console.log('toggled coreq');
-        return;
-      }
-
-      if (placementState === 'LINK_SOURCE') {
-        dispatch({ type: 'TOGGLE_LINKING', payload: { courseId: course.id, type: null } });
-        return;
-      }
-
-      if (state.focused || placementState === 'NORMAL') {
-        dispatch({ type: 'TOGGLE_FOCUS', payload: { courseId: course.id } });
-        return;
-      }
-    },
+  const linkPrerequisite = useMutation({
+    mutationFn: () =>
+      flowsheetApi.linkPrerequisites({
+        flowsheetId: flowsheet.id,
+        courseId: state.linkSource as number,
+        prerequisiteIds: [course.id],
+      }),
   });
-  const { hoverProps, isHovered } = useHover(props);
-  const { focusProps, isFocusVisible } = useFocusRing(props);
+
+  console.log(course.code + ': ' + placementState);
+
+  const unlinkPrerequisite = useMutation({
+    mutationFn: () =>
+      flowsheetApi.unlinkPrerequisites({
+        flowsheetId: flowsheet.id,
+        courseId: state.linkSource as number,
+        prerequisiteIds: [course.id],
+      }),
+  });
 
   const removeCourse = useMutation({
     mutationFn: () =>
       flowsheetApi.removeCourses({ flowsheetId: flowsheet.id, courseIds: [course.id] }),
   });
 
+  const { pressProps, isPressed } = usePress({
+    onPress: (e) => {
+      if ((e.ctrlKey || e.shiftKey) && placementState === 'NORMAL') {
+        dispatch({ type: 'TOGGLE_SELECT_MODE', payload: { courseId: course.id } });
+        return;
+      }
+
+      if (placementState === 'SELECTABLE') {
+        dispatch({ type: 'TOGGLE_SELECT_MODE', payload: { courseId: course.id } });
+        return;
+      }
+
+      if (placementState === 'SELECTED') {
+        dispatch({ type: 'TOGGLE_SELECT_MODE', payload: { courseId: course.id } });
+        return;
+      }
+
+      if (placementState === 'PREREQ_LINK') {
+        unlinkPrerequisite.mutate();
+        return;
+      }
+
+      if (placementState === 'AVAILABLE_LINK' && state.linkType === 'PREREQ') {
+        linkPrerequisite.mutate();
+        return;
+      }
+
+      if (placementState === 'COREQ_LINK') {
+        console.log('toggled coreq');
+        return;
+      }
+
+      if (placementState === 'AVAILABLE_LINK' && state.linkType === 'COREQ') {
+        console.log('toggled coreq');
+        return;
+      }
+
+      if (placementState === 'LINK_SOURCE') {
+        dispatch({ type: 'TOGGLE_LINK_MODE', payload: { courseId: course.id, type: null } });
+        return;
+      }
+
+      setOptionsOpen(true);
+    },
+  });
+  const { focusProps, isFocusVisible } = useFocusRing(props);
+
   return (
-    <div ref={ref}>
+    <>
       <div
         {...pressProps}
-        {...hoverProps}
         {...focusProps}
         className={styles.card}
-        data-hovered={isHovered || undefined}
         data-focused={isFocusVisible || undefined}
         data-pressed={isPressed || undefined}
         data-dragging={isDragging}
         data-state={placementState}
         role="button"
         tabIndex={0}
-        ref={triggerFocusPopoverRef}
+        ref={mergeRefs(sortableRef as React.Ref<HTMLDivElement>, optionsTriggerRef)}
       >
         <Stack fill gap={1}>
           <Group justify="between">
@@ -108,7 +135,9 @@ export function CourseCard({ course, placement, ...props }: CourseCardProps) {
             </Text>
 
             <Checkbox
-              onChange={() => dispatch({ type: 'TOGGLE_SELECT', payload: { courseId: course.id } })}
+              onChange={() =>
+                dispatch({ type: 'TOGGLE_SELECT_MODE', payload: { courseId: course.id } })
+              }
               isSelected={state.selected.has(course.id)}
             />
           </Group>
@@ -118,14 +147,24 @@ export function CourseCard({ course, placement, ...props }: CourseCardProps) {
       </div>
 
       <Popover
-        triggerRef={triggerFocusPopoverRef}
-        isNonModal
         placement="top"
-        isOpen={state.focused === course.id}
+        isOpen={optionsIsOpen}
+        onOpenChange={setOptionsOpen}
+        triggerRef={optionsTriggerRef}
       >
         <Box px={1} py={1}>
           <Group gap={1}>
-            <Button size="sm" variant="transparent">
+            <Button
+              size="sm"
+              variant="transparent"
+              onPress={() => {
+                dispatch({
+                  type: 'TOGGLE_LINK_MODE',
+                  payload: { courseId: course.id, type: 'PREREQ' },
+                });
+                setOptionsOpen(false);
+              }}
+            >
               <Plus size={14} /> Prerequisite
             </Button>
 
@@ -169,6 +208,6 @@ export function CourseCard({ course, placement, ...props }: CourseCardProps) {
           </Group>
         </Box>
       </Popover>
-    </div>
+    </>
   );
 }

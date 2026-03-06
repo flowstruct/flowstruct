@@ -5,7 +5,6 @@ import { Placement, Term } from '@/features/flowsheet/domain/flowsheet';
 
 export type PlacementState =
   | 'NORMAL'
-  | 'FOCUSED'
   | 'SELECTED'
   | 'SELECTABLE'
   | 'LINK_SOURCE'
@@ -25,8 +24,11 @@ function getMovingState({
   state: FlowsheetGridState;
 }): PlacementState | null {
   if (!state.moving) return null;
+
   if (state.moving === placement.course) return 'MOVING';
+
   if (!state.allowedTerms.has(term.id)) return 'DISABLED';
+
   return null;
 }
 
@@ -38,7 +40,9 @@ function getSelectionState({
   state: FlowsheetGridState;
 }): PlacementState | null {
   if (state.selected.size === 0) return null;
+
   if (state.selected.has(placement.course)) return 'SELECTED';
+
   return 'SELECTABLE';
 }
 
@@ -54,11 +58,14 @@ function getLinkState({
   graph: Map<number, Requisites>;
 }): PlacementState | null {
   const linkSourceId = state.linkSource;
+
   if (!linkSourceId) return null;
+
   if (linkSourceId === placement.course) return 'LINK_SOURCE';
 
   const source = termAndPlacementByCourse[linkSourceId];
   const target = termAndPlacementByCourse[placement.course];
+
   if (!source || !target) return 'DISABLED';
 
   const relation = classifyRelationship(source.placement.course, target.placement.course, graph);
@@ -66,16 +73,18 @@ function getLinkState({
   if (state.linkType === 'PREREQ') {
     if (relation === 'PREREQ') return 'PREREQ_LINK';
 
-    const targetAheadOfSource = source.term.termNumber >= target.term.termNumber;
+    const targetBehindSource = source.term.termNumber > target.term.termNumber;
     const isCyclic = relation === 'POSTREQSEQ';
     const sameCourse = source.placement.course === target.placement.course;
 
-    const allowed = !targetAheadOfSource && !isCyclic && !sameCourse;
+    const allowed = targetBehindSource && !isCyclic && !sameCourse;
+
     return allowed ? 'AVAILABLE_LINK' : 'DISABLED';
   }
 
   if (state.linkType === 'COREQ') {
     if (relation === 'COREQ') return 'COREQ_LINK';
+
     return 'AVAILABLE_LINK';
   }
 

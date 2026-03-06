@@ -4,7 +4,6 @@ export type LinkType = 'PREREQ' | 'COREQ';
 
 export type FlowsheetGridState = {
   selected: Set<number>;
-  focused: number | null;
   moving: number | null;
   linkSource: number | null;
   linkType: LinkType | null;
@@ -12,17 +11,15 @@ export type FlowsheetGridState = {
 };
 
 type FlowsheetGridAction =
-  | { type: 'TOGGLE_SELECT'; payload: { courseId: number } }
+  | { type: 'TOGGLE_SELECT_MODE'; payload: { courseId: number } }
   | { type: 'CLEAR_SELECTED' }
-  | { type: 'TOGGLE_FOCUS'; payload: { courseId: number } }
-  | { type: 'TOGGLE_LINKING'; payload: { courseId: number; type: LinkType | null } }
+  | { type: 'TOGGLE_LINK_MODE'; payload: { courseId: number; type: LinkType | null } }
   | { type: 'MOVE_START'; payload: { courseId: number; allowedTerms: Set<number> } }
   | { type: 'MOVE_END' }
   | { type: 'RESET_STATE' };
 
 const initialState: FlowsheetGridState = {
   selected: new Set(),
-  focused: null,
   moving: null,
   linkSource: null,
   linkType: null,
@@ -31,7 +28,7 @@ const initialState: FlowsheetGridState = {
 
 function reducer(state: FlowsheetGridState, action: FlowsheetGridAction): FlowsheetGridState {
   switch (action.type) {
-    case 'TOGGLE_SELECT': {
+    case 'TOGGLE_SELECT_MODE': {
       const id = action.payload.courseId;
       const next = new Set(state.selected);
 
@@ -41,7 +38,6 @@ function reducer(state: FlowsheetGridState, action: FlowsheetGridAction): Flowsh
       return {
         ...state,
         selected: next,
-        focused: null,
         linkSource: null,
       };
     }
@@ -49,16 +45,7 @@ function reducer(state: FlowsheetGridState, action: FlowsheetGridAction): Flowsh
     case 'CLEAR_SELECTED':
       return { ...state, selected: new Set() };
 
-    case 'TOGGLE_FOCUS': {
-      const id = action.payload.courseId;
-
-      return {
-        ...state,
-        focused: state.focused === id ? null : id,
-      };
-    }
-
-    case 'TOGGLE_LINKING': {
+    case 'TOGGLE_LINK_MODE': {
       const id = action.payload.courseId;
       const type = action.payload.type;
 
@@ -66,7 +53,6 @@ function reducer(state: FlowsheetGridState, action: FlowsheetGridAction): Flowsh
         ...state,
         linkType: state.linkSource === id ? null : type,
         linkSource: state.linkSource === id ? null : id,
-        focused: null,
         selected: new Set(),
       };
     }
