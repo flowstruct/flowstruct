@@ -57,6 +57,15 @@
   border: 1px solid #fdd8af;
 
   svg {
-    color: #fab361;
+    color: #f89f3a;
+  }
+}
+
+.card[data-state='COREQ_LINK'] {
+  background: var(--gray-3);
+  border: 1px solid var(--gray-7);
+
+  svg {
+    color: var(--gray-9);
   }
 }

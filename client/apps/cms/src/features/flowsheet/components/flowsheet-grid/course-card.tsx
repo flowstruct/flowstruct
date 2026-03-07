@@ -11,7 +11,7 @@ import { Checkbox } from '@/shared/components/ui/Checkbox.tsx';
 import { Divider } from '@/shared/components/ui/divider.tsx';
 import { Popover } from '@/shared/components/ui/Popover.tsx';
 import { Tooltip, TooltipTrigger } from '@/shared/components/ui/Tooltip.tsx';
-import { Link, Pencil, Plus, Scaling, SquarePen, TagIcon, Trash } from 'lucide-react';
+import { Link, Scaling, SquarePen, TagIcon, Trash } from 'lucide-react';
 import { useFocusRing, usePress } from 'react-aria';
 import styles from './course-card.module.css';
 import { useSortable } from '@dnd-kit/react/sortable';
@@ -60,6 +60,24 @@ export function CourseCard({ course, placement, ...props }: CourseCardProps) {
       }),
   });
 
+  const linkCorequisite = useMutation({
+    mutationFn: () =>
+      flowsheetApi.linkCorequisites({
+        flowsheetId: flowsheet.id,
+        courseId: state.linkSource as number,
+        corequisiteIds: [course.id],
+      }),
+  });
+
+  const unlinkCorequisite = useMutation({
+    mutationFn: () =>
+      flowsheetApi.unlinkCorequisites({
+        flowsheetId: flowsheet.id,
+        courseId: state.linkSource as number,
+        corequisiteIds: [course.id],
+      }),
+  });
+
   const removeCourse = useMutation({
     mutationFn: () =>
       flowsheetApi.removeCourses({ flowsheetId: flowsheet.id, courseIds: [course.id] }),
@@ -93,12 +111,12 @@ export function CourseCard({ course, placement, ...props }: CourseCardProps) {
       }
 
       if (placementState === 'COREQ_LINK') {
-        console.log('toggled coreq');
+        unlinkCorequisite.mutate();
         return;
       }
 
       if (placementState === 'AVAILABLE_LINK' && state.linkType === 'COREQ') {
-        console.log('toggled coreq');
+        linkCorequisite.mutate();
         return;
       }
 
@@ -143,6 +161,7 @@ export function CourseCard({ course, placement, ...props }: CourseCardProps) {
             )}
 
             {placementState === 'PREREQ_LINK' && <Link size={13} />}
+            {placementState === 'COREQ_LINK' && <Link size={13} />}
           </Group>
 
           <Text size="xs">{course.name}</Text>
@@ -171,7 +190,17 @@ export function CourseCard({ course, placement, ...props }: CourseCardProps) {
               <SquarePen size={14} /> Pre-requisites
             </Button>
 
-            <Button size="sm" variant="transparent">
+            <Button
+              size="sm"
+              variant="transparent"
+              onPress={() => {
+                dispatch({
+                  type: 'TOGGLE_LINK_MODE',
+                  payload: { courseId: course.id, type: 'COREQ' },
+                });
+                setOptionsOpen(false);
+              }}
+            >
               <SquarePen size={14} /> Co-requisites
             </Button>
 

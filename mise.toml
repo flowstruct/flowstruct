@@ -25,7 +25,7 @@ run = "cd api && docker compose up"
 run = "cd api && docker compose down -v"
 
 [tasks.api]
-run = "cd api && mvn spring-boot:run"
+run = "cd api && mvn clean spring-boot:run"
 
 [tasks.client]
 run = "cd client && pnpm start:cms"

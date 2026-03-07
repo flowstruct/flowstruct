@@ -84,4 +84,30 @@ export const flowsheetApi = {
     api.delete<Flowsheet>([FLOWSHEET_ENDPOINT, flowsheetId, 'graph', courseId, 'prerequisites'], {
       params: { prerequisiteIds },
     }),
+
+  linkCorequisites: ({
+    flowsheetId,
+    courseId,
+    corequisiteIds,
+  }: {
+    flowsheetId: number;
+    courseId: number;
+    corequisiteIds: number[];
+  }) =>
+    api.post<Flowsheet>([FLOWSHEET_ENDPOINT, flowsheetId, 'graph', courseId, 'corequisites'], {
+      params: { corequisiteIds },
+    }),
+
+  unlinkCorequisites: ({
+    flowsheetId,
+    courseId,
+    corequisiteIds,
+  }: {
+    flowsheetId: number;
+    courseId: number;
+    corequisiteIds: number[];
+  }) =>
+    api.delete<Flowsheet>([FLOWSHEET_ENDPOINT, flowsheetId, 'graph', courseId, 'corequisites'], {
+      params: { corequisiteIds },
+    }),
 };

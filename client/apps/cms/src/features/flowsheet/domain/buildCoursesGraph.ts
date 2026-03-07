@@ -18,22 +18,28 @@ function traversePrerequisites(
   const coursePrerequisites = prerequisitesByCourse.get(course);
   const courseCorequisites = corequisitesByCourse.get(course);
 
-  if (!coursePrerequisites) {
-    visited.add(course);
-    return;
-  }
-
   courseCorequisites?.forEach((cc) => {
     const corequisite = cc.corequisite;
     courseSequences.corequisites.add(corequisite);
   });
+
+  if (!coursePrerequisites) {
+    visited.add(course);
+    return;
+  }
 
   for (const cp of coursePrerequisites) {
     const prerequisite = cp.prerequisite;
     if (!graph.has(prerequisite)) continue;
 
     if (!visited.has(prerequisite)) {
-      traversePrerequisites(prerequisite, visited, graph, prerequisitesByCourse, corequisitesByCourse);
+      traversePrerequisites(
+        prerequisite,
+        visited,
+        graph,
+        prerequisitesByCourse,
+        corequisitesByCourse
+      );
     }
 
     const prerequisiteCourseSequences = graph.get(prerequisite)!;
@@ -98,7 +104,13 @@ export function buildCoursesGraph(flowsheet: Flowsheet): Map<number, Requisites>
 
   courses.forEach((c) => {
     if (!visitedPrerequisites.has(c)) {
-      traversePrerequisites(c, visitedPrerequisites, graph, prerequisitesByCourse, corequisitesByCourse);
+      traversePrerequisites(
+        c,
+        visitedPrerequisites,
+        graph,
+        prerequisitesByCourse,
+        corequisitesByCourse
+      );
     }
   });
 

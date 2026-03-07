@@ -42,4 +42,26 @@ public class FlowsheetCourseGraphController {
             flowsheetId, courseId, prerequisiteIds),
         HttpStatus.OK);
   }
+
+  @PostMapping("/{courseId}/corequisites")
+  public ResponseEntity<FlowsheetDto> linkCorequisites(
+      @PathVariable long flowsheetId,
+      @PathVariable long courseId,
+      @RequestParam(value = "corequisiteIds", defaultValue = "") List<Long> corequisiteIds) {
+    return new ResponseEntity<>(
+        flowsheetCourseGraphService.linkCorequisitesToCourse(
+            flowsheetId, courseId, corequisiteIds),
+        HttpStatus.OK);
+  }
+
+  @DeleteMapping("/{courseId}/corequisites")
+  public ResponseEntity<FlowsheetDto> unlinkCorequisites(
+      @PathVariable long flowsheetId,
+      @PathVariable long courseId,
+      @RequestParam(value = "corequisiteIds", defaultValue = "") List<Long> corequisiteIds) {
+    return new ResponseEntity<>(
+        flowsheetCourseGraphService.unlinkCorequisitesFromCourse(
+            flowsheetId, courseId, corequisiteIds),
+        HttpStatus.OK);
+  }
 }

@@ -31,6 +31,13 @@ public class FlowsheetCourseGraphService {
 
     for (var prerequisite : prerequisites) {
       flowsheet
+          .getCourseCorequisites()
+          .removeIf(
+              cc ->
+                  cc.getCourse().getId() == courseId
+                      && cc.getCorequisite().getId() == prerequisite);
+
+      flowsheet
           .getCoursePrerequisites()
           .add(
               new CoursePrerequisite(
@@ -47,6 +54,13 @@ public class FlowsheetCourseGraphService {
 
     for (var corequisiteId : corequisiteIds) {
       flowsheet
+          .getCoursePrerequisites()
+          .removeIf(
+              cp ->
+                  cp.getCourse().getId() == courseId
+                      && cp.getPrerequisite().getId() == corequisiteId);
+
+      flowsheet
           .getCourseCorequisites()
           .add(
               new CourseCorequisite(
@@ -58,18 +72,20 @@ public class FlowsheetCourseGraphService {
 
   @Transactional
   public FlowsheetDto unlinkCorequisitesFromCourse(
-      long flowsheetId, long courseId, long corequisiteId) {
+      long flowsheetId, long courseId, List<Long> corequisiteIds) {
     var flowsheet = flowsheetService.findOrThrow(flowsheetId);
 
-    boolean removed =
-        flowsheet
-            .getCourseCorequisites()
-            .removeIf(
-                courseCorequisite ->
-                    courseCorequisite.getCourse().getId() == courseId
-                        && courseCorequisite.getCorequisite().getId() == corequisiteId);
+    for (long corequisiteId : corequisiteIds) {
+      boolean removed =
+          flowsheet
+              .getCourseCorequisites()
+              .removeIf(
+                  courseCorequisite ->
+                      courseCorequisite.getCourse().getId() == courseId
+                          && courseCorequisite.getCorequisite().getId() == corequisiteId);
 
-    if (!removed) throw new CourseNotFoundException("Corequisite not found");
+      if (!removed) throw new CourseNotFoundException("Corequisite not found");
+    }
 
     return flowsheetService.saveAndMap(flowsheet);
   }
