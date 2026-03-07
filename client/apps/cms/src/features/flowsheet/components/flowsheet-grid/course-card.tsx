@@ -11,7 +11,7 @@ import { Checkbox } from '@/shared/components/ui/Checkbox.tsx';
 import { Divider } from '@/shared/components/ui/divider.tsx';
 import { Popover } from '@/shared/components/ui/Popover.tsx';
 import { Tooltip, TooltipTrigger } from '@/shared/components/ui/Tooltip.tsx';
-import { Plus, Scaling, TagIcon, Trash } from 'lucide-react';
+import { Link, Plus, Scaling, TagIcon, Trash } from 'lucide-react';
 import { useFocusRing, usePress } from 'react-aria';
 import styles from './course-card.module.css';
 import { useSortable } from '@dnd-kit/react/sortable';
@@ -50,8 +50,6 @@ export function CourseCard({ course, placement, ...props }: CourseCardProps) {
         prerequisiteIds: [course.id],
       }),
   });
-
-  console.log(course.code + ': ' + placementState);
 
   const unlinkPrerequisite = useMutation({
     mutationFn: () =>
@@ -114,13 +112,16 @@ export function CourseCard({ course, placement, ...props }: CourseCardProps) {
   });
   const { focusProps, isFocusVisible } = useFocusRing(props);
 
+  const showCheckbox =
+    placementState === 'NORMAL' || placementState === 'SELECTED' || placementState === 'SELECTABLE';
+
   return (
     <>
       <div
         {...pressProps}
         {...focusProps}
         className={styles.card}
-        data-focused={isFocusVisible || undefined}
+        data-focus-visible={isFocusVisible || undefined}
         data-pressed={isPressed || undefined}
         data-dragging={isDragging}
         data-state={placementState}
@@ -130,16 +131,18 @@ export function CourseCard({ course, placement, ...props }: CourseCardProps) {
       >
         <Stack fill gap={1}>
           <Group justify="between">
-            <Text as="h3" size="xs" tone="dimmed" weight="medium">
-              {course.code}
-            </Text>
+            <h3 className={styles.code}>{course.code}</h3>
 
-            <Checkbox
-              onChange={() =>
-                dispatch({ type: 'TOGGLE_SELECT_MODE', payload: { courseId: course.id } })
-              }
-              isSelected={state.selected.has(course.id)}
-            />
+            {showCheckbox && (
+              <Checkbox
+                onChange={() =>
+                  dispatch({ type: 'TOGGLE_SELECT_MODE', payload: { courseId: course.id } })
+                }
+                isSelected={state.selected.has(course.id)}
+              />
+            )}
+
+            {placementState === 'PREREQ_LINK' && <Link size={13} />}
           </Group>
 
           <Text size="xs">{course.name}</Text>

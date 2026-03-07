@@ -1,4 +1,4 @@
-import { Requisites } from "@/features/flowsheet/contexts/courses-graph-context";
+import { Requisites } from './buildCoursesGraph';
 
 export type CourseRelation = 'SELF' | 'PREREQ' | 'PREREQSEQ' | 'COREQ' | 'POSTREQSEQ' | 'UNRELATED';
 

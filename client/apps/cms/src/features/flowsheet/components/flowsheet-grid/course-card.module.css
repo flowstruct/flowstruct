@@ -10,11 +10,6 @@
   cursor: pointer;
   transition: 250ms;
 
-  &[data-focus-visible] {
-    outline: 2px solid var(--focus-ring-color);
-    outline-offset: -2px;
-  }
-
   &[data-hovered] {
     border-color: var(--gray-6);
 
@@ -28,6 +23,18 @@
   &[data-pressed] {
     background: var(--gray-a2);
   }
+
+  &[data-focus-visible] {
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: -1px;
+    transition: none;
+  }
+}
+
+.code {
+  font-weight: 450;
+  font-size: var(--font-size-xs);
+  color: var(--text-color-dimmed);
 }
 
 .card[data-state='SELECTED'] {
@@ -36,10 +43,20 @@
 }
 
 .card[data-state='DISABLED'] {
-  opacity: 0.6;
+  opacity: 0.5;
   pointer-events: none;
 }
 
+.card[data-state='LINK_SOURCE'] {
+  background: var(--primary-2);
+  border: 1px solid var(--primary-6);
+}
+
 .card[data-state='PREREQ_LINK'] {
-  background: #c8ffbe;
+  background: #fff5eb;
+  border: 1px solid #fdd8af;
+
+  svg {
+    color: #fab361;
+  }
 }

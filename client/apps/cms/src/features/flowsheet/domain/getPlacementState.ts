@@ -1,4 +1,4 @@
-import { Requisites } from '@/features/flowsheet/contexts/courses-graph-context';
+import { Requisites } from './buildCoursesGraph';
 import { FlowsheetGridState } from '@/features/flowsheet/contexts/flowsheet-grid-context';
 import { classifyRelationship } from '@/features/flowsheet/domain/classifyRelationship';
 import { Placement, Term } from '@/features/flowsheet/domain/flowsheet';
