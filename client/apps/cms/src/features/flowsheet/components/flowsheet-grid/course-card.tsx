@@ -11,7 +11,7 @@ import { Checkbox } from '@/shared/components/ui/Checkbox.tsx';
 import { Divider } from '@/shared/components/ui/divider.tsx';
 import { Popover } from '@/shared/components/ui/Popover.tsx';
 import { Tooltip, TooltipTrigger } from '@/shared/components/ui/Tooltip.tsx';
-import { Link, Plus, Scaling, TagIcon, Trash } from 'lucide-react';
+import { Link, Pencil, Plus, Scaling, SquarePen, TagIcon, Trash } from 'lucide-react';
 import { useFocusRing, usePress } from 'react-aria';
 import styles from './course-card.module.css';
 import { useSortable } from '@dnd-kit/react/sortable';
@@ -168,11 +168,11 @@ export function CourseCard({ course, placement, ...props }: CourseCardProps) {
                 setOptionsOpen(false);
               }}
             >
-              <Plus size={14} /> Prerequisite
+              <SquarePen size={14} /> Pre-requisites
             </Button>
 
             <Button size="sm" variant="transparent">
-              <Plus size={14} /> Corequisite
+              <SquarePen size={14} /> Co-requisites
             </Button>
 
             <Divider orientation="vertical" />
