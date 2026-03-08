@@ -7,10 +7,10 @@ import {
   ListBoxItemProps,
   ValidationResult,
 } from 'react-aria-components';
-import { FieldButton, FieldError, Label } from './Form.tsx';
-import { Text } from './Content.tsx';
-import { ListBoxItem } from './ListBox.tsx';
-import { Popover } from './Popover.tsx';
+import { FieldButton, FieldError, Label } from './Form';
+import { Text } from './Content';
+import { ListBoxItem } from './ListBox';
+import { Popover } from './Popover';
 import { ChevronDown } from 'lucide-react';
 
 import './ComboBox.css';

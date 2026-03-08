@@ -11,7 +11,7 @@ import { useKeyboard } from 'react-aria';
 import { Term } from '@/features/flowsheet/components/flowsheet-grid/term';
 import { useFlowsheetContext } from '@/features/flowsheet/contexts/flowsheet-context';
 import { TermProvider } from '@/features/flowsheet/contexts/term-context';
-import { DragDropProvider } from '@dnd-kit/react';
+import { PlacementMoveProvider } from '@/features/flowsheet/contexts/placement-move-context';
 import { useMutation } from '@tanstack/react-query';
 import { flowsheetApi } from '@/features/flowsheet/api';
 
@@ -30,13 +30,13 @@ export function FlowsheetGrid() {
   return (
     <Box className={styles.grid} overflow="auto" overflowY="hidden" {...keyboardProps}>
       <Group align="start">
-        <DragDropProvider>
+        <PlacementMoveProvider>
           {flowsheet.terms.map((t) => (
             <TermProvider key={t.id} term={t}>
               <Term />
             </TermProvider>
           ))}
-        </DragDropProvider>
+        </PlacementMoveProvider>
 
         <AddTermButton />
       </Group>

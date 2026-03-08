@@ -4,10 +4,10 @@ import {
   RadioGroupProps as AriaRadioGroupProps,
   ValidationResult,
   RadioProps,
-  Radio as AriaRadio
+  Radio as AriaRadio,
 } from 'react-aria-components';
-import {Label, FieldError} from './Form.tsx';
-import {Text} from './Content.tsx';
+import { Label, FieldError } from './Form';
+import { Text } from './Content';
 import './RadioGroup.css';
 
 export interface RadioGroupProps extends Omit<AriaRadioGroupProps, 'children'> {
@@ -17,24 +17,20 @@ export interface RadioGroupProps extends Omit<AriaRadioGroupProps, 'children'> {
   errorMessage?: string | ((validation: ValidationResult) => string);
 }
 
-export function RadioGroup(
-  {
-    label,
-    description,
-    errorMessage,
-    children,
-    ...props
-  }: RadioGroupProps
-) {
+export function RadioGroup({
+  label,
+  description,
+  errorMessage,
+  children,
+  ...props
+}: RadioGroupProps) {
   return (
-    (
-      <AriaRadioGroup {...props}>
-        <Label>{label}</Label>
-        {children}
-        {description && <Text slot="description">{description}</Text>}
-        <FieldError>{errorMessage}</FieldError>
-      </AriaRadioGroup>
-    )
+    <AriaRadioGroup {...props}>
+      <Label>{label}</Label>
+      {children}
+      {description && <Text slot="description">{description}</Text>}
+      <FieldError>{errorMessage}</FieldError>
+    </AriaRadioGroup>
   );
 }
 

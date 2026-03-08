@@ -1,4 +1,4 @@
-import { Button } from '@/shared/components/ui/Button.tsx';
+import { Button } from '@/shared/components/ui/Button';
 import styles from './tabs.module.css';
 import { TabOption } from '@/shared/types';
 

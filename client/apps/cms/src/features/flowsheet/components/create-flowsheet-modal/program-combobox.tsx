@@ -1,15 +1,15 @@
-import { DisclosureState } from '@/shared/types.ts';
+import { DisclosureState } from '@/shared/types';
 import React from 'react';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { programQueries } from '@/features/program/queries.ts';
-import { useComboBoxState } from '@/shared/hooks/use-combobox-state.ts';
-import { getProgramDisplayName } from '@/features/program/domain/getProgramDisplayName.ts';
-import { ComboBox } from '@/shared/components/ui/ComboBox.tsx';
-import { ListBox, ListBoxItem, ListEmptyState } from '@/shared/components/ui/ListBox.tsx';
+import { programQueries } from '@/features/program/queries';
+import { useComboBoxState } from '@/shared/hooks/use-combobox-state';
+import { getProgramDisplayName } from '@/features/program/domain/getProgramDisplayName';
+import { ComboBox } from '@/shared/components/ui/ComboBox';
+import { ListBox, ListBoxItem, ListEmptyState } from '@/shared/components/ui/ListBox';
 import styles from '@/features/flowsheet/components/create-flowsheet-modal/program-combobox.module.css';
 import { createPortal } from 'react-dom';
 import { CreateProgramForm } from './create-program-form';
-import { UnstyledButton } from '@/shared/components/ui/UnstyledButton.tsx';
+import { UnstyledButton } from '@/shared/components/ui/UnstyledButton';
 
 type ProgramComboBoxProps = {
   programFormState: DisclosureState;

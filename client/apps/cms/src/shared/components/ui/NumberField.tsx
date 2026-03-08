@@ -7,8 +7,8 @@ import {
   NumberFieldProps as AriaNumberFieldProps,
   ValidationResult,
 } from 'react-aria-components';
-import { FieldError, Label } from './Form.tsx';
-import { Text } from './Content.tsx';
+import { FieldError, Label } from './Form';
+import { Text } from './Content';
 import './NumberField.css';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import React from 'react';

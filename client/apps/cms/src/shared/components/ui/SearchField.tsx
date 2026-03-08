@@ -6,12 +6,12 @@ import {
   SearchFieldProps as AriaSearchFieldProps,
   ValidationResult,
 } from 'react-aria-components';
-import { FieldError, Label } from './Form.tsx';
-import { Text } from './Content.tsx';
+import { FieldError, Label } from './Form';
+import { Text } from './Content';
 import { X } from 'lucide-react';
 import './SearchField.css';
 import React from 'react';
-import { ProgressCircle } from '@/shared/components/ui/ProgressCircle.tsx';
+import { ProgressCircle } from '@/shared/components/ui/ProgressCircle';
 
 export interface SearchFieldProps extends AriaSearchFieldProps {
   label?: string;

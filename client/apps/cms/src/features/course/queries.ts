@@ -1,6 +1,6 @@
 import { infiniteQueryOptions, keepPreviousData, queryOptions } from '@tanstack/react-query';
-import { courseApi } from '@/features/course/api.ts';
-import { SearchOptions } from '@/shared/types.ts';
+import { courseApi } from '@/features/course/api';
+import { SearchOptions } from '@/shared/types';
 
 export const courseKeys = {
   all: ['courses'] as const,

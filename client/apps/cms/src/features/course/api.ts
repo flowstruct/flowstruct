@@ -1,7 +1,7 @@
-import { api } from '@/shared/api.ts';
-import { Course, CoursesPage } from '@/features/course/domain/course.ts';
-import { transformCourseSearchParams } from '@/features/course/domain/transformCourseSearchParams.ts';
-import { SearchOptions } from '@/shared/types.ts';
+import { api } from '@/shared/api';
+import { Course, CoursesPage } from '@/features/course/domain/course';
+import { transformCourseSearchParams } from '@/features/course/domain/transformCourseSearchParams';
+import { SearchOptions } from '@/shared/types';
 
 const COURSE_ENDPOINT = '/courses';
 

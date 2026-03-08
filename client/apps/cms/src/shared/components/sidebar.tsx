@@ -1,6 +1,6 @@
 import styles from './sidebar.module.css';
-import { UnstyledButton } from '@/shared/components/ui/UnstyledButton.tsx';
-import { Menu, MenuItem, MenuTrigger } from '@/shared/components/ui/Menu.tsx';
+import { UnstyledButton } from '@/shared/components/ui/UnstyledButton';
+import { Menu, MenuItem, MenuTrigger } from '@/shared/components/ui/Menu';
 import {
   Brush,
   ChevronsUpDown,
@@ -11,12 +11,12 @@ import {
   Settings2,
   User,
 } from 'lucide-react';
-import { Role } from '@/features/user/domain/user.ts';
-import { Popover } from '@/shared/components/ui/Popover.tsx';
-import { getUserInitials } from '@/features/user/domain/getUserInitials.ts';
+import { Role } from '@/features/user/domain/user';
+import { Popover } from '@/shared/components/ui/Popover';
+import { getUserInitials } from '@/features/user/domain/getUserInitials';
 import { useMatches, useNavigate } from '@tanstack/react-router';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { userQueries } from '@/features/user/queries.ts';
+import { userQueries } from '@/features/user/queries';
 
 const sidebarSections = [
   {

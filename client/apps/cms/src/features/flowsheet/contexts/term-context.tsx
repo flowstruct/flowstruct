@@ -1,4 +1,4 @@
-import { Term } from '@/features/flowsheet/domain/flowsheet.ts';
+import { Term } from '@/features/flowsheet/domain/flowsheet';
 import React, { useContext } from 'react';
 
 type TermContextValue = {

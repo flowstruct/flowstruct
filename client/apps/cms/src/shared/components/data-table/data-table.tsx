@@ -1,15 +1,15 @@
 import { Column, flexRender, Row, Table as TanStackTable } from '@tanstack/react-table';
 import { ListFilter } from 'lucide-react';
 import styles from '@/shared/components/data-table/data-table.module.css';
-import { MenuTrigger } from '@/shared/components/ui/Menu.tsx';
-import { Button } from '@/shared/components/ui/Button.tsx';
-import { Popover } from '@/shared/components/ui/Popover.tsx';
-import { Autocomplete } from '@/shared/components/ui/Autocomplete.tsx';
-import { GridList, GridListItem } from '@/shared/components/ui/GridList.tsx';
+import { MenuTrigger } from '@/shared/components/ui/Menu';
+import { Button } from '@/shared/components/ui/Button';
+import { Popover } from '@/shared/components/ui/Popover';
+import { Autocomplete } from '@/shared/components/ui/Autocomplete';
+import { GridList, GridListItem } from '@/shared/components/ui/GridList';
 import React from 'react';
 import { AriaButtonProps, useButton, useFilter, useFocusRing, useHover } from 'react-aria';
-import { ListEmptyState } from '@/shared/components/ui/ListBox.tsx';
-import { SearchField } from '@/shared/components/ui/SearchField.tsx';
+import { ListEmptyState } from '@/shared/components/ui/ListBox';
+import { SearchField } from '@/shared/components/ui/SearchField';
 
 type DataTableProps<TData> = {
   table: TanStackTable<TData>;

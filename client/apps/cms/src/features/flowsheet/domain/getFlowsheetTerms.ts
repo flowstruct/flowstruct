@@ -1,4 +1,4 @@
-import { Flowsheet, Placement, Term } from '@/features/flowsheet/domain/flowsheet.ts';
+import { Flowsheet, Placement, Term } from '@/features/flowsheet/domain/flowsheet';
 
 export const getFlowsheetTerms = (flowsheet: Flowsheet) => {
   const grouped = Object.groupBy(flowsheet.placements, (p) => p.term);

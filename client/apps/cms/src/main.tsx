@@ -10,7 +10,7 @@ import { MutationCache, QueryClient, QueryClientProvider } from '@tanstack/react
 import { LoadingOverlay, MantineProvider } from '@mantine/core';
 import { notifications, Notifications } from '@mantine/notifications';
 import { Check, Loader, X } from 'lucide-react';
-import { ErrorObject } from '@/shared/types.ts';
+import { ErrorObject } from '@/shared/types';
 
 declare module '@tanstack/react-query' {
   interface Register {

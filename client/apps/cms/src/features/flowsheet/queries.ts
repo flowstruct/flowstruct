@@ -1,6 +1,6 @@
 import { queryOptions } from '@tanstack/react-query';
-import { flowsheetApi } from '@/features/flowsheet/api.ts';
-import { courseApi } from '@/features/course/api.ts';
+import { flowsheetApi } from '@/features/flowsheet/api';
+import { courseApi } from '@/features/course/api';
 
 export const flowsheetKeys = {
   all: ['flowsheets'] as const,

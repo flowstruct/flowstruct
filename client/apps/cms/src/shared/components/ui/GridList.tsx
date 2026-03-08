@@ -6,7 +6,7 @@ import {
   GridListItemProps,
   GridListProps,
 } from 'react-aria-components';
-import { Checkbox } from './Checkbox.tsx';
+import { Checkbox } from './Checkbox';
 import { GripVertical } from 'lucide-react';
 import './GridList.css';
 import React from 'react';

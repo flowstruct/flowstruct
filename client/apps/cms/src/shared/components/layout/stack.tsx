@@ -1,7 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
 import styles from './layout.module.css';
-import { Align, Gap, Justify } from '@/shared/components/layout/layout.ts';
+import { Align, Gap, Justify } from '@/shared/components/layout/layout';
 
 export interface StackProps extends React.HTMLAttributes<HTMLDivElement> {
   gap?: Gap;
@@ -28,7 +28,10 @@ export function Stack({
   const fillClass = fill ? styles['fillHeight'] : undefined;
 
   return (
-    <div className={clsx(styles.stack, gapClass, justifyClass, alignClass, fillClass, className)} {...props}>
+    <div
+      className={clsx(styles.stack, gapClass, justifyClass, alignClass, fillClass, className)}
+      {...props}
+    >
       {children}
     </div>
   );

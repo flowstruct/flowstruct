@@ -1,5 +1,5 @@
-import { api } from '@/shared/api.ts';
-import { Flowsheet, FlowsheetSummary } from '@/features/flowsheet/domain/flowsheet.ts';
+import { api } from '@/shared/api';
+import { Flowsheet, FlowsheetSummary } from '@/features/flowsheet/domain/flowsheet';
 
 export const FLOWSHEET_ENDPOINT = '/flowsheets';
 

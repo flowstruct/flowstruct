@@ -1,4 +1,4 @@
-import { ErrorObject } from '@/shared/types.ts';
+import { ErrorObject } from '@/shared/types';
 
 type RequestOptions = {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';

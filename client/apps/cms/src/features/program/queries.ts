@@ -1,5 +1,5 @@
 import { queryOptions } from '@tanstack/react-query';
-import { programApi } from '@/features/program/api.ts';
+import { programApi } from '@/features/program/api';
 
 export const programKeys = {
   all: ['programs'] as const,

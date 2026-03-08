@@ -1,4 +1,4 @@
-import { Role, User, UserAction } from '@/features/user/domain/user.ts';
+import { Role, User, UserAction } from '@/features/user/domain/user';
 
 export const RolePermissions: Record<keyof typeof Role, () => UserAction[]> = {
   GUEST: () => [] as const,

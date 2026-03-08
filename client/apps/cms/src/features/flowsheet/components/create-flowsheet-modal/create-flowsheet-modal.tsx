@@ -1,22 +1,22 @@
-import { Form } from '@/shared/components/ui/Form.tsx';
-import { NumberField } from '@/shared/components/ui/NumberField.tsx';
+import { Form } from '@/shared/components/ui/Form';
+import { NumberField } from '@/shared/components/ui/NumberField';
 import { useMutation } from '@tanstack/react-query';
 import React from 'react';
-import { DialogTrigger } from '@/shared/components/ui/Dialog.tsx';
-import { Modal } from '@/shared/components/ui/Modal.tsx';
+import { DialogTrigger } from '@/shared/components/ui/Dialog';
+import { Modal } from '@/shared/components/ui/Modal';
 import { Button } from '@/shared/components/ui/Button';
 import { CalendarDays, Grid2X2, Layers2, Plus, Tag, X } from 'lucide-react';
 import styles from './create-flowsheet-modal.module.css';
-import { Breadcrumb, Breadcrumbs } from '@/shared/components/ui/breadcrumbs.tsx';
-import { TextField } from '@/shared/components/ui/TextField.tsx';
-import { Divider } from '@/shared/components/ui/divider.tsx';
-import { Switch } from '@/shared/components/ui/Switch.tsx';
-import { Tooltip, TooltipTrigger } from '@/shared/components/ui/Tooltip.tsx';
-import { flowsheetApi } from '@/features/flowsheet/api.ts';
+import { Breadcrumb, Breadcrumbs } from '@/shared/components/ui/breadcrumbs';
+import { TextField } from '@/shared/components/ui/TextField';
+import { Divider } from '@/shared/components/ui/divider';
+import { Switch } from '@/shared/components/ui/Switch';
+import { Tooltip, TooltipTrigger } from '@/shared/components/ui/Tooltip';
+import { flowsheetApi } from '@/features/flowsheet/api';
 import { useNavigate } from '@tanstack/react-router';
-import { handleSubmit } from '@/shared/utils/handle-submit.ts';
-import { useDisclosure } from '@/shared/hooks/use-disclosure.ts';
-import { ProgramComboBox } from '@/features/flowsheet/components/create-flowsheet-modal/program-combobox.tsx';
+import { handleSubmit } from '@/shared/utils/handle-submit';
+import { useDisclosure } from '@/shared/hooks/use-disclosure';
+import { ProgramComboBox } from '@/features/flowsheet/components/create-flowsheet-modal/program-combobox';
 
 export function CreateFlowsheetModal() {
   const flowsheetModalState = useDisclosure();

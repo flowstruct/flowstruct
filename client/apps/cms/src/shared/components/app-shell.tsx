@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { Sidebar } from '@/shared/components/sidebar.tsx';
+import { Sidebar } from '@/shared/components/sidebar';
 import styles from './app-shell.module.css';
 
 type Props = {

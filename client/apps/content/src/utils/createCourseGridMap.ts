@@ -1,4 +1,4 @@
-import { getTermIndexFromPlacement } from './getTermIndexFromPlacement.ts';
+import { getTermIndexFromPlacement } from './getTermIndexFromPlacement';
 import type { StudyPlan } from '../types';
 
 type GridCell = {

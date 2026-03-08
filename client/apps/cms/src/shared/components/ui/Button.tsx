@@ -1,7 +1,7 @@
 import { Button as RACButton, ButtonProps as RACButtonProps } from 'react-aria-components';
 import clsx from 'clsx';
 import './Button.css';
-import { ProgressCircle } from '@/shared/components/ui/ProgressCircle.tsx';
+import { ProgressCircle } from '@/shared/components/ui/ProgressCircle';
 
 interface ButtonProps extends RACButtonProps {
   variant?: 'default' | 'transparent' | 'primary' | 'flat' | 'ghost';

@@ -1,5 +1,5 @@
-import { api } from '@/shared/api.ts';
-import { Program } from '@/features/program/domain/program.ts';
+import { api } from '@/shared/api';
+import { Program } from '@/features/program/domain/program';
 
 export const PROGRAM_ENDPOINT = '/programs';
 

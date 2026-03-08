@@ -1,4 +1,4 @@
-import { Flowsheet, Placement } from '@/features/flowsheet/domain/flowsheet.ts';
+import { Flowsheet, Placement } from '@/features/flowsheet/domain/flowsheet';
 
 function shiftPositions(
   placements: Placement[],

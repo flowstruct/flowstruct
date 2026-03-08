@@ -1,4 +1,4 @@
-import { Button } from './Button.tsx';
+import { Button } from './Button';
 import { ChevronRight } from 'lucide-react';
 import {
   Menu as AriaMenu,
@@ -12,23 +12,29 @@ import {
   SubmenuTrigger as AriaSubmenuTrigger,
   SubmenuTriggerProps,
 } from 'react-aria-components';
-import { Popover } from './Popover.tsx';
+import { Popover } from './Popover';
 import './Menu.css';
 import React from 'react';
 
 export interface MenuButtonProps<T extends object>
-  extends Omit<ExtendedMenuProps<T>, 'width'>,
-    Omit<MenuTriggerProps, 'children'> {
+  extends Omit<ExtendedMenuProps<T>, 'width'>, Omit<MenuTriggerProps, 'children'> {
   label?: React.ReactNode;
   width?: number;
 }
 
-export function MenuButton<T extends object>({ label, children, width, ...props }: MenuButtonProps<T>) {
+export function MenuButton<T extends object>({
+  label,
+  children,
+  width,
+  ...props
+}: MenuButtonProps<T>) {
   return (
     <MenuTrigger {...props}>
       <Button>{label}</Button>
       <Popover hideArrow>
-        <Menu width={width} {...props}>{children}</Menu>
+        <Menu width={width} {...props}>
+          {children}
+        </Menu>
       </Popover>
     </MenuTrigger>
   );
@@ -44,10 +50,7 @@ export interface ExtendedMenuProps<T extends object> extends MenuProps<T> {
 
 export function Menu<T extends object>({ width, ...props }: ExtendedMenuProps<T>) {
   return (
-    <AriaMenu 
-      {...props} 
-      style={width ? { width: `${width}px` } : undefined}
-    >
+    <AriaMenu {...props} style={width ? { width: `${width}px` } : undefined}>
       {props.children}
     </AriaMenu>
   );

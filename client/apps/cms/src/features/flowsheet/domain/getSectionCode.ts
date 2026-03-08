@@ -1,4 +1,4 @@
-import { Section, SectionLevel, SectionType } from '@/features/study-plan/program.ts';
+import { Section, SectionLevel, SectionType } from '@/features/study-plan/program';
 
 export const getSectionCode = (section: Pick<Section, 'level' | 'type' | 'position'>) => {
   let code = '';

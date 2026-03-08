@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import { ColumnFilter } from '@tanstack/react-table';
-import { useDisclosure } from '@/shared/hooks/use-disclosure.ts';
+import { useDisclosure } from '@/shared/hooks/use-disclosure';
 
 export interface ErrorObject {
   statusCode: number;

@@ -7,14 +7,13 @@ export type FlowsheetGridState = {
   moving: number | null;
   linkSource: number | null;
   linkType: LinkType | null;
-  allowedTerms: Set<number>;
 };
 
 type FlowsheetGridAction =
   | { type: 'TOGGLE_SELECT_MODE'; payload: { courseId: number } }
   | { type: 'CLEAR_SELECTED' }
   | { type: 'TOGGLE_LINK_MODE'; payload: { courseId: number; type: LinkType | null } }
-  | { type: 'MOVE_START'; payload: { courseId: number; allowedTerms: Set<number> } }
+  | { type: 'MOVE_START'; payload: { courseId: number } }
   | { type: 'MOVE_END' }
   | { type: 'RESET_STATE' };
 
@@ -23,7 +22,6 @@ const initialState: FlowsheetGridState = {
   moving: null,
   linkSource: null,
   linkType: null,
-  allowedTerms: new Set(),
 };
 
 function reducer(state: FlowsheetGridState, action: FlowsheetGridAction): FlowsheetGridState {
@@ -59,12 +57,10 @@ function reducer(state: FlowsheetGridState, action: FlowsheetGridAction): Flowsh
 
     case 'MOVE_START': {
       const id = action.payload.courseId;
-      const allowedTerms = action.payload.allowedTerms;
 
       return {
         ...initialState,
         moving: id,
-        allowedTerms,
       };
     }
 

@@ -1,7 +1,7 @@
 import styles from './data-table-toolbar.module.css';
 import { Table } from '@tanstack/react-table';
-import { DialogTrigger } from '@/shared/components/ui/Dialog.tsx';
-import { Button } from '@/shared/components/ui/Button.tsx';
+import { DialogTrigger } from '@/shared/components/ui/Dialog';
+import { Button } from '@/shared/components/ui/Button';
 import {
   ArrowDownWideNarrow,
   ArrowUpDown,
@@ -10,13 +10,13 @@ import {
   Settings2,
   X,
 } from 'lucide-react';
-import { Popover } from '@/shared/components/ui/Popover.tsx';
-import { Select, SelectItem } from '@/shared/components/ui/Select.tsx';
-import { SearchField } from '@/shared/components/ui/SearchField.tsx';
+import { Popover } from '@/shared/components/ui/Popover';
+import { Select, SelectItem } from '@/shared/components/ui/Select';
+import { SearchField } from '@/shared/components/ui/SearchField';
 import React from 'react';
-import { useDebounce } from '@/shared/hooks/use-debounce.ts';
-import { Divider } from '@/shared/components/ui/divider.tsx';
-import { Tooltip, TooltipTrigger } from '@/shared/components/ui/Tooltip.tsx';
+import { useDebounce } from '@/shared/hooks/use-debounce';
+import { Divider } from '@/shared/components/ui/divider';
+import { Tooltip, TooltipTrigger } from '@/shared/components/ui/Tooltip';
 
 type DataTableToolbarProps<TData> = {
   table: Table<TData>;

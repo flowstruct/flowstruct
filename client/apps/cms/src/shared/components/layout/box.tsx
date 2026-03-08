@@ -1,7 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
 import styles from './layout.module.css';
-import { Space } from '@/shared/components/layout/layout.ts';
+import { Space } from '@/shared/components/layout/layout';
 
 export type BoxProps = React.HTMLAttributes<HTMLDivElement> & {
   p?: Space;

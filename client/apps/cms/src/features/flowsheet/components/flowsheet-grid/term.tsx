@@ -1,15 +1,15 @@
-import { CourseCard } from '@/features/flowsheet/components/flowsheet-grid/course-card.tsx';
-import { CourseCatalogAutocomplete } from '@/features/flowsheet/components/flowsheet-grid/course-catalog-autocomplete.tsx';
-import { useFlowsheetContext } from '@/features/flowsheet/contexts/flowsheet-context.tsx';
-import { Box } from '@/shared/components/layout/box.tsx';
-import Group from '@/shared/components/layout/group.tsx';
-import { Stack } from '@/shared/components/layout/stack.tsx';
-import { Text } from '@/shared/components/layout/text.tsx';
+import { CourseCard } from '@/features/flowsheet/components/flowsheet-grid/course-card';
+import { CourseCatalogAutocomplete } from '@/features/flowsheet/components/flowsheet-grid/course-catalog-autocomplete';
+import { useFlowsheetContext } from '@/features/flowsheet/contexts/flowsheet-context';
+import { Box } from '@/shared/components/layout/box';
+import Group from '@/shared/components/layout/group';
+import { Stack } from '@/shared/components/layout/stack';
+import { Text } from '@/shared/components/layout/text';
 import { useMutation } from '@tanstack/react-query';
 import { flowsheetApi } from '@/features/flowsheet/api';
 import { Ellipsis, SquarePlus, X } from 'lucide-react';
 import styles from './term.module.css';
-import { useTermContext } from '@/features/flowsheet/contexts/term-context.tsx';
+import { useTermContext } from '@/features/flowsheet/contexts/term-context';
 import { useDelayedSkeleton } from '@/shared/hooks/use-delayed-skeleton';
 import { flowsheetQueries } from '../../queries';
 import { Placement } from '@/features/flowsheet/domain/flowsheet';
@@ -20,7 +20,6 @@ import { Popover } from '@/shared/components/ui/Popover';
 
 export function Term() {
   const { term } = useTermContext();
-  const termState = useTerm();
 
   return (
     <Stack gap={1}>

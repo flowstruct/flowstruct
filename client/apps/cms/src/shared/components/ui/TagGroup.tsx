@@ -8,9 +8,9 @@ import {
   TagListProps,
   TagProps,
 } from 'react-aria-components';
-import {Label} from './Form.tsx';
-import {Text} from './Content.tsx';
-import {X} from 'lucide-react';
+import { Label } from './Form';
+import { Text } from './Content';
+import { X } from 'lucide-react';
 import './TagGroup.css';
 
 export interface TagGroupProps<T>
@@ -22,47 +22,46 @@ export interface TagGroupProps<T>
   errorMessage?: string;
 }
 
-export function TagGroup<T extends object>(
-  {
-    label,
-    description,
-    errorMessage,
-    items,
-    children,
-    renderEmptyState,
-    ...props
-  }: TagGroupProps<T>
-) {
+export function TagGroup<T extends object>({
+  label,
+  description,
+  errorMessage,
+  items,
+  children,
+  renderEmptyState,
+  ...props
+}: TagGroupProps<T>) {
   return (
-    (
-      <AriaTagGroup {...props}>
-        <Label>{label}</Label>
-        <TagList items={items} renderEmptyState={renderEmptyState}>
-          {children}
-        </TagList>
-        {description && <Text slot="description">{description}</Text>}
-        {errorMessage && <Text slot="errorMessage">{errorMessage}</Text>}
-      </AriaTagGroup>
-    )
+    <AriaTagGroup {...props}>
+      <Label>{label}</Label>
+      <TagList items={items} renderEmptyState={renderEmptyState}>
+        {children}
+      </TagList>
+      {description && <Text slot="description">{description}</Text>}
+      {errorMessage && <Text slot="errorMessage">{errorMessage}</Text>}
+    </AriaTagGroup>
   );
 }
 
-export function Tag(
-  { children, ...props }: Omit<TagProps, 'children'> & {
-    children?: React.ReactNode;
-  }
-) {
+export function Tag({
+  children,
+  ...props
+}: Omit<TagProps, 'children'> & {
+  children?: React.ReactNode;
+}) {
   let textValue = typeof children === 'string' ? children : undefined;
   return (
-    (
-      <AriaTag textValue={textValue} {...props}>
-        {({ allowsRemoving }) => (
-          <>
-            {children}
-            {allowsRemoving && <Button slot="remove"><X size={12} /></Button>}
-          </>
-        )}
-      </AriaTag>
-    )
+    <AriaTag textValue={textValue} {...props}>
+      {({ allowsRemoving }) => (
+        <>
+          {children}
+          {allowsRemoving && (
+            <Button slot="remove">
+              <X size={12} />
+            </Button>
+          )}
+        </>
+      )}
+    </AriaTag>
   );
 }

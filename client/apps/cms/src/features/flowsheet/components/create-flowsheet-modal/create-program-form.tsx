@@ -1,18 +1,18 @@
-import { DisclosureState } from '@/shared/types.ts';
-import { ComboBoxState } from '@/shared/hooks/use-combobox-state.ts';
-import { Degree, Program } from '@/features/program/domain/program.ts';
+import { DisclosureState } from '@/shared/types';
+import { ComboBoxState } from '@/shared/hooks/use-combobox-state';
+import { Degree, Program } from '@/features/program/domain/program';
 import React from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { programApi } from '@/features/program/api.ts';
-import { handleSubmit } from '@/shared/utils/handle-submit.ts';
-import { Form } from '@/shared/components/ui/Form.tsx';
+import { programApi } from '@/features/program/api';
+import { handleSubmit } from '@/shared/utils/handle-submit';
+import { Form } from '@/shared/components/ui/Form';
 import styles from '@/features/flowsheet/components/create-flowsheet-modal/create-program-form.module.css';
-import { TextField } from '@/shared/components/ui/TextField.tsx';
+import { TextField } from '@/shared/components/ui/TextField';
 import { ChevronLeft, GraduationCap, Hash, Tag } from 'lucide-react';
-import { Select, SelectItem } from '@/shared/components/ui/Select.tsx';
-import { Divider } from '@/shared/components/ui/divider.tsx';
-import { Button } from '@/shared/components/ui/Button.tsx';
-import { Switch } from '@/shared/components/ui/Switch.tsx';
+import { Select, SelectItem } from '@/shared/components/ui/Select';
+import { Divider } from '@/shared/components/ui/divider';
+import { Button } from '@/shared/components/ui/Button';
+import { Switch } from '@/shared/components/ui/Switch';
 
 export function CreateProgramForm({
   programFormState,

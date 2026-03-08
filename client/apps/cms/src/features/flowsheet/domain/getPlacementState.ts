@@ -18,16 +18,18 @@ function getMovingState({
   placement,
   term,
   state,
+  allowedTerms,
 }: {
   placement: Placement;
   term: Term;
   state: FlowsheetGridState;
+  allowedTerms: Set<number>;
 }): PlacementState | null {
   if (!state.moving) return null;
 
   if (state.moving === placement.course) return 'MOVING';
 
-  if (!state.allowedTerms.has(term.id)) return 'DISABLED';
+  if (!allowedTerms.has(term.id)) return 'DISABLED';
 
   return null;
 }
@@ -95,17 +97,19 @@ export function getPlacementState({
   placement,
   term,
   state,
+  allowedTerms,
   termAndPlacementByCourse,
   graph,
 }: {
   placement: Placement;
   term: Term;
   state: FlowsheetGridState;
+  allowedTerms: Set<number>;
   termAndPlacementByCourse: Record<number, { term: Term; placement: Placement }>;
   graph: Map<number, Requisites>;
 }): PlacementState {
   return (
-    getMovingState({ placement, term, state }) ??
+    getMovingState({ placement, term, state, allowedTerms }) ??
     getSelectionState({ placement, state }) ??
     getLinkState({ placement, state, termAndPlacementByCourse, graph }) ??
     'NORMAL'

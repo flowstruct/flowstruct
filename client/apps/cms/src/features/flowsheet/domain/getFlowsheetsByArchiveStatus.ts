@@ -1,4 +1,4 @@
-import { ArchiveStatus, FlowsheetSummary } from '@/features/flowsheet/domain/flowsheet.ts';
+import { ArchiveStatus, FlowsheetSummary } from '@/features/flowsheet/domain/flowsheet';
 
 export const getFlowsheetsByArchiveStatus = (
   flowsheets: FlowsheetSummary[],

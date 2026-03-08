@@ -1,14 +1,14 @@
 import styles from './flowsheet-toolbar.module.css';
-import { useFlowsheetGridContext } from '@/features/flowsheet/contexts/flowsheet-grid-context.tsx';
-import { Button } from '@/shared/components/ui/Button.tsx';
+import { useFlowsheetGridContext } from '@/features/flowsheet/contexts/flowsheet-grid-context';
+import { Button } from '@/shared/components/ui/Button';
 import { TagIcon, Trash, X } from 'lucide-react';
-import { Tooltip, TooltipTrigger } from '@/shared/components/ui/Tooltip.tsx';
-import { useFlowsheetContext } from '@/features/flowsheet/contexts/flowsheet-context.tsx';
+import { Tooltip, TooltipTrigger } from '@/shared/components/ui/Tooltip';
+import { useFlowsheetContext } from '@/features/flowsheet/contexts/flowsheet-context';
 import { useMutation } from '@tanstack/react-query';
-import { flowsheetApi } from '@/features/flowsheet/api.ts';
-import Group from '@/shared/components/layout/group.tsx';
-import { Divider } from '@/shared/components/ui/divider.tsx';
-import { Popover } from '@/shared/components/ui/Popover.tsx';
+import { flowsheetApi } from '@/features/flowsheet/api';
+import Group from '@/shared/components/layout/group';
+import { Divider } from '@/shared/components/ui/divider';
+import { Popover } from '@/shared/components/ui/Popover';
 import React from 'react';
 
 export function FlowsheetToolbar() {

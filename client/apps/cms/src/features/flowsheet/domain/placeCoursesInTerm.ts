@@ -1,4 +1,4 @@
-import { Flowsheet, Placement, Term } from '@/features/flowsheet/domain/flowsheet.ts';
+import { Flowsheet, Placement, Term } from '@/features/flowsheet/domain/flowsheet';
 
 type PlaceCoursesParams = {
   flowsheet: Flowsheet;

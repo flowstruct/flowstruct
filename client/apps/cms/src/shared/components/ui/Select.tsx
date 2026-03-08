@@ -7,11 +7,11 @@ import {
   SelectValue,
   ValidationResult,
 } from 'react-aria-components';
-import { ListBox, ListBoxItem } from './ListBox.tsx';
+import { ListBox, ListBoxItem } from './ListBox';
 import { ChevronDown } from 'lucide-react';
-import { Popover } from './Popover.tsx';
-import { Text } from './Content.tsx';
-import { FieldError, Label } from './Form.tsx';
+import { Popover } from './Popover';
+import { Text } from './Content';
+import { FieldError, Label } from './Form';
 import './Select.css';
 import React from 'react';
 

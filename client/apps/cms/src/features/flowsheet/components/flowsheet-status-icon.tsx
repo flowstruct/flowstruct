@@ -1,5 +1,5 @@
 import { Grid2x2 } from 'lucide-react';
-import { FlowsheetSummary } from '@/features/flowsheet/domain/flowsheet.ts';
+import { FlowsheetSummary } from '@/features/flowsheet/domain/flowsheet';
 import styles from './flowsheet-status-icon.module.css';
 
 type FlowsheetStatusIconProps = {

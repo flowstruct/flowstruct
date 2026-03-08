@@ -1,4 +1,4 @@
-import { SearchOptions } from '@/shared/types.ts';
+import { SearchOptions } from '@/shared/types';
 
 export const transformCourseSearchParams = ({
   filter = '',

@@ -1,22 +1,22 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { flowsheetQueries } from '@/features/flowsheet/queries.ts';
-import { Header } from '@/shared/components/header.tsx';
+import { flowsheetQueries } from '@/features/flowsheet/queries';
+import { Header } from '@/shared/components/header';
 import {
   FlowsheetProvider,
   useFlowsheetContext,
-} from '@/features/flowsheet/contexts/flowsheet-context.tsx';
-import { FlowsheetGrid } from '@/features/flowsheet/components/flowsheet-grid/flowsheet-grid.tsx';
+} from '@/features/flowsheet/contexts/flowsheet-context';
+import { FlowsheetGrid } from '@/features/flowsheet/components/flowsheet-grid/flowsheet-grid';
 import styles from './$flowsheetId.module.css';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { programQueries } from '@/features/program/queries.ts';
-import { Breadcrumb, Breadcrumbs } from '@/shared/components/ui/breadcrumbs.tsx';
-import { UnstyledButton } from '@/shared/components/ui/UnstyledButton.tsx';
+import { programQueries } from '@/features/program/queries';
+import { Breadcrumb, Breadcrumbs } from '@/shared/components/ui/breadcrumbs';
+import { UnstyledButton } from '@/shared/components/ui/UnstyledButton';
 import { Dot, Layers2 } from 'lucide-react';
-import { FlowsheetStatusIcon } from '@/features/flowsheet/components/flowsheet-status-icon.tsx';
-import { getProgramDisplayName } from '@/features/program/domain/getProgramDisplayName.ts';
-import { getFlowsheetDisplayName } from '@/features/flowsheet/domain/getFlowsheetDisplayName.ts';
-import { FlowsheetGridProvider } from '@/features/flowsheet/contexts/flowsheet-grid-context.tsx';
-import Group from '@/shared/components/layout/group.tsx';
+import { FlowsheetStatusIcon } from '@/features/flowsheet/components/flowsheet-status-icon';
+import { getProgramDisplayName } from '@/features/program/domain/getProgramDisplayName';
+import { getFlowsheetDisplayName } from '@/features/flowsheet/domain/getFlowsheetDisplayName';
+import { FlowsheetGridProvider } from '@/features/flowsheet/contexts/flowsheet-grid-context';
+import Group from '@/shared/components/layout/group';
 import { FlowsheetCoursesGraphProvider } from '@/features/flowsheet/contexts/courses-graph-context';
 
 export const Route = createFileRoute('/_app/flowsheets/$flowsheetId')({

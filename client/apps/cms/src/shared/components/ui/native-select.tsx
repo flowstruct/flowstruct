@@ -1,8 +1,8 @@
 import React from 'react';
 
 import './native-select.css';
-import { FieldError, Label } from '@/shared/components/ui/Form.tsx';
-import { Text } from '@/shared/components/ui/Content.tsx';
+import { FieldError, Label } from '@/shared/components/ui/Form';
+import { Text } from '@/shared/components/ui/Content';
 
 interface NativeSelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   label?: string;

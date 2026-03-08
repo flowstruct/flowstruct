@@ -1,7 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
 import styles from './layout.module.css';
-import { Align, Gap, Justify } from '@/shared/components/layout/layout.ts';
+import { Align, Gap, Justify } from '@/shared/components/layout/layout';
 
 export interface GroupProps extends React.HTMLAttributes<HTMLDivElement> {
   gap?: Gap;

@@ -1,5 +1,5 @@
-import { Section } from '@/features/flowsheet/domain/flowsheet.ts';
-import { getSectionCode } from '@/features/flowsheet/domain/getSectionCode.ts';
+import { Section } from '@/features/flowsheet/domain/flowsheet';
+import { getSectionCode } from '@/features/flowsheet/domain/getSectionCode';
 
 export const getSectionDisplayName = (
   section: Pick<Section, 'name' | 'level' | 'type' | 'position'>

@@ -10,14 +10,14 @@ import {
   Title,
 } from '@mantine/core';
 import classes from './login-form.module.css';
-import { LoginSchema } from '@/features/user/schemas.ts';
+import { LoginSchema } from '@/features/user/schemas';
 import { Controller, useForm } from 'react-hook-form';
 import { LogIn } from 'lucide-react';
 import { z } from 'zod/v4';
-import { customResolver } from '@/shared/utils/customResolver.ts';
+import { customResolver } from '@/shared/utils/customResolver';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useMutation } from '@tanstack/react-query';
-import {userApi} from "@/features/user/api.ts";
+import { userApi } from '@/features/user/api';
 
 export function LoginForm() {
   const form = useForm<z.infer<typeof LoginSchema>>({

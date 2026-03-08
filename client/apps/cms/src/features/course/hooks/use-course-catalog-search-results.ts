@@ -1,7 +1,7 @@
 import React from 'react';
 import { InfiniteData, useQueryClient } from '@tanstack/react-query';
-import { courseKeys } from '@/features/course/queries.ts';
-import { CoursesPage } from '@/features/course/domain/course.ts';
+import { courseKeys } from '@/features/course/queries';
+import { CoursesPage } from '@/features/course/domain/course';
 
 export const useCourseCatalogSearchResults = () => {
   const queryClient = useQueryClient();

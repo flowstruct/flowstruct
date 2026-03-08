@@ -6,8 +6,8 @@ import {
   TextFieldProps as AriaTextFieldProps,
   ValidationResult,
 } from 'react-aria-components';
-import { FieldError, Label } from './Form.tsx';
-import { Text } from './Content.tsx';
+import { FieldError, Label } from './Form';
+import { Text } from './Content';
 import './TextField.css';
 import React from 'react';
 

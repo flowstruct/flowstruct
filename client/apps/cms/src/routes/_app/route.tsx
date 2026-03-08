@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
-import { userQueries } from '@/features/user/queries.ts';
-import { AppShell } from '@/shared/components/app-shell.tsx';
+import { userQueries } from '@/features/user/queries';
+import { AppShell } from '@/shared/components/app-shell';
 
 export const Route = createFileRoute('/_app')({
   beforeLoad: async ({ context, location }) => {
