@@ -20,6 +20,7 @@ import { Popover } from '@/shared/components/ui/Popover';
 
 export function Term() {
   const { term } = useTermContext();
+  const termState = useTerm();
 
   return (
     <Stack gap={1}>

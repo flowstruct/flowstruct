@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Component
 public class AppAccessDeniedHandler implements AccessDeniedHandler {
+
   private final ObjectMapper objectMapper;
 
   @Override

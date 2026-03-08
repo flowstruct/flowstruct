@@ -1,5 +1,5 @@
 import React, { ReactNode, useMemo } from 'react';
-import { useFlowsheetContext } from '@/features/flowsheet/contexts/flowsheet-context.tsx';
+import { useFlowsheetContext } from '@/features/flowsheet/contexts/flowsheet-context';
 import { buildCoursesGraph } from '@/features/flowsheet/domain/buildCoursesGraph';
 import type { Requisites } from '@/features/flowsheet/domain/buildCoursesGraph';
 

@@ -1,12 +1,12 @@
 import styles from './flowsheet-grid.module.css';
 import { Grid2X2Plus } from 'lucide-react';
-import { Button } from '@/shared/components/ui/Button.tsx';
-import { Tooltip, TooltipTrigger } from '@/shared/components/ui/Tooltip.tsx';
-import { FlowsheetToolbar } from '@/features/flowsheet/components/flowsheet-grid/flowsheet-toolbar.tsx';
+import { Button } from '@/shared/components/ui/Button';
+import { Tooltip, TooltipTrigger } from '@/shared/components/ui/Tooltip';
+import { FlowsheetToolbar } from '@/features/flowsheet/components/flowsheet-grid/flowsheet-toolbar';
 import { createPortal } from 'react-dom';
-import Group from '@/shared/components/layout/group.tsx';
-import { useFlowsheetGridContext } from '@/features/flowsheet/contexts/flowsheet-grid-context.tsx';
-import { Box } from '@/shared/components/layout/box.tsx';
+import Group from '@/shared/components/layout/group';
+import { useFlowsheetGridContext } from '@/features/flowsheet/contexts/flowsheet-grid-context';
+import { Box } from '@/shared/components/layout/box';
 import { useKeyboard } from 'react-aria';
 import { Term } from '@/features/flowsheet/components/flowsheet-grid/term';
 import { useFlowsheetContext } from '@/features/flowsheet/contexts/flowsheet-context';

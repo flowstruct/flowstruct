@@ -1,8 +1,8 @@
-import { Flowsheet, Placement, Term } from '@/features/flowsheet/domain/flowsheet.ts';
-import { CourseSummary } from '@/features/course/domain/course.ts';
+import { Flowsheet, Placement, Term } from '@/features/flowsheet/domain/flowsheet';
+import { CourseSummary } from '@/features/course/domain/course';
 import React, { useContext } from 'react';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { flowsheetQueries } from '@/features/flowsheet/queries.ts';
+import { flowsheetQueries } from '@/features/flowsheet/queries';
 
 interface FlowsheetResult extends Flowsheet {
   termAndPlacementByCourse: Record<number, { term: Term; placement: Placement }>;

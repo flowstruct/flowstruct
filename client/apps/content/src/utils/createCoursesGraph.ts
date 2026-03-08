@@ -1,4 +1,4 @@
-import { CourseRelation, CourseSequences, StudyPlan } from '../types';
+import { CourseRelation, CourseSequences, StudyPlan } from 'apps/content/src/types';
 
 const traversePrerequisites = (
   courseId: number,
