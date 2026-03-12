@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useRef } from 'react';
+import React from 'react';
 import { DragDropProvider } from '@dnd-kit/react';
 import { isSortable } from '@dnd-kit/react/sortable';
 import { useMutation } from '@tanstack/react-query';
@@ -18,15 +18,13 @@ type PlacementMoveProviderProps = {
   children: React.ReactNode;
 };
 
-const EMPTY_SET = new Set<number>();
-
 export function PlacementMoveProvider({ children }: PlacementMoveProviderProps) {
   const { flowsheet } = useFlowsheetContext();
   const { coursesGraph } = useFlowsheetCoursesGraphContext();
   const { state, dispatch } = useFlowsheetGridContext();
 
-  const allowedTerms = useMemo(() => {
-    if (!state.moving) return EMPTY_SET;
+  const allowedTerms = React.useMemo(() => {
+    if (!state.moving) return new Set<number>();
 
     return computeAllowedTerms(
       state.moving,
@@ -34,14 +32,14 @@ export function PlacementMoveProvider({ children }: PlacementMoveProviderProps) 
       flowsheet.termAndPlacementByCourse,
       flowsheet.terms
     );
-  }, [state.moving, coursesGraph, flowsheet.termAndPlacementByCourse, flowsheet.terms]);
-
-  const allowedTermsRef = useRef(allowedTerms);
-  allowedTermsRef.current = allowedTerms;
+  }, [state.moving, coursesGraph, flowsheet]);
 
   const moveCourse = useMutation({
     mutationFn: flowsheetApi.moveCourse,
+    meta: { invalidate: false },
   });
+
+  const snapshot = React.useRef(structuredClone(flowsheet.terms));
 
   return (
     <PlacementMoveContext.Provider value={{ allowedTerms }}>
@@ -49,19 +47,21 @@ export function PlacementMoveProvider({ children }: PlacementMoveProviderProps) 
         onDragStart={(event) => {
           const { source } = event.operation;
 
+          snapshot.current = structuredClone(flowsheet.terms);
+
           dispatch({
             type: 'MOVE_START',
             payload: { courseId: source.id as number },
           });
         }}
         onDragOver={(event) => {
-          const { source } = event.operation;
+          const { target } = event.operation;
 
-          if (isSortable(source) && source.group != null) {
-            if (!allowedTermsRef.current.has(source.group as number)) {
-              event.preventDefault();
-            }
-          }
+          if (!isSortable(target)) return;
+          if (!target.data) return;
+          if (allowedTerms.has(target.data.termId as number)) return;
+
+          event.preventDefault();
         }}
         onDragEnd={(event) => {
           dispatch({ type: 'MOVE_END' });
@@ -69,6 +69,7 @@ export function PlacementMoveProvider({ children }: PlacementMoveProviderProps) 
           if (event.canceled) return;
 
           const { source } = event.operation;
+          console.log('hello');
 
           if (isSortable(source)) {
             const { initialIndex, index, initialGroup, group } = source;
@@ -93,7 +94,7 @@ export function PlacementMoveProvider({ children }: PlacementMoveProviderProps) 
 }
 
 export const usePlacementMoveContext = () => {
-  const context = useContext(PlacementMoveContext);
+  const context = React.useContext(PlacementMoveContext);
 
   if (!context) {
     throw new Error('usePlacementMoveContext must be used within PlacementMoveProvider.');

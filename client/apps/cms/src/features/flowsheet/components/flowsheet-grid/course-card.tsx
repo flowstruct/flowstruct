@@ -38,6 +38,7 @@ export function CourseCard({ course, placement, ...props }: CourseCardProps) {
     type: 'placement',
     accept: 'placement',
     group: term.id,
+    data: { termId: term.id },
   });
   const optionsTriggerRef = React.useRef(null);
   const [optionsIsOpen, setOptionsOpen] = React.useState(false);

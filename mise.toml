@@ -1,31 +1,17 @@
 [tools]
 java = "21"
-node = "24"
-"npm:google-java-format" = "latest"
-pnpm = "10"
+node = { version = "24", postinstall = "corepack enable" }
 maven = "3"
 
 [env]
 SPRING_PROFILES_ACTIVE = "dev"
 NODE_ENV = "dev"
 
-[tasks."deps:client"]
-run = "cd client && pnpm install"
-
-[tasks."deps:api"]
-run = "cd api && mvn dependency:resolve"
-
-[tasks.deps]
-depends = ["deps:*"]
-
-[tasks.db]
-run = "cd api && docker compose up"
-
-[tasks."db:down"]
-run = "cd api && docker compose down -v"
-
-[tasks.api]
-run = "cd api && mvn clean spring-boot:run"
-
-[tasks.client]
-run = "cd client && pnpm start:cms"
+[tasks]
+"deps:client" = { run = "cd client && pnpm install" }
+"deps:api" = { run = "cd api && mvn dependency:resolve" }
+deps = { depends = "[deps:*]" }
+db = { run = "cd api && docker compose up" }
+"db:down" = { run = "cd api && docker compose down -v" }
+api = { run = "cd api && mvn clean spring-boot:run" }
+client = { run = "cd client && pnpm start:cms" }

@@ -17,6 +17,8 @@ import { getTermDisplayName } from '@/features/flowsheet/domain/getTermDisplayNa
 import { Button } from '@/shared/components/ui/Button';
 import { Menu, MenuItem, MenuTrigger } from '@/shared/components/ui/Menu';
 import { Popover } from '@/shared/components/ui/Popover';
+import { useDroppable } from '@dnd-kit/react';
+import { CollisionPriority } from '@dnd-kit/abstract';
 
 export function Term() {
   const { term } = useTermContext();

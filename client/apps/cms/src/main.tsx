@@ -20,6 +20,7 @@ declare module '@tanstack/react-query' {
         | ((data: unknown, variables: unknown, context: unknown) => string)
         | undefined;
       loadingMessage?: string | ((variables: unknown) => string) | undefined;
+      invalidate?: boolean;
     };
   }
 }
@@ -44,7 +45,9 @@ const queryClient = new QueryClient({
       }
     },
     onSuccess: (data, variables, context, mutation) => {
-      queryClient.invalidateQueries();
+      if (mutation.meta?.invalidate !== false) {
+        queryClient.invalidateQueries();
+      }
 
       const successMessage = mutation.meta?.successMessage;
 

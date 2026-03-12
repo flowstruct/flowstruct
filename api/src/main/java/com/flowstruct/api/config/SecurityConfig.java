@@ -30,66 +30,74 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final JwtFilter jwtFilter;
-    private final SiteGeneratorFilter siteGeneratorFilter;
-    private final AppAccessDeniedHandler accessDeniedHandler;
 
-    @Bean
-    public SecurityFilterChain devSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        return httpSecurity
-                .csrf(AbstractHttpConfigurer::disable)
-                .anonymous(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults())
+  private final JwtFilter jwtFilter;
 
-                .httpBasic(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(request -> request
-                        .requestMatchers(
-                                "/api/users/login",
-                                "/api/users/logout",
-                                "/error",
-                                "/actuator/health",
-                                "/cms",
-                                "/cms/**"
-                        )
-                        .permitAll()
-                        .anyRequest()
-                        .authenticated()
-                )
-                .exceptionHandling(exceptions ->
-                        exceptions.accessDeniedHandler(accessDeniedHandler)
-                                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
-                )
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-                .addFilterBefore(siteGeneratorFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();
-    }
+  private final SiteGeneratorFilter siteGeneratorFilter;
 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
-        return configuration.getAuthenticationManager();
-    }
+  private final AppAccessDeniedHandler accessDeniedHandler;
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(12);
-    }
+  @Bean
+  public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+    return httpSecurity
+        .csrf(AbstractHttpConfigurer::disable)
+        .anonymous(AbstractHttpConfigurer::disable)
+        .cors(Customizer.withDefaults())
+        .httpBasic(AbstractHttpConfigurer::disable)
+        .authorizeHttpRequests(
+            request ->
+                request
+                    .requestMatchers(
+                        "/api/users/login",
+                        "/api/users/logout",
+                        "/error",
+                        "/actuator/health",
+                        "/cms",
+                        "/cms/**")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated())
+        .exceptionHandling(
+            exceptions ->
+                exceptions
+                    .accessDeniedHandler(accessDeniedHandler)
+                    .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
+        .sessionManagement(
+            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .addFilterBefore(siteGeneratorFilter, UsernamePasswordAuthenticationFilter.class)
+        .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+        .build();
+  }
 
-    @Bean
-    static RoleHierarchy roleHierarchy() {
-        return RoleHierarchyImpl.withDefaultRolePrefix()
-                .role("ADMIN").implies("APPROVER")
-                .role("APPROVER").implies("EDITOR")
-                .role("EDITOR").implies("GUEST")
-                .build();
-    }
+  @Bean
+  public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)
+      throws Exception {
+    return configuration.getAuthenticationManager();
+  }
 
-    @Bean
-    static MethodSecurityExpressionHandler methodSecurityExpressionHandler(RoleHierarchy roleHierarchy) {
-        DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
-        expressionHandler.setRoleHierarchy(roleHierarchy);
-        return expressionHandler;
-    }
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder(12);
+  }
+
+  @Bean
+  static RoleHierarchy roleHierarchy() {
+    return RoleHierarchyImpl.withDefaultRolePrefix()
+        .role("ADMIN")
+        .implies("APPROVER")
+        .role("APPROVER")
+        .implies("EDITOR")
+        .role("EDITOR")
+        .implies("GUEST")
+        .build();
+  }
+
+  @Bean
+  static MethodSecurityExpressionHandler methodSecurityExpressionHandler(
+      RoleHierarchy roleHierarchy) {
+    DefaultMethodSecurityExpressionHandler expressionHandler =
+        new DefaultMethodSecurityExpressionHandler();
+    expressionHandler.setRoleHierarchy(roleHierarchy);
+    return expressionHandler;
+  }
 }
