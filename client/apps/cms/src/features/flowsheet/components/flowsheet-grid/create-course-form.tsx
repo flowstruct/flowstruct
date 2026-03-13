@@ -1,9 +1,8 @@
 import { DisclosureState } from '@/shared/types';
 import React from 'react';
-import { useMutation } from '@tanstack/react-query';
+import { InfiniteData, useMutation, useQueryClient } from '@tanstack/react-query';
 import { courseApi } from '@/features/course/api';
 import { handleSubmit } from '@/shared/utils/handle-submit';
-import { Form } from '@/shared/components/ui/Form';
 import styles from './create-course-form.module.css';
 import { TextField } from '@/shared/components/ui/TextField';
 import { NumberField } from '@/shared/components/ui/NumberField';
@@ -12,9 +11,10 @@ import { Switch } from '@/shared/components/ui/Switch';
 import { Divider } from '@/shared/components/ui/divider';
 import { Button } from '@/shared/components/ui/Button';
 import { BookOpen, ChevronLeft, Clock, Globe, GraduationCap, Hash, Tag } from 'lucide-react';
-import { CourseType } from '@/features/course/domain/course';
+import { CoursesPage, CourseType } from '@/features/course/domain/course';
 import { Course } from '@/features/course/domain/course';
 import { Group } from '@/shared/components/layout/group';
+import { courseKeys } from '@/features/course/queries';
 
 export function CreateCourseForm({
   courseFormState,
@@ -29,9 +29,24 @@ export function CreateCourseForm({
     mutationFn: courseApi.createCourse,
   });
 
+  const queryClient = useQueryClient();
+
   const onSubmit = handleSubmit((formData) => {
     createCourse.mutate(formData, {
       onSuccess: (data) => {
+        queryClient.setQueriesData<InfiniteData<CoursesPage, number>>(
+          { queryKey: courseKeys.catalogs() },
+          (old) => {
+            if (!old) return old;
+
+            return {
+              ...old,
+              pages: old.pages.map((page, index) =>
+                index === 0 ? { ...page, content: [data, ...page.content] } : page
+              ),
+            };
+          }
+        );
         if (selectCourse && onCourseCreated) {
           onCourseCreated(data);
         }

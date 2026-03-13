@@ -3,7 +3,7 @@ import { BetweenHorizonalStart, ChevronDown, Plus } from 'lucide-react';
 import { Popover } from '@/shared/components/ui/Popover';
 import { GridList, GridListItem } from '@/shared/components/ui/GridList';
 import { ListEmptyState } from '@/shared/components/ui/ListBox';
-import { InfiniteData, useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
 import React from 'react';
 import { useDebounce } from '@/shared/hooks/use-debounce';
 import { SearchField } from '@/shared/components/ui/SearchField';
@@ -17,10 +17,10 @@ import { MenuTrigger } from '@/shared/components/ui/Menu';
 import { getCourseDisplayName } from '@/features/course/domain/getCourseDisplayName';
 import { useCourseCatalogSearchResults } from '@/features/course/hooks/use-course-catalog-search-results';
 import { useDisclosure } from '@/shared/hooks/use-disclosure';
-import { courseKeys, courseQueries } from '@/features/course/queries';
+import { courseQueries } from '@/features/course/queries';
 import { useTermContext } from '@/features/flowsheet/contexts/term-context';
 import { CreateCourseForm } from './create-course-form';
-import { Course, CoursesPage } from '@/features/course/domain/course';
+import { Course } from '@/features/course/domain/course';
 
 export function CourseCatalogAutocomplete() {
   const { flowsheet, flowsheetCourses } = useFlowsheetContext();
@@ -53,23 +53,7 @@ export function CourseCatalogAutocomplete() {
 
   const suggestCreateCourse = debouncedSearch && (catalogCourses?.results.length ?? 0) > 0;
 
-  const queryClient = useQueryClient();
-
   const handleCourseCreated = (course: Course) => {
-    queryClient.setQueriesData<InfiniteData<CoursesPage, number>>(
-      { queryKey: courseKeys.catalogs() },
-      (old) => {
-        if (!old) return old;
-
-        return {
-          ...old,
-          pages: old.pages.map((page, index) =>
-            index === 0 ? { ...page, content: [course, ...page.content] } : page
-          ),
-        };
-      }
-    );
-
     setSelectedKeys((prev) => new Set([...prev, course.id]));
   };
 
