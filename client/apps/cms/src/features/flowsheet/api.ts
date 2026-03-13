@@ -13,6 +13,23 @@ export const flowsheetApi = {
       body: details,
     }),
 
+  archiveFlowsheet: (flowsheetId: number) =>
+    api.put<Flowsheet>([FLOWSHEET_ENDPOINT, flowsheetId, 'archive']),
+
+  unarchiveFlowsheet: (flowsheetId: number) =>
+    api.put<Flowsheet>([FLOWSHEET_ENDPOINT, flowsheetId, 'unarchive']),
+
+  cloneFlowsheet: ({
+    flowsheetId,
+    details,
+  }: {
+    flowsheetId: number;
+    details: Partial<Flowsheet>;
+  }) =>
+    api.post<Flowsheet>([FLOWSHEET_ENDPOINT, flowsheetId, 'clone'], {
+      body: details,
+    }),
+
   placeCourses: ({
     flowsheetId,
     courseIds,

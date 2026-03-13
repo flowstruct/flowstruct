@@ -17,6 +17,7 @@ export interface NumberFieldProps extends AriaNumberFieldProps {
   description?: string;
   errorMessage?: string | ((validation: ValidationResult) => string);
   icon?: React.ReactNode;
+  fullWidth?: boolean;
 }
 
 export function NumberField({
@@ -24,10 +25,11 @@ export function NumberField({
   description,
   errorMessage,
   icon,
+  fullWidth,
   ...props
 }: NumberFieldProps) {
   return (
-    <AriaNumberField {...props}>
+    <AriaNumberField data-full-width={fullWidth || undefined} {...props}>
       <Label>{label}</Label>
       <Group>
         {icon}

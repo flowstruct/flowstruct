@@ -6,9 +6,9 @@ export const getFlowsheetsByArchiveStatus = (
 ) => {
   switch (archiveStatus) {
     case 'active':
-      return flowsheets.filter((f) => f.archivedAt !== undefined);
+      return flowsheets.filter((f) => f.archivedAt == null);
     case 'archived':
-      return flowsheets.filter((f) => f.archivedAt === undefined);
+      return flowsheets.filter((f) => f.archivedAt != null);
     default:
       return flowsheets;
   }

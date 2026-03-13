@@ -5,6 +5,10 @@
     height: fit-content;
     color: var(--text-color-secondary);
 
+    &[data-archived] {
+        opacity: 0.4;
+    }
+
     &[data-status=DRAFT]::before {
         content: '';
         position: absolute;

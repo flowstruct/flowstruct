@@ -17,7 +17,11 @@
 
 .react-aria-NumberField {
   color: var(--text-color);
-  width: 100%;
+  width: 7rem;
+
+  &[data-full-width] {
+    width: 100%;
+  }
 
   .react-aria-Group {
     display: flex;
@@ -45,6 +49,7 @@
   .react-aria-Input {
     all: unset;
     font-size: var(--font-size-sm);
+    width: 100%;
     flex: 1;
   }
 

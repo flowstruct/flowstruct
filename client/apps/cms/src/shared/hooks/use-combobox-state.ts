@@ -4,14 +4,22 @@ import React from 'react';
 type UseComboboxStateProps<T extends { id: Key }> = {
   items: Record<Key, T> | null;
   getDisplayName: (item: T) => string;
+  defaultKey?: Key;
 };
 
 export const useComboBoxState = <T extends { id: Key }>({
   items,
   getDisplayName,
+  defaultKey,
 }: UseComboboxStateProps<T>) => {
-  const [inputValue, setInputValue] = React.useState('');
-  const [selectedKey, setSelectedKey] = React.useState<Key | null>(null);
+  const [inputValue, setInputValue] = React.useState(() => {
+    if (defaultKey != null && items) {
+      const item = items[defaultKey];
+      if (item) return getDisplayName(item);
+    }
+    return '';
+  });
+  const [selectedKey, setSelectedKey] = React.useState<Key | null>(defaultKey ?? null);
 
   const set = React.useCallback((key: Key, value: string) => {
     setSelectedKey(key);

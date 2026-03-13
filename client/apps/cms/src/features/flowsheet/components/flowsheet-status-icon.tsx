@@ -8,7 +8,11 @@ type FlowsheetStatusIconProps = {
 
 export function FlowsheetStatusIcon({ flowsheet }: FlowsheetStatusIconProps) {
   return (
-    <div data-status={flowsheet.status || undefined} className={styles.statusIcon}>
+    <div
+      data-status={flowsheet.status || undefined}
+      data-archived={flowsheet.archivedAt != null ? true : undefined}
+      className={styles.statusIcon}
+    >
       <Grid2x2 size={15} />
     </div>
   );

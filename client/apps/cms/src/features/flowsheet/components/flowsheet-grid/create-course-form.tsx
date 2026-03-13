@@ -57,7 +57,7 @@ export function CreateCourseForm({
   });
 
   return (
-    <form id="course-form" onSubmit={onSubmit}>
+    <form className={styles.form} id="course-form" onSubmit={onSubmit}>
       <div className={styles.courseFormFields}>
         <TextField
           autoFocus
@@ -79,6 +79,7 @@ export function CreateCourseForm({
 
         <Group>
           <NumberField
+            fullWidth
             minValue={0}
             defaultValue={0}
             name="creditHours"
@@ -88,6 +89,7 @@ export function CreateCourseForm({
           />
 
           <NumberField
+            fullWidth
             minValue={0}
             defaultValue={0}
             name="ects"
@@ -99,6 +101,7 @@ export function CreateCourseForm({
 
         <Group>
           <NumberField
+            fullWidth
             minValue={0}
             defaultValue={0}
             name="lectureHours"
@@ -107,6 +110,7 @@ export function CreateCourseForm({
           />
 
           <NumberField
+            fullWidth
             minValue={0}
             defaultValue={0}
             name="practicalHours"

@@ -66,8 +66,11 @@ public class FlowsheetManagerService {
 
     Set<Section> sectionClones =
         flowsheetToClone.getSections().stream()
-            .peek(section -> section.setId(null))
+            .peek(s -> s.setId(null))
             .collect(Collectors.toSet());
+
+    Set<Term> termClones =
+        flowsheetToClone.getTerms().stream().peek(t -> t.setId(null)).collect(Collectors.toSet());
 
     Flowsheet flowsheetClone =
         new Flowsheet(
@@ -83,7 +86,7 @@ public class FlowsheetManagerService {
             null,
             null,
             sectionClones,
-            flowsheetToClone.getTerms(),
+            termClones,
             flowsheetToClone.getCoursePrerequisites(),
             flowsheetToClone.getCourseCorequisites());
 

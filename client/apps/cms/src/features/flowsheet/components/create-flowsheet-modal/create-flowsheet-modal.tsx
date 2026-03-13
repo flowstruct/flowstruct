@@ -1,126 +1,155 @@
-import { Form } from '@/shared/components/ui/Form';
 import { NumberField } from '@/shared/components/ui/NumberField';
 import { useMutation } from '@tanstack/react-query';
 import React from 'react';
-import { DialogTrigger } from '@/shared/components/ui/Dialog';
-import { Modal } from '@/shared/components/ui/Modal';
 import { Button } from '@/shared/components/ui/Button';
-import { CalendarDays, Grid2X2, Layers2, Plus, Tag, X } from 'lucide-react';
+import { CalendarDays, Grid2X2, Layers2, Plus, Tag } from 'lucide-react';
 import styles from './create-flowsheet-modal.module.css';
 import { Breadcrumb, Breadcrumbs } from '@/shared/components/ui/breadcrumbs';
 import { TextField } from '@/shared/components/ui/TextField';
-import { Divider } from '@/shared/components/ui/divider';
 import { Switch } from '@/shared/components/ui/Switch';
 import { Tooltip, TooltipTrigger } from '@/shared/components/ui/Tooltip';
 import { flowsheetApi } from '@/features/flowsheet/api';
 import { useNavigate } from '@tanstack/react-router';
-import { handleSubmit } from '@/shared/utils/handle-submit';
 import { useDisclosure } from '@/shared/hooks/use-disclosure';
 import { ProgramComboBox } from '@/features/flowsheet/components/create-flowsheet-modal/program-combobox';
+import {
+  FormModal,
+  FormModalBody,
+  FormModalContent,
+  FormModalFooter,
+  FormModalHeader,
+  FormModalSubmit,
+  useFormModalContext,
+} from '@/shared/components/form-modal';
+import { Flowsheet } from '@/features/flowsheet/domain/flowsheet';
+import { DisclosureState } from '@/shared/types';
+
+type FlowsheetFormFieldsProps = {
+  programFormState: DisclosureState;
+  defaultValues?: {
+    program?: number;
+    year?: number;
+    name?: string;
+  };
+};
+
+export function FlowsheetFormFields({ programFormState, defaultValues }: FlowsheetFormFieldsProps) {
+  return (
+    <section className={styles.form}>
+      <section className={styles.programAndName}>
+        <ProgramComboBox
+          programFormState={programFormState}
+          defaultProgramId={defaultValues?.program}
+        />
+
+        <TextField
+          name="name"
+          aria-label="Flowsheet name"
+          icon={<Tag size={14} />}
+          variant="transparent"
+          placeholder="Enter an optional name (e.g., General, Data Science, Cybersecurity)"
+          defaultValue={defaultValues?.name}
+        />
+      </section>
+
+      <div className={styles.flowsheetProperties}>
+        <NumberField
+          minValue={2005}
+          name="year"
+          aria-label="Flowsheet year"
+          isRequired
+          formatOptions={{
+            useGrouping: false,
+          }}
+          icon={<CalendarDays size={15} />}
+          defaultValue={defaultValues?.year ?? new Date().getFullYear()}
+        />
+      </div>
+    </section>
+  );
+}
+
+export function NavigateToFlowsheetSwitch() {
+  const { registerOnSuccess } = useFormModalContext();
+  const [navigateAfter, setNavigateAfter] = React.useState(true);
+  const navigate = useNavigate();
+
+  React.useEffect(() => {
+    registerOnSuccess((result) => {
+      if (navigateAfter) {
+        navigate({
+          to: '/flowsheets/$flowsheetId',
+          params: { flowsheetId: String(result.id) },
+        });
+      }
+    });
+  }, [navigateAfter, registerOnSuccess, navigate]);
+
+  return (
+    <Switch isSelected={navigateAfter} onChange={setNavigateAfter}>
+      Open after creating
+    </Switch>
+  );
+}
 
 export function CreateFlowsheetModal() {
-  const flowsheetModalState = useDisclosure();
   const programFormState = useDisclosure();
-  const [navigateToFlowsheet, setNavigateToFlowsheet] = React.useState<boolean>(true);
 
   const createFlowsheet = useMutation({
     mutationFn: flowsheetApi.createFlowsheet,
     meta: { successMessage: 'Flowsheet created.' },
   });
 
-  const navigate = useNavigate();
+  return (
+    <FormModal
+      onSubmit={(data) => {
+        if (programFormState.isOpen) return;
+        return createFlowsheet.mutateAsync(data as Partial<Flowsheet>) as Promise<{
+          id: number;
+        }>;
+      }}
+      isPending={createFlowsheet.isPending}
+    >
+      <CreateFlowsheetButton />
 
-  const onSubmit = handleSubmit((formData) => {
-    if (programFormState.isOpen) {
-      return;
-    }
+      <FormModalContent>
+        <FormModalBody>
+          <FormModalHeader>
+            <Breadcrumbs>
+              <Breadcrumb base>
+                <Layers2 size={15} /> Flowsheets
+              </Breadcrumb>
 
-    createFlowsheet.mutate(formData, {
-      onSuccess: (data) => {
-        flowsheetModalState.close();
+              <Breadcrumb>
+                <Grid2X2 size={15} color="teal" /> New flowsheet
+              </Breadcrumb>
+            </Breadcrumbs>
+          </FormModalHeader>
 
-        if (navigateToFlowsheet) {
-          navigate({ to: '/flowsheets/$flowsheetId', params: { flowsheetId: String(data.id) } });
-        }
-      },
-    });
-  });
+          <FlowsheetFormFields programFormState={programFormState} />
+        </FormModalBody>
+
+        <FormModalFooter>
+          <NavigateToFlowsheetSwitch />
+          <FormModalSubmit>
+            <Grid2X2 size={15} /> Create flowsheet
+          </FormModalSubmit>
+        </FormModalFooter>
+      </FormModalContent>
+    </FormModal>
+  );
+}
+
+function CreateFlowsheetButton() {
+  const { open } = useFormModalContext();
 
   return (
-    <DialogTrigger>
-      <TooltipTrigger>
-        <Button onPress={flowsheetModalState.open} size="sm" variant="transparent">
-          <Plus size={15} />
-        </Button>
+    <TooltipTrigger>
+      <Button onPress={open} size="sm" variant="transparent">
+        <Plus size={15} />
+      </Button>
 
-        <Tooltip>New</Tooltip>
-      </TooltipTrigger>
-
-      <Modal
-        isOpen={flowsheetModalState.isOpen}
-        onOpenChange={flowsheetModalState.setIsOpen}
-        size="xl"
-      >
-        <Form onSubmit={onSubmit}>
-          <div className={styles.content}>
-            <header className={styles.header}>
-              <Breadcrumbs>
-                <Breadcrumb base>
-                  <Layers2 size={15} /> Flowsheets
-                </Breadcrumb>
-
-                <Breadcrumb>
-                  <Grid2X2 size={15} color="teal" /> New flowsheet
-                </Breadcrumb>
-              </Breadcrumbs>
-
-              <Button variant="transparent" size="icon" onPress={flowsheetModalState.close}>
-                <X size={14} />
-              </Button>
-            </header>
-
-            <section className={styles.form}>
-              <section className={styles.programAndName}>
-                <ProgramComboBox programFormState={programFormState} />
-
-                <TextField
-                  name="name"
-                  aria-label="Flowsheet name"
-                  icon={<Tag size={14} />}
-                  variant="transparent"
-                  placeholder="Enter an optional name (e.g., General, Data Science, Cybersecurity)"
-                />
-              </section>
-
-              <div className={styles.flowsheetProperties}>
-                <NumberField
-                  minValue={2005}
-                  name="year"
-                  aria-label="Flowsheet year"
-                  isRequired
-                  formatOptions={{
-                    useGrouping: false,
-                  }}
-                  icon={<CalendarDays size={15} />}
-                  defaultValue={new Date().getFullYear()}
-                />
-              </div>
-            </section>
-          </div>
-
-          <Divider />
-
-          <section className={styles.footer}>
-            <Switch isSelected={navigateToFlowsheet} onChange={setNavigateToFlowsheet}>
-              Open after creating
-            </Switch>
-
-            <Button isPending={createFlowsheet.isPending} variant="primary" type="submit">
-              <Grid2X2 size={15} /> Create flowsheet
-            </Button>
-          </section>
-        </Form>
-      </Modal>
-    </DialogTrigger>
+      <Tooltip>New</Tooltip>
+    </TooltipTrigger>
   );
 }

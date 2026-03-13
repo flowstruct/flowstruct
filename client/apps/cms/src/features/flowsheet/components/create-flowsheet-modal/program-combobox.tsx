@@ -13,13 +13,15 @@ import { UnstyledButton } from '@/shared/components/ui/UnstyledButton';
 
 type ProgramComboBoxProps = {
   programFormState: DisclosureState;
+  defaultProgramId?: number;
 };
 
-export function ProgramComboBox({ programFormState }: ProgramComboBoxProps) {
+export function ProgramComboBox({ programFormState, defaultProgramId }: ProgramComboBoxProps) {
   const { data: programs } = useSuspenseQuery(programQueries.collection);
   const comboBoxState = useComboBoxState({
     items: programs.byIds,
     getDisplayName: getProgramDisplayName,
+    defaultKey: defaultProgramId,
   });
   const programFormRef = React.useRef<HTMLDivElement>(null);
 

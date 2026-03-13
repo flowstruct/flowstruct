@@ -1,30 +1,31 @@
 .my-breadcrumbs {
-    all: unset;
-    display: flex;
-    align-items: center;
+  all: unset;
+  display: flex;
+  align-items: center;
 }
 
 .my-breadcrumb {
-    all: unset;
-    font-size: var(--font-size-sm);
-    color: var(--text-color);
-    font-weight: 400;
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
+  all: unset;
+  font-size: var(--font-size-sm);
+  color: var(--text-color);
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
 }
 
 .my-base-breadcrumb {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-1);
-    background: var(--background-color-secondary);
-    padding: 0 var(--space-2);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-1);
+  background: var(--background-color-secondary);
+  padding: 0 var(--space-2);
 }
 
 .my-breadcrumb-arrow {
-    margin: 0 var(--space-5);
-    color: var(--text-color-dimmed);
+  margin: 0 var(--space-5);
+  color: var(--text-color-dimmed);
 }
+
