@@ -11,16 +11,14 @@ import { Checkbox } from '@/shared/components/ui/Checkbox';
 import { Divider } from '@/shared/components/ui/divider';
 import { Popover } from '@/shared/components/ui/Popover';
 import { Tooltip, TooltipTrigger } from '@/shared/components/ui/Tooltip';
-import { Link, Scaling, SquarePen, TagIcon, Trash } from 'lucide-react';
+import { Link, SquarePen, Trash } from 'lucide-react';
 import { useFocusRing, usePress } from 'react-aria';
 import styles from './course-card.module.css';
-import { useSortable } from '@dnd-kit/react/sortable';
-import { useTermContext } from '@/features/flowsheet/contexts/term-context';
 import { useMutation } from '@tanstack/react-query';
 import { flowsheetApi } from '@/features/flowsheet/api';
 import { useFlowsheetContext } from '@/features/flowsheet/contexts/flowsheet-context';
 import React from 'react';
-import { mergeRefs } from '@/shared/utils/mergeRefs';
+import { usePlacementMoveContext } from '@/features/flowsheet/contexts/placement-move-context';
 
 type CourseCardProps = {
   course: CourseSummary;
@@ -30,16 +28,8 @@ type CourseCardProps = {
 export function CourseCard({ course, placement, ...props }: CourseCardProps) {
   const { flowsheet } = useFlowsheetContext();
   const { state, dispatch } = useFlowsheetGridContext();
-  const { term } = useTermContext();
+  const { dragHandlers } = usePlacementMoveContext();
   const placementState = usePlacement(placement);
-  const { ref: sortableRef, isDragging } = useSortable({
-    id: course.id,
-    index: placement.position - 1,
-    type: 'placement',
-    accept: 'placement',
-    group: term.id,
-    data: { termId: term.id },
-  });
   const optionsTriggerRef = React.useRef(null);
   const [optionsIsOpen, setOptionsOpen] = React.useState(false);
 
@@ -142,11 +132,13 @@ export function CourseCard({ course, placement, ...props }: CourseCardProps) {
         className={styles.card}
         data-focus-visible={isFocusVisible || undefined}
         data-pressed={isPressed || undefined}
-        data-dragging={isDragging}
         data-state={placementState}
         role="button"
         tabIndex={0}
-        ref={mergeRefs(sortableRef as React.Ref<HTMLDivElement>, optionsTriggerRef)}
+        ref={optionsTriggerRef}
+        draggable
+        onDragStart={(e) => dragHandlers.onDragStart(e, course.id)}
+        onDragEnd={dragHandlers.onDragEnd}
       >
         <Stack fill gap={1}>
           <Group justify="between">
@@ -188,7 +180,7 @@ export function CourseCard({ course, placement, ...props }: CourseCardProps) {
                 setOptionsOpen(false);
               }}
             >
-              <SquarePen size={14} /> Pre-requisites
+              <SquarePen size={14} /> Prerequisites
             </Button>
 
             <Button
@@ -202,26 +194,8 @@ export function CourseCard({ course, placement, ...props }: CourseCardProps) {
                 setOptionsOpen(false);
               }}
             >
-              <SquarePen size={14} /> Co-requisites
+              <SquarePen size={14} /> Corequisites
             </Button>
-
-            <Divider orientation="vertical" />
-
-            <TooltipTrigger>
-              <Button size="sm" shape="icon" variant="transparent">
-                <TagIcon size={14} />
-              </Button>
-
-              <Tooltip>Assign section</Tooltip>
-            </TooltipTrigger>
-
-            <TooltipTrigger>
-              <Button size="sm" shape="icon" variant="transparent">
-                <Scaling size={14} />
-              </Button>
-
-              <Tooltip>Resize</Tooltip>
-            </TooltipTrigger>
 
             <Divider orientation="vertical" />
 

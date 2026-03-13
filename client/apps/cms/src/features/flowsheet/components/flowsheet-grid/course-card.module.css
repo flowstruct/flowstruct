@@ -42,6 +42,11 @@
   border: 1px solid var(--primary-6);
 }
 
+.card[data-state='WARN'] {
+  background: #ffebed;
+  border: 1px solid #ffc2c9;
+}
+
 .card[data-state='DISABLED'] {
   opacity: 0.5;
   pointer-events: none;

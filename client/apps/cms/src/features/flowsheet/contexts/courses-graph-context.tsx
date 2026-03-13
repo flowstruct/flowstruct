@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo } from 'react';
+import React from 'react';
 import { useFlowsheetContext } from '@/features/flowsheet/contexts/flowsheet-context';
 import { buildCoursesGraph } from '@/features/flowsheet/domain/buildCoursesGraph';
 import type { Requisites } from '@/features/flowsheet/domain/buildCoursesGraph';
@@ -11,10 +11,10 @@ const FlowsheetCoursesGraphContext = React.createContext<
   FlowsheetCoursesGraphContextType | undefined
 >(undefined);
 
-function FlowsheetCoursesGraphProvider({ children }: { children: ReactNode }) {
+function FlowsheetCoursesGraphProvider({ children }: { children: React.ReactNode }) {
   const { flowsheet } = useFlowsheetContext();
 
-  const coursesGraph = useMemo(() => {
+  const coursesGraph = React.useMemo(() => {
     if (!flowsheet) return new Map<number, Requisites>();
     return buildCoursesGraph(flowsheet);
   }, [flowsheet]);

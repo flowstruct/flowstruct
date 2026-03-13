@@ -1,6 +1,9 @@
 import { Requisites } from './buildCoursesGraph';
 import { FlowsheetGridState } from '@/features/flowsheet/contexts/flowsheet-grid-context';
-import { classifyRelationship } from '@/features/flowsheet/domain/classifyRelationship';
+import {
+  classifyRelationship,
+  CourseRelation,
+} from '@/features/flowsheet/domain/classifyRelationship';
 import { Placement, Term } from '@/features/flowsheet/domain/flowsheet';
 
 export type PlacementState =
@@ -12,6 +15,7 @@ export type PlacementState =
   | 'COREQ_LINK'
   | 'AVAILABLE_LINK'
   | 'DISABLED'
+  | 'WARN'
   | 'MOVING';
 
 function getMovingState({
@@ -19,15 +23,22 @@ function getMovingState({
   term,
   state,
   allowedTerms,
+  graph,
 }: {
   placement: Placement;
   term: Term;
   state: FlowsheetGridState;
   allowedTerms: Set<number>;
+  graph: Map<number, Requisites>;
 }): PlacementState | null {
   if (!state.moving) return null;
 
   if (state.moving === placement.course) return 'MOVING';
+
+  const relationship = classifyRelationship(state.moving, placement.course, graph);
+  const disallowedRelationships: CourseRelation[] = ['POSTREQSEQ', 'PREREQSEQ', 'PREREQ'];
+
+  if (disallowedRelationships.includes(relationship)) return 'WARN';
 
   if (!allowedTerms.has(term.id)) return 'DISABLED';
 
@@ -109,7 +120,7 @@ export function getPlacementState({
   graph: Map<number, Requisites>;
 }): PlacementState {
   return (
-    getMovingState({ placement, term, state, allowedTerms }) ??
+    getMovingState({ placement, term, state, allowedTerms, graph }) ??
     getSelectionState({ placement, state }) ??
     getLinkState({ placement, state, termAndPlacementByCourse, graph }) ??
     'NORMAL'

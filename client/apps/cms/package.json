@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@dnd-kit/abstract": "^0.3.2",
+    "@dnd-kit/dom": "^0.3.2",
     "@dnd-kit/react": "^0.3.2",
     "@hookform/resolvers": "^5.1.0",
     "@mantine/core": "^8.0.0",
@@ -26,6 +27,7 @@
     "@tanstack/react-table": "^8.20.6",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.13",
+    "framer-motion": "^12.36.0",
     "lucide-react": "^0.474.0",
     "react": "^18.3.1",
     "react-aria": "^3.43.2",

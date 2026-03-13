@@ -1,7 +1,7 @@
 import styles from './flowsheet-toolbar.module.css';
 import { useFlowsheetGridContext } from '@/features/flowsheet/contexts/flowsheet-grid-context';
 import { Button } from '@/shared/components/ui/Button';
-import { TagIcon, Trash, X } from 'lucide-react';
+import { Trash, X } from 'lucide-react';
 import { Tooltip, TooltipTrigger } from '@/shared/components/ui/Tooltip';
 import { useFlowsheetContext } from '@/features/flowsheet/contexts/flowsheet-context';
 import { useMutation } from '@tanstack/react-query';
@@ -53,14 +53,6 @@ export function FlowsheetToolbar() {
           <Divider orientation="vertical" />
 
           <Group>
-            <TooltipTrigger>
-              <Button shape="icon" variant="flat" size="sm">
-                <TagIcon size={14} />
-              </Button>
-
-              <Tooltip>Tag section</Tooltip>
-            </TooltipTrigger>
-
             <TooltipTrigger>
               <Button
                 shape="icon"

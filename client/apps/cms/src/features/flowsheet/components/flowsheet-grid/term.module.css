@@ -5,6 +5,11 @@
   flex-direction: column;
   padding: 0;
   gap: var(--space-2);
+  position: relative;
+}
+
+.placementCard {
+  position: relative;
 }
 
 .skeletonCard {
