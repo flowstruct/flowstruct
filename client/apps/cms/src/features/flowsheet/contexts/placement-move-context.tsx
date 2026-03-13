@@ -3,7 +3,7 @@ import { useFlowsheetContext } from '@/features/flowsheet/contexts/flowsheet-con
 import { useFlowsheetGridContext } from '@/features/flowsheet/contexts/flowsheet-grid-context';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import React, { DragEvent, ReactNode, useCallback, useMemo } from 'react';
-import classes from '@/features/flowsheet/components/flowsheet-grid/drop-indicator.module.css';
+import classes from '@/features/flowsheet/components/flowsheet-grid/flowsheet-grid.module.css';
 import { computeAllowedTerms } from '@/features/flowsheet/domain/computeAllowedTerms';
 import { useFlowsheetCoursesGraphContext } from '@/features/flowsheet/contexts/courses-graph-context';
 import { flowsheetKeys } from '@/features/flowsheet/queries';
