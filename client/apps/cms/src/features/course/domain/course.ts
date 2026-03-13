@@ -13,7 +13,6 @@ export type Course = {
   lectureHours: number;
   practicalHours: number;
   type: string;
-  isRemedial: boolean;
   outdatedAt: Date;
   outdatedBy: number | null;
   createdAt: Date;
@@ -37,7 +36,6 @@ export type CourseSummary = Pick<
   | 'name'
   | 'creditHours'
   | 'type'
-  | 'isRemedial'
   | 'outdatedAt'
   | 'outdatedBy'
   | 'createdAt'

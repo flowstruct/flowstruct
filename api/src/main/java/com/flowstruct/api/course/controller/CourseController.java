@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/courses")
 @RestController
 public class CourseController {
+
   private final CourseService courseService;
+
   private final CourseManagerService courseManagerService;
 
   @GetMapping

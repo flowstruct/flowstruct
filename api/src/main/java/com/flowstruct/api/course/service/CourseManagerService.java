@@ -45,7 +45,6 @@ public class CourseManagerService {
     course.setLectureHours(details.lectureHours());
     course.setPracticalHours(details.practicalHours());
     course.setType(details.type());
-    course.setRemedial(details.isRemedial());
 
     return courseService.saveAndMap(course);
   }
@@ -68,7 +67,6 @@ public class CourseManagerService {
             details.lectureHours(),
             details.practicalHours(),
             details.type(),
-            details.isRemedial(),
             null,
             null,
             null,

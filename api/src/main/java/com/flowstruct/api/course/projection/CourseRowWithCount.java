@@ -13,7 +13,6 @@ public record CourseRowWithCount(
         int lectureHours,
         int practicalHours,
         CourseType type,
-        boolean isRemedial,
         Instant outdatedAt,
         Long outdatedBy,
         Long version,

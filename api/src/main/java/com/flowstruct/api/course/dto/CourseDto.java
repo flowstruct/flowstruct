@@ -13,7 +13,6 @@ public record CourseDto(
         int lectureHours,
         int practicalHours,
         CourseType type,
-        boolean isRemedial,
         Instant outdatedAt,
         Long outdatedBy,
         Instant createdAt,

@@ -61,7 +61,6 @@ public class CourseService {
                         row.lectureHours(),
                         row.practicalHours(),
                         row.type(),
-                        row.isRemedial(),
                         row.outdatedAt(),
                         row.outdatedBy(),
                         row.version(),

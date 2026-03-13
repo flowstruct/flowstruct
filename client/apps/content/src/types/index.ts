@@ -39,7 +39,6 @@ export type Course = {
   lectureHours: number;
   practicalHours: number;
   type: string;
-  isRemedial: boolean;
   outdatedAt: Date;
   outdatedBy: number | null;
   createdAt: Date;

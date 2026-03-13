@@ -33,8 +33,6 @@ public class Course {
 
     private CourseType type;
 
-    private boolean isRemedial;
-
     private Instant outdatedAt;
 
     private Long outdatedBy;

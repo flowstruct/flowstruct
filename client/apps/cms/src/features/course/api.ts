@@ -17,4 +17,6 @@ export const courseApi = {
         courses: courseIds,
       },
     }),
+  createCourse: (details: Partial<Course>) =>
+    api.post<Course>([COURSE_ENDPOINT], { body: details }),
 };

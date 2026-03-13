@@ -37,7 +37,6 @@ CREATE TABLE course
     lecture_hours   INT,
     practical_hours INT,
     type            VARCHAR(255),
-    is_remedial     BOOLEAN                           DEFAULT (FALSE),
     version         BIGINT                   NOT NULL DEFAULT (0),
     created_at      TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT (NOW()),
     updated_at      TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT (NOW()),
