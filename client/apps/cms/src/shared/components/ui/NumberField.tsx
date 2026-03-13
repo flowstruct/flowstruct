@@ -31,7 +31,7 @@ export function NumberField({
       <Label>{label}</Label>
       <Group>
         {icon}
-        <Input />
+        <Input autoComplete="off" />
         <div className="my-stepper-buttons">
           <Button slot="increment">
             <ChevronUp size={12} />

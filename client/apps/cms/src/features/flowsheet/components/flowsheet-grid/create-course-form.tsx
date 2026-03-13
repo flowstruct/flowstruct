@@ -11,7 +11,7 @@ import { Select, SelectItem } from '@/shared/components/ui/Select';
 import { Switch } from '@/shared/components/ui/Switch';
 import { Divider } from '@/shared/components/ui/divider';
 import { Button } from '@/shared/components/ui/Button';
-import { BookOpen, ChevronLeft, Hash, Tag } from 'lucide-react';
+import { BookOpen, ChevronLeft, Clock, Globe, GraduationCap, Hash, Tag } from 'lucide-react';
 import { CourseType } from '@/features/course/domain/course';
 import { Course } from '@/features/course/domain/course';
 import { Group } from '@/shared/components/layout/group';
@@ -42,7 +42,7 @@ export function CreateCourseForm({
   });
 
   return (
-    <Form id="course-form" onSubmit={onSubmit}>
+    <form id="course-form" onSubmit={onSubmit}>
       <div className={styles.courseFormFields}>
         <TextField
           autoFocus
@@ -51,9 +51,16 @@ export function CreateCourseForm({
           icon={<Hash size={15} />}
           name="code"
           label="Code"
+          autoComplete="off"
         />
 
-        <TextField isRequired icon={<Tag size={15} />} name="name" label="Name" />
+        <TextField
+          autoComplete="off"
+          isRequired
+          icon={<Tag size={15} />}
+          name="name"
+          label="Name"
+        />
 
         <Group>
           <NumberField
@@ -62,19 +69,34 @@ export function CreateCourseForm({
             name="creditHours"
             label="Credit Hours"
             isRequired
+            icon={<GraduationCap size={15} />}
           />
 
-          <NumberField minValue={0} defaultValue={0} name="ects" label="ECTS" isRequired />
+          <NumberField
+            minValue={0}
+            defaultValue={0}
+            name="ects"
+            label="ECTS"
+            isRequired
+            icon={<Globe size={15} />}
+          />
         </Group>
 
         <Group>
-          <NumberField minValue={0} defaultValue={0} name="lectureHours" label="Lecture Hours" />
+          <NumberField
+            minValue={0}
+            defaultValue={0}
+            name="lectureHours"
+            label="Lecture Hours"
+            icon={<Clock size={15} />}
+          />
 
           <NumberField
             minValue={0}
             defaultValue={0}
             name="practicalHours"
             label="Practical Hours"
+            icon={<Clock size={15} />}
           />
         </Group>
 
@@ -83,6 +105,7 @@ export function CreateCourseForm({
           placeholder="Pick a type"
           label="Type"
           name="type"
+          defaultValue="F2F"
           isRequired
         >
           {(item) => <SelectItem>{item.name}</SelectItem>}
@@ -112,6 +135,6 @@ export function CreateCourseForm({
           </Button>
         </div>
       </footer>
-    </Form>
+    </form>
   );
 }
