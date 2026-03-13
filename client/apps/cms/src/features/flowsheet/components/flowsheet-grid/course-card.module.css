@@ -57,6 +57,11 @@
   border: 1px solid var(--primary-6);
 }
 
+.card[data-state='MOVING'] {
+  background: var(--primary-2);
+  border: 1px solid var(--primary-6);
+}
+
 .card[data-state='PREREQ_LINK'] {
   background: #fff5eb;
   border: 1px solid #fdd8af;
