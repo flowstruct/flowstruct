@@ -15,9 +15,26 @@ import { Role } from '@/features/user/domain/user';
 import { Popover } from '@/shared/components/ui/Popover';
 import { getUserInitials } from '@/features/user/domain/getUserInitials';
 import { useMatches, useNavigate } from '@tanstack/react-router';
-import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { userQueries } from '@/features/user/queries';
 import { userApi } from '@/features/user/api';
+import React from 'react';
+
+class AuthErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean }
+> {
+  state = { hasError: false };
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  render() {
+    if (this.state.hasError) return null;
+    return this.props.children;
+  }
+}
 
 const sidebarSections = [
   {
@@ -135,16 +152,21 @@ export function Sidebar() {
 }
 
 export function UserProfile() {
-  const { data: me } = useSuspenseQuery(userQueries.me);
+  const { data: me } = useQuery(userQueries.me);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const logout = useMutation({
     mutationFn: userApi.logout,
     onSuccess: () => {
-      queryClient.clear();
-      navigate({ to: '/' });
+      queryClient.cancelQueries();
+      navigate({ to: '/login' });
+    },
+    meta: {
+      invalidate: false,
     },
   });
+
+  if (!me) return null;
 
   return (
     <MenuTrigger>

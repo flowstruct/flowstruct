@@ -12,7 +12,10 @@ export const Route = createFileRoute('/login')({
   }),
   beforeLoad: async ({ context, search }) => {
     if (context.isAuthenticated) {
+      console.log('login route isAuthenticated: true');
       throw redirect({ to: search.redirect });
+    } else {
+      console.log('login route isAuthenticated: false');
     }
   },
   component: () => <LoginPage />,

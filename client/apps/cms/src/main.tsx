@@ -6,7 +6,7 @@ import '@mantine/notifications/styles.css';
 import { createRouter, RouterProvider } from '@tanstack/react-router';
 import { routeTree } from './routeTree.gen';
 import '@mantine/core/styles.css';
-import { MutationCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { LoadingOverlay, MantineProvider } from '@mantine/core';
 import { notifications, Notifications } from '@mantine/notifications';
 import { Check, Loader, X } from 'lucide-react';
@@ -26,6 +26,18 @@ declare module '@tanstack/react-query' {
 }
 
 const queryClient = new QueryClient({
+  queryCache: new QueryCache({
+    onError: (error) => {
+      const errorObject = error as unknown as ErrorObject;
+      if (errorObject.statusCode === 401) {
+        router
+          .navigate({
+            to: '/login',
+          })
+          .finally(() => {});
+      }
+    },
+  }),
   mutationCache: new MutationCache({
     onMutate: (variables, mutation) => {
       const successMessage = mutation.meta?.successMessage;
@@ -70,21 +82,7 @@ const queryClient = new QueryClient({
       const errorObject = error as unknown as ErrorObject;
 
       if (errorObject.statusCode === 401) {
-        queryClient.clear();
-
-        notifications.show({
-          title: 'Session Expired',
-          message: 'Please log in again.',
-          color: 'red',
-          icon: <X size={18} />,
-          autoClose: 4000,
-        });
-
-        router.navigate({
-          to: '/login',
-          search: { redirect: window.location.pathname },
-        });
-
+        handleAuthError();
         return;
       }
 
@@ -126,6 +124,12 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 300000,
+      retry: (failureCount, error) => {
+        const errorBody = error as unknown as ErrorObject;
+        if (errorBody.statusCode === 401) return false;
+        console.log('retry');
+        return failureCount < 3;
+      },
     },
   },
 });
@@ -137,6 +141,7 @@ export const router = createRouter({
   defaultPreloadStaleTime: 0,
   scrollRestoration: true,
   defaultPendingComponent: () => <LoadingOverlay visible zIndex={1000} />,
+  defaultErrorComponent: () => null,
 });
 
 declare module '@tanstack/react-router' {

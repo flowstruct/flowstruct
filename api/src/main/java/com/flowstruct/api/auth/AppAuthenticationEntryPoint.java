@@ -8,30 +8,28 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class AppAccessDeniedHandler implements AccessDeniedHandler {
+public class AppAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
   private final ObjectMapper objectMapper;
 
   @Override
-  public void handle(
+  public void commence(
       HttpServletRequest request,
       HttpServletResponse response,
-      AccessDeniedException accessDeniedException)
+      AuthenticationException authException)
       throws IOException {
-    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     response.setContentType("application/json");
 
     ErrorObject error =
         new ErrorObject(
-            HttpServletResponse.SC_FORBIDDEN,
-            List.of("Insufficient permission to perform this action."),
-            new Date());
+            HttpServletResponse.SC_UNAUTHORIZED, List.of("Session expired."), new Date());
 
     String json = objectMapper.writeValueAsString(error);
     response.getWriter().write(json);

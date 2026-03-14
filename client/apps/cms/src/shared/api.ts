@@ -34,14 +34,6 @@ export const api = {
     const response = await fetch(url, config);
 
     if (!response.ok) {
-      if (response.status === 401) {
-        throw {
-          statusCode: 401,
-          messages: ['Authentication required. Please log in.'],
-          timestamp: new Date().toISOString(),
-        } satisfies ErrorObject;
-      }
-
       const errorData = await response.json();
       throw {
         statusCode: response.status,
