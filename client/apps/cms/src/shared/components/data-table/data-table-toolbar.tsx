@@ -114,6 +114,7 @@ function SortingOptions<TData>({ table }: { table: Table<TData> }) {
           placeholder="Select column"
           size="xs"
           items={items}
+          aria-label="Sort by column"
           selectedKey={sortingState.id}
           onSelectionChange={(key) => table.setSorting([{ ...sortingState, id: key as string }])}
         >
@@ -148,6 +149,7 @@ function ColumnVisibilityPills<TData>({ table }: { table: Table<TData> }) {
 
           return (
             <Button
+              key={name}
               size="xs"
               variant="flat"
               data-active={c.getIsVisible() || undefined}

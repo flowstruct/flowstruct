@@ -15,26 +15,10 @@ import { Role } from '@/features/user/domain/user';
 import { Popover } from '@/shared/components/ui/Popover';
 import { getUserInitials } from '@/features/user/domain/getUserInitials';
 import { useMatches, useNavigate } from '@tanstack/react-router';
-import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { userQueries } from '@/features/user/queries';
 import { userApi } from '@/features/user/api';
-import React from 'react';
-
-class AuthErrorBoundary extends React.Component<
-  { children: React.ReactNode },
-  { hasError: boolean }
-> {
-  state = { hasError: false };
-
-  static getDerivedStateFromError() {
-    return { hasError: true };
-  }
-
-  render() {
-    if (this.state.hasError) return null;
-    return this.props.children;
-  }
-}
+import { ProgressCircle } from '@/shared/components/ui/ProgressCircle';
 
 const sidebarSections = [
   {
@@ -152,7 +136,7 @@ export function Sidebar() {
 }
 
 export function UserProfile() {
-  const { data: me } = useQuery(userQueries.me);
+  const { data: me } = useSuspenseQuery(userQueries.me);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const logout = useMutation({
@@ -165,8 +149,6 @@ export function UserProfile() {
       invalidate: false,
     },
   });
-
-  if (!me) return null;
 
   return (
     <MenuTrigger>
@@ -182,7 +164,11 @@ export function UserProfile() {
           </div>
         </div>
 
-        <ChevronsUpDown className={styles.userProfileChevron} size={15} />
+        {logout.isPending ? (
+          <ProgressCircle className={styles.userProfileChevron} isIndeterminate />
+        ) : (
+          <ChevronsUpDown className={styles.userProfileChevron} size={15} />
+        )}
       </UnstyledButton>
 
       <Popover hideArrow>

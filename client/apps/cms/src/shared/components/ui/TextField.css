@@ -1,81 +1,90 @@
-@import "./theme.css";
+@import './theme.css';
 
 .react-aria-TextField {
+  display: flex;
+  flex-direction: column;
+  color: var(--text-color-base);
+  font-size: var(--font-size-sm);
+  height: fit-content;
+
+  .react-aria-Label {
+    font-size: var(--font-size-xs);
+    margin-bottom: var(--space-1);
+  }
+
+  .react-aria-Group {
     display: flex;
-    flex-direction: column;
-    color: var(--text-color-base);
-    font-size: var(--font-size-sm);
-    height: fit-content;
+    align-items: center;
 
-    .react-aria-Label {
-        font-size: var(--font-size-xs);
-        margin-bottom: var(--space-1);
+    > svg {
+      color: var(--text-color-secondary);
     }
 
+    .react-aria-Input {
+      all: unset;
+      width: 100%;
+
+      &::placeholder {
+        color: var(--text-color-dimmed);
+      }
+    }
+  }
+
+  &[data-variant='default'] {
     .react-aria-Group {
-        display: flex;
-        gap: var(--space-2);
-        align-items: center;
+      background: var(--primary-contrast);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-1);
 
-        > svg {
-            color: var(--text-color-secondary);
-        }
+      > svg {
+        margin-left: var(--space-2);
+      }
 
-        .react-aria-Input {
-            all: unset;
-            width: 100%;
+      &[data-focus-within] {
+        outline: 2px solid var(--focus-ring-color);
+        outline-offset: -1px;
+      }
 
-            &::placeholder {
-                color: var(--text-color-dimmed);
-            }
-        }
+      .react-aria-Input {
+        padding: var(--space-1) var(--space-2);
+      }
     }
+  }
 
-    &[data-variant=default] {
-        .react-aria-Group {
-            padding: var(--space-1) var(--space-2);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-1);
-
-            &[data-focus-within] {
-                outline: 2px solid var(--focus-ring-color);
-                outline-offset: -1px;
-            }
-        }
+  &[data-variant='transparent'] {
+    .react-aria-Group {
+      > svg {
+        margin-right: var(--space-2);
+      }
+      .react-aria-Input {
+        all: unset;
+        flex: 1;
+        color: var(--text-color-secondary);
+      }
     }
+  }
 
-    &[data-variant=transparent] {
-        .react-aria-Group {
-            .react-aria-Input {
-                all: unset;
-                flex: 1;
-                color: var(--text-color-secondary);
-            }
-        }
+  .react-aria-Input,
+  .react-aria-TextArea {
+    &[data-invalid] {
+      border-color: var(--invalid-color);
     }
+  }
 
+  .react-aria-FieldError {
+    font-size: var(--font-size-xs);
+    color: var(--invalid-color);
+  }
 
-    .react-aria-Input,
-    .react-aria-TextArea {
-        &[data-invalid] {
-            border-color: var(--invalid-color);
-        }
+  [slot='description'] {
+    font-size: var(--font-size-xs);
+  }
+
+  .react-aria-Input,
+  .react-aria-TextArea {
+    &[data-disabled] {
+      border-color: var(--border-color-disabled);
+      color: var(--text-color-disabled);
     }
-
-    .react-aria-FieldError {
-        font-size: var(--font-size-xs);
-        color: var(--invalid-color);
-    }
-
-    [slot=description] {
-        font-size: var(--font-size-xs);
-    }
-
-    .react-aria-Input,
-    .react-aria-TextArea {
-        &[data-disabled] {
-            border-color: var(--border-color-disabled);
-            color: var(--text-color-disabled);
-        }
-    }
+  }
 }
