@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/users/me")
 public class MyController {
+
   private final MyService myService;
+
   private final CookieService cookieService;
 
   @GetMapping

@@ -12,8 +12,6 @@ export default defineConfig({
     },
   },
 
-  base: '/cms/',
-
   server: {
     host: '0.0.0.0',
     strictPort: true,

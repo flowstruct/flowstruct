@@ -15,8 +15,9 @@ import { Role } from '@/features/user/domain/user';
 import { Popover } from '@/shared/components/ui/Popover';
 import { getUserInitials } from '@/features/user/domain/getUserInitials';
 import { useMatches, useNavigate } from '@tanstack/react-router';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { userQueries } from '@/features/user/queries';
+import { userApi } from '@/features/user/api';
 
 const sidebarSections = [
   {
@@ -135,6 +136,15 @@ export function Sidebar() {
 
 export function UserProfile() {
   const { data: me } = useSuspenseQuery(userQueries.me);
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const logout = useMutation({
+    mutationFn: userApi.logout,
+    onSuccess: () => {
+      queryClient.clear();
+      navigate({ to: '/' });
+    },
+  });
 
   return (
     <MenuTrigger>
@@ -160,7 +170,7 @@ export function UserProfile() {
             <span>Settings</span>
           </MenuItem>
 
-          <MenuItem textValue="Settings">
+          <MenuItem onPress={() => logout.mutate()} textValue="Settings">
             <LogOut size={14} />
             <span>Log out</span>
           </MenuItem>
