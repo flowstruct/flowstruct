@@ -18,7 +18,6 @@ type DragHandlers = {
 
 type PlacementMoveContextType = {
   dragHandlers: DragHandlers;
-  isDisabled: (courseId: number) => boolean;
   allowedTerms: Set<number>;
 };
 
@@ -81,16 +80,6 @@ function PlacementMoveProvider({ children }: { children: ReactNode }) {
       flowsheet.terms
     );
   }, [state.moving, coursesGraph, flowsheet]);
-
-  const isDisabled = (courseId: number) => {
-    const termAndPlacement = flowsheet.termAndPlacementByCourse[courseId];
-    const term = termAndPlacement.term;
-
-    if (!termAndPlacement) return true;
-    if (!allowedTerms.has(term.id)) return true;
-
-    return false;
-  };
 
   const clearAllIndicators = useCallback(() => {
     const indicators = document.querySelectorAll(`.${classes.dropIndicator}`);
@@ -212,7 +201,7 @@ function PlacementMoveProvider({ children }: { children: ReactNode }) {
   );
 
   return (
-    <PlacementMoveContext.Provider value={{ dragHandlers, isDisabled, allowedTerms }}>
+    <PlacementMoveContext.Provider value={{ dragHandlers, allowedTerms }}>
       {children}
     </PlacementMoveContext.Provider>
   );

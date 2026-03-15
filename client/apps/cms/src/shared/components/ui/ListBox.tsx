@@ -30,5 +30,5 @@ export function ListEmptyState({
 }: {
   children?: React.ReactNode | string;
 }) {
-  return <p className="my-ListBox-empty-state">{children}</p>;
+  return <div className="my-ListBox-empty-state">{children}</div>;
 }

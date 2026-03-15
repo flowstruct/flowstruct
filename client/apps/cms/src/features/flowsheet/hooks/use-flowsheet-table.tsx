@@ -40,17 +40,13 @@ import { useDisclosure } from '@/shared/hooks/use-disclosure';
 import {
   FormModal,
   FormModalBody,
-  FormModalContent,
   FormModalFooter,
   FormModalHeader,
   FormModalSubmit,
-  useFormModalContext,
 } from '@/shared/components/form-modal';
-import {
-  FlowsheetFormFields,
-  NavigateToFlowsheetSwitch,
-} from '@/features/flowsheet/components/create-flowsheet-modal/create-flowsheet-modal';
+import { FlowsheetFormFields } from '@/features/flowsheet/components/create-flowsheet-modal/create-flowsheet-modal';
 import { Breadcrumb, Breadcrumbs } from '@/shared/components/ui/breadcrumbs';
+import { Switch } from '@/shared/components/ui/Switch';
 
 interface UseFlowsheetTableProps {
   flowsheets: FlowsheetSummary[];
@@ -178,9 +174,14 @@ type ActionsMenuProps = {
 function ActionsMenu({ flowsheet }: ActionsMenuProps) {
   const { data: users } = useSuspenseQuery(userQueries.collection);
   const editedBy = users.map[flowsheet.updatedBy];
-  const programFormState = useDisclosure();
   const { hasPermission } = usePermission();
   const isArchived = flowsheet.archivedAt != null;
+
+  const [navigateAfter, setNavigateAfter] = React.useState(true);
+  const [cloneOpen, setCloneOpen] = React.useState(false);
+  const navigate = useNavigate();
+
+  const programFormState = useDisclosure();
 
   const cloneFlowsheet = useMutation({
     mutationFn: (data: Partial<Flowsheet>) =>
@@ -201,48 +202,25 @@ function ActionsMenu({ flowsheet }: ActionsMenuProps) {
   const isPending = archive.isPending || unarchive.isPending;
 
   return (
-    <FormModal
-      onSubmit={(data) => {
-        if (programFormState.isOpen) return;
-        return cloneFlowsheet.mutateAsync(data as Partial<Flowsheet>) as Promise<{
-          id: number;
-        }>;
-      }}
-      isPending={cloneFlowsheet.isPending}
-    >
-      <MenuTrigger>
-        <Button shape="icon" variant="ghost" isPending={isPending}>
-          <Ellipsis size={15} />
-        </Button>
-
-        <Popover hideArrow placement="bottom right" crossOffset={25}>
-          <Menu width={200}>
-            <CloneMenuItem />
-
-            {typeof hasPermission === 'function' &&
-              hasPermission('study-plans:archive') &&
-              (isArchived ? (
-                <MenuItem onAction={() => unarchive.mutate()}>
-                  <ArchiveRestore size={14} /> Unarchive
-                </MenuItem>
-              ) : (
-                <MenuItem onAction={() => archive.mutate()}>
-                  <Archive size={14} /> Archive
-                </MenuItem>
-              ))}
-          </Menu>
-
-          <section className={styles.userActivity}>
-            <p>Edited {formatTimeAgo(new Date(flowsheet.updatedAt))}</p>
-            <div className={styles.userActivityUser}>
-              <User size={12} />
-              <p>{editedBy?.username ?? 'Unknown user'}</p>
-            </div>
-          </section>
-        </Popover>
-      </MenuTrigger>
-
-      <FormModalContent>
+    <>
+      <FormModal
+        open={cloneOpen}
+        onOpenChange={setCloneOpen}
+        onSubmit={(data) => {
+          if (programFormState.isOpen) return;
+          return cloneFlowsheet.mutateAsync(data as Partial<Flowsheet>) as Promise<{
+            id: number;
+          }>;
+        }}
+        onSuccess={(result) => {
+          if (navigateAfter) {
+            navigate({
+              to: '/flowsheets/$flowsheetId',
+              params: { flowsheetId: String(result.id) },
+            });
+          }
+        }}
+      >
         <FormModalBody>
           <FormModalHeader>
             <Breadcrumbs>
@@ -267,22 +245,49 @@ function ActionsMenu({ flowsheet }: ActionsMenuProps) {
         </FormModalBody>
 
         <FormModalFooter>
-          <NavigateToFlowsheetSwitch />
-          <FormModalSubmit>
-            <SquarePlus size={15} /> Clone flowsheet
+          <Switch isSelected={navigateAfter} onChange={setNavigateAfter}>
+            Open after creating
+          </Switch>
+
+          <FormModalSubmit isPending={cloneFlowsheet.isPending}>
+            <SquarePlus size={15} /> Clone
           </FormModalSubmit>
         </FormModalFooter>
-      </FormModalContent>
-    </FormModal>
-  );
-}
+      </FormModal>
 
-function CloneMenuItem() {
-  const { open } = useFormModalContext();
+      <MenuTrigger>
+        <Button shape="icon" variant="ghost" isPending={isPending}>
+          <Ellipsis size={15} />
+        </Button>
 
-  return (
-    <MenuItem onAction={open}>
-      <SquarePlus size={14} /> Clone
-    </MenuItem>
+        <Popover hideArrow placement="bottom right" crossOffset={25}>
+          <Menu width={200}>
+            <MenuItem onAction={() => setCloneOpen(true)}>
+              <SquarePlus size={14} /> Clone
+            </MenuItem>
+
+            {typeof hasPermission === 'function' &&
+              hasPermission('study-plans:archive') &&
+              (isArchived ? (
+                <MenuItem onAction={() => unarchive.mutate()}>
+                  <ArchiveRestore size={14} /> Unarchive
+                </MenuItem>
+              ) : (
+                <MenuItem onAction={() => archive.mutate()}>
+                  <Archive size={14} /> Archive
+                </MenuItem>
+              ))}
+          </Menu>
+
+          <section className={styles.userActivity}>
+            <p>Edited {formatTimeAgo(new Date(flowsheet.updatedAt))}</p>
+            <div className={styles.userActivityUser}>
+              <User size={12} />
+              <p>{editedBy?.username ?? 'Unknown user'}</p>
+            </div>
+          </section>
+        </Popover>
+      </MenuTrigger>
+    </>
   );
 }

@@ -1,6 +1,5 @@
 import { NumberField } from '@/shared/components/ui/NumberField';
 import { useMutation } from '@tanstack/react-query';
-import React from 'react';
 import { Button } from '@/shared/components/ui/Button';
 import { CalendarDays, Grid2X2, Layers2, Plus, Tag } from 'lucide-react';
 import styles from './create-flowsheet-modal.module.css';
@@ -9,20 +8,20 @@ import { TextField } from '@/shared/components/ui/TextField';
 import { Switch } from '@/shared/components/ui/Switch';
 import { Tooltip, TooltipTrigger } from '@/shared/components/ui/Tooltip';
 import { flowsheetApi } from '@/features/flowsheet/api';
-import { useNavigate } from '@tanstack/react-router';
 import { useDisclosure } from '@/shared/hooks/use-disclosure';
 import { ProgramComboBox } from '@/features/flowsheet/components/create-flowsheet-modal/program-combobox';
 import {
   FormModal,
   FormModalBody,
-  FormModalContent,
   FormModalFooter,
   FormModalHeader,
   FormModalSubmit,
-  useFormModalContext,
+  FormModalTrigger,
 } from '@/shared/components/form-modal';
 import { Flowsheet } from '@/features/flowsheet/domain/flowsheet';
 import { DisclosureState } from '@/shared/types';
+import React from 'react';
+import { useNavigate } from '@tanstack/react-router';
 
 type FlowsheetFormFieldsProps = {
   programFormState: DisclosureState;
@@ -69,24 +68,9 @@ export function FlowsheetFormFields({ programFormState, defaultValues }: Flowshe
   );
 }
 
-export function NavigateToFlowsheetSwitch() {
-  const { registerOnSuccess } = useFormModalContext();
-  const [navigateAfter, setNavigateAfter] = React.useState(true);
-  const navigate = useNavigate();
-
-  React.useEffect(() => {
-    registerOnSuccess((result) => {
-      if (navigateAfter) {
-        navigate({
-          to: '/flowsheets/$flowsheetId',
-          params: { flowsheetId: String(result.id) },
-        });
-      }
-    });
-  }, [navigateAfter, registerOnSuccess, navigate]);
-
+export function NavigateToFlowsheetSwitch({ value, onChange }) {
   return (
-    <Switch isSelected={navigateAfter} onChange={setNavigateAfter}>
+    <Switch isSelected={value} onChange={onChange}>
       Open after creating
     </Switch>
   );
@@ -94,6 +78,8 @@ export function NavigateToFlowsheetSwitch() {
 
 export function CreateFlowsheetModal() {
   const programFormState = useDisclosure();
+  const [navigateAfter, setNavigateAfter] = React.useState(true);
+  const navigate = useNavigate();
 
   const createFlowsheet = useMutation({
     mutationFn: flowsheetApi.createFlowsheet,
@@ -108,48 +94,44 @@ export function CreateFlowsheetModal() {
           id: number;
         }>;
       }}
-      isPending={createFlowsheet.isPending}
+      onSuccess={(result) => {
+        if (navigateAfter) {
+          navigate({ to: '/flowsheets/$flowsheetId', params: { flowsheetId: String(result.id) } });
+        }
+      }}
     >
-      <CreateFlowsheetButton />
+      <FormModalTrigger triggerProp="onPress">
+        <TooltipTrigger>
+          <Tooltip>New</Tooltip>
+          <Button size="sm" variant="transparent">
+            <Plus size={15} />
+          </Button>
+        </TooltipTrigger>
+      </FormModalTrigger>
 
-      <FormModalContent>
-        <FormModalBody>
-          <FormModalHeader>
-            <Breadcrumbs>
-              <Breadcrumb base>
-                <Layers2 size={15} /> Flowsheets
-              </Breadcrumb>
+      <FormModalBody>
+        <FormModalHeader>
+          <Breadcrumbs>
+            <Breadcrumb base>
+              <Layers2 size={15} /> Flowsheets
+            </Breadcrumb>
 
-              <Breadcrumb>
-                <Grid2X2 size={15} color="teal" /> New flowsheet
-              </Breadcrumb>
-            </Breadcrumbs>
-          </FormModalHeader>
+            <Breadcrumb>
+              <Grid2X2 size={15} color="teal" /> New flowsheet
+            </Breadcrumb>
+          </Breadcrumbs>
+        </FormModalHeader>
 
-          <FlowsheetFormFields programFormState={programFormState} />
-        </FormModalBody>
+        <FlowsheetFormFields programFormState={programFormState} />
+      </FormModalBody>
 
-        <FormModalFooter>
-          <NavigateToFlowsheetSwitch />
-          <FormModalSubmit>
-            <Grid2X2 size={15} /> Create flowsheet
-          </FormModalSubmit>
-        </FormModalFooter>
-      </FormModalContent>
+      <FormModalFooter>
+        <NavigateToFlowsheetSwitch value={navigateAfter} onChange={setNavigateAfter} />
+
+        <FormModalSubmit isPending={createFlowsheet.isPending}>
+          <Grid2X2 size={15} /> Create
+        </FormModalSubmit>
+      </FormModalFooter>
     </FormModal>
-  );
-}
-
-function CreateFlowsheetButton() {
-  const { open } = useFormModalContext();
-
-  return (
-    <TooltipTrigger>
-      <Button onPress={open} size="sm" variant="transparent">
-        <Plus size={15} />
-      </Button>
-
-      <Tooltip>New</Tooltip>
-    </TooltipTrigger>
   );
 }
