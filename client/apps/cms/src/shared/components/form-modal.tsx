@@ -11,6 +11,7 @@ type FormModalContextValue = {
   isOpen: boolean;
   open: () => void;
   close: () => void;
+  _setIntendedSubmit: (val: boolean) => void;
 };
 
 const FormModalContext = React.createContext<FormModalContextValue | undefined>(undefined);
@@ -39,6 +40,7 @@ export function FormModal({
   children,
 }: FormModalProps) {
   const [internalOpen, setInternalOpen] = React.useState(false);
+  const intendedSubmitRef = React.useRef(false); // ← ref, not state
 
   const isControlled = controlledOpen !== undefined;
   const isOpen = isControlled ? controlledOpen : internalOpen;
@@ -52,15 +54,37 @@ export function FormModal({
   }, [isControlled, onOpenChange]);
 
   const onFormSubmit = handleSubmit(async (formData) => {
+    if (!intendedSubmitRef.current) return; // ← always reads the latest value
+    intendedSubmitRef.current = false;
     const result = await onSubmit(formData);
     close();
     onSuccess?.(result);
   });
 
+  const childArray = React.Children.toArray(children);
+
+  const trigger = childArray.find(
+    (child) => React.isValidElement(child) && child.type === FormModalTrigger
+  );
+
+  const modalChildren = childArray.filter(
+    (child) => !(React.isValidElement(child) && child.type === FormModalTrigger)
+  );
+
   return (
-    <FormModalContext.Provider value={{ isOpen, open, close }}>
+    <FormModalContext.Provider
+      value={{
+        isOpen,
+        open,
+        close,
+        _setIntendedSubmit: (val) => {
+          intendedSubmitRef.current = val;
+        },
+      }}
+    >
+      {trigger}
       <Modal isOpen={isOpen} onOpenChange={(val) => (val ? open() : close())} size={size}>
-        <Form onSubmit={onFormSubmit}>{children}</Form>
+        <Form onSubmit={onFormSubmit}>{modalChildren}</Form>
       </Modal>
     </FormModalContext.Provider>
   );
@@ -107,8 +131,14 @@ type FormModalSubmitProps = {
 };
 
 export function FormModalSubmit({ isPending, children }: FormModalSubmitProps) {
+  const { _setIntendedSubmit } = useFormModalContext();
   return (
-    <Button isPending={isPending} variant="primary" type="submit">
+    <Button
+      isPending={isPending}
+      variant="primary"
+      type="submit"
+      onPress={() => _setIntendedSubmit(true)}
+    >
       {children}
     </Button>
   );

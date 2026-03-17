@@ -27,7 +27,9 @@ export function CreateProgramForm({
     mutationFn: programApi.createProgram,
   });
 
-  const onSubmit = handleSubmit((formData) => {
+  const onSubmit = handleSubmit((formData, e) => {
+    e.stopPropagation();
+
     createProgram.mutate(formData, {
       onSuccess: (data) => {
         if (selectProgram) {

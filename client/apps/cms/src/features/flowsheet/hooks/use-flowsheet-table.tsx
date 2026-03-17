@@ -43,6 +43,7 @@ import {
   FormModalFooter,
   FormModalHeader,
   FormModalSubmit,
+  FormModalTrigger,
 } from '@/shared/components/form-modal';
 import { FlowsheetFormFields } from '@/features/flowsheet/components/create-flowsheet-modal/create-flowsheet-modal';
 import { Breadcrumb, Breadcrumbs } from '@/shared/components/ui/breadcrumbs';
@@ -254,7 +255,6 @@ function ActionsMenu({ flowsheet }: ActionsMenuProps) {
           </FormModalSubmit>
         </FormModalFooter>
       </FormModal>
-
       <MenuTrigger>
         <Button shape="icon" variant="ghost" isPending={isPending}>
           <Ellipsis size={15} />

@@ -6,7 +6,6 @@ import styles from './create-flowsheet-modal.module.css';
 import { Breadcrumb, Breadcrumbs } from '@/shared/components/ui/breadcrumbs';
 import { TextField } from '@/shared/components/ui/TextField';
 import { Switch } from '@/shared/components/ui/Switch';
-import { Tooltip, TooltipTrigger } from '@/shared/components/ui/Tooltip';
 import { flowsheetApi } from '@/features/flowsheet/api';
 import { useDisclosure } from '@/shared/hooks/use-disclosure';
 import { ProgramComboBox } from '@/features/flowsheet/components/create-flowsheet-modal/program-combobox';
@@ -100,13 +99,10 @@ export function CreateFlowsheetModal() {
         }
       }}
     >
-      <FormModalTrigger triggerProp="onPress">
-        <TooltipTrigger>
-          <Tooltip>New</Tooltip>
-          <Button size="sm" variant="transparent">
-            <Plus size={15} />
-          </Button>
-        </TooltipTrigger>
+      <FormModalTrigger>
+        <Button size="sm" variant="transparent">
+          <Plus size={15} />
+        </Button>
       </FormModalTrigger>
 
       <FormModalBody>

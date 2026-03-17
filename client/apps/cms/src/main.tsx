@@ -81,11 +81,6 @@ const queryClient = new QueryClient({
     onError: (error, _variables, _context, mutation) => {
       const errorObject = error as unknown as ErrorObject;
 
-      if (errorObject.statusCode === 401) {
-        handleAuthError();
-        return;
-      }
-
       queryClient.invalidateQueries();
 
       const loadingNotification = mutation.meta?.successMessage;
