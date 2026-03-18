@@ -40,6 +40,12 @@ public class CourseController {
     return new ResponseEntity<>(courseService.getCourseList(courseIds), HttpStatus.OK);
   }
 
+  @GetMapping("/list/detailed")
+  public ResponseEntity<List<CourseDto>> getCourseListDetailed(
+      @RequestParam(value = "courses", defaultValue = "") List<Long> courseIds) {
+    return new ResponseEntity<>(courseService.getCourseListDetailed(courseIds), HttpStatus.OK);
+  }
+
   @GetMapping("/{courseId}")
   public ResponseEntity<CourseDto> getCourse(@PathVariable long courseId) {
     return new ResponseEntity<>(courseService.getCourse(courseId), HttpStatus.OK);

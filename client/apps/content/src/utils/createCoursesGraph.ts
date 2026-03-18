@@ -83,7 +83,7 @@ function traversePostrequisites(
   visited.add(course);
 }
 
-export function createCoursesGraph(flowsheet: Flowsheet): Map<number, Requisites> {
+export function buildCoursesGraph(flowsheet: Flowsheet): Map<number, Requisites> {
   const courses = flowsheet.terms.flatMap((t) => t.placements.map((p) => p.course));
 
   const prerequisitesByCourse = Map.groupBy(flowsheet.coursePrerequisites, (cp) => cp.course);

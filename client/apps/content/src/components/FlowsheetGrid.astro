@@ -5,6 +5,7 @@ import CourseFilter from './CourseFilter.astro';
 import { api } from '../utils/api';
 import CourseCard from './CourseCard.astro';
 import { buildCoursesGraph } from '../utils/createCoursesGraph';
+import { TERM_NAMES } from '../types';
 
 interface Props {
   flowsheet: Flowsheet;
@@ -12,116 +13,58 @@ interface Props {
 
 const { flowsheet } = Astro.props;
 
+const terms = flowsheet.terms.filter(t => t.placements.length > 0);
+
+const courseIds = terms.flatMap(t => t.placements.map(p => p.course));
+const courses = await api<Course[]>(`/courses/list/detailed?courses=${courseIds}`);
+const coursesLookup = Object.fromEntries(courses.map(c => [c.id, c])) as Record<number, Course>;
+
 const coursesGraph = buildCoursesGraph(flowsheet);
-
-const courses = await api<Record<number, Course>>(
-  `/flowsheets/${flowsheet.id}/courses/detailed`,
-);
-
-const nonEmptyTerms = flowsheet.terms.filter(t => t.placements.length > 0);
-
-const gridHeight = nonEmptyTerms.reduce((max, term) =>
-  term.placements.reduce((m, p) => Math.max(m, p.position + p.span - 1), max), 0,
-);
-
-type YearBucket = { yearIndex: number; terms: typeof nonEmptyTerms };
-
-const yearBuckets: YearBucket[] = Array.from(
-  nonEmptyTerms.reduce((acc, term) => {
-    const yearIndex = Math.floor((term.termNumber - 1) / 3);
-    if (!acc.has(yearIndex)) acc.set(yearIndex, []);
-    acc.get(yearIndex)!.push(term);
-    return acc;
-  }, new Map<number, typeof nonEmptyTerms>()),
-).map(([yearIndex, terms]) => ({ yearIndex, terms }));
-
-const totalCreditsByTermId = new Map<number, number>();
-nonEmptyTerms.forEach(term => {
-  const sum = term.placements.reduce(
-    (acc, p) => acc + (courses[p.course]?.creditHours ?? 0), 0,
-  );
-  totalCreditsByTermId.set(term.id, sum);
-});
 ---
 
 <div class="space-y-2 relative">
   <CourseFilter sections={flowsheet.sections} />
-
   <NavigationControls />
 
   <div class="relative flex justify-center">
-    <div
-      id="left-hidden-gradient"
-      class="pointer-events-none absolute left-0 z-20 w-8 sm:w-5 h-full bg-gradient-to-r from-white"
-    />
-    <div
-      id="right-hidden-gradient"
-      class="pointer-events-none absolute right-0 z-20 w-8 sm:w-5 h-full bg-gradient-to-l from-white"
-    />
+    <div id="left-hidden-gradient" class="pointer-events-none absolute left-0 z-20 w-8 sm:w-5 h-full bg-gradient-to-r from-white" />
+    <div id="right-hidden-gradient" class="pointer-events-none absolute right-0 z-20 w-8 sm:w-5 h-full bg-gradient-to-l from-white" />
 
     <div class="overflow-auto w-fit px-0.5" id="courses-grid">
-
-      <!-- Year / term header -->
       <div
-        class="grid grid-rows-2 gap-2"
-        style={{ gridTemplateColumns: `repeat(${nonEmptyTerms.length}, auto)` }}
+        class="grid gap-2"
+        style={{ gridTemplateColumns: `repeat(${terms.length}, auto)` }}
       >
-        {yearBuckets.map(({ yearIndex, terms }) => {
-          const year = flowsheet.year + yearIndex;
-          return (
-            <div
-              class="text-xs opacity-60 row-start-1 text-center select-none whitespace-nowrap"
-              style={{ gridColumn: `span ${terms.length}` }}
-            >
-              {year} / {year + 1}
+        {terms.map((term, colIdx) => (
+          <div class="flex flex-col gap-2" style={{ gridColumn: colIdx + 1 }}>
+            <div class="w-[8rem] lg:w-40 text-xs opacity-60 text-center select-none whitespace-nowrap">
+              {TERM_NAMES[(term.termNumber - 1) % 3]} —{' '}
+              {term.placements.reduce((sum, p) => sum + (coursesLookup[p.course]?.creditHours ?? 0), 0)} Cr.
             </div>
-          );
-        })}
 
-        {nonEmptyTerms.map(term => (
-          <div class="w-[8rem] lg:w-40 row-start-2 text-xs opacity-60 text-center select-none whitespace-nowrap">
-            {term.name} — {totalCreditsByTermId.get(term.id)} Cr.
+            {term.placements.map(placement => {
+              const course = coursesLookup[placement.course];
+              if (!course) return null;
+              const requisites = coursesGraph.get(course.id);
+
+              return (
+		<div class="min-h-[6.9rem] lg:min-h-[8.6rem] w-[8rem] lg:w-40">
+		  <CourseCard
+		    course={course}
+		    prerequisites={[...(requisites?.prerequisites ?? [])]}
+		    corequisites={[...(requisites?.corequisites ?? [])]}
+		    prerequisiteSequence={
+		      [...(requisites?.prerequisiteSequence ?? [])].filter(
+			id => !requisites?.prerequisites.has(id),
+		      )
+		    }
+		    postrequisiteSequence={[...(requisites?.postrequisiteSequence ?? [])]}
+		  />
+		</div>
+              );
+            })}
           </div>
         ))}
-      </div>
-
-      <!-- Courses grid -->
-      <div
-        class="mt-2 grid gap-2"
-        style={{
-          gridTemplateColumns: `repeat(${nonEmptyTerms.length}, auto)`,
-          gridTemplateRows: `repeat(${gridHeight}, auto)`,
-        }}
-      >
-        {nonEmptyTerms.map((term, colIdx) =>
-          term.placements.map(placement => {
-            const course = courses[placement.course];
-            if (!course) return null;
-            const requisites = coursesGraph.get(course.id);
-
-            return (
-              <div
-                class="min-h-[6.9rem] lg:min-h-[8.6rem] w-[8rem] lg:w-40"
-                style={{
-                  gridColumn: colIdx + 1,
-                  gridRow: `${placement.position} / span ${placement.span}`,
-                }}
-              >
-                <CourseCard
-                  course={course}
-                  prerequisites={[...(requisites?.prerequisites ?? [])]}
-                  corequisites={[...(requisites?.corequisites ?? [])]}
-                  prerequisiteSequence={
-                    [...(requisites?.prerequisiteSequence ?? [])].filter(
-                      id => !requisites?.prerequisites.has(id),
-                    )
-                  }
-                  postrequisiteSequence={[...(requisites?.postrequisiteSequence ?? [])]}
-                />
-              </div>
-            );
-          })
-        )}
       </div>
     </div>
   </div>

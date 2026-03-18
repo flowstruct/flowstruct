@@ -11,9 +11,6 @@ import com.flowstruct.api.course.mapper.CourseSummaryDtoMapper;
 import com.flowstruct.api.course.mapper.CoursesPageResponseMapper;
 import com.flowstruct.api.course.repository.CourseRepository;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -80,10 +77,8 @@ public class CourseService {
     return courseRepository.findAllById(courseIds).stream().map(courseSummaryDtoMapper).toList();
   }
 
-  public Map<Long, CourseDto> getDetailedCourseList(List<Long> courseIds) {
-    return courseRepository.findAllById(courseIds).stream()
-        .map(courseDtoMapper)
-        .collect(Collectors.toMap(CourseDto::id, Function.identity()));
+  public List<CourseDto> getCourseListDetailed(List<Long> courseIds) {
+    return courseRepository.findAllById(courseIds).stream().map(courseDtoMapper).toList();
   }
 
   public CourseDto getCourse(long courseId) {

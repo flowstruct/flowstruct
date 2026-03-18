@@ -127,4 +127,10 @@ export const flowsheetApi = {
     api.delete<Flowsheet>([FLOWSHEET_ENDPOINT, flowsheetId, 'graph', courseId, 'corequisites'], {
       params: { corequisiteIds },
     }),
+
+  approveChanges: (flowsheetId: number) =>
+    api.put<Flowsheet>([FLOWSHEET_ENDPOINT, flowsheetId, 'approve-changes']),
+
+  discardChanges: (flowsheetId: number) =>
+    api.put<Flowsheet>([FLOWSHEET_ENDPOINT, flowsheetId, 'discard-changes']),
 };

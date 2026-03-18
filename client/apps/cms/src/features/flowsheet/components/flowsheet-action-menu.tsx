@@ -27,6 +27,8 @@ import {
   ArchiveRestore,
   Archive,
   User,
+  CircleCheck,
+  CircleX,
 } from 'lucide-react';
 import React from 'react';
 import styles from './flowsheet-action-menu.module.css';
@@ -63,7 +65,26 @@ export function ActionsMenu({ flowsheet }: ActionsMenuProps) {
     meta: { successMessage: 'Flowsheet unarchived.' },
   });
 
-  const isPending = archive.isPending || unarchive.isPending;
+  const approveChanges = useMutation({
+    mutationFn: () => flowsheetApi.approveChanges(flowsheet.id),
+    meta: { successMessage: 'Changes approved.' },
+  });
+
+  const discardChanges = useMutation({
+    mutationFn: () => flowsheetApi.discardChanges(flowsheet.id),
+    meta: { successMessage: 'Changes discarded.' },
+  });
+
+  const isPending =
+    archive.isPending ||
+    unarchive.isPending ||
+    approveChanges.isPending ||
+    discardChanges.isPending;
+
+  const canApprove =
+    typeof hasPermission === 'function' &&
+    hasPermission('study-plans:approve') &&
+    flowsheet.status !== 'APPROVED';
 
   return (
     <>
@@ -118,6 +139,7 @@ export function ActionsMenu({ flowsheet }: ActionsMenuProps) {
           </FormModalSubmit>
         </FormModalFooter>
       </FormModal>
+
       <MenuTrigger>
         <Button shape="icon" variant="ghost" isPending={isPending}>
           <Ellipsis size={15} />
@@ -128,6 +150,18 @@ export function ActionsMenu({ flowsheet }: ActionsMenuProps) {
             <MenuItem onAction={() => setCloneOpen(true)}>
               <SquarePlus size={14} /> Clone
             </MenuItem>
+
+            {canApprove && (
+              <MenuItem onAction={() => approveChanges.mutate()}>
+                <CircleCheck size={14} /> Approve changes
+              </MenuItem>
+            )}
+
+            {canApprove && flowsheet.status !== 'NEW' && (
+              <MenuItem onAction={() => discardChanges.mutate()}>
+                <CircleX size={14} /> Discard changes
+              </MenuItem>
+            )}
 
             {typeof hasPermission === 'function' &&
               hasPermission('study-plans:archive') &&

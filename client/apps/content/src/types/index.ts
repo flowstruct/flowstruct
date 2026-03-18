@@ -22,7 +22,7 @@ export type Section = {
   courses: number[];
 };
 
-export const TERM_NAMES = ['First Semester', 'Second Semester', 'Summer Semester'] as const;
+export const TERM_NAMES = ['First', 'Second', 'Summer'] as const;
 
 export type Term = {
   id: number;
@@ -58,7 +58,7 @@ export type Flowsheet = {
   updatedBy: number;
 };
 
-export type FlowsheetSummary = Pick
+export type FlowsheetSummary = Pick<
   Flowsheet,
   | 'id'
   | 'year'
@@ -73,7 +73,6 @@ export type FlowsheetSummary = Pick
 >;
 
 export type ArchiveStatus = 'all' | 'active' | 'archived';
-
 
 export const CourseType = {
   F2F: 'Face-to-Face',
@@ -106,7 +105,7 @@ export type CoursesPage = {
   isLastPage: boolean;
 };
 
-export type CourseSummary = Pick
+export type CourseSummary = Pick<
   Course,
   | 'id'
   | 'code'
