@@ -20,7 +20,7 @@ import { rankItem } from '@tanstack/match-sorter-utils';
 import styles from './use-flowsheet-table.module.css';
 import { useNavigate } from '@tanstack/react-router';
 import { FlowsheetStatusIcon } from '@/features/flowsheet/components/flowsheet-status-icon';
-import { ActionsMenu } from '@/features/flowsheet/components/flowsheet-action-menu';
+import { FlowsheetActionsMenu } from '@/features/flowsheet/components/flowsheet-action-menu';
 
 interface UseFlowsheetTableProps {
   flowsheets: FlowsheetSummary[];
@@ -107,7 +107,7 @@ export const useFlowsheetTable = ({ flowsheets }: UseFlowsheetTableProps) => {
         id: 'actions',
         cell: ({ row }) => (
           <div className={styles.actionsMenu}>
-            <ActionsMenu flowsheet={row.original} />
+            <FlowsheetActionsMenu flowsheet={row.original} />
           </div>
         ),
         enableHiding: false,

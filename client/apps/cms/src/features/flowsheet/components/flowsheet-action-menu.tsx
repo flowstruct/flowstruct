@@ -37,7 +37,7 @@ type ActionsMenuProps = {
   flowsheet: FlowsheetSummary;
 };
 
-export function ActionsMenu({ flowsheet }: ActionsMenuProps) {
+export function FlowsheetActionsMenu({ flowsheet }: ActionsMenuProps) {
   const { data: users } = useSuspenseQuery(userQueries.collection);
   const editedBy = users.map[flowsheet.updatedBy];
   const { hasPermission } = usePermission();
@@ -183,6 +183,12 @@ export function ActionsMenu({ flowsheet }: ActionsMenuProps) {
               <p>{editedBy?.username ?? 'Unknown user'}</p>
             </div>
           </section>
+
+          {flowsheet.status !== 'APPROVED' && (
+            <section className={styles.statusSection} data-status={flowsheet.status || undefined}>
+              <p>{flowsheet.status}</p>
+            </section>
+          )}
         </Popover>
       </MenuTrigger>
     </>

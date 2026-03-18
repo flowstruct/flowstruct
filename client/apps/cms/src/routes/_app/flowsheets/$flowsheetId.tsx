@@ -19,6 +19,7 @@ import { FlowsheetGridProvider } from '@/features/flowsheet/contexts/flowsheet-g
 import Group from '@/shared/components/layout/group';
 import { FlowsheetCoursesGraphProvider } from '@/features/flowsheet/contexts/courses-graph-context';
 import { PlacementMoveProvider } from '@/features/flowsheet/contexts/placement-move-context';
+import { FlowsheetActionsMenu } from '@/features/flowsheet/components/flowsheet-action-menu';
 
 export const Route = createFileRoute('/_app/flowsheets/$flowsheetId')({
   loader: ({ context: { queryClient }, params: { flowsheetId } }) => {
@@ -46,10 +47,13 @@ export const Route = createFileRoute('/_app/flowsheets/$flowsheetId')({
 });
 
 function RouteHeader() {
+  const { flowsheet } = useFlowsheetContext();
+
   return (
     <Header>
       <Group>
         <RouteBreadcrumbs />
+        <FlowsheetActionsMenu flowsheet={flowsheet} />
       </Group>
     </Header>
   );
