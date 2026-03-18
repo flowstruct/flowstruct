@@ -2,7 +2,7 @@ import { Role, User, UserAction } from '@/features/user/domain/user';
 
 export const RolePermissions: Record<keyof typeof Role, () => UserAction[]> = {
   GUEST: () => [] as const,
-  EDITOR: () => [] as const,
+  EDITOR: () => ['site-generator:manage'] as const,
   APPROVER: () =>
     [
       ...RolePermissions.GUEST(),

@@ -20,4 +20,5 @@ export type UserAction =
   | 'users:read'
   | 'study-plans:archive'
   | 'courses:mark-outdated'
-  | 'programs:mark-outdated';
+  | 'programs:mark-outdated'
+  | 'site-generator:manage';

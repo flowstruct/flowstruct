@@ -64,4 +64,36 @@ export const api = {
   delete<T>(endpointSegments: unknown[] | string, options?: Omit<RequestOptions, 'method'>) {
     return this.request<T>(endpointSegments, { ...options, method: 'DELETE' });
   },
+
+  async download(endpointSegments: unknown[] | string, options?: Omit<RequestOptions, 'method' | 'body'>): Promise<Blob> {
+    const endpoint = Array.isArray(endpointSegments)
+      ? endpointSegments.map((segment) => String(segment)).join('/')
+      : endpointSegments;
+
+    const { params = {}, headers = {} } = options || {};
+
+    const searchParams = new URLSearchParams();
+    Object.entries(params)?.forEach(([param, value]) => searchParams.append(param, String(value)));
+
+    const url = `/api${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}${searchParams.size ? `?${searchParams}` : ''}`;
+
+    const config: RequestInit = {
+      method: 'GET',
+      headers,
+      credentials: 'include',
+    };
+
+    const response = await fetch(url, config);
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw {
+        statusCode: response.status,
+        messages: errorData.messages || [errorData.message || 'Unknown error'],
+        timestamp: errorData.timestamp || new Date().toISOString(),
+      } satisfies ErrorObject;
+    }
+
+    return response.blob();
+  },
 };

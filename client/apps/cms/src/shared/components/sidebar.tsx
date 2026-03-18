@@ -1,7 +1,7 @@
 import styles from './sidebar.module.css';
 import { UnstyledButton } from '@/shared/components/ui/UnstyledButton';
 import { Menu, MenuItem, MenuTrigger } from '@/shared/components/ui/Menu';
-import { ChevronsUpDown, Crown, Layers2, LogOut, Pencil, Save, User } from 'lucide-react';
+import { ChevronsUpDown, Crown, Layers2, LogOut, Pencil, Save, User, FolderUp } from 'lucide-react';
 import { Role } from '@/features/user/domain/user';
 import { Popover } from '@/shared/components/ui/Popover';
 import { getUserInitials } from '@/features/user/domain/getUserInitials';
@@ -24,6 +24,11 @@ import { UserDetailsFormFields } from '@/features/user/components/user-details-f
 const sidebarSections = [
   {
     items: [
+      {
+        icon: FolderUp,
+        label: 'Site Generator',
+        route: '/site-generations',
+      },
       {
         icon: Layers2,
         label: 'Flowsheets',

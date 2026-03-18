@@ -1,0 +1,32 @@
+.statusIcon {
+  display: flex;
+  position: relative;
+  width: fit-content;
+  height: fit-content;
+}
+
+.pending {
+  color: var(--text-color-dimmed);
+}
+
+.running {
+  color: var(--primary-color);
+  animation: spin 1s linear infinite;
+}
+
+.completed {
+  color: green;
+}
+
+.failed {
+  color: red;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -125,12 +125,29 @@ CREATE TABLE course_corequisite
     FOREIGN KEY (corequisite) REFERENCES course (id)
 );
 
+CREATE TABLE site_generation
+(
+    id           SERIAL PRIMARY KEY,
+    status       VARCHAR(50) NOT NULL DEFAULT 'PENDING',
+    assets       BYTEA,
+    file_count   INT,
+    size_bytes   BIGINT,
+    error_message TEXT,
+    started_at   TIMESTAMP WITH TIME ZONE,
+    completed_at TIMESTAMP WITH TIME ZONE,
+    version      BIGINT NOT NULL DEFAULT (0),
+    created_at      TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT (NOW()),
+    created_by   INT,
+    FOREIGN KEY (created_by) REFERENCES "user" (id)
+);
+
 CREATE INDEX idx_section_flowsheet ON section (flowsheet);
 CREATE INDEX idx_term_flowsheet ON term (flowsheet);
 CREATE INDEX idx_placement_term ON placement (term);
 CREATE INDEX idx_section_course_section ON section_course (section);
 CREATE INDEX idx_course_prerequisite_flowsheet ON course_prerequisite (flowsheet);
 CREATE INDEX idx_course_corequisite_flowsheet ON course_corequisite (flowsheet);
+CREATE INDEX idx_site_generation_status ON site_generation (status);
 
 INSERT INTO "user" (username, email, role, password)
 VALUES ('flowstruct', 'admin@flowstruct.com', 'ADMIN', '$2a$12$Pny61LESAXFDjnkgczhJ8eIC3HbEnlQyvW8FQ5mpoJc5ODks1zG.i');

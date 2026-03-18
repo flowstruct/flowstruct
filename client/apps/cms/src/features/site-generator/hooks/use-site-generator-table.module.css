@@ -1,0 +1,29 @@
+.statusCell {
+  display: flex;
+  align-items: center;
+}
+
+.idCell {
+  font-weight: 500;
+  font-size: var(--font-size-sm);
+  color: var(--text-color-secondary);
+}
+
+.userCell {
+  font-size: var(--font-size-sm);
+}
+
+.emptyCell {
+  font-size: var(--font-size-sm);
+  color: var(--text-color-dimmed);
+}
+
+.dateCell {
+  font-size: var(--font-size-sm);
+  color: var(--text-color-secondary);
+}
+
+.actionsMenu {
+  display: flex;
+  justify-content: flex-end;
+}

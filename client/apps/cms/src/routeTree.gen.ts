@@ -13,6 +13,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppRouteRouteImport } from './routes/_app/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppFlowsheetsRouteRouteImport } from './routes/_app/flowsheets/route'
+import { Route as AppSiteGenerationsIndexRouteImport } from './routes/_app/site-generations/index'
 import { Route as AppFlowsheetsIndexRouteImport } from './routes/_app/flowsheets/index'
 import { Route as AppFlowsheetsFlowsheetIdRouteImport } from './routes/_app/flowsheets/$flowsheetId'
 
@@ -35,6 +36,11 @@ const AppFlowsheetsRouteRoute = AppFlowsheetsRouteRouteImport.update({
   path: '/flowsheets',
   getParentRoute: () => AppRouteRoute,
 } as any)
+const AppSiteGenerationsIndexRoute = AppSiteGenerationsIndexRouteImport.update({
+  id: '/site-generations/',
+  path: '/site-generations/',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 const AppFlowsheetsIndexRoute = AppFlowsheetsIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -53,12 +59,14 @@ export interface FileRoutesByFullPath {
   '/flowsheets': typeof AppFlowsheetsRouteRouteWithChildren
   '/flowsheets/$flowsheetId': typeof AppFlowsheetsFlowsheetIdRoute
   '/flowsheets/': typeof AppFlowsheetsIndexRoute
+  '/site-generations/': typeof AppSiteGenerationsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/flowsheets/$flowsheetId': typeof AppFlowsheetsFlowsheetIdRoute
   '/flowsheets': typeof AppFlowsheetsIndexRoute
+  '/site-generations': typeof AppSiteGenerationsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -68,6 +76,7 @@ export interface FileRoutesById {
   '/_app/flowsheets': typeof AppFlowsheetsRouteRouteWithChildren
   '/_app/flowsheets/$flowsheetId': typeof AppFlowsheetsFlowsheetIdRoute
   '/_app/flowsheets/': typeof AppFlowsheetsIndexRoute
+  '/_app/site-generations/': typeof AppSiteGenerationsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -77,8 +86,14 @@ export interface FileRouteTypes {
     | '/flowsheets'
     | '/flowsheets/$flowsheetId'
     | '/flowsheets/'
+    | '/site-generations/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/flowsheets/$flowsheetId' | '/flowsheets'
+  to:
+    | '/'
+    | '/login'
+    | '/flowsheets/$flowsheetId'
+    | '/flowsheets'
+    | '/site-generations'
   id:
     | '__root__'
     | '/'
@@ -87,6 +102,7 @@ export interface FileRouteTypes {
     | '/_app/flowsheets'
     | '/_app/flowsheets/$flowsheetId'
     | '/_app/flowsheets/'
+    | '/_app/site-generations/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -125,6 +141,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppFlowsheetsRouteRouteImport
       parentRoute: typeof AppRouteRoute
     }
+    '/_app/site-generations/': {
+      id: '/_app/site-generations/'
+      path: '/site-generations'
+      fullPath: '/site-generations/'
+      preLoaderRoute: typeof AppSiteGenerationsIndexRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
     '/_app/flowsheets/': {
       id: '/_app/flowsheets/'
       path: '/'
@@ -157,10 +180,12 @@ const AppFlowsheetsRouteRouteWithChildren =
 
 interface AppRouteRouteChildren {
   AppFlowsheetsRouteRoute: typeof AppFlowsheetsRouteRouteWithChildren
+  AppSiteGenerationsIndexRoute: typeof AppSiteGenerationsIndexRoute
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppFlowsheetsRouteRoute: AppFlowsheetsRouteRouteWithChildren,
+  AppSiteGenerationsIndexRoute: AppSiteGenerationsIndexRoute,
 }
 
 const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
