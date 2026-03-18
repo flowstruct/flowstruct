@@ -15,6 +15,8 @@ import { SiteGeneratorStatusIcon } from '@/features/site-generator/components/si
 import { SiteGeneratorActionsMenu } from '@/features/site-generator/components/site-generator-actions-menu';
 import styles from './use-site-generator-table.module.css';
 import { formatTimeAgo } from '@/shared/utils/formatTimeAgo';
+import { UserIcon } from 'lucide-react';
+import { setIncludes } from '@/shared/utils/setIncludes';
 
 interface UseSiteGeneratorTableProps {
   generations: SiteGenerationSummary[];
@@ -28,54 +30,43 @@ export function useSiteGeneratorTable({ generations }: UseSiteGeneratorTableProp
     () => [
       accessor('id', {
         header: 'ID',
-        cell: ({ cell }) => <p className={styles.idCell}>#{cell.getValue()}</p>,
-        enableColumnFilter: false,
-        meta: {
-          renderColumnDisplayName: () => 'ID',
-        },
-      }),
-      accessor('status', {
-        header: 'Status',
         cell: ({ row }) => (
-          <div className={styles.statusCell}>
+          <div className={styles.idCell}>
             <SiteGeneratorStatusIcon generation={row.original} />
+            <p>#{row.original.id}</p>
           </div>
         ),
         enableColumnFilter: false,
-        enableSorting: false,
         meta: {
-          renderColumnDisplayName: () => 'Status',
+          renderColumnDisplayName: () => 'ID',
         },
       }),
       accessor('createdBy', {
         header: 'Created by',
         cell: ({ row }) => {
           const userId = row.original.createdBy;
+
           if (!userId) {
             return <p className={styles.emptyCell}>---</p>;
           }
+
           const user = users.map[userId];
-          return <p className={styles.userCell}>{user?.username ?? 'Unknown'}</p>;
+
+          return (
+            <p className={styles.userCell}>
+              <UserIcon color="gray" size={14} /> {user?.username ?? 'Unknown'}
+            </p>
+          );
         },
-        enableColumnFilter: false,
         enableSorting: false,
         meta: {
           renderColumnDisplayName: () => 'Created by',
+          renderFilterName: (userId: number) => `${users.map[userId]?.username ?? 'Unknown'}`,
         },
-      }),
-      accessor('createdAt', {
-        header: 'Created at',
-        cell: ({ cell }) => {
-          const date = new Date(cell.getValue() as string);
-          return <p className={styles.dateCell}>{formatTimeAgo(date)}</p>;
-        },
-        enableColumnFilter: false,
-        meta: {
-          renderColumnDisplayName: () => 'Created at',
-        },
+        filterFn: setIncludes,
       }),
       accessor('completedAt', {
-        header: 'Completed at',
+        header: 'Completed',
         cell: ({ row }) => {
           const completedAt = row.original.completedAt;
           if (!completedAt) {
@@ -107,7 +98,7 @@ export function useSiteGeneratorTable({ generations }: UseSiteGeneratorTableProp
     data: generations,
     columns,
     initialState: {
-      sorting: [{ id: 'createdAt', desc: true }],
+      sorting: [{ id: 'completedAt', desc: true }],
     },
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -116,4 +107,3 @@ export function useSiteGeneratorTable({ generations }: UseSiteGeneratorTableProp
     getSortedRowModel: getSortedRowModel(),
   });
 }
-

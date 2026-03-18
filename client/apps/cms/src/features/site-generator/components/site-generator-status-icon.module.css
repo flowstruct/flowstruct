@@ -15,7 +15,7 @@
 }
 
 .completed {
-  color: green;
+  color: var(--text-color-secondary);
 }
 
 .failed {
@@ -30,3 +30,4 @@
     transform: rotate(360deg);
   }
 }
+

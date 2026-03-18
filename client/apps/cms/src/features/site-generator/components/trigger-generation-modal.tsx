@@ -1,4 +1,4 @@
-import { FolderClock, SquarePlus } from 'lucide-react';
+import { FolderClock, Plus, SquarePlus } from 'lucide-react';
 import {
   FormModal,
   FormModalBody,
@@ -20,8 +20,7 @@ export function TriggerGenerationModal() {
   const triggerGeneration = useMutation({
     mutationFn: () => siteGeneratorApi.triggerGeneration(),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: siteGeneratorKeys.collection() });
-      queryClient.invalidateQueries({ queryKey: siteGeneratorKeys.current() });
+      queryClient.invalidateQueries();
     },
     meta: { successMessage: 'Site generation started.' },
   });
@@ -34,9 +33,8 @@ export function TriggerGenerationModal() {
       }}
     >
       <FormModalTrigger>
-        <Button variant="primary" size="sm">
-          <SquarePlus size={14} />
-          Generate
+        <Button variant="transparent" size="sm">
+          <Plus size={15} />
         </Button>
       </FormModalTrigger>
 
@@ -59,11 +57,10 @@ export function TriggerGenerationModal() {
       </FormModalBody>
 
       <FormModalFooter>
-        <FormModalSubmit isPending={triggerGeneration.isPending}>
+        <FormModalSubmit>
           <SquarePlus size={15} /> Start Generation
         </FormModalSubmit>
       </FormModalFooter>
     </FormModal>
   );
 }
-

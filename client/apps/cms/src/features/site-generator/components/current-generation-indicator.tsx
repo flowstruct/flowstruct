@@ -22,14 +22,11 @@ export function CurrentGenerationIndicator() {
 
   return (
     <div className={styles.indicator}>
-      {isActive ? (
-        <Loader2 size={14} className={styles.spinner} />
-      ) : (
-        <FolderClock size={14} />
-      )}
+      {isActive ? <Loader2 size={14} className={styles.spinner} /> : <FolderClock size={14} />}
       <span className={styles.text}>
         Generation #{currentGeneration.id} - {statusText[currentGeneration.status]}
       </span>
     </div>
   );
 }
+

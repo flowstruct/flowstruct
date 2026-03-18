@@ -19,11 +19,10 @@
 
 .statusSection {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
   gap: var(--space-1);
   border-top: 1px solid var(--border-color);
   padding: var(--space-2) var(--space-3);
+  justify-content: center;
   font-size: var(--font-size-xs);
   font-weight: 450;
 }
@@ -50,3 +49,4 @@
   font-size: var(--font-size-sm);
   color: var(--text-color-secondary);
 }
+

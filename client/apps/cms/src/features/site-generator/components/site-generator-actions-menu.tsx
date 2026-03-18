@@ -66,13 +66,6 @@ export function SiteGeneratorActionsMenu({ generation }: SiteGeneratorActionsMen
     },
   });
 
-  const statusText = {
-    PENDING: 'Pending',
-    RUNNING: 'Running',
-    COMPLETED: 'Completed',
-    FAILED: 'Failed',
-  };
-
   return (
     <>
       <FormModal
@@ -169,7 +162,7 @@ export function SiteGeneratorActionsMenu({ generation }: SiteGeneratorActionsMen
 
           {generation.status !== 'COMPLETED' && (
             <section className={styles.statusSection} data-status={generation.status}>
-              <p>{statusText[generation.status]}</p>
+              <p>{generation.status}</p>
             </section>
           )}
         </Popover>

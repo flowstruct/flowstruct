@@ -1,4 +1,4 @@
-import { FolderClock, Loader2, CheckCircle, XCircle } from 'lucide-react';
+import { FolderClock, Loader2, Folder, FolderX } from 'lucide-react';
 import { SiteGenerationSummary } from '@/features/site-generator/domain/site-generator';
 import styles from './site-generator-status-icon.module.css';
 import { Tooltip, TooltipTrigger } from '@/shared/components/ui/Tooltip';
@@ -8,7 +8,10 @@ type SiteGeneratorStatusIconProps = {
   errorMessage?: string | null;
 };
 
-export function SiteGeneratorStatusIcon({ generation, errorMessage }: SiteGeneratorStatusIconProps) {
+export function SiteGeneratorStatusIcon({
+  generation,
+  errorMessage,
+}: SiteGeneratorStatusIconProps) {
   const icon = (() => {
     switch (generation.status) {
       case 'PENDING':
@@ -16,9 +19,9 @@ export function SiteGeneratorStatusIcon({ generation, errorMessage }: SiteGenera
       case 'RUNNING':
         return <Loader2 size={15} className={styles.running} />;
       case 'COMPLETED':
-        return <CheckCircle size={15} className={styles.completed} />;
+        return <Folder size={15} className={styles.completed} />;
       case 'FAILED':
-        return <XCircle size={15} className={styles.failed} />;
+        return <FolderX size={15} className={styles.failed} />;
     }
   })();
 

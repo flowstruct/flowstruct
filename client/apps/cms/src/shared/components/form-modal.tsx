@@ -126,18 +126,21 @@ export function FormModalFooter({ children }: { children: React.ReactNode }) {
 }
 
 type FormModalSubmitProps = {
-  isPending: boolean;
+  isPending?: boolean;
   children: React.ReactNode;
 };
 
 export function FormModalSubmit({ isPending, children }: FormModalSubmitProps) {
-  const { _setIntendedSubmit } = useFormModalContext();
+  const { _setIntendedSubmit, close } = useFormModalContext();
   return (
     <Button
       isPending={isPending}
       variant="primary"
       type="submit"
-      onPress={() => _setIntendedSubmit(true)}
+      onPress={() => {
+        if (!isPending) close();
+        _setIntendedSubmit(true);
+      }}
     >
       {children}
     </Button>

@@ -6,7 +6,9 @@ import { useSiteGeneratorTable } from '@/features/site-generator/hooks/use-site-
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { TriggerGenerationModal } from '@/features/site-generator/components/trigger-generation-modal';
 import { CurrentGenerationIndicator } from '@/features/site-generator/components/current-generation-indicator';
-import { FolderClock } from 'lucide-react';
+import { FolderUp } from 'lucide-react';
+import styles from './index.module.css';
+import { DataTableToolbar } from '@/shared/components/data-table/data-table-toolbar';
 
 export const Route = createFileRoute('/_app/site-generations/')({
   loader: async ({ context: { queryClient } }) => {
@@ -20,14 +22,15 @@ export const Route = createFileRoute('/_app/site-generations/')({
       <>
         <Header>
           <HeaderMain>
-            <h1 className="flex items-center gap-2 text-base font-medium">
-              <FolderClock size={18} />
+            <p className={styles.header}>
+              <FolderUp size={14} />
               Site Generations
-            </h1>
+            </p>
           </HeaderMain>
 
           <HeaderActions>
             <CurrentGenerationIndicator />
+            <DataTableToolbar table={table} />
             <TriggerGenerationModal />
           </HeaderActions>
         </Header>
