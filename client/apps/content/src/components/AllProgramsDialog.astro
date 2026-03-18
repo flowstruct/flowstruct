@@ -1,12 +1,12 @@
 ---
 import ProgramAccordion from './ProgramAccordion.astro';
-import type { Program, StudyPlanSummary } from '../types';
+import type { Program, FlowsheetSummary } from '../types';
 import { api } from '../utils/api';
 
 const { programs } = Astro.props;
 
-const allStudyPlans: StudyPlanSummary[] = await api<StudyPlanSummary[]>('/study-plans');
-const availableStudyPlans = allStudyPlans.filter(studyPlan => studyPlan.status !== 'NEW' && studyPlan.archivedAt === null);
+const allFlowsheets = await api<FlowsheetSummary[]>('/flowsheets');
+const availableFlowsheets = allFlowsheets.filter(f => f.status !== 'NEW' && f.archivedAt === null);
 ---
 
 <button id="open-programs-dialog"
@@ -23,7 +23,7 @@ const availableStudyPlans = allStudyPlans.filter(studyPlan => studyPlan.status !
   <div class="relative">
     <button id="close-programs-dialog"
             class="z-20 absolute top-3 right-3 p-1.5 hover:bg-gray-100 rounded-full mb-auto transition-all text-gray-600
-                               hover:text-gray-700 active:bg-gray-200">
+                   hover:text-gray-700 active:bg-gray-200">
       <i data-lucide="x" class="size-5" />
     </button>
 
@@ -38,13 +38,12 @@ const availableStudyPlans = allStudyPlans.filter(studyPlan => studyPlan.status !
       </div>
     </header>
 
-    <!-- Programs List -->
     <div class="divide-y divide-gray-200 max-h-[60vh] overflow-y-auto overscroll-contain">
       {programs.map((program: Program) => (
         <div class="program-item">
           <ProgramAccordion
             {...program}
-            studyPlans={availableStudyPlans.filter(sp => sp.program === program.id)}
+            flowsheets={availableFlowsheets.filter(f => f.program === program.id)}
           />
         </div>
       ))}
@@ -70,7 +69,6 @@ const availableStudyPlans = allStudyPlans.filter(studyPlan => studyPlan.status !
 
   openButton?.addEventListener('click', () => {
     dialog.showModal();
-
     requestAnimationFrame(() => {
       dialog.style.opacity = '1';
       dialog.style.transform = 'scale(1)';
@@ -84,34 +82,24 @@ const availableStudyPlans = allStudyPlans.filter(studyPlan => studyPlan.status !
   };
 
   closeButton?.addEventListener('click', closeDialog);
-
-  dialog.addEventListener('click', (e) => {
-    if (e.target === dialog) closeDialog();
-  });
+  dialog.addEventListener('click', (e) => { if (e.target === dialog) closeDialog(); });
+  dialog.addEventListener('cancel', (e) => { e.preventDefault(); closeDialog(); });
 
   let debounceTimeout: number;
-
   searchInput?.addEventListener('input', (e) => {
     clearTimeout(debounceTimeout);
-
     debounceTimeout = setTimeout(() => {
       const query = (e.target as HTMLInputElement).value.toLowerCase();
       const queryWords = query.split(/\s+/);
       let totalQueryMatches = 0;
 
       programs.forEach(program => {
-        const programText = program.textContent?.toLowerCase() || '';
-        const isMatch = queryWords.every(word => programText.includes(word));
+        const isMatch = queryWords.every(word => program.textContent?.toLowerCase().includes(word));
         if (isMatch) totalQueryMatches++;
         program.classList.toggle('hidden', !isMatch);
       });
 
       noResultsMessage?.classList.toggle('hidden', totalQueryMatches !== 0);
     }, 400);
-  });
-
-  dialog.addEventListener('cancel', (e) => {
-    e.preventDefault();
-    closeDialog();
   });
 </script>

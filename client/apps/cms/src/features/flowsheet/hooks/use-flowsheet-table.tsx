@@ -10,44 +10,17 @@ import {
   Row,
   useReactTable,
 } from '@tanstack/react-table';
-import { Flowsheet, FlowsheetSummary } from '@/features/flowsheet/domain/flowsheet';
+import { FlowsheetSummary } from '@/features/flowsheet/domain/flowsheet';
 import React from 'react';
-import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { programQueries } from '@/features/program/queries';
 import { getProgramDisplayName } from '@/features/program/domain/getProgramDisplayName';
 import { setIncludes } from '@/shared/utils/setIncludes';
 import { rankItem } from '@tanstack/match-sorter-utils';
-import {
-  Archive,
-  ArchiveRestore,
-  Ellipsis,
-  Grid2X2,
-  Layers2,
-  SquarePlus,
-  User,
-} from 'lucide-react';
 import styles from './use-flowsheet-table.module.css';
 import { useNavigate } from '@tanstack/react-router';
-import { Menu, MenuItem, MenuTrigger } from '@/shared/components/ui/Menu';
-import { Button } from '@/shared/components/ui/Button';
-import { Popover } from '@/shared/components/ui/Popover';
-import { userQueries } from '@/features/user/queries';
-import { formatTimeAgo } from '@/shared/utils/formatTimeAgo';
 import { FlowsheetStatusIcon } from '@/features/flowsheet/components/flowsheet-status-icon';
-import { flowsheetApi } from '@/features/flowsheet/api';
-import { usePermission } from '@/features/user/hooks/usePermission';
-import { useDisclosure } from '@/shared/hooks/use-disclosure';
-import {
-  FormModal,
-  FormModalBody,
-  FormModalFooter,
-  FormModalHeader,
-  FormModalSubmit,
-  FormModalTrigger,
-} from '@/shared/components/form-modal';
-import { FlowsheetFormFields } from '@/features/flowsheet/components/create-flowsheet-modal/create-flowsheet-modal';
-import { Breadcrumb, Breadcrumbs } from '@/shared/components/ui/breadcrumbs';
-import { Switch } from '@/shared/components/ui/Switch';
+import { ActionsMenu } from '@/features/flowsheet/components/flowsheet-action-menu';
 
 interface UseFlowsheetTableProps {
   flowsheets: FlowsheetSummary[];
@@ -167,127 +140,3 @@ export const useFlowsheetTable = ({ flowsheets }: UseFlowsheetTableProps) => {
     },
   });
 };
-
-type ActionsMenuProps = {
-  flowsheet: FlowsheetSummary;
-};
-
-function ActionsMenu({ flowsheet }: ActionsMenuProps) {
-  const { data: users } = useSuspenseQuery(userQueries.collection);
-  const editedBy = users.map[flowsheet.updatedBy];
-  const { hasPermission } = usePermission();
-  const isArchived = flowsheet.archivedAt != null;
-
-  const [navigateAfter, setNavigateAfter] = React.useState(true);
-  const [cloneOpen, setCloneOpen] = React.useState(false);
-  const navigate = useNavigate();
-
-  const programFormState = useDisclosure();
-
-  const cloneFlowsheet = useMutation({
-    mutationFn: (data: Partial<Flowsheet>) =>
-      flowsheetApi.cloneFlowsheet({ flowsheetId: flowsheet.id, details: data }),
-    meta: { successMessage: 'Flowsheet cloned.' },
-  });
-
-  const archive = useMutation({
-    mutationFn: () => flowsheetApi.archiveFlowsheet(flowsheet.id),
-    meta: { successMessage: 'Flowsheet archived.' },
-  });
-
-  const unarchive = useMutation({
-    mutationFn: () => flowsheetApi.unarchiveFlowsheet(flowsheet.id),
-    meta: { successMessage: 'Flowsheet unarchived.' },
-  });
-
-  const isPending = archive.isPending || unarchive.isPending;
-
-  return (
-    <>
-      <FormModal
-        open={cloneOpen}
-        onOpenChange={setCloneOpen}
-        onSubmit={(data) => {
-          if (programFormState.isOpen) return;
-          return cloneFlowsheet.mutateAsync(data as Partial<Flowsheet>) as Promise<{
-            id: number;
-          }>;
-        }}
-        onSuccess={(result) => {
-          if (navigateAfter) {
-            navigate({
-              to: '/flowsheets/$flowsheetId',
-              params: { flowsheetId: String(result.id) },
-            });
-          }
-        }}
-      >
-        <FormModalBody>
-          <FormModalHeader>
-            <Breadcrumbs>
-              <Breadcrumb base>
-                <Layers2 size={15} /> Flowsheets
-              </Breadcrumb>
-
-              <Breadcrumb>
-                <Grid2X2 size={15} color="teal" /> Clone flowsheet
-              </Breadcrumb>
-            </Breadcrumbs>
-          </FormModalHeader>
-
-          <FlowsheetFormFields
-            programFormState={programFormState}
-            defaultValues={{
-              program: flowsheet.program,
-              year: flowsheet.year,
-              name: flowsheet.name,
-            }}
-          />
-        </FormModalBody>
-
-        <FormModalFooter>
-          <Switch isSelected={navigateAfter} onChange={setNavigateAfter}>
-            Open after creating
-          </Switch>
-
-          <FormModalSubmit isPending={cloneFlowsheet.isPending}>
-            <SquarePlus size={15} /> Clone
-          </FormModalSubmit>
-        </FormModalFooter>
-      </FormModal>
-      <MenuTrigger>
-        <Button shape="icon" variant="ghost" isPending={isPending}>
-          <Ellipsis size={15} />
-        </Button>
-
-        <Popover hideArrow placement="bottom right" crossOffset={25}>
-          <Menu width={200}>
-            <MenuItem onAction={() => setCloneOpen(true)}>
-              <SquarePlus size={14} /> Clone
-            </MenuItem>
-
-            {typeof hasPermission === 'function' &&
-              hasPermission('study-plans:archive') &&
-              (isArchived ? (
-                <MenuItem onAction={() => unarchive.mutate()}>
-                  <ArchiveRestore size={14} /> Unarchive
-                </MenuItem>
-              ) : (
-                <MenuItem onAction={() => archive.mutate()}>
-                  <Archive size={14} /> Archive
-                </MenuItem>
-              ))}
-          </Menu>
-
-          <section className={styles.userActivity}>
-            <p>Edited {formatTimeAgo(new Date(flowsheet.updatedAt))}</p>
-            <div className={styles.userActivityUser}>
-              <User size={12} />
-              <p>{editedBy?.username ?? 'Unknown user'}</p>
-            </div>
-          </section>
-        </Popover>
-      </MenuTrigger>
-    </>
-  );
-}

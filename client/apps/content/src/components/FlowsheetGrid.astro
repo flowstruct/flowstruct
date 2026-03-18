@@ -1,0 +1,141 @@
+---
+import type { Course, Flowsheet } from '../types';
+import NavigationControls from './NavigationControls.astro';
+import CourseFilter from './CourseFilter.astro';
+import { api } from '../utils/api';
+import CourseCard from './CourseCard.astro';
+import { buildCoursesGraph } from '../utils/createCoursesGraph';
+
+interface Props {
+  flowsheet: Flowsheet;
+}
+
+const { flowsheet } = Astro.props;
+
+const coursesGraph = buildCoursesGraph(flowsheet);
+
+const courses = await api<Record<number, Course>>(
+  `/flowsheets/${flowsheet.id}/courses/detailed`,
+);
+
+const nonEmptyTerms = flowsheet.terms.filter(t => t.placements.length > 0);
+
+const gridHeight = nonEmptyTerms.reduce((max, term) =>
+  term.placements.reduce((m, p) => Math.max(m, p.position + p.span - 1), max), 0,
+);
+
+type YearBucket = { yearIndex: number; terms: typeof nonEmptyTerms };
+
+const yearBuckets: YearBucket[] = Array.from(
+  nonEmptyTerms.reduce((acc, term) => {
+    const yearIndex = Math.floor((term.termNumber - 1) / 3);
+    if (!acc.has(yearIndex)) acc.set(yearIndex, []);
+    acc.get(yearIndex)!.push(term);
+    return acc;
+  }, new Map<number, typeof nonEmptyTerms>()),
+).map(([yearIndex, terms]) => ({ yearIndex, terms }));
+
+const totalCreditsByTermId = new Map<number, number>();
+nonEmptyTerms.forEach(term => {
+  const sum = term.placements.reduce(
+    (acc, p) => acc + (courses[p.course]?.creditHours ?? 0), 0,
+  );
+  totalCreditsByTermId.set(term.id, sum);
+});
+---
+
+<div class="space-y-2 relative">
+  <CourseFilter sections={flowsheet.sections} />
+
+  <NavigationControls />
+
+  <div class="relative flex justify-center">
+    <div
+      id="left-hidden-gradient"
+      class="pointer-events-none absolute left-0 z-20 w-8 sm:w-5 h-full bg-gradient-to-r from-white"
+    />
+    <div
+      id="right-hidden-gradient"
+      class="pointer-events-none absolute right-0 z-20 w-8 sm:w-5 h-full bg-gradient-to-l from-white"
+    />
+
+    <div class="overflow-auto w-fit px-0.5" id="courses-grid">
+
+      <!-- Year / term header -->
+      <div
+        class="grid grid-rows-2 gap-2"
+        style={{ gridTemplateColumns: `repeat(${nonEmptyTerms.length}, auto)` }}
+      >
+        {yearBuckets.map(({ yearIndex, terms }) => {
+          const year = flowsheet.year + yearIndex;
+          return (
+            <div
+              class="text-xs opacity-60 row-start-1 text-center select-none whitespace-nowrap"
+              style={{ gridColumn: `span ${terms.length}` }}
+            >
+              {year} / {year + 1}
+            </div>
+          );
+        })}
+
+        {nonEmptyTerms.map(term => (
+          <div class="w-[8rem] lg:w-40 row-start-2 text-xs opacity-60 text-center select-none whitespace-nowrap">
+            {term.name} — {totalCreditsByTermId.get(term.id)} Cr.
+          </div>
+        ))}
+      </div>
+
+      <!-- Courses grid -->
+      <div
+        class="mt-2 grid gap-2"
+        style={{
+          gridTemplateColumns: `repeat(${nonEmptyTerms.length}, auto)`,
+          gridTemplateRows: `repeat(${gridHeight}, auto)`,
+        }}
+      >
+        {nonEmptyTerms.map((term, colIdx) =>
+          term.placements.map(placement => {
+            const course = courses[placement.course];
+            if (!course) return null;
+            const requisites = coursesGraph.get(course.id);
+
+            return (
+              <div
+                class="min-h-[6.9rem] lg:min-h-[8.6rem] w-[8rem] lg:w-40"
+                style={{
+                  gridColumn: colIdx + 1,
+                  gridRow: `${placement.position} / span ${placement.span}`,
+                }}
+              >
+                <CourseCard
+                  course={course}
+                  prerequisites={[...(requisites?.prerequisites ?? [])]}
+                  corequisites={[...(requisites?.corequisites ?? [])]}
+                  prerequisiteSequence={
+                    [...(requisites?.prerequisiteSequence ?? [])].filter(
+                      id => !requisites?.prerequisites.has(id),
+                    )
+                  }
+                  postrequisiteSequence={[...(requisites?.postrequisiteSequence ?? [])]}
+                />
+              </div>
+            );
+          })
+        )}
+      </div>
+    </div>
+  </div>
+
+  <p class="text-center opacity-40 text-sm">Remedial courses are not included</p>
+</div>
+
+<style>
+  #courses-grid {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    scroll-behavior: smooth;
+  }
+  #courses-grid::-webkit-scrollbar {
+    display: none;
+  }
+</style>

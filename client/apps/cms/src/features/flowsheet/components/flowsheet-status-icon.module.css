@@ -1,33 +1,34 @@
 .statusIcon {
-    display: flex;
-    position: relative;
-    width: fit-content;
-    height: fit-content;
-    color: var(--text-color-secondary);
+  display: flex;
+  position: relative;
+  width: fit-content;
+  height: fit-content;
+  color: var(--text-color-secondary);
 
-    &[data-archived] {
-        opacity: 0.4;
-    }
+  &[data-archived] {
+    opacity: 0.4;
+  }
 
-    &[data-status=DRAFT]::before {
-        content: '';
-        position: absolute;
-        top: -2px;
-        right: -2px;
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        background-color: var(--primary-color); /* subtle blue */
-    }
+  &[data-status='DRAFT']::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+  }
 
-    &[data-status=NEW]::before {
-        content: '';
-        position: absolute;
-        top: -1px;
-        right: -1px;
-        width: 5px;
-        height: 5px;
-        border-radius: 50%;
-        background-color: darkgoldenrod;
-    }
+  &[data-status='NEW']::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background-color: darkgoldenrod;
+  }
 }
+

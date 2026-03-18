@@ -1,18 +1,3 @@
-export const Degree = {
-  BSc: 'Bachelor of Science',
-  BA: 'Bachelor of Arts',
-  MBA: 'Master of Business Administration',
-  PHD: 'Doctor of Philosophy',
-} as const;
-
-export type Program = {
-  id: number;
-  code: string;
-  name: string;
-  degree: string;
-  isPrivate: boolean;
-};
-
 export enum SectionLevel {
   University = 'University',
   School = 'School',
@@ -25,10 +10,76 @@ export enum SectionType {
   Remedial = 'Remedial',
 }
 
-export enum CourseRelation {
-  AND = 'AND',
-  OR = 'OR',
-}
+export type CourseRelation = 'SELF' | 'PREREQ' | 'PREREQSEQ' | 'COREQ' | 'POSTREQSEQ' | 'UNRELATED';
+
+export type Section = {
+  id: number;
+  level: SectionLevel;
+  type: SectionType;
+  requiredCreditHours: number;
+  name: string;
+  position: number;
+  courses: number[];
+};
+
+export const TERM_NAMES = ['First Semester', 'Second Semester', 'Summer Semester'] as const;
+
+export type Term = {
+  id: number;
+  termNumber: number;
+  name: string;
+  placements: Placement[];
+};
+
+export type Placement = {
+  course: number;
+  position: number;
+  span: number;
+};
+
+type CoursePrerequisite = { course: number; prerequisite: number };
+
+type CourseCorequisite = { course: number; corequisite: number };
+
+export type Flowsheet = {
+  id: number;
+  year: number;
+  name: string;
+  status: string;
+  program: number;
+  sections: Section[];
+  terms: Term[];
+  coursePrerequisites: CoursePrerequisite[];
+  courseCorequisites: CourseCorequisite[];
+  archivedAt: Date;
+  archivedBy: number | null;
+  createdAt: Date;
+  updatedAt: Date;
+  updatedBy: number;
+};
+
+export type FlowsheetSummary = Pick
+  Flowsheet,
+  | 'id'
+  | 'year'
+  | 'name'
+  | 'status'
+  | 'program'
+  | 'archivedAt'
+  | 'archivedBy'
+  | 'createdAt'
+  | 'updatedAt'
+  | 'updatedBy'
+>;
+
+export type ArchiveStatus = 'all' | 'active' | 'archived';
+
+
+export const CourseType = {
+  F2F: 'Face-to-Face',
+  BLD: 'Blended',
+  OL: 'Online',
+} as const;
 
 export type Course = {
   id: number;
@@ -46,64 +97,44 @@ export type Course = {
   updatedBy: number;
 };
 
-export type Section = {
-  id: number;
-  level: SectionLevel;
-  type: SectionType;
-  requiredCreditHours: number;
-  name: string | null;
-  position: number;
-  courses: number[];
+export type CoursesPage = {
+  content: CourseSummary[];
+  page: number;
+  size: number;
+  totalCourses: number;
+  totalPages: number;
+  isLastPage: boolean;
 };
 
-export type CourseSequences = {
-  prerequisiteSequence: Set<number>;
-  postrequisiteSequence: Set<number>;
-};
-
-export type CoursePlacement = {
-  year: number;
-  semester: number;
-  position: number;
-  span: number;
-};
-
-export type StudyPlan = {
-  id: number;
-  year: number;
-  duration: number;
-  track: string;
-  status: string;
-  program: number;
-  sections: Section[];
-  coursePlacements: Record<number, CoursePlacement>;
-  coursePrerequisites: Record<number, Record<number, CourseRelation>>;
-  courseCorequisites: Record<number, number[]>;
-  archivedAt: Date;
-  archivedBy: number | null;
-  createdAt: Date;
-  updatedAt: Date;
-  updatedBy: number;
-};
-
-export type StudyPlanSequences = {
-  coursePlacements: Record<number, CoursePlacement>;
-  coursePrerequisites: Record<number, Record<number, CourseRelation>>;
-  courseCorequisites: Record<number, number[]>;
-  courseSequences: Record<number, CourseSequences>;
-};
-
-export type StudyPlanSummary = Pick<
-  StudyPlan,
+export type CourseSummary = Pick
+  Course,
   | 'id'
-  | 'year'
-  | 'duration'
-  | 'track'
-  | 'status'
-  | 'program'
-  | 'archivedAt'
-  | 'archivedBy'
+  | 'code'
+  | 'name'
+  | 'creditHours'
+  | 'type'
+  | 'outdatedAt'
+  | 'outdatedBy'
   | 'createdAt'
   | 'updatedAt'
   | 'updatedBy'
 >;
+
+export const Degree = {
+  BSc: 'Bachelor of Science',
+  BA: 'Bachelor of Arts',
+  MBA: 'Master of Business Administration',
+  PHD: 'Doctor of Philosophy',
+} as const;
+
+export type Program = {
+  id: number;
+  code: string;
+  name: string;
+  degree: string;
+  outdatedAt: Date;
+  outdatedBy: number | null;
+  createdAt: Date;
+  updatedAt: Date;
+  updatedBy: number;
+};
