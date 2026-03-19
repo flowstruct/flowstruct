@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class SiteGeneratorController {
 
   private final SiteGenerationService siteGenerationService;
+
   private final SiteGeneratorManagerService siteGeneratorManagerService;
 
   @PostMapping
@@ -68,4 +69,3 @@ public class SiteGeneratorController {
         siteGeneratorManagerService.retryGeneration(id), HttpStatus.CREATED);
   }
 }
-

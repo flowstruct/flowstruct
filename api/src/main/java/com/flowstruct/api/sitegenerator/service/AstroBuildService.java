@@ -46,7 +46,7 @@ public class AstroBuildService {
         throw new BuildException("Dist directory not found after build");
       }
 
-      return createZipFromDist(distPath);
+      return createZip(distPath);
     } catch (IOException | InterruptedException e) {
       if (e instanceof InterruptedException) {
         Thread.currentThread().interrupt();
@@ -55,36 +55,37 @@ public class AstroBuildService {
     }
   }
 
-  private BuildResult createZipFromDist(Path distPath) throws BuildException {
+  private BuildResult createZip(Path path) throws BuildException {
     try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ZipOutputStream zos = new ZipOutputStream(baos)) {
-
       int[] fileCount = {0};
       long[] totalSize = {0};
 
-      try (Stream<Path> paths = Files.walk(distPath)) {
+      try (Stream<Path> paths = Files.walk(path)) {
         paths
-            .filter(path -> !Files.isDirectory(path))
+            .filter(p -> !Files.isDirectory(p))
             .forEach(
-                path -> {
+                p -> {
                   try {
-                    String entryName = distPath.relativize(path).toString();
-                    ZipEntry entry = new ZipEntry(entryName.replace('\\', '/'));
+                    String entryName = path.relativize(p).toString().replace('\\', '/');
+                    ZipEntry entry = new ZipEntry(entryName);
+
                     zos.putNextEntry(entry);
-                    Files.copy(path, zos);
+                    Files.copy(p, zos);
                     zos.closeEntry();
+
                     fileCount[0]++;
-                    totalSize[0] += Files.size(path);
+                    totalSize[0] += Files.size(p);
                   } catch (IOException e) {
                     throw new RuntimeException(e);
                   }
                 });
       }
-
       zos.finish();
-      byte[] zipBytes = baos.toByteArray();
 
+      byte[] zipBytes = baos.toByteArray();
       Resource resource = new ByteArrayResource(zipBytes);
+
       return new BuildResult(resource, fileCount[0], (long) zipBytes.length);
     } catch (IOException e) {
       throw new BuildException("Failed to create ZIP: " + e.getMessage(), e);

@@ -1,6 +1,6 @@
 import { queryOptions } from '@tanstack/react-query';
 import { siteGeneratorApi } from '@/features/site-generator/api';
-import { GenerationStatus } from '@/features/site-generator/domain/site-generator';
+import { SiteGenerationSummary } from '@/features/site-generator/domain/site-generator';
 
 export const siteGeneratorKeys = {
   all: ['site-generations'] as const,
@@ -30,15 +30,13 @@ export const siteGeneratorQueries = {
     queryKey: siteGeneratorKeys.current(),
     queryFn: () => siteGeneratorApi.getCurrentGeneration(),
     refetchInterval: (query) => {
-      const data = query.state.data;
+      const data: SiteGenerationSummary = query.state.data;
+
       if (data?.status === 'PENDING' || data?.status === 'RUNNING') {
         return 3000;
       }
+
       return false;
     },
   }),
 };
-
-export function isActiveGeneration(status: GenerationStatus | undefined): boolean {
-  return status === 'PENDING' || status === 'RUNNING';
-}

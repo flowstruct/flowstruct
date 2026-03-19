@@ -31,43 +31,43 @@ function PlacementMoveProvider({ children }: { children: ReactNode }) {
 
   const moveCourse = useMutation({
     mutationFn: flowsheetApi.moveCourse,
-    onMutate: async ({ courseId, term: targetTermNumber, position }) => {
-      const queryKey = flowsheetKeys.detail(flowsheet.id);
-      await queryClient.cancelQueries({ queryKey });
-
-      const previous = queryClient.getQueryData<Flowsheet>(queryKey);
-      if (!previous) return;
-
-      queryClient.setQueryData<Flowsheet>(queryKey, (old) => {
-        if (!old) return old;
-
-        const updated = structuredClone(old);
-        let movedSpan = 1;
-
-        for (const term of updated.terms) {
-          const index = term.placements.findIndex((p) => p.course === courseId);
-          if (index !== -1) {
-            movedSpan = term.placements[index].span;
-            term.placements.splice(index, 1);
-            term.placements.forEach((p, i) => (p.position = i + 1));
-            break;
-          }
-        }
-
-        const targetTerm = updated.terms.find((t) => t.termNumber === targetTermNumber);
-        if (!targetTerm) return old;
-
-        targetTerm.placements.splice(position - 1, 0, {
-          course: courseId,
-          position,
-          span: movedSpan,
-        });
-
-        targetTerm.placements.forEach((p, i) => (p.position = i + 1));
-
-        return updated;
-      });
-    },
+    // onMutate: async ({ courseId, term: targetTermNumber, position }) => {
+    //   const queryKey = flowsheetKeys.detail(flowsheet.id);
+    //   await queryClient.cancelQueries({ queryKey });
+    //
+    //   const previous = queryClient.getQueryData<Flowsheet>(queryKey);
+    //   if (!previous) return;
+    //
+    //   queryClient.setQueryData<Flowsheet>(queryKey, (old) => {
+    //     if (!old) return old;
+    //
+    //     const updated = structuredClone(old);
+    //     let movedSpan = 1;
+    //
+    //     for (const term of updated.terms) {
+    //       const index = term.placements.findIndex((p) => p.course === courseId);
+    //       if (index !== -1) {
+    //         movedSpan = term.placements[index].span;
+    //         term.placements.splice(index, 1);
+    //         term.placements.forEach((p, i) => (p.position = i + 1));
+    //         break;
+    //       }
+    //     }
+    //
+    //     const targetTerm = updated.terms.find((t) => t.termNumber === targetTermNumber);
+    //     if (!targetTerm) return old;
+    //
+    //     targetTerm.placements.splice(position - 1, 0, {
+    //       course: courseId,
+    //       position,
+    //       span: movedSpan,
+    //     });
+    //
+    //     targetTerm.placements.forEach((p, i) => (p.position = i + 1));
+    //
+    //     return updated;
+    //   });
+    // },
   });
 
   const allowedTerms = React.useMemo(() => {

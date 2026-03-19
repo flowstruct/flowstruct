@@ -1,12 +1,16 @@
 import { api } from '@/shared/api';
-import { SiteGeneration, SiteGenerationSummary } from '@/features/site-generator/domain/site-generator';
+import {
+  SiteGeneration,
+  SiteGenerationSummary,
+} from '@/features/site-generator/domain/site-generator';
 
 export const SITE_GENERATOR_ENDPOINT = '/site-generations';
 
 export const siteGeneratorApi = {
   getGenerations: () => api.get<SiteGenerationSummary[]>(SITE_GENERATOR_ENDPOINT),
 
-  getCurrentGeneration: () => api.get<SiteGenerationSummary | null>([SITE_GENERATOR_ENDPOINT, 'current']),
+  getCurrentGeneration: () =>
+    api.get<SiteGenerationSummary | null>([SITE_GENERATOR_ENDPOINT, 'current']),
 
   getGeneration: (id: number) => api.get<SiteGeneration>([SITE_GENERATOR_ENDPOINT, id]),
 

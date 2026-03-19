@@ -69,11 +69,12 @@ export function useSiteGeneratorTable({ generations }: UseSiteGeneratorTableProp
         header: 'Completed',
         cell: ({ row }) => {
           const completedAt = row.original.completedAt;
+
           if (!completedAt) {
             return <p className={styles.emptyCell}>---</p>;
           }
-          const date = new Date(completedAt);
-          return <p className={styles.dateCell}>{formatTimeAgo(date)}</p>;
+
+          return <p className={styles.dateCell}>{formatTimeAgo(new Date(completedAt))}</p>;
         },
         enableColumnFilter: false,
         meta: {
@@ -98,7 +99,7 @@ export function useSiteGeneratorTable({ generations }: UseSiteGeneratorTableProp
     data: generations,
     columns,
     initialState: {
-      sorting: [{ id: 'completedAt', desc: true }],
+      sorting: [{ id: 'id', desc: true }],
     },
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
