@@ -1,0 +1,23 @@
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-5);
+}
+
+.header {
+  font-weight: 600;
+  font-size: var(--font-size-base);
+}
+
+.text {
+  font-size: var(--font-size-base);
+  color: var(--text-color-secondary);
+}
+
+.footer {
+  margin-top: var(--space-4);
+  display: flex;
+  gap: var(--space-4);
+  justify-content: flex-end;
+}

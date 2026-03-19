@@ -87,16 +87,19 @@ export function CreateFlowsheetModal() {
 
   return (
     <FormModal
+      size="md"
       onSubmit={(data) => {
         if (programFormState.isOpen) return;
-        return createFlowsheet.mutateAsync(data as Partial<Flowsheet>) as Promise<{
-          id: number;
-        }>;
-      }}
-      onSuccess={(result) => {
-        if (navigateAfter) {
-          navigate({ to: '/flowsheets/$flowsheetId', params: { flowsheetId: String(result.id) } });
-        }
+        return createFlowsheet.mutate(data as Partial<Flowsheet>, {
+          onSuccess: (result: Flowsheet) => {
+            if (navigateAfter) {
+              navigate({
+                to: '/flowsheets/$flowsheetId',
+                params: { flowsheetId: String(result.id) },
+              });
+            }
+          },
+        });
       }}
     >
       <FormModalTrigger>

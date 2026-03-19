@@ -175,9 +175,9 @@ export function UserProfile() {
       <FormModal
         open={detailsOpen}
         onOpenChange={setDetailsOpen}
-        size="lg"
-        onSubmit={async (data) => {
-          const result = await editDetails.mutateAsync({
+        size="md"
+        onSubmit={(data) => {
+          const result = editDetails.mutate({
             username: data.username as string,
             email: data.email as string,
           });
@@ -185,7 +185,7 @@ export function UserProfile() {
           const hasPassword = data.newPassword || data.confirmPassword;
 
           if (hasPassword) {
-            await changePassword.mutateAsync({
+            changePassword.mutate({
               currentPassword: data.currentPassword as string,
               newPassword: data.newPassword as string,
               confirmPassword: data.confirmPassword as string,

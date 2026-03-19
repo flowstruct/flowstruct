@@ -25,8 +25,7 @@ const useFormModalContext = () => {
 type FormModalProps = {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
-  onSubmit: (data: Record<string, any>) => Promise<{ id: number }>;
-  onSuccess?: (result: { id: number }) => void;
+  onSubmit: (data: Record<string, any>) => void;
   size?: 'sm' | 'md' | 'lg' | 'xl';
   children: React.ReactNode;
 };
@@ -35,12 +34,11 @@ export function FormModal({
   open: controlledOpen,
   onOpenChange,
   onSubmit,
-  onSuccess,
   size = 'xl',
   children,
 }: FormModalProps) {
   const [internalOpen, setInternalOpen] = React.useState(false);
-  const intendedSubmitRef = React.useRef(false); // ← ref, not state
+  const intendedSubmitRef = React.useRef(false);
 
   const isControlled = controlledOpen !== undefined;
   const isOpen = isControlled ? controlledOpen : internalOpen;
@@ -53,12 +51,11 @@ export function FormModal({
     isControlled ? onOpenChange?.(false) : setInternalOpen(false);
   }, [isControlled, onOpenChange]);
 
-  const onFormSubmit = handleSubmit(async (formData) => {
-    if (!intendedSubmitRef.current) return; // ← always reads the latest value
+  const onFormSubmit = handleSubmit((formData) => {
+    if (!intendedSubmitRef.current) return;
     intendedSubmitRef.current = false;
-    const result = await onSubmit(formData);
+    onSubmit(formData);
     close();
-    onSuccess?.(result);
   });
 
   const childArray = React.Children.toArray(children);
