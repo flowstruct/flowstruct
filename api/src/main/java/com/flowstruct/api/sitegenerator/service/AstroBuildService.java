@@ -17,15 +17,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class AstroBuildService {
 
-  private static final String CONTENT_DIR = "../client/apps/content";
-
   private static final String DIST_DIR = "dist";
 
   @Value("${api.key}")
   private String apiKey;
 
+  @Value("${site-generator.dir}")
+  private String siteGeneratorDir;
+
   public BuildResult executeBuild() throws BuildException {
-    Path contentPath = Paths.get(CONTENT_DIR);
+    Path contentPath = Paths.get(siteGeneratorDir);
     Path distPath = contentPath.resolve(DIST_DIR);
 
     try {

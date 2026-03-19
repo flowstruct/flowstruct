@@ -26,6 +26,15 @@ jwt:
   cookie:
     expiry: 1800
 
+web:
+  resources:
+    cache:
+      cachecontrol:
+        max-age: 31536000s
+        public: true
+        must-revalidate: true
+        no-transform: true
+
 server:
   forward-headers-strategy: native
 
@@ -33,3 +42,6 @@ secure: true
 
 api:
   key: ${API_KEY:super-secret-api-key}
+
+site-generator:
+  dir: ${SITE_GENERATOR_DIR}

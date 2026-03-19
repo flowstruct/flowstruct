@@ -12,3 +12,6 @@ spring:
       on-profile: dev
 
 secure: false
+
+site-generator:
+  dir: ../client/apps/content
