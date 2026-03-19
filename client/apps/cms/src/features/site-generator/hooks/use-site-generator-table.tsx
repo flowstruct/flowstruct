@@ -41,30 +41,6 @@ export function useSiteGeneratorTable({ generations }: UseSiteGeneratorTableProp
           renderColumnDisplayName: () => 'ID',
         },
       }),
-      accessor('createdBy', {
-        header: 'Created by',
-        cell: ({ row }) => {
-          const userId = row.original.createdBy;
-
-          if (!userId) {
-            return <p className={styles.emptyCell}>---</p>;
-          }
-
-          const user = users.map[userId];
-
-          return (
-            <p className={styles.userCell}>
-              <UserIcon color="gray" size={14} /> {user?.username ?? 'Unknown'}
-            </p>
-          );
-        },
-        enableSorting: false,
-        meta: {
-          renderColumnDisplayName: () => 'Created by',
-          renderFilterName: (userId: number) => `${users.map[userId]?.username ?? 'Unknown'}`,
-        },
-        filterFn: setIncludes,
-      }),
       accessor('completedAt', {
         header: 'Completed',
         cell: ({ row }) => {

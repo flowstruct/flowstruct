@@ -42,7 +42,7 @@ export const Route = createFileRoute('/_app/flowsheets/')({
           </HeaderMain>
 
           <HeaderActions>
-            <DataTableToolbar table={table} />
+            <DataTableToolbar enableSearch table={table} />
             <CreateFlowsheetModal />
           </HeaderActions>
         </Header>

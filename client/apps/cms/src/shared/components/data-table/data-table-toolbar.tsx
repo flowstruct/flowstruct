@@ -19,14 +19,18 @@ import { Divider } from '@/shared/components/ui/divider';
 import { Tooltip, TooltipTrigger } from '@/shared/components/ui/Tooltip';
 
 type DataTableToolbarProps<TData> = {
+  enableSearch?: boolean;
   table: Table<TData>;
 };
 
-export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>) {
+export function DataTableToolbar<TData>({
+  enableSearch = false,
+  table,
+}: DataTableToolbarProps<TData>) {
   return (
     <section className={styles.toolbar}>
       <ClearColumnFilters table={table} />
-      <DataTableSearch table={table} />
+      {enableSearch && <DataTableSearch table={table} />}
       <DataTableSettings table={table} />
     </section>
   );

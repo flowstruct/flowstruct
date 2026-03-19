@@ -5,7 +5,7 @@ export const RolePermissions: Record<keyof typeof Role, () => UserAction[]> = {
   EDITOR: () => ['site-generator:manage'] as const,
   APPROVER: () =>
     [
-      ...RolePermissions.GUEST(),
+      ...RolePermissions.EDITOR(),
       'study-plans:approve',
       'study-plans:archive',
       'programs:mark-outdated',

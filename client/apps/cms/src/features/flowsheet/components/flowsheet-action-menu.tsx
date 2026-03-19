@@ -89,6 +89,7 @@ export function FlowsheetActionsMenu({ flowsheet }: ActionsMenuProps) {
   return (
     <>
       <FormModal
+        size="md"
         open={cloneOpen}
         onOpenChange={setCloneOpen}
         onSubmit={(data) => {

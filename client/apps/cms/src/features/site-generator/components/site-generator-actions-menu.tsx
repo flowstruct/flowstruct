@@ -2,23 +2,15 @@ import { siteGeneratorApi } from '@/features/site-generator/api';
 import { SiteGenerationSummary } from '@/features/site-generator/domain/site-generator';
 import { userQueries } from '@/features/user/queries';
 import { usePermission } from '@/features/user/hooks/usePermission';
-import {
-  FormModal,
-  FormModalBody,
-  FormModalFooter,
-  FormModalHeader,
-  FormModalSubmit,
-} from '@/shared/components/form-modal';
-import { Breadcrumb, Breadcrumbs } from '@/shared/components/ui/breadcrumbs';
+import { ConfirmationModal } from '@/shared/components/confirmation-modal';
 import { Button } from '@/shared/components/ui/Button';
 import { Menu, MenuItem, MenuTrigger } from '@/shared/components/ui/Menu';
 import { Popover } from '@/shared/components/ui/Popover';
-import { useSuspenseQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Ellipsis, Download, Trash2, RotateCcw, User, FolderClock } from 'lucide-react';
+import { useSuspenseQuery, useMutation } from '@tanstack/react-query';
+import { Ellipsis, Download, Trash2, RotateCcw, User } from 'lucide-react';
 import React from 'react';
 import { formatTimeAgo } from '@/shared/utils/formatTimeAgo';
 import styles from './site-generator-actions-menu.module.css';
-import { siteGeneratorKeys } from '@/features/site-generator/queries';
 
 type SiteGeneratorActionsMenuProps = {
   generation: SiteGenerationSummary;
@@ -28,106 +20,39 @@ export function SiteGeneratorActionsMenu({ generation }: SiteGeneratorActionsMen
   const { data: users } = useSuspenseQuery(userQueries.collection);
   const createdBy = generation.createdBy ? users.map[generation.createdBy] : null;
   const { hasPermission } = usePermission();
-  const queryClient = useQueryClient();
   const [confirmDeleteOpen, setConfirmDeleteOpen] = React.useState(false);
-  const [confirmRetryOpen, setConfirmRetryOpen] = React.useState(false);
 
   const canManage = typeof hasPermission === 'function' && hasPermission('site-generator:manage');
 
   const deleteGeneration = useMutation({
     mutationFn: () => siteGeneratorApi.deleteGeneration(generation.id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: siteGeneratorKeys.collection() });
-      queryClient.invalidateQueries({ queryKey: siteGeneratorKeys.current() });
-    },
     meta: { successMessage: 'Generation deleted.' },
   });
 
-  const retryGeneration = useMutation({
+  const retry = useMutation({
     mutationFn: () => siteGeneratorApi.retryGeneration(generation.id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: siteGeneratorKeys.collection() });
-      queryClient.invalidateQueries({ queryKey: siteGeneratorKeys.current() });
-    },
     meta: { successMessage: 'Generation retry started.' },
   });
 
   const downloadGeneration = useMutation({
-    mutationFn: async () => {
-      const blob = await siteGeneratorApi.downloadGeneration(generation.id);
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `site-generation-${generation.id}.zip`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    },
+    mutationFn: handleDownload,
   });
+
+  const isPending = deleteGeneration.isPending || retry.isPending;
 
   return (
     <>
-      <FormModal
+      <ConfirmationModal
         open={confirmDeleteOpen}
         onOpenChange={setConfirmDeleteOpen}
-        onSubmit={async () => {
-          await deleteGeneration.mutateAsync();
-          return { id: generation.id };
-        }}
-        size="sm"
-      >
-        <FormModalBody>
-          <FormModalHeader>
-            <Breadcrumbs>
-              <Breadcrumb base>
-                <FolderClock size={15} /> Site Generations
-              </Breadcrumb>
-              <Breadcrumb>Delete generation</Breadcrumb>
-            </Breadcrumbs>
-          </FormModalHeader>
-          <p className={styles.confirmText}>
-            Are you sure you want to delete this generation? This action cannot be undone.
-          </p>
-        </FormModalBody>
-        <FormModalFooter>
-          <FormModalSubmit isPending={deleteGeneration.isPending}>
-            <Trash2 size={15} /> Delete
-          </FormModalSubmit>
-        </FormModalFooter>
-      </FormModal>
-
-      <FormModal
-        open={confirmRetryOpen}
-        onOpenChange={setConfirmRetryOpen}
-        onSubmit={async () => {
-          await retryGeneration.mutateAsync();
-          return { id: generation.id };
-        }}
-        size="sm"
-      >
-        <FormModalBody>
-          <FormModalHeader>
-            <Breadcrumbs>
-              <Breadcrumb base>
-                <FolderClock size={15} /> Site Generations
-              </Breadcrumb>
-              <Breadcrumb>Retry generation</Breadcrumb>
-            </Breadcrumbs>
-          </FormModalHeader>
-          <p className={styles.confirmText}>
-            This will create a new generation. The failed generation will be kept as history.
-          </p>
-        </FormModalBody>
-        <FormModalFooter>
-          <FormModalSubmit isPending={retryGeneration.isPending}>
-            <RotateCcw size={15} /> Retry
-          </FormModalSubmit>
-        </FormModalFooter>
-      </FormModal>
+        header="Delete generation"
+        text="Are you sure you want to delete this generation? This action cannot be undone."
+        submitLabel="Delete"
+        onConfirm={() => deleteGeneration.mutate()}
+      />
 
       <MenuTrigger>
-        <Button shape="icon" variant="ghost" isPending={downloadGeneration.isPending}>
+        <Button shape="icon" variant="ghost" isPending={isPending || downloadGeneration.isPending}>
           <Ellipsis size={15} />
         </Button>
 
@@ -140,7 +65,7 @@ export function SiteGeneratorActionsMenu({ generation }: SiteGeneratorActionsMen
             )}
 
             {generation.status === 'FAILED' && canManage && (
-              <MenuItem onAction={() => setConfirmRetryOpen(true)}>
+              <MenuItem onAction={() => retry.mutate()}>
                 <RotateCcw size={14} /> Retry
               </MenuItem>
             )}
@@ -169,4 +94,16 @@ export function SiteGeneratorActionsMenu({ generation }: SiteGeneratorActionsMen
       </MenuTrigger>
     </>
   );
+
+  async function handleDownload() {
+    const blob = await siteGeneratorApi.downloadGeneration(generation.id);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `site-generation-${generation.id}.zip`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
 }

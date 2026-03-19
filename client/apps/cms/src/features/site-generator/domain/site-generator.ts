@@ -14,3 +14,4 @@ export type SiteGeneration = SiteGenerationSummary & {
   sizeBytes: number | null;
   errorMessage: string | null;
 };
+

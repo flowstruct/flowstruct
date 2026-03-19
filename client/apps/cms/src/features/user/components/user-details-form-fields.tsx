@@ -13,6 +13,7 @@ export function UserDetailsFormFields({ defaultValues }: UserDetailsFormFieldsPr
   return (
     <section className={styles.fields}>
       <TextField
+        autoFocus
         name="username"
         label="Username"
         placeholder="Enter username"

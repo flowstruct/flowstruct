@@ -49,13 +49,13 @@ public class SiteGeneratorManagerService {
 
   @Transactional
   public SiteGenerationDto retryGeneration(long id) {
-    SiteGeneration generation =
+    SiteGeneration failedGeneration =
         siteGenerationRepository
             .findById(id)
             .orElseThrow(() -> new SiteGenerationNotFoundException(id));
 
-    if (generation.getStatus() != GenerationStatus.FAILED) {
-      throw new GenerationNotFailedException(id, generation.getStatus());
+    if (failedGeneration.getStatus() != GenerationStatus.FAILED) {
+      throw new GenerationNotFailedException(id, failedGeneration.getStatus());
     }
 
     checkForRunningBuild();

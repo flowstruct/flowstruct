@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.time.Instant;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.event.TransactionPhase;
@@ -64,7 +65,8 @@ public class SiteGeneratorExecutorService {
           generation.getId(),
           result.fileCount(),
           result.zipSize());
-
+    } catch (OptimisticLockingFailureException e) {
+      log.warn("Site generation {} was deleted during build, ignoring", generation.getId());
     } catch (Exception e) {
       log.error("Site generation {} failed: {}", generation.getId(), e.getMessage(), e);
 
