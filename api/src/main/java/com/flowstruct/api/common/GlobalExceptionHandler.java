@@ -9,6 +9,11 @@ import com.flowstruct.api.program.exception.InvalidDegreeException;
 import com.flowstruct.api.program.exception.ProgramNotFoundException;
 import com.flowstruct.api.program.exception.UniqueProgramException;
 import com.flowstruct.api.flowsheet.exception.*;
+import com.flowstruct.api.sitegenerator.exception.BuildAlreadyInProgressException;
+import com.flowstruct.api.sitegenerator.exception.BuildException;
+import com.flowstruct.api.sitegenerator.exception.GenerationNotCompletedException;
+import com.flowstruct.api.sitegenerator.exception.GenerationNotFailedException;
+import com.flowstruct.api.sitegenerator.exception.SiteGenerationNotFoundException;
 import com.flowstruct.api.user.exception.InvalidCredentialsException;
 import com.flowstruct.api.user.exception.InvalidPasswordException;
 import com.flowstruct.api.user.exception.UserNotFoundException;
@@ -361,6 +366,76 @@ public class GlobalExceptionHandler {
                         new Date()
                 ),
                 HttpStatus.BAD_REQUEST
+        );
+    }
+
+    @ExceptionHandler(BuildAlreadyInProgressException.class)
+    public ResponseEntity<ErrorObject> handleException(
+            BuildAlreadyInProgressException exception
+    ) {
+        return new ResponseEntity<>(
+                new ErrorObject(
+                        HttpStatus.CONFLICT.value(),
+                        List.of(exception.getMessage()),
+                        new Date()
+                ),
+                HttpStatus.CONFLICT
+        );
+    }
+
+    @ExceptionHandler(BuildException.class)
+    public ResponseEntity<ErrorObject> handleException(
+            BuildException exception
+    ) {
+        return new ResponseEntity<>(
+                new ErrorObject(
+                        HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                        List.of(exception.getMessage()),
+                        new Date()
+                ),
+                HttpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
+
+    @ExceptionHandler(GenerationNotCompletedException.class)
+    public ResponseEntity<ErrorObject> handleException(
+            GenerationNotCompletedException exception
+    ) {
+        return new ResponseEntity<>(
+                new ErrorObject(
+                        HttpStatus.BAD_REQUEST.value(),
+                        List.of(exception.getMessage()),
+                        new Date()
+                ),
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
+    @ExceptionHandler(GenerationNotFailedException.class)
+    public ResponseEntity<ErrorObject> handleException(
+            GenerationNotFailedException exception
+    ) {
+        return new ResponseEntity<>(
+                new ErrorObject(
+                        HttpStatus.BAD_REQUEST.value(),
+                        List.of(exception.getMessage()),
+                        new Date()
+                ),
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
+    @ExceptionHandler(SiteGenerationNotFoundException.class)
+    public ResponseEntity<ErrorObject> handleException(
+            SiteGenerationNotFoundException exception
+    ) {
+        return new ResponseEntity<>(
+                new ErrorObject(
+                        HttpStatus.NOT_FOUND.value(),
+                        List.of(exception.getMessage()),
+                        new Date()
+                ),
+                HttpStatus.NOT_FOUND
         );
     }
 }

@@ -19,24 +19,38 @@
 
 .statusSection {
   display: flex;
-  gap: var(--space-1);
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
   border-top: 1px solid var(--border-color);
   padding: var(--space-2) var(--space-3);
-  justify-content: center;
   font-size: var(--font-size-xs);
   font-weight: 450;
-}
+  color: var(--text-color-secondary);
 
-.statusSection[data-status='PENDING'] {
-  color: var(--text-color-dimmed);
-}
+  &[data-status='RUNNING']::before,
+  &[data-status='PENDING']::before {
+    content: '';
+    display: block;
+    flex-shrink: 0;
+    border-radius: 50%;
+  }
 
-.statusSection[data-status='RUNNING'] {
-  color: var(--primary-color);
-}
+  &[data-status='FAILED'] {
+    color: red;
+  }
 
-.statusSection[data-status='FAILED'] {
-  color: red;
+  &[data-status='RUNNING']::before {
+    width: 6px;
+    height: 6px;
+    background-color: darkgoldenrod;
+  }
+
+  &[data-status='PENDING']::before {
+    width: 5px;
+    height: 5px;
+    background-color: var(--primary-color);
+  }
 }
 
 .errorMessage {
@@ -44,4 +58,3 @@
   color: var(--text-color-dimmed);
   word-break: break-word;
 }
-

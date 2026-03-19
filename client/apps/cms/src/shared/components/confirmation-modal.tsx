@@ -71,7 +71,7 @@ export function ConfirmationModal({
             <Button variant="flat" size="sm" onPress={close}>
               {cancelLabel}
             </Button>
-            <Button variant="primary" size="sm" onPress={handleConfirm}>
+            <Button autoFocus variant="primary" size="sm" onPress={handleConfirm}>
               {submitIcon} {submitLabel}
             </Button>
           </div>
