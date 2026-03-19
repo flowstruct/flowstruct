@@ -121,6 +121,7 @@ export function FlowsheetActionsMenu({ flowsheet }: ActionsMenuProps) {
           </FormModalHeader>
 
           <FlowsheetFormFields
+            disableProgram
             programFormState={programFormState}
             defaultValues={{
               program: flowsheet.program,

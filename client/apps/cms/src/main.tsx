@@ -122,7 +122,6 @@ const queryClient = new QueryClient({
       retry: (failureCount, error) => {
         const errorBody = error as unknown as ErrorObject;
         if (errorBody.statusCode === 401) return false;
-        console.log('retry');
         return failureCount < 3;
       },
     },

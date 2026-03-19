@@ -16,8 +16,6 @@ export const Route = createRootRouteWithContext<{
         isAuthenticated: true,
       };
     } catch {
-      console.log('root route isAuthenticated: false');
-
       return {
         isAuthenticated: false,
       };

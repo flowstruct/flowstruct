@@ -1,12 +1,12 @@
-import { ZodError, ZodType } from "zod/v4";
-import { FieldError, FieldErrors, FieldValues } from "react-hook-form";
+import { ZodError, ZodType } from 'zod/v4';
+import { FieldError, FieldErrors, FieldValues } from 'react-hook-form';
 
 // Utility to convert ZodError to Hook Form-compatible FieldErrors
 const zodToHookFormErrors = (zodError: ZodError): FieldErrors => {
   const errors: FieldErrors = {};
 
   for (const issue of zodError.issues) {
-    const path = issue.path.join(".") || "root";
+    const path = issue.path.join('.') || 'root';
     errors[path] = {
       type: issue.code,
       message: issue.message,
@@ -39,16 +39,16 @@ export const customResolver = (schema: ZodType) => {
         };
       }
     } catch (error) {
-      console.error("Resolver error: ", error);
       return {
         values: {},
         errors: {
           root: {
-            type: "unknown",
-            message: "An unknown error occurred during validation",
+            type: 'unknown',
+            message: 'An unknown error occurred during validation',
           } as FieldError,
         },
       };
     }
   };
 };
+

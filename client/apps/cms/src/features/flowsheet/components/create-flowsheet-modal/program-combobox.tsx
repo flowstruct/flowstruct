@@ -12,11 +12,16 @@ import { CreateProgramForm } from './create-program-form';
 import { UnstyledButton } from '@/shared/components/ui/UnstyledButton';
 
 type ProgramComboBoxProps = {
+  isDisabled?: boolean;
   programFormState: DisclosureState;
   defaultProgramId?: number;
 };
 
-export function ProgramComboBox({ programFormState, defaultProgramId }: ProgramComboBoxProps) {
+export function ProgramComboBox({
+  isDisabled = false,
+  programFormState,
+  defaultProgramId,
+}: ProgramComboBoxProps) {
   const { data: programs } = useSuspenseQuery(programQueries.collection);
   const comboBoxState = useComboBoxState({
     items: programs.byIds,
@@ -43,6 +48,7 @@ export function ProgramComboBox({ programFormState, defaultProgramId }: ProgramC
   return (
     <>
       <ComboBox
+        isDisabled={isDisabled}
         name="program"
         aria-label="Flowsheet program"
         size="lg"

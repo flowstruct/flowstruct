@@ -43,9 +43,11 @@ export function ComboBox<T extends object>({
       <Label>{label}</Label>
       <Group>
         <Input placeholder={placeholder} />
-        <FieldButton>
-          <ChevronDown size={15} />
-        </FieldButton>
+        {!props.isDisabled && (
+          <FieldButton>
+            <ChevronDown size={15} />
+          </FieldButton>
+        )}
       </Group>
       {description && <Text slot="description">{description}</Text>}
       <FieldError>{errorMessage}</FieldError>

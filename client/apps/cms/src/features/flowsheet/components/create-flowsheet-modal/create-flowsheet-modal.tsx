@@ -29,13 +29,19 @@ type FlowsheetFormFieldsProps = {
     year?: number;
     name?: string;
   };
+  disableProgram?: boolean;
 };
 
-export function FlowsheetFormFields({ programFormState, defaultValues }: FlowsheetFormFieldsProps) {
+export function FlowsheetFormFields({
+  disableProgram,
+  programFormState,
+  defaultValues,
+}: FlowsheetFormFieldsProps) {
   return (
     <section className={styles.form}>
       <section className={styles.programAndName}>
         <ProgramComboBox
+          isDisabled={disableProgram}
           programFormState={programFormState}
           defaultProgramId={defaultValues?.program}
         />
