@@ -9,6 +9,7 @@ interface ButtonProps extends RACButtonProps {
   shape?: 'button' | 'icon';
   showIndicator?: boolean;
   fullWidth?: boolean;
+  theme?: 'danger' | 'normal';
   className?: string;
 }
 
@@ -18,6 +19,7 @@ export function Button({
   shape = 'button',
   showIndicator = false,
   fullWidth = false,
+  theme = 'normal',
   className,
   isPending = false,
   children,
@@ -28,6 +30,7 @@ export function Button({
       {...props}
       data-variant={variant}
       data-size={size}
+      data-theme={theme}
       data-show-indicator={showIndicator ? true : undefined}
       data-full-width={fullWidth ? true : undefined}
       data-shape={shape}

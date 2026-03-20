@@ -162,7 +162,9 @@
   --overlay-background: var(--background-color);
   --button-background-hovered: var(--primary-12);
   --button-background: var(--primary-11);
-  --button-background-pressed: var(--primary-10);
+  --button-background-danger: #ff0a3f;
+  --button-background-danger-hovered: #e00031;
+  --button-background-pressed: var(--primary-9);
 
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.8125rem;

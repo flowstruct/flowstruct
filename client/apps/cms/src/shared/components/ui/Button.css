@@ -161,3 +161,10 @@
   width: 100%;
 }
 
+.react-aria-Button[data-theme='danger'] {
+  background: var(--button-background-danger);
+
+  &[data-hovered] {
+    background: var(--button-background-danger-hovered);
+  }
+}

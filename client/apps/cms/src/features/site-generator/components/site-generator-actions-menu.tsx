@@ -7,7 +7,7 @@ import { Button } from '@/shared/components/ui/Button';
 import { Menu, MenuItem, MenuTrigger } from '@/shared/components/ui/Menu';
 import { Popover } from '@/shared/components/ui/Popover';
 import { useSuspenseQuery, useMutation } from '@tanstack/react-query';
-import { Ellipsis, Download, Trash2, RotateCcw, User } from 'lucide-react';
+import { Ellipsis, Download, Trash2, RotateCcw, User, Trash } from 'lucide-react';
 import React from 'react';
 import { formatTimeAgo } from '@/shared/utils/formatTimeAgo';
 import styles from './site-generator-actions-menu.module.css';
@@ -48,6 +48,8 @@ export function SiteGeneratorActionsMenu({ generation }: SiteGeneratorActionsMen
         header="Delete generation"
         text="Are you sure you want to delete this generation? This action cannot be undone."
         submitLabel="Delete"
+        submitIcon={<Trash size={14} />}
+        theme="danger"
         onConfirm={() => deleteGeneration.mutate()}
       />
 

@@ -28,6 +28,7 @@ type ConfirmationModalProps = {
   submitLabel?: string;
   submitIcon?: React.ReactNode;
   cancelLabel?: string;
+  theme?: 'danger' | 'normal';
   children?: React.ReactNode;
 };
 
@@ -39,6 +40,7 @@ export function ConfirmationModal({
   onConfirm,
   submitLabel = 'Confirm',
   submitIcon,
+  theme = 'normal',
   cancelLabel = 'Cancel',
   children,
 }: ConfirmationModalProps) {
@@ -71,7 +73,7 @@ export function ConfirmationModal({
             <Button variant="flat" size="sm" onPress={close}>
               {cancelLabel}
             </Button>
-            <Button autoFocus variant="primary" size="sm" onPress={handleConfirm}>
+            <Button theme={theme} autoFocus variant="primary" size="sm" onPress={handleConfirm}>
               {submitIcon} {submitLabel}
             </Button>
           </div>
