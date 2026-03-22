@@ -14,4 +14,4 @@ deps = { depends = "[deps:*]" }
 db = { run = "cd api && docker compose up" }
 "db:down" = { run = "cd api && docker compose down -v" }
 api = { run = "cd api && mvn clean spring-boot:run" }
-client = { run = "cd client && pnpm start:cms" }
+client = { run = "cd client && pnpm start" }

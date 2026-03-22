@@ -1,7 +1,7 @@
 import { NumberField } from '@/shared/components/ui/NumberField';
 import { useMutation } from '@tanstack/react-query';
 import { Button } from '@/shared/components/ui/Button';
-import { CalendarDays, Grid2X2, Layers2, Plus, Tag } from 'lucide-react';
+import { CalendarDays, Grid2X2, Layers2, Plus, SquarePlus, Tag } from 'lucide-react';
 import styles from './create-flowsheet-modal.module.css';
 import { Breadcrumb, Breadcrumbs } from '@/shared/components/ui/breadcrumbs';
 import { TextField } from '@/shared/components/ui/TextField';
@@ -12,6 +12,7 @@ import { ProgramComboBox } from '@/features/flowsheet/components/create-flowshee
 import {
   FormModal,
   FormModalBody,
+  FormModalContent,
   FormModalFooter,
   FormModalHeader,
   FormModalSubmit,
@@ -49,6 +50,7 @@ export function FlowsheetFormFields({
         <TextField
           name="name"
           aria-label="Flowsheet name"
+          autoComplete="off"
           icon={<Tag size={14} />}
           variant="transparent"
           placeholder="Enter an optional name (e.g., General, Data Science, Cybersecurity)"
@@ -122,21 +124,23 @@ export function CreateFlowsheetModal() {
             </Breadcrumb>
 
             <Breadcrumb>
-              <Grid2X2 size={15} color="teal" /> New flowsheet
+              <SquarePlus size={15} color="teal" /> New flowsheet
             </Breadcrumb>
           </Breadcrumbs>
         </FormModalHeader>
 
-        <FlowsheetFormFields programFormState={programFormState} />
+        <FormModalContent>
+          <FlowsheetFormFields programFormState={programFormState} />
+        </FormModalContent>
+
+        <FormModalFooter>
+          <NavigateToFlowsheetSwitch value={navigateAfter} onChange={setNavigateAfter} />
+
+          <FormModalSubmit isPending={createFlowsheet.isPending}>
+            <Grid2X2 size={15} /> Create
+          </FormModalSubmit>
+        </FormModalFooter>
       </FormModalBody>
-
-      <FormModalFooter>
-        <NavigateToFlowsheetSwitch value={navigateAfter} onChange={setNavigateAfter} />
-
-        <FormModalSubmit isPending={createFlowsheet.isPending}>
-          <Grid2X2 size={15} /> Create
-        </FormModalSubmit>
-      </FormModalFooter>
     </FormModal>
   );
 }

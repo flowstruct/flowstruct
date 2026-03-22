@@ -1,0 +1,11 @@
+.statusIcon {
+  display: flex;
+  position: relative;
+  width: fit-content;
+  height: fit-content;
+  color: var(--text-color-secondary);
+
+  &[data-outdated] {
+    opacity: 0.4;
+  }
+}

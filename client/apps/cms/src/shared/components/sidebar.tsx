@@ -1,7 +1,17 @@
 import styles from './sidebar.module.css';
 import { UnstyledButton } from '@/shared/components/ui/UnstyledButton';
 import { Menu, MenuItem, MenuTrigger } from '@/shared/components/ui/Menu';
-import { ChevronsUpDown, Crown, Layers2, LogOut, Pencil, Save, User, FolderUp } from 'lucide-react';
+import {
+  ChevronsUpDown,
+  Crown,
+  Layers2,
+  LogOut,
+  Pencil,
+  Save,
+  User,
+  FolderUp,
+  Folder,
+} from 'lucide-react';
 import { Role } from '@/features/user/domain/user';
 import { Popover } from '@/shared/components/ui/Popover';
 import { getUserInitials } from '@/features/user/domain/getUserInitials';
@@ -36,31 +46,16 @@ const sidebarSections = [
       },
     ],
   },
-  // {
-  //   header: 'Catalog',
-  //   items: [
-  //     {
-  //       icon: Folder,
-  //       label: 'Schools',
-  //       route: '/schools',
-  //     },
-  //     {
-  //       icon: Folder,
-  //       label: 'Departments',
-  //       route: '/departments',
-  //     },
-  //     {
-  //       icon: Folder,
-  //       label: 'Programs',
-  //       route: '/programs',
-  //     },
-  //     {
-  //       icon: Folder,
-  //       label: 'Courses',
-  //       route: '/courses',
-  //     },
-  //   ],
-  // },
+  {
+    header: 'Catalog',
+    items: [
+      {
+        icon: Folder,
+        label: 'Programs',
+        route: '/programs',
+      },
+    ],
+  },
   // {
   //   header: 'Admin',
   //   items: [
@@ -210,13 +205,13 @@ export function UserProfile() {
           </FormModalHeader>
 
           <UserDetailsFormFields defaultValues={{ username: me.username, email: me.email }} />
-        </FormModalBody>
 
-        <FormModalFooter>
-          <FormModalSubmit isPending={isPending}>
-            <Save size={15} /> Save
-          </FormModalSubmit>
-        </FormModalFooter>
+          <FormModalFooter>
+            <FormModalSubmit isPending={isPending}>
+              <Save size={15} /> Save
+            </FormModalSubmit>
+          </FormModalFooter>
+        </FormModalBody>
       </FormModal>
 
       <MenuTrigger>

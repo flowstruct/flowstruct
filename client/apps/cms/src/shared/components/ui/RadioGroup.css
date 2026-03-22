@@ -1,4 +1,4 @@
-@import "./theme.css";
+@import './theme.css';
 
 .react-aria-RadioGroup {
   display: flex;
@@ -6,11 +6,11 @@
   gap: 8px;
   color: var(--text-color);
 
-  [slot=description] {
+  [slot='description'] {
     font-size: 12px;
   }
 
-  &[data-orientation=horizontal] {
+  &[data-orientation='horizontal'] {
     flex-direction: row;
     align-items: center;
   }

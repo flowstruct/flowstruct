@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 import { Modal } from '@/shared/components/ui/Modal';
 import { Form } from '@/shared/components/ui/Form';
 import { Button } from '@/shared/components/ui/Button';
@@ -11,15 +11,14 @@ type FormModalContextValue = {
   isOpen: boolean;
   open: () => void;
   close: () => void;
-  _setIntendedSubmit: (val: boolean) => void;
 };
 
 const FormModalContext = React.createContext<FormModalContextValue | undefined>(undefined);
 
 const useFormModalContext = () => {
-  const ctx = React.useContext(FormModalContext);
-  if (!ctx) throw new Error('Must be used within a FormModal.');
-  return ctx;
+  const context = React.useContext(FormModalContext);
+  if (!context) throw new Error('Must be used within a FormModal.');
+  return context;
 };
 
 type FormModalProps = {
@@ -38,7 +37,6 @@ export function FormModal({
   children,
 }: FormModalProps) {
   const [internalOpen, setInternalOpen] = React.useState(false);
-  const intendedSubmitRef = React.useRef(false);
 
   const isControlled = controlledOpen !== undefined;
   const isOpen = isControlled ? controlledOpen : internalOpen;
@@ -52,8 +50,6 @@ export function FormModal({
   }, [isControlled, onOpenChange]);
 
   const onFormSubmit = handleSubmit((formData) => {
-    if (!intendedSubmitRef.current) return;
-    intendedSubmitRef.current = false;
     onSubmit(formData);
     close();
   });
@@ -74,9 +70,6 @@ export function FormModal({
         isOpen,
         open,
         close,
-        _setIntendedSubmit: (val) => {
-          intendedSubmitRef.current = val;
-        },
       }}
     >
       {trigger}
@@ -102,7 +95,7 @@ export function FormModalHeader({ children }: { children: React.ReactNode }) {
   return (
     <header className={styles.header}>
       {children}
-      <Button variant="transparent" shape="icon" onPress={close}>
+      <Button variant="transparent" size="xs" shape="icon" onPress={close}>
         <X size={14} />
       </Button>
     </header>
@@ -110,6 +103,10 @@ export function FormModalHeader({ children }: { children: React.ReactNode }) {
 }
 
 export function FormModalBody({ children }: { children: React.ReactNode }) {
+  return <div className={styles.body}>{children}</div>;
+}
+
+export function FormModalContent({ children }: PropsWithChildren) {
   return <div className={styles.content}>{children}</div>;
 }
 
@@ -128,17 +125,8 @@ type FormModalSubmitProps = {
 };
 
 export function FormModalSubmit({ isPending, children }: FormModalSubmitProps) {
-  const { _setIntendedSubmit, close } = useFormModalContext();
   return (
-    <Button
-      isPending={isPending}
-      variant="primary"
-      type="submit"
-      onPress={() => {
-        if (!isPending) close();
-        _setIntendedSubmit(true);
-      }}
-    >
+    <Button isPending={isPending} variant="primary" type="submit">
       {children}
     </Button>
   );

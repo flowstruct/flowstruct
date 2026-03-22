@@ -12,8 +12,10 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppRouteRouteImport } from './routes/_app/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppProgramsRouteRouteImport } from './routes/_app/programs/route'
 import { Route as AppFlowsheetsRouteRouteImport } from './routes/_app/flowsheets/route'
 import { Route as AppSiteGenerationsIndexRouteImport } from './routes/_app/site-generations/index'
+import { Route as AppProgramsIndexRouteImport } from './routes/_app/programs/index'
 import { Route as AppFlowsheetsIndexRouteImport } from './routes/_app/flowsheets/index'
 import { Route as AppFlowsheetsFlowsheetIdRouteImport } from './routes/_app/flowsheets/$flowsheetId'
 
@@ -31,6 +33,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppProgramsRouteRoute = AppProgramsRouteRouteImport.update({
+  id: '/programs',
+  path: '/programs',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 const AppFlowsheetsRouteRoute = AppFlowsheetsRouteRouteImport.update({
   id: '/flowsheets',
   path: '/flowsheets',
@@ -40,6 +47,11 @@ const AppSiteGenerationsIndexRoute = AppSiteGenerationsIndexRouteImport.update({
   id: '/site-generations/',
   path: '/site-generations/',
   getParentRoute: () => AppRouteRoute,
+} as any)
+const AppProgramsIndexRoute = AppProgramsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppProgramsRouteRoute,
 } as any)
 const AppFlowsheetsIndexRoute = AppFlowsheetsIndexRouteImport.update({
   id: '/',
@@ -57,8 +69,10 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/flowsheets': typeof AppFlowsheetsRouteRouteWithChildren
+  '/programs': typeof AppProgramsRouteRouteWithChildren
   '/flowsheets/$flowsheetId': typeof AppFlowsheetsFlowsheetIdRoute
   '/flowsheets/': typeof AppFlowsheetsIndexRoute
+  '/programs/': typeof AppProgramsIndexRoute
   '/site-generations/': typeof AppSiteGenerationsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -66,6 +80,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/flowsheets/$flowsheetId': typeof AppFlowsheetsFlowsheetIdRoute
   '/flowsheets': typeof AppFlowsheetsIndexRoute
+  '/programs': typeof AppProgramsIndexRoute
   '/site-generations': typeof AppSiteGenerationsIndexRoute
 }
 export interface FileRoutesById {
@@ -74,8 +89,10 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteRouteWithChildren
   '/login': typeof LoginRoute
   '/_app/flowsheets': typeof AppFlowsheetsRouteRouteWithChildren
+  '/_app/programs': typeof AppProgramsRouteRouteWithChildren
   '/_app/flowsheets/$flowsheetId': typeof AppFlowsheetsFlowsheetIdRoute
   '/_app/flowsheets/': typeof AppFlowsheetsIndexRoute
+  '/_app/programs/': typeof AppProgramsIndexRoute
   '/_app/site-generations/': typeof AppSiteGenerationsIndexRoute
 }
 export interface FileRouteTypes {
@@ -84,8 +101,10 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/flowsheets'
+    | '/programs'
     | '/flowsheets/$flowsheetId'
     | '/flowsheets/'
+    | '/programs/'
     | '/site-generations/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -93,6 +112,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/flowsheets/$flowsheetId'
     | '/flowsheets'
+    | '/programs'
     | '/site-generations'
   id:
     | '__root__'
@@ -100,8 +120,10 @@ export interface FileRouteTypes {
     | '/_app'
     | '/login'
     | '/_app/flowsheets'
+    | '/_app/programs'
     | '/_app/flowsheets/$flowsheetId'
     | '/_app/flowsheets/'
+    | '/_app/programs/'
     | '/_app/site-generations/'
   fileRoutesById: FileRoutesById
 }
@@ -134,6 +156,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/programs': {
+      id: '/_app/programs'
+      path: '/programs'
+      fullPath: '/programs'
+      preLoaderRoute: typeof AppProgramsRouteRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
     '/_app/flowsheets': {
       id: '/_app/flowsheets'
       path: '/flowsheets'
@@ -147,6 +176,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/site-generations/'
       preLoaderRoute: typeof AppSiteGenerationsIndexRouteImport
       parentRoute: typeof AppRouteRoute
+    }
+    '/_app/programs/': {
+      id: '/_app/programs/'
+      path: '/'
+      fullPath: '/programs/'
+      preLoaderRoute: typeof AppProgramsIndexRouteImport
+      parentRoute: typeof AppProgramsRouteRoute
     }
     '/_app/flowsheets/': {
       id: '/_app/flowsheets/'
@@ -178,13 +214,26 @@ const AppFlowsheetsRouteRouteChildren: AppFlowsheetsRouteRouteChildren = {
 const AppFlowsheetsRouteRouteWithChildren =
   AppFlowsheetsRouteRoute._addFileChildren(AppFlowsheetsRouteRouteChildren)
 
+interface AppProgramsRouteRouteChildren {
+  AppProgramsIndexRoute: typeof AppProgramsIndexRoute
+}
+
+const AppProgramsRouteRouteChildren: AppProgramsRouteRouteChildren = {
+  AppProgramsIndexRoute: AppProgramsIndexRoute,
+}
+
+const AppProgramsRouteRouteWithChildren =
+  AppProgramsRouteRoute._addFileChildren(AppProgramsRouteRouteChildren)
+
 interface AppRouteRouteChildren {
   AppFlowsheetsRouteRoute: typeof AppFlowsheetsRouteRouteWithChildren
+  AppProgramsRouteRoute: typeof AppProgramsRouteRouteWithChildren
   AppSiteGenerationsIndexRoute: typeof AppSiteGenerationsIndexRoute
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppFlowsheetsRouteRoute: AppFlowsheetsRouteRouteWithChildren,
+  AppProgramsRouteRoute: AppProgramsRouteRouteWithChildren,
   AppSiteGenerationsIndexRoute: AppSiteGenerationsIndexRoute,
 }
 

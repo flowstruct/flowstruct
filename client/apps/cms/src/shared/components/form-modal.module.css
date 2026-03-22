@@ -1,12 +1,11 @@
-.content {
+.body {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
-  padding: var(--space-4) var(--space-5);
+  gap: var(--space-5);
+  padding: var(--space-5) var(--space-5);
 }
 
 .header {
-  min-height: 1rem;
   display: flex;
   gap: var(--space-2);
   justify-content: space-between;
@@ -16,5 +15,4 @@
   display: flex;
   gap: var(--space-5);
   justify-content: end;
-  padding: var(--space-4) var(--space-5);
 }
