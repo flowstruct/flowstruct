@@ -14,7 +14,6 @@ import {
   Folder,
   GraduationCap,
   Layers2,
-  LibraryBig,
   Plus,
   PlusSquare,
 } from 'lucide-react';
@@ -33,6 +32,7 @@ import { Breadcrumb, Breadcrumbs } from '@/shared/components/ui/breadcrumbs';
 import { programApi } from '@/features/program/api';
 import { Program } from '@/features/program/domain/program';
 import { programKeys } from '@/features/program/queries';
+import { Scrollable } from '@/shared/components/scrollable';
 
 type ProgramsSearch = {
   tab: ProgramStatus;
@@ -70,7 +70,9 @@ function ProgramsPage() {
         </HeaderActions>
       </Header>
 
-      <DataTable table={table} />
+      <Scrollable>
+        <DataTable table={table} />
+      </Scrollable>
     </>
   );
 }

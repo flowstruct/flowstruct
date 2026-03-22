@@ -11,6 +11,7 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { getFlowsheetsByArchiveStatus } from '@/features/flowsheet/domain/getFlowsheetsByArchiveStatus';
 import { TabOption } from '@/shared/types';
 import { CircleDashed, CircleDot, Layers2 } from 'lucide-react';
+import { Scrollable } from '@/shared/components/scrollable';
 
 type FlowsheetSearch = {
   tab: ArchiveStatus;
@@ -47,7 +48,9 @@ export const Route = createFileRoute('/_app/flowsheets/')({
           </HeaderActions>
         </Header>
 
-        <DataTable table={table} />
+        <Scrollable>
+          <DataTable table={table} />
+        </Scrollable>
       </>
     );
   },

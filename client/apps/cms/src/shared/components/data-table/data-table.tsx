@@ -10,6 +10,7 @@ import React from 'react';
 import { AriaButtonProps, useButton, useFilter, useFocusRing, useHover } from 'react-aria';
 import { ListEmptyState } from '@/shared/components/ui/ListBox';
 import { SearchField } from '@/shared/components/ui/SearchField';
+import { DataTablePagination } from '@/shared/components/data-table/data-table-pagination';
 
 type DataTableProps<TData> = {
   table: TanStackTable<TData>;
@@ -62,6 +63,7 @@ export function DataTable<TData>({ table }: DataTableProps<TData>) {
           )}
         </tbody>
       </table>
+      <DataTablePagination table={table} />
     </>
   );
 }

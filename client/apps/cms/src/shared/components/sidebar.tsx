@@ -36,7 +36,7 @@ const sidebarSections = [
     items: [
       {
         icon: FolderUp,
-        label: 'Site Generator',
+        label: 'Generate site',
         route: '/site-generations',
       },
       {
@@ -54,23 +54,23 @@ const sidebarSections = [
         label: 'Programs',
         route: '/programs',
       },
+      {
+        icon: Folder,
+        label: 'Courses',
+        route: '/courses',
+      },
     ],
   },
-  // {
-  //   header: 'Admin',
-  //   items: [
-  //     {
-  //       icon: User,
-  //       label: 'Manage users',
-  //       route: '/admin/users',
-  //     },
-  //     {
-  //       icon: Brush,
-  //       label: 'Style editor',
-  //       route: '/admin/style',
-  //     },
-  //   ],
-  // },
+  {
+    header: 'Admin',
+    items: [
+      {
+        icon: User,
+        label: 'Manage users',
+        route: '/admin/users',
+      },
+    ],
+  },
 ];
 
 const footerItems = [

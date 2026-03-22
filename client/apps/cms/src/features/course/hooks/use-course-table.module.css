@@ -1,0 +1,12 @@
+.courseCell {
+  display: flex;
+  gap: var(--space-8);
+  align-items: center;
+}
+
+.actionsMenu {
+  display: flex;
+  padding: 0 var(--space-4);
+  justify-content: end;
+}
+

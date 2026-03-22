@@ -1,17 +1,17 @@
 .appShell {
-    display: flex;
-    height: 100vh;
-    overflow: hidden; /* Prevent body scroll */
+  display: flex;
+  height: 100svh;
 }
 
 .mainContainer {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 main {
-    overflow: auto;
-    flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex: 1;
 }

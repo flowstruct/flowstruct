@@ -14,9 +14,11 @@ import { Route as AppRouteRouteImport } from './routes/_app/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppProgramsRouteRouteImport } from './routes/_app/programs/route'
 import { Route as AppFlowsheetsRouteRouteImport } from './routes/_app/flowsheets/route'
+import { Route as AppCoursesRouteRouteImport } from './routes/_app/courses/route'
 import { Route as AppSiteGenerationsIndexRouteImport } from './routes/_app/site-generations/index'
 import { Route as AppProgramsIndexRouteImport } from './routes/_app/programs/index'
 import { Route as AppFlowsheetsIndexRouteImport } from './routes/_app/flowsheets/index'
+import { Route as AppCoursesIndexRouteImport } from './routes/_app/courses/index'
 import { Route as AppFlowsheetsFlowsheetIdRouteImport } from './routes/_app/flowsheets/$flowsheetId'
 
 const LoginRoute = LoginRouteImport.update({
@@ -43,6 +45,11 @@ const AppFlowsheetsRouteRoute = AppFlowsheetsRouteRouteImport.update({
   path: '/flowsheets',
   getParentRoute: () => AppRouteRoute,
 } as any)
+const AppCoursesRouteRoute = AppCoursesRouteRouteImport.update({
+  id: '/courses',
+  path: '/courses',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 const AppSiteGenerationsIndexRoute = AppSiteGenerationsIndexRouteImport.update({
   id: '/site-generations/',
   path: '/site-generations/',
@@ -58,6 +65,11 @@ const AppFlowsheetsIndexRoute = AppFlowsheetsIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppFlowsheetsRouteRoute,
 } as any)
+const AppCoursesIndexRoute = AppCoursesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppCoursesRouteRoute,
+} as any)
 const AppFlowsheetsFlowsheetIdRoute =
   AppFlowsheetsFlowsheetIdRouteImport.update({
     id: '/$flowsheetId',
@@ -68,9 +80,11 @@ const AppFlowsheetsFlowsheetIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/courses': typeof AppCoursesRouteRouteWithChildren
   '/flowsheets': typeof AppFlowsheetsRouteRouteWithChildren
   '/programs': typeof AppProgramsRouteRouteWithChildren
   '/flowsheets/$flowsheetId': typeof AppFlowsheetsFlowsheetIdRoute
+  '/courses/': typeof AppCoursesIndexRoute
   '/flowsheets/': typeof AppFlowsheetsIndexRoute
   '/programs/': typeof AppProgramsIndexRoute
   '/site-generations/': typeof AppSiteGenerationsIndexRoute
@@ -79,6 +93,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/flowsheets/$flowsheetId': typeof AppFlowsheetsFlowsheetIdRoute
+  '/courses': typeof AppCoursesIndexRoute
   '/flowsheets': typeof AppFlowsheetsIndexRoute
   '/programs': typeof AppProgramsIndexRoute
   '/site-generations': typeof AppSiteGenerationsIndexRoute
@@ -88,9 +103,11 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_app': typeof AppRouteRouteWithChildren
   '/login': typeof LoginRoute
+  '/_app/courses': typeof AppCoursesRouteRouteWithChildren
   '/_app/flowsheets': typeof AppFlowsheetsRouteRouteWithChildren
   '/_app/programs': typeof AppProgramsRouteRouteWithChildren
   '/_app/flowsheets/$flowsheetId': typeof AppFlowsheetsFlowsheetIdRoute
+  '/_app/courses/': typeof AppCoursesIndexRoute
   '/_app/flowsheets/': typeof AppFlowsheetsIndexRoute
   '/_app/programs/': typeof AppProgramsIndexRoute
   '/_app/site-generations/': typeof AppSiteGenerationsIndexRoute
@@ -100,9 +117,11 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/login'
+    | '/courses'
     | '/flowsheets'
     | '/programs'
     | '/flowsheets/$flowsheetId'
+    | '/courses/'
     | '/flowsheets/'
     | '/programs/'
     | '/site-generations/'
@@ -111,6 +130,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/flowsheets/$flowsheetId'
+    | '/courses'
     | '/flowsheets'
     | '/programs'
     | '/site-generations'
@@ -119,9 +139,11 @@ export interface FileRouteTypes {
     | '/'
     | '/_app'
     | '/login'
+    | '/_app/courses'
     | '/_app/flowsheets'
     | '/_app/programs'
     | '/_app/flowsheets/$flowsheetId'
+    | '/_app/courses/'
     | '/_app/flowsheets/'
     | '/_app/programs/'
     | '/_app/site-generations/'
@@ -170,6 +192,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppFlowsheetsRouteRouteImport
       parentRoute: typeof AppRouteRoute
     }
+    '/_app/courses': {
+      id: '/_app/courses'
+      path: '/courses'
+      fullPath: '/courses'
+      preLoaderRoute: typeof AppCoursesRouteRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
     '/_app/site-generations/': {
       id: '/_app/site-generations/'
       path: '/site-generations'
@@ -191,6 +220,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppFlowsheetsIndexRouteImport
       parentRoute: typeof AppFlowsheetsRouteRoute
     }
+    '/_app/courses/': {
+      id: '/_app/courses/'
+      path: '/'
+      fullPath: '/courses/'
+      preLoaderRoute: typeof AppCoursesIndexRouteImport
+      parentRoute: typeof AppCoursesRouteRoute
+    }
     '/_app/flowsheets/$flowsheetId': {
       id: '/_app/flowsheets/$flowsheetId'
       path: '/$flowsheetId'
@@ -200,6 +236,18 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface AppCoursesRouteRouteChildren {
+  AppCoursesIndexRoute: typeof AppCoursesIndexRoute
+}
+
+const AppCoursesRouteRouteChildren: AppCoursesRouteRouteChildren = {
+  AppCoursesIndexRoute: AppCoursesIndexRoute,
+}
+
+const AppCoursesRouteRouteWithChildren = AppCoursesRouteRoute._addFileChildren(
+  AppCoursesRouteRouteChildren,
+)
 
 interface AppFlowsheetsRouteRouteChildren {
   AppFlowsheetsFlowsheetIdRoute: typeof AppFlowsheetsFlowsheetIdRoute
@@ -226,12 +274,14 @@ const AppProgramsRouteRouteWithChildren =
   AppProgramsRouteRoute._addFileChildren(AppProgramsRouteRouteChildren)
 
 interface AppRouteRouteChildren {
+  AppCoursesRouteRoute: typeof AppCoursesRouteRouteWithChildren
   AppFlowsheetsRouteRoute: typeof AppFlowsheetsRouteRouteWithChildren
   AppProgramsRouteRoute: typeof AppProgramsRouteRouteWithChildren
   AppSiteGenerationsIndexRoute: typeof AppSiteGenerationsIndexRoute
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
+  AppCoursesRouteRoute: AppCoursesRouteRouteWithChildren,
   AppFlowsheetsRouteRoute: AppFlowsheetsRouteRouteWithChildren,
   AppProgramsRouteRoute: AppProgramsRouteRouteWithChildren,
   AppSiteGenerationsIndexRoute: AppSiteGenerationsIndexRoute,

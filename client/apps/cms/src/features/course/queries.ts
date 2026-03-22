@@ -2,10 +2,14 @@ import { infiniteQueryOptions, keepPreviousData, queryOptions } from '@tanstack/
 import { courseApi } from '@/features/course/api';
 import { SearchOptions } from '@/shared/types';
 
+type CoursePageOptions = SearchOptions & {
+  status?: 'all' | 'active' | 'outdated';
+};
+
 export const courseKeys = {
   all: ['courses'] as const,
   pages: () => [...courseKeys.all, 'page'] as const,
-  page: (options: SearchOptions) => [...courseKeys.pages(), options] as const,
+  page: (options: CoursePageOptions) => [...courseKeys.pages(), options] as const,
   details: () => [...courseKeys.all, 'detail'] as const,
   detail: (id: number) => [...courseKeys.details(), id] as const,
   catalogs: () => [...courseKeys.all, 'catalog'] as const,
@@ -19,10 +23,16 @@ export const courseQueries = {
       queryFn: () => courseApi.getCourse(courseId),
     }),
 
-  page: (options: SearchOptions) =>
+  page: (options: CoursePageOptions) =>
     queryOptions({
       queryKey: courseKeys.page(options),
-      queryFn: () => courseApi.getPaginatedCourses(options),
+      queryFn: () =>
+        courseApi.getPaginatedCourses({
+          filter: options.filter,
+          page: options.page,
+          size: options.size,
+          status: options.status ?? 'all',
+        }),
       placeholderData: keepPreviousData,
     }),
 

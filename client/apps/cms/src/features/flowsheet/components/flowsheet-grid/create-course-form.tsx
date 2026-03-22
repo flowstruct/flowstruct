@@ -4,17 +4,13 @@ import { InfiniteData, useMutation, useQueryClient } from '@tanstack/react-query
 import { courseApi } from '@/features/course/api';
 import { handleSubmit } from '@/shared/utils/handle-submit';
 import styles from './create-course-form.module.css';
-import { TextField } from '@/shared/components/ui/TextField';
-import { NumberField } from '@/shared/components/ui/NumberField';
-import { Select, SelectItem } from '@/shared/components/ui/Select';
 import { Switch } from '@/shared/components/ui/Switch';
 import { Divider } from '@/shared/components/ui/divider';
 import { Button } from '@/shared/components/ui/Button';
-import { BookOpen, ChevronLeft, Clock, Globe, GraduationCap, Hash, Tag } from 'lucide-react';
-import { CoursesPage, CourseType } from '@/features/course/domain/course';
-import { Course } from '@/features/course/domain/course';
-import { Group } from '@/shared/components/layout/group';
+import { BookOpen, ChevronLeft } from 'lucide-react';
+import { CoursesPage, Course } from '@/features/course/domain/course';
 import { courseKeys } from '@/features/course/queries';
+import { CourseFormFields } from '@/features/course/components/course-form-fields';
 
 export function CreateCourseForm({
   courseFormState,
@@ -31,7 +27,9 @@ export function CreateCourseForm({
 
   const queryClient = useQueryClient();
 
-  const onSubmit = handleSubmit((formData) => {
+  const onSubmit = handleSubmit((formData, e) => {
+    e.stopPropagation();
+
     createCourse.mutate(formData, {
       onSuccess: (data) => {
         queryClient.setQueriesData<InfiniteData<CoursesPage, number>>(
@@ -59,76 +57,7 @@ export function CreateCourseForm({
   return (
     <form className={styles.form} id="course-form" onSubmit={onSubmit}>
       <div className={styles.courseFormFields}>
-        <TextField
-          autoFocus
-          placeholder="A unique identifier (CS101, MATH201, etc.)..."
-          isRequired
-          icon={<Hash size={15} />}
-          name="code"
-          label="Code"
-          autoComplete="off"
-        />
-
-        <TextField
-          autoComplete="off"
-          isRequired
-          icon={<Tag size={15} />}
-          name="name"
-          label="Name"
-        />
-
-        <Group>
-          <NumberField
-            fullWidth
-            minValue={0}
-            defaultValue={0}
-            name="creditHours"
-            label="Credit Hours"
-            isRequired
-            icon={<GraduationCap size={15} />}
-          />
-
-          <NumberField
-            fullWidth
-            minValue={0}
-            defaultValue={0}
-            name="ects"
-            label="ECTS"
-            isRequired
-            icon={<Globe size={15} />}
-          />
-        </Group>
-
-        <Group>
-          <NumberField
-            fullWidth
-            minValue={0}
-            defaultValue={0}
-            name="lectureHours"
-            label="Lecture Hours"
-            icon={<Clock size={15} />}
-          />
-
-          <NumberField
-            fullWidth
-            minValue={0}
-            defaultValue={0}
-            name="practicalHours"
-            label="Practical Hours"
-            icon={<Clock size={15} />}
-          />
-        </Group>
-
-        <Select
-          items={Object.entries(CourseType).map(([k, v]) => ({ id: k, name: v }))}
-          placeholder="Pick a type"
-          label="Type"
-          name="type"
-          defaultValue="F2F"
-          isRequired
-        >
-          {(item) => <SelectItem>{item.name}</SelectItem>}
-        </Select>
+        <CourseFormFields />
       </div>
 
       <Divider />

@@ -2,14 +2,7 @@ import styles from './data-table-toolbar.module.css';
 import { Table } from '@tanstack/react-table';
 import { DialogTrigger } from '@/shared/components/ui/Dialog';
 import { Button } from '@/shared/components/ui/Button';
-import {
-  ArrowDownWideNarrow,
-  ArrowUpDown,
-  ArrowUpNarrowWide,
-  Search,
-  Settings2,
-  X,
-} from 'lucide-react';
+import { ArrowDownWideNarrow, ArrowUpDown, ArrowUpNarrowWide, Settings2, X } from 'lucide-react';
 import { Popover } from '@/shared/components/ui/Popover';
 import { Select, SelectItem } from '@/shared/components/ui/Select';
 import { SearchField } from '@/shared/components/ui/SearchField';
@@ -21,16 +14,18 @@ import { Tooltip, TooltipTrigger } from '@/shared/components/ui/Tooltip';
 type DataTableToolbarProps<TData> = {
   enableSearch?: boolean;
   table: Table<TData>;
+  isLoading?: boolean;
 };
 
 export function DataTableToolbar<TData>({
   enableSearch = false,
   table,
+  isLoading = false,
 }: DataTableToolbarProps<TData>) {
   return (
     <section className={styles.toolbar}>
       <ClearColumnFilters table={table} />
-      {enableSearch && <DataTableSearch table={table} />}
+      {enableSearch && <DataTableSearch table={table} isLoading={isLoading} />}
       <DataTableSettings table={table} />
     </section>
   );
@@ -50,18 +45,25 @@ function ClearColumnFilters<TData>({ table }: { table: Table<TData> }) {
   );
 }
 
-function DataTableSearch<TData>({ table }: { table: Table<TData> }) {
-  const [search, setSearch] = React.useState<string>('');
+function DataTableSearch<TData>({
+  table,
+  isLoading,
+}: {
+  table: Table<TData>;
+  isLoading?: boolean;
+}) {
+  const initialFilter = table.getState().globalFilter;
+  const [search, setSearch] = React.useState<string>((initialFilter as string) ?? '');
   const debouncedSearch = useDebounce(search);
 
   React.useEffect(() => {
     table.setGlobalFilter(debouncedSearch);
-  }, [debouncedSearch]);
+  }, [debouncedSearch, table]);
 
   return (
     <SearchField
       aria-label="Search table"
-      icon={<Search size={14} />}
+      isLoading={isLoading}
       value={search}
       onChange={setSearch}
     />
@@ -80,11 +82,15 @@ function DataTableSettings<TData>({ table }: { table: Table<TData> }) {
       </TooltipTrigger>
 
       <Popover crossOffset={-90}>
-        <div className={styles.option}>
-          <SortingOptions table={table} />
-        </div>
+        {table.getState().sorting.length !== 0 && (
+          <>
+            <div className={styles.option}>
+              <SortingOptions table={table} />
+            </div>
 
-        <Divider />
+            <Divider />
+          </>
+        )}
 
         <div className={styles.option}>
           <ColumnVisibilityPills table={table} />
@@ -96,7 +102,7 @@ function DataTableSettings<TData>({ table }: { table: Table<TData> }) {
 
 function SortingOptions<TData>({ table }: { table: Table<TData> }) {
   const sortingState = table.getState().sorting[0];
-  if (!sortingState) return null;
+  if (!sortingState) return <p>No sorting options.</p>;
 
   const items = table
     .getAllLeafColumns()
