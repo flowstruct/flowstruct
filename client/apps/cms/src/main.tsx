@@ -134,7 +134,7 @@ export const router = createRouter({
   defaultPreload: 'intent',
   defaultPreloadStaleTime: 0,
   scrollRestoration: true,
-  defaultPendingComponent: () => <LoadingOverlay visible zIndex={1000} />,
+  // defaultPendingComponent: () => <LoadingOverlay visible zIndex={1000} />,
   defaultErrorComponent: () => null,
 });
 

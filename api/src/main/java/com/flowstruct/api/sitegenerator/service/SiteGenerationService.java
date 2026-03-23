@@ -21,7 +21,9 @@ import org.springframework.stereotype.Service;
 public class SiteGenerationService {
 
   private final SiteGenerationRepository siteGenerationRepository;
+
   private final SiteGenerationDtoMapper siteGenerationDtoMapper;
+
   private final SiteGenerationSummaryDtoMapper siteGenerationSummaryDtoMapper;
 
   public List<SiteGenerationSummaryDto> getAllGenerations() {
@@ -58,4 +60,3 @@ public class SiteGenerationService {
     return new ByteArrayResource(generation.getAssets());
   }
 }
-

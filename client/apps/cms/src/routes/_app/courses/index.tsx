@@ -1,11 +1,11 @@
-import { createFileRoute, stripSearchParams, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { Header, HeaderActions, HeaderMain } from '@/shared/components/header';
 import { courseQueries } from '@/features/course/queries';
 import { DataTable } from '@/shared/components/data-table/data-table';
 import { useCourseTable } from '@/features/course/hooks/use-course-table';
 import { DataTableToolbar } from '@/shared/components/data-table/data-table-toolbar';
 import { Tabs } from '@/shared/components/ui/tabs';
-import { useSuspenseQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { CourseStatus } from '@/features/course/domain/getCourseStatusFilter';
 import { TabOption } from '@/shared/types';
 import { CircleDashed, CircleDot, Folder, Layers2, Plus, BookOpen, PlusSquare } from 'lucide-react';
@@ -25,37 +25,28 @@ import { courseApi } from '@/features/course/api';
 import { Course } from '@/features/course/domain/course';
 import { courseKeys } from '@/features/course/queries';
 import { Scrollable } from '@/shared/components/scrollable';
-
-type CoursesSearch = {
-  tab: CourseStatus;
-  filter: string;
-  page: number;
-  size: number;
-};
-
-const defaultSearch: CoursesSearch = {
-  tab: 'active',
-  filter: '',
-  page: 0,
-  size: 20,
-};
+import { useDebounce } from '@/shared/hooks/use-debounce';
 
 export const Route = createFileRoute('/_app/courses/')({
-  validateSearch: (search): CoursesSearch => ({
-    tab: (search.tab as CourseStatus) || defaultSearch.tab,
-    filter: (search.filter as string) ?? defaultSearch.filter,
-    page: (search.page as number) ?? defaultSearch.page,
-    size: (search.size as number) ?? defaultSearch.size,
+  loaderDeps: ({ search: { filter, page, size, tab } }) => ({
+    search: { filter, page, size, tab },
   }),
-  search: {
-    middlewares: [stripSearchParams(defaultSearch)],
+  loader: ({ context: { queryClient }, deps }) => {
+    queryClient.ensureQueryData(
+      courseQueries.page({
+        page: deps.search.page,
+        filter: deps.search.filter,
+        size: deps.search.size,
+        status: deps.search.tab,
+      })
+    );
   },
   component: CoursesPage,
 });
 
 function CoursesPage() {
   const { tab, filter, page, size } = Route.useSearch();
-  const { data: coursesPage, isFetching } = useSuspenseQuery(
+  const { data: coursesPage, isFetching } = useQuery(
     courseQueries.page({
       filter,
       page,
@@ -63,7 +54,7 @@ function CoursesPage() {
       status: tab,
     })
   );
-
+  const showSkeleton = useDebounce(isFetching, 350);
   const searchOptions = { filter, page, size };
   const table = useCourseTable({
     courses: coursesPage.content,
@@ -80,13 +71,13 @@ function CoursesPage() {
         </HeaderMain>
 
         <HeaderActions>
-          <DataTableToolbar enableSearch table={table} isLoading={isFetching} />
+          <DataTableToolbar enableSearch table={table} isLoading={isFetching && filter !== ''} />
           <CreateCourseModal />
         </HeaderActions>
       </Header>
 
       <Scrollable>
-        <DataTable table={table} />
+        <DataTable table={table} isLoading={showSkeleton} />
       </Scrollable>
     </>
   );

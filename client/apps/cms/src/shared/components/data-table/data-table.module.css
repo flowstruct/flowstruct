@@ -153,3 +153,25 @@
     color: var(--text-color-base);
   }
 }
+
+.skeletonRow {
+  animation: none;
+}
+
+.skeletonCell {
+  padding: var(--space-3) var(--space-8);
+  width: 100%;
+  border-radius: var(--radius-2);
+  background: linear-gradient(90deg, var(--gray-2) 25%, var(--gray-3) 50%, var(--gray-2) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}

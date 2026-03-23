@@ -129,17 +129,17 @@ export function FlowsheetActionsMenu({ flowsheet }: ActionsMenuProps) {
               name: flowsheet.name,
             }}
           />
+
+          <FormModalFooter>
+            <Switch isSelected={navigateAfter} onChange={setNavigateAfter}>
+              Open after creating
+            </Switch>
+
+            <FormModalSubmit isPending={cloneFlowsheet.isPending}>
+              <SquarePlus size={15} /> Clone
+            </FormModalSubmit>
+          </FormModalFooter>
         </FormModalBody>
-
-        <FormModalFooter>
-          <Switch isSelected={navigateAfter} onChange={setNavigateAfter}>
-            Open after creating
-          </Switch>
-
-          <FormModalSubmit isPending={cloneFlowsheet.isPending}>
-            <SquarePlus size={15} /> Clone
-          </FormModalSubmit>
-        </FormModalFooter>
       </FormModal>
 
       <MenuTrigger>

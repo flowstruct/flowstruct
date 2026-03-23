@@ -6,9 +6,10 @@ import styles from './data-table-pagination.module.css';
 
 type DataTablePaginationProps<TData> = {
   table: Table<TData>;
+  isLoading?: boolean;
 };
 
-export function DataTablePagination<TData>({ table }: DataTablePaginationProps<TData>) {
+export function DataTablePagination<TData>({ table, isLoading }: DataTablePaginationProps<TData>) {
   const { pageSize, pageIndex } = table.getState().pagination;
   const PAGE_SIZES = ['5', '10', '20', '50'];
 
@@ -31,6 +32,7 @@ export function DataTablePagination<TData>({ table }: DataTablePaginationProps<T
             }
             size="xs"
             aria-label="Rows per page"
+            isDisabled={isLoading}
           >
             {(item) => <SelectItem>{item.name}</SelectItem>}
           </Select>
@@ -50,7 +52,7 @@ export function DataTablePagination<TData>({ table }: DataTablePaginationProps<T
             size="xs"
             shape="icon"
             onPress={() => table.previousPage()}
-            isDisabled={!table.getCanPreviousPage()}
+            isDisabled={!table.getCanPreviousPage() || isLoading}
           >
             <ChevronLeft size={14} />
           </Button>
@@ -60,7 +62,7 @@ export function DataTablePagination<TData>({ table }: DataTablePaginationProps<T
             size="xs"
             shape="icon"
             onPress={() => table.nextPage()}
-            isDisabled={!table.getCanNextPage()}
+            isDisabled={!table.getCanNextPage() || isLoading}
           >
             <ChevronRight size={14} />
           </Button>

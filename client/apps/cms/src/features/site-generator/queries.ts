@@ -33,7 +33,7 @@ export const siteGeneratorQueries = {
       const data: SiteGenerationSummary = query.state.data;
 
       if (data?.status === 'PENDING' || data?.status === 'RUNNING') {
-        return 3000;
+        return 1000;
       }
 
       return false;

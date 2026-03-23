@@ -52,7 +52,7 @@ export const Route = createFileRoute('/_app/site-generations/')({
           <HeaderMain>
             <p className={styles.header}>
               <FolderUp size={14} />
-              Site Generations
+              Site generations
             </p>
           </HeaderMain>
 

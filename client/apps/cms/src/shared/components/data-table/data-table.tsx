@@ -14,9 +14,10 @@ import { DataTablePagination } from '@/shared/components/data-table/data-table-p
 
 type DataTableProps<TData> = {
   table: TanStackTable<TData>;
+  isLoading: boolean;
 };
 
-export function DataTable<TData>({ table }: DataTableProps<TData>) {
+export function DataTable<TData>({ table, isLoading }: DataTableProps<TData>) {
   return (
     <>
       <table className={styles.table}>
@@ -46,7 +47,17 @@ export function DataTable<TData>({ table }: DataTableProps<TData>) {
           ))}
         </thead>
         <tbody className={styles.tbody}>
-          {table.getRowModel().rows.length ? (
+          {isLoading ? (
+            Array.from({ length: table.getState().pagination.pageSize }).map((_, i) => (
+              <tr key={`skeleton-${i}`} className={styles.tr}>
+                {table.getHeaderGroups()[0].headers.map((header) => (
+                  <td key={header.id} className={styles.td}>
+                    <div className={styles.skeletonCell} />
+                  </td>
+                ))}
+              </tr>
+            ))
+          ) : table.getRowModel().rows.length ? (
             table
               .getRowModel()
               .rows.map((row) => (
@@ -63,7 +74,7 @@ export function DataTable<TData>({ table }: DataTableProps<TData>) {
           )}
         </tbody>
       </table>
-      <DataTablePagination table={table} />
+      <DataTablePagination table={table} isLoading={isLoading} />
     </>
   );
 }

@@ -1,3 +1,5 @@
+import { CourseStatus } from '@/features/course/domain/getCourseStatusFilter';
+
 export const CourseType = {
   F2F: 'Face-to-Face',
   BLD: 'Blended',
@@ -43,3 +45,9 @@ export type CourseSummary = Pick<
   | 'updatedBy'
 >;
 
+export type CoursesSearch = {
+  tab: CourseStatus;
+  filter: string;
+  page: number;
+  size: number;
+};
