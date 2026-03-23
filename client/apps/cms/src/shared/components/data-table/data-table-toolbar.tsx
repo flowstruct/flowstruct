@@ -2,7 +2,14 @@ import styles from './data-table-toolbar.module.css';
 import { Table } from '@tanstack/react-table';
 import { DialogTrigger } from '@/shared/components/ui/Dialog';
 import { Button } from '@/shared/components/ui/Button';
-import { ArrowDownWideNarrow, ArrowUpDown, ArrowUpNarrowWide, Settings2, X } from 'lucide-react';
+import {
+  ArrowDownWideNarrow,
+  ArrowUpDown,
+  ArrowUpNarrowWide,
+  ListEnd,
+  Settings2,
+  X,
+} from 'lucide-react';
 import { Popover } from '@/shared/components/ui/Popover';
 import { Select, SelectItem } from '@/shared/components/ui/Select';
 import { SearchField } from '@/shared/components/ui/SearchField';
@@ -70,7 +77,7 @@ function DataTableSearch<TData>({
   );
 }
 
-function DataTableSettings<TData>({ table }: { table: Table<TData> }) {
+function DataTableSettings<TData>({ table }: DataTableSettingsProps<TData>) {
   return (
     <DialogTrigger>
       <TooltipTrigger>
@@ -93,10 +100,47 @@ function DataTableSettings<TData>({ table }: { table: Table<TData> }) {
         )}
 
         <div className={styles.option}>
+          <RowsPerPageOptions table={table} />
+        </div>
+        <Divider />
+
+        <div className={styles.option}>
           <ColumnVisibilityPills table={table} />
         </div>
       </Popover>
     </DialogTrigger>
+  );
+}
+
+type DataTableSettingsProps<TData> = {
+  table: Table<TData>;
+};
+
+function RowsPerPageOptions<TData>({ table }: { table: Table<TData> }) {
+  const { pageSize } = table.getState().pagination;
+  const PAGE_SIZES = ['5', '10', '20', '50'];
+
+  return (
+    <section className={styles.horizontalOption}>
+      <p className={styles.label}>
+        <ListEnd size={14} />
+        Rows
+      </p>
+
+      <div className={styles.optionActions}>
+        <Select
+          items={PAGE_SIZES.map((size) => ({ id: size, name: size }))}
+          value={String(pageSize)}
+          onChange={(key) =>
+            table.setPagination({ pageIndex: 0, pageSize: parseInt(key as string) })
+          }
+          size="xs"
+          aria-label="Rows per page"
+        >
+          {(item) => <SelectItem>{item.name}</SelectItem>}
+        </Select>
+      </div>
+    </section>
   );
 }
 
@@ -120,17 +164,6 @@ function SortingOptions<TData>({ table }: { table: Table<TData> }) {
       </p>
 
       <div className={styles.optionActions}>
-        <Select
-          placeholder="Select column"
-          size="xs"
-          items={items}
-          aria-label="Sort by column"
-          selectedKey={sortingState.id}
-          onSelectionChange={(key) => table.setSorting([{ ...sortingState, id: key as string }])}
-        >
-          {(item) => <SelectItem>{item.name}</SelectItem>}
-        </Select>
-
         <Button
           variant="flat"
           size="xs"
@@ -139,6 +172,16 @@ function SortingOptions<TData>({ table }: { table: Table<TData> }) {
         >
           {sortingState.desc ? <ArrowUpNarrowWide size={14} /> : <ArrowDownWideNarrow size={14} />}
         </Button>
+        <Select
+          placeholder="Select column"
+          size="xs"
+          items={items}
+          aria-label="Sort by column"
+          value={sortingState.id}
+          onChange={(key) => table.setSorting([{ ...sortingState, id: key as string }])}
+        >
+          {(item) => <SelectItem>{item.name}</SelectItem>}
+        </Select>
       </div>
     </section>
   );

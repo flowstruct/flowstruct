@@ -40,7 +40,12 @@ export const courseQueries = {
     infiniteQueryOptions({
       queryKey: courseKeys.catalog(options),
       queryFn: ({ pageParam }) =>
-        courseApi.getPaginatedCourses({ filter: options.filter, page: pageParam }),
+        courseApi.getPaginatedCourses({
+          filter: options.filter,
+          page: pageParam,
+          size: 10,
+          status: 'all',
+        }),
       initialPageParam: 0,
       getNextPageParam: (lastPage, _, lastPageParam) =>
         lastPage.isLastPage ? null : lastPageParam + 1,

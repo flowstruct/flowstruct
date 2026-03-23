@@ -9,9 +9,10 @@ import { FlowsheetGrid } from '@/features/flowsheet/components/flowsheet-grid/fl
 import styles from './$flowsheetId.module.css';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { programQueries } from '@/features/program/queries';
+import { userQueries } from '@/features/user/queries';
 import { Breadcrumb, Breadcrumbs } from '@/shared/components/ui/breadcrumbs';
 import { UnstyledButton } from '@/shared/components/ui/UnstyledButton';
-import { Dot, Layers2 } from 'lucide-react';
+import { Dot, Layers2, Archive } from 'lucide-react';
 import { FlowsheetStatusIcon } from '@/features/flowsheet/components/flowsheet-status-icon';
 import { getProgramDisplayName } from '@/features/program/domain/getProgramDisplayName';
 import { getFlowsheetDisplayName } from '@/features/flowsheet/domain/getFlowsheetDisplayName';
@@ -20,11 +21,13 @@ import Group from '@/shared/components/layout/group';
 import { FlowsheetCoursesGraphProvider } from '@/features/flowsheet/contexts/courses-graph-context';
 import { PlacementMoveProvider } from '@/features/flowsheet/contexts/placement-move-context';
 import { FlowsheetActionsMenu } from '@/features/flowsheet/components/flowsheet-action-menu';
+import { formatDate } from '@/shared/utils/formatDate';
 
 export const Route = createFileRoute('/_app/flowsheets/$flowsheetId')({
   loader: ({ context: { queryClient }, params: { flowsheetId } }) => {
     queryClient.ensureQueryData(flowsheetQueries.detail(Number(flowsheetId)));
     queryClient.ensureQueryData(flowsheetQueries.courseCollection(Number(flowsheetId)));
+    queryClient.ensureQueryData(userQueries.collection);
   },
   component: () => {
     const { flowsheetId } = Route.useParams();
@@ -34,11 +37,14 @@ export const Route = createFileRoute('/_app/flowsheets/$flowsheetId')({
         <FlowsheetCoursesGraphProvider>
           <RouteHeader />
           <div className={styles.content}>
-            <FlowsheetGridProvider>
-              <PlacementMoveProvider>
-                <FlowsheetGrid />
-              </PlacementMoveProvider>
-            </FlowsheetGridProvider>
+            <ArchiveAlert />
+            <div className={styles.gridContainer}>
+              <FlowsheetGridProvider>
+                <PlacementMoveProvider>
+                  <FlowsheetGrid />
+                </PlacementMoveProvider>
+              </FlowsheetGridProvider>
+            </div>
           </div>
         </FlowsheetCoursesGraphProvider>
       </FlowsheetProvider>
@@ -88,5 +94,25 @@ export function RouteBreadcrumbs() {
         </p>
       </Breadcrumb>
     </Breadcrumbs>
+  );
+}
+
+function ArchiveAlert() {
+  const { flowsheet } = useFlowsheetContext();
+  const { data: users } = useSuspenseQuery(userQueries.collection);
+
+  if (!flowsheet.archivedAt) {
+    return null;
+  }
+
+  const archiver = flowsheet.archivedBy ? users.map[flowsheet.archivedBy] : null;
+  const archiveDate = formatDate(new Date(flowsheet.archivedAt));
+
+  return (
+    <div className={styles.archiveAlert}>
+      <Archive size={14} />
+      This flowsheet was archived {archiver ? `by ${archiver.username} ` : ''}on {archiveDate}.
+      Future site generations will exclude this flowsheet.
+    </div>
   );
 }

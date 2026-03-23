@@ -1,6 +1,7 @@
 .grid {
   -ms-overflow-style: none;
   scrollbar-width: none;
+  overflow: scroll;
 }
 
 .grid::-webkit-scrollbar {

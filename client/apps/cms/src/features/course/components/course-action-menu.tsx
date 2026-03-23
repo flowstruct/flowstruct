@@ -85,19 +85,7 @@ export function CourseActionsMenu({ course, searchOptions }: CourseActionsMenuPr
           </FormModalHeader>
 
           <FormModalContent>
-            <CourseFormFields
-              defaultValues={{
-                code: course.code,
-                name: course.name,
-                creditHours: course.creditHours,
-                ects: 0,
-                lectureHours: 0,
-                practicalHours: 0,
-                type: Object.keys(CourseType).find(
-                  (k) => CourseType[k as keyof typeof CourseType] === course.type
-                ),
-              }}
-            />
+            <CourseFormFields defaultValues={{ ...course }} />
           </FormModalContent>
 
           <FormModalFooter>

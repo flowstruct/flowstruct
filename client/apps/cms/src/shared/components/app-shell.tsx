@@ -10,10 +10,7 @@ export function AppShell({ children }: Props) {
   return (
     <div className={styles.appShell}>
       <Sidebar />
-
-      <div className={styles.mainContainer}>
-        <main>{children}</main>
-      </div>
+      <main>{children}</main>
     </div>
   );
 }

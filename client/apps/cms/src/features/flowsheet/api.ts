@@ -133,4 +133,7 @@ export const flowsheetApi = {
 
   discardChanges: (flowsheetId: number) =>
     api.put<Flowsheet>([FLOWSHEET_ENDPOINT, flowsheetId, 'discard-changes']),
+
+  editFlowsheetDetails: (flowsheetId: number, details: Partial<Flowsheet>) =>
+    api.put<Flowsheet>([FLOWSHEET_ENDPOINT, flowsheetId], { body: details }),
 };

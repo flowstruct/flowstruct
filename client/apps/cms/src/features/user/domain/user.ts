@@ -16,6 +16,7 @@ export const Role = {
 } as const;
 
 export type UserAction =
+  | 'study-plans:edit'
   | 'study-plans:approve'
   | 'users:read'
   | 'study-plans:archive'

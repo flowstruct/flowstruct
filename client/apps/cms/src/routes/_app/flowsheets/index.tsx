@@ -6,12 +6,28 @@ import { useFlowsheetTable } from '@/features/flowsheet/hooks/use-flowsheet-tabl
 import { DataTableToolbar } from '@/shared/components/data-table/data-table-toolbar';
 import { Tabs } from '@/shared/components/ui/tabs';
 import { ArchiveStatus } from '@/features/flowsheet/domain/flowsheet';
-import { CreateFlowsheetModal } from '@/features/flowsheet/components/create-flowsheet-modal/create-flowsheet-modal';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useSuspenseQuery, useMutation } from '@tanstack/react-query';
 import { getFlowsheetsByArchiveStatus } from '@/features/flowsheet/domain/getFlowsheetsByArchiveStatus';
 import { TabOption } from '@/shared/types';
-import { CircleDashed, CircleDot, Layers2 } from 'lucide-react';
+import { CircleDashed, CircleDot, Grid2X2, Layers2, Plus, SquarePlus } from 'lucide-react';
 import { Scrollable } from '@/shared/components/scrollable';
+import { FlowsheetFormFields } from '@/features/flowsheet/components/flowsheet-form-fields';
+import {
+  FormModal,
+  FormModalBody,
+  FormModalContent,
+  FormModalFooter,
+  FormModalHeader,
+  FormModalSubmit,
+  FormModalTrigger,
+} from '@/shared/components/form-modal';
+import { Button } from '@/shared/components/ui/Button';
+import { Breadcrumb, Breadcrumbs } from '@/shared/components/ui/breadcrumbs';
+import { Switch } from '@/shared/components/ui/Switch';
+import { flowsheetApi } from '@/features/flowsheet/api';
+import { Flowsheet } from '@/features/flowsheet/domain/flowsheet';
+import { useDisclosure } from '@/shared/hooks/use-disclosure';
+import React from 'react';
 
 type FlowsheetSearch = {
   tab: ArchiveStatus;
@@ -55,6 +71,70 @@ export const Route = createFileRoute('/_app/flowsheets/')({
     );
   },
 });
+
+function CreateFlowsheetModal() {
+  const programFormState = useDisclosure();
+  const [navigateAfter, setNavigateAfter] = React.useState(true);
+  const navigate = useNavigate();
+
+  const createFlowsheet = useMutation({
+    mutationFn: flowsheetApi.createFlowsheet,
+    meta: { successMessage: 'Flowsheet created.' },
+  });
+
+  return (
+    <FormModal
+      size="md"
+      onSubmit={(data) => {
+        if (programFormState.isOpen) return;
+        return createFlowsheet.mutate(data as Partial<Flowsheet>, {
+          onSuccess: (result: Flowsheet) => {
+            if (navigateAfter) {
+              navigate({
+                to: '/flowsheets/$flowsheetId',
+                params: { flowsheetId: String(result.id) },
+              });
+            }
+          },
+        });
+      }}
+    >
+      <FormModalTrigger>
+        <Button size="sm" variant="transparent">
+          <Plus size={15} />
+        </Button>
+      </FormModalTrigger>
+
+      <FormModalBody>
+        <FormModalHeader>
+          <Breadcrumbs>
+            <Breadcrumb base>
+              <Layers2 size={15} /> Flowsheets
+            </Breadcrumb>
+
+            <Breadcrumb>
+              <SquarePlus size={15} color="teal" /> New flowsheet
+            </Breadcrumb>
+          </Breadcrumbs>
+        </FormModalHeader>
+
+        <FormModalContent>
+          <FlowsheetFormFields programFormState={programFormState} />
+        </FormModalContent>
+
+        <FormModalFooter>
+          <Switch isSelected={navigateAfter} onChange={setNavigateAfter}>
+            Open after creating
+          </Switch>
+
+          <FormModalSubmit isPending={createFlowsheet.isPending}>
+            <Grid2X2 size={15} /> Create
+          </FormModalSubmit>
+        </FormModalFooter>
+      </FormModalBody>
+    </FormModal>
+  );
+}
 
 function RouteTabs() {
   const { tab } = Route.useSearch();

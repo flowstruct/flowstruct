@@ -8,6 +8,7 @@ export const RolePermissions: Record<keyof typeof Role, () => UserAction[]> = {
       ...RolePermissions.EDITOR(),
       'study-plans:approve',
       'study-plans:archive',
+      'study-plans:edit',
       'programs:mark-outdated',
       'courses:mark-outdated',
     ] as const,

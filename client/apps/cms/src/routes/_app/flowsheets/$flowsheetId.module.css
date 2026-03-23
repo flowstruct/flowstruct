@@ -1,19 +1,45 @@
 .flowsheetMeta {
-    display: flex;
-    align-items: center;
-    color: var(--text-color-secondary);
-    font-size: var(--font-size-xs);
+  display: flex;
+  align-items: center;
+  color: var(--text-color-secondary);
+  font-size: var(--font-size-xs);
 }
 
 .flowsheetBreadcrumb {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .content {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-6);
-    padding: 3rem 6rem;
-    overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  padding: 3rem 6rem;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+}
+
+.gridContainer {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.archiveAlert {
+  background: rgba(255, 165, 0, 0.06);
+  border: 1px solid rgba(255, 165, 0, 0.15);
+  border-radius: var(--radius-1);
+  padding: var(--space-3);
+  font-size: var(--font-size-xs);
+  color: var(--text-color-secondary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.archiveAlert svg {
+  color: orange;
 }

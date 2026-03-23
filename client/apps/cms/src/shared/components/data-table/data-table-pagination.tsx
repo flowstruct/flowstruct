@@ -1,7 +1,6 @@
 import { Table } from '@tanstack/react-table';
 import { Button } from '@/shared/components/ui/Button';
-import { Select, SelectItem } from '@/shared/components/ui/Select';
-import { ChevronLeft, ChevronRight, ListEnd } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import styles from './data-table-pagination.module.css';
 
 type DataTablePaginationProps<TData> = {
@@ -10,8 +9,7 @@ type DataTablePaginationProps<TData> = {
 };
 
 export function DataTablePagination<TData>({ table, isLoading }: DataTablePaginationProps<TData>) {
-  const { pageSize, pageIndex } = table.getState().pagination;
-  const PAGE_SIZES = ['5', '10', '20', '50'];
+  const { pageIndex } = table.getState().pagination;
 
   const rowCount = table.options.rowCount ?? table.getRowCount();
   const pageCount = table.options.pageCount ?? table.getPageCount();
@@ -19,26 +17,6 @@ export function DataTablePagination<TData>({ table, isLoading }: DataTablePagina
   return (
     <section className={styles.pagination}>
       <div className={styles.left}>
-        <div className={styles.pageSize}>
-          <ListEnd size={14} />
-          <span>Rows per page</span>
-          <Select
-            items={PAGE_SIZES.map((size) => ({ id: size, name: size }))}
-            value={String(pageSize)}
-            onChange={(key) =>
-              table.setPagination({
-                pageIndex: 0,
-                pageSize: parseInt(key as string),
-              })
-            }
-            size="xs"
-            aria-label="Rows per page"
-            isDisabled={isLoading}
-          >
-            {(item) => <SelectItem>{item.name}</SelectItem>}
-          </Select>
-        </div>
-
         <span className={styles.rowCount}>{rowCount} row(s) total</span>
       </div>
 

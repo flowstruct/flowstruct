@@ -1,5 +1,5 @@
 import styles from './flowsheet-grid.module.css';
-import { Ellipsis, Grid2X2Plus, X } from 'lucide-react';
+import { Ellipsis, Grid2X2Plus, Trash, X } from 'lucide-react';
 import { Button } from '@/shared/components/ui/Button';
 import { Tooltip, TooltipTrigger } from '@/shared/components/ui/Tooltip';
 import { FlowsheetToolbar } from '@/features/flowsheet/components/flowsheet-grid/flowsheet-toolbar';
@@ -38,7 +38,7 @@ export function FlowsheetGrid() {
   });
 
   return (
-    <Box className={styles.grid} overflow="auto" overflowY="hidden" {...keyboardProps}>
+    <Box className={styles.grid} {...keyboardProps}>
       <Group
         align="start"
         onDragOver={dragHandlers.onDragOver}
@@ -166,10 +166,10 @@ function TermOptions() {
         <Ellipsis size={15} />
       </Button>
 
-      <Popover placement="bottom end">
+      <Popover placement="bottom">
         <Menu>
           <MenuItem onAction={() => deleteTerm.mutate()}>
-            <X color="red" size={14} />
+            <Trash color="red" size={14} />
             <span>Delete</span>
           </MenuItem>
         </Menu>

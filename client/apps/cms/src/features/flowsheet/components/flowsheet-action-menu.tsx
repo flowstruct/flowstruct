@@ -1,5 +1,5 @@
 import { flowsheetApi } from '@/features/flowsheet/api';
-import { FlowsheetFormFields } from '@/features/flowsheet/components/create-flowsheet-modal/create-flowsheet-modal';
+import { FlowsheetFormFields } from '@/features/flowsheet/components/flowsheet-form-fields';
 import { Flowsheet, FlowsheetSummary } from '@/features/flowsheet/domain/flowsheet';
 import { usePermission } from '@/features/user/hooks/usePermission';
 import { userQueries } from '@/features/user/queries';
@@ -29,6 +29,7 @@ import {
   User,
   CircleCheck,
   CircleX,
+  Pencil,
 } from 'lucide-react';
 import React from 'react';
 import styles from './flowsheet-action-menu.module.css';
@@ -45,14 +46,21 @@ export function FlowsheetActionsMenu({ flowsheet }: ActionsMenuProps) {
 
   const [navigateAfter, setNavigateAfter] = React.useState(true);
   const [cloneOpen, setCloneOpen] = React.useState(false);
+  const [editOpen, setEditOpen] = React.useState(false);
   const navigate = useNavigate();
 
   const programFormState = useDisclosure();
+  const editProgramFormState = useDisclosure();
 
   const cloneFlowsheet = useMutation({
     mutationFn: (data: Partial<Flowsheet>) =>
       flowsheetApi.cloneFlowsheet({ flowsheetId: flowsheet.id, details: data }),
     meta: { successMessage: 'Flowsheet cloned.' },
+  });
+
+  const editFlowsheet = useMutation({
+    mutationFn: (data: Partial<Flowsheet>) => flowsheetApi.editFlowsheetDetails(flowsheet.id, data),
+    meta: { successMessage: 'Flowsheet updated.' },
   });
 
   const archive = useMutation({
@@ -79,12 +87,15 @@ export function FlowsheetActionsMenu({ flowsheet }: ActionsMenuProps) {
     archive.isPending ||
     unarchive.isPending ||
     approveChanges.isPending ||
-    discardChanges.isPending;
+    discardChanges.isPending ||
+    editFlowsheet.isPending;
 
   const canApprove =
     typeof hasPermission === 'function' &&
     hasPermission('study-plans:approve') &&
     flowsheet.status !== 'APPROVED';
+
+  const canEdit = typeof hasPermission === 'function' && hasPermission('study-plans:edit');
 
   return (
     <>
@@ -142,6 +153,47 @@ export function FlowsheetActionsMenu({ flowsheet }: ActionsMenuProps) {
         </FormModalBody>
       </FormModal>
 
+      <FormModal
+        size="md"
+        open={editOpen}
+        onOpenChange={setEditOpen}
+        onSubmit={(data) => {
+          if (editProgramFormState.isOpen) return;
+
+          editFlowsheet.mutate(data as Partial<Flowsheet>);
+        }}
+      >
+        <FormModalBody>
+          <FormModalHeader>
+            <Breadcrumbs>
+              <Breadcrumb base>
+                <Layers2 size={15} /> Flowsheets
+              </Breadcrumb>
+
+              <Breadcrumb>
+                <Pencil size={15} color="teal" /> Edit flowsheet
+              </Breadcrumb>
+            </Breadcrumbs>
+          </FormModalHeader>
+
+          <FlowsheetFormFields
+            disableProgram
+            programFormState={editProgramFormState}
+            defaultValues={{
+              program: flowsheet.program,
+              year: flowsheet.year,
+              name: flowsheet.name,
+            }}
+          />
+
+          <FormModalFooter>
+            <FormModalSubmit isPending={editFlowsheet.isPending}>
+              <Pencil size={15} /> Save
+            </FormModalSubmit>
+          </FormModalFooter>
+        </FormModalBody>
+      </FormModal>
+
       <MenuTrigger>
         <Button shape="icon" variant="ghost" isPending={isPending}>
           <Ellipsis size={15} />
@@ -149,6 +201,12 @@ export function FlowsheetActionsMenu({ flowsheet }: ActionsMenuProps) {
 
         <Popover hideArrow placement="bottom right" crossOffset={25}>
           <Menu width={200}>
+            {canEdit && (
+              <MenuItem onAction={() => setEditOpen(true)}>
+                <Pencil size={14} /> Edit
+              </MenuItem>
+            )}
+
             <MenuItem onAction={() => setCloneOpen(true)}>
               <SquarePlus size={14} /> Clone
             </MenuItem>

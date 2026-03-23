@@ -1,9 +1,9 @@
 import { Button } from '@/shared/components/ui/Button';
-import { BetweenHorizonalStart, ChevronDown, Plus } from 'lucide-react';
+import { BetweenHorizonalStart, BookOpen, ChevronDown, ChevronLeft, Plus } from 'lucide-react';
 import { Popover } from '@/shared/components/ui/Popover';
 import { GridList, GridListItem } from '@/shared/components/ui/GridList';
 import { ListEmptyState } from '@/shared/components/ui/ListBox';
-import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
+import { InfiniteData, useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import React from 'react';
 import { useDebounce } from '@/shared/hooks/use-debounce';
 import { SearchField } from '@/shared/components/ui/SearchField';
@@ -17,10 +17,15 @@ import { MenuTrigger } from '@/shared/components/ui/Menu';
 import { getCourseDisplayName } from '@/features/course/domain/getCourseDisplayName';
 import { useCourseCatalogSearchResults } from '@/features/course/hooks/use-course-catalog-search-results';
 import { useDisclosure } from '@/shared/hooks/use-disclosure';
-import { courseQueries } from '@/features/course/queries';
+import { courseKeys, courseQueries } from '@/features/course/queries';
 import { useTermContext } from '@/features/flowsheet/contexts/term-context';
-import { CreateCourseForm } from './create-course-form';
-import { Course } from '@/features/course/domain/course';
+import { Course, CoursesPage } from '@/features/course/domain/course';
+import { DisclosureState } from '@/shared/types';
+import { courseApi } from '@/features/course/api';
+import { handleSubmit } from '@/shared/utils/handle-submit';
+import { CourseFormFields } from '@/features/course/components/course-form-fields';
+import { Divider } from '@/shared/components/ui/divider';
+import { Switch } from '@/shared/components/ui/Switch';
 
 export function CourseCatalogAutocomplete() {
   const { flowsheet, flowsheetCourses } = useFlowsheetContext();
@@ -231,5 +236,80 @@ function SelectedCourses({
         </GridList>
       </Popover>
     </MenuTrigger>
+  );
+}
+
+function CreateCourseForm({
+  courseFormState,
+  onCourseCreated,
+}: {
+  courseFormState: DisclosureState;
+  onCourseCreated?: (course: Course) => void;
+}) {
+  const [selectCourse, setSelectCourse] = React.useState<boolean>(true);
+
+  const createCourse = useMutation({
+    mutationFn: courseApi.createCourse,
+  });
+
+  const queryClient = useQueryClient();
+
+  const onSubmit = handleSubmit((formData, e) => {
+    e.stopPropagation();
+
+    createCourse.mutate(formData, {
+      onSuccess: (data) => {
+        queryClient.setQueriesData<InfiniteData<CoursesPage, number>>(
+          { queryKey: courseKeys.catalogs() },
+          (old) => {
+            if (!old) return old;
+
+            return {
+              ...old,
+              pages: old.pages.map((page, index) =>
+                index === 0 ? { ...page, content: [data, ...page.content] } : page
+              ),
+            };
+          }
+        );
+        if (selectCourse && onCourseCreated) {
+          onCourseCreated(data);
+        }
+
+        courseFormState.close();
+      },
+    });
+  });
+
+  return (
+    <form className={styles.form} id="course-form" onSubmit={onSubmit}>
+      <div className={styles.courseFormFields}>
+        <CourseFormFields />
+      </div>
+
+      <Divider />
+
+      <footer className={styles.courseFormFooter}>
+        <Button size="sm" variant="transparent" type="reset" onPress={courseFormState.close}>
+          <ChevronLeft size={14} /> Cancel
+        </Button>
+
+        <div className={styles.courseFormSubmit}>
+          <Switch isSelected={selectCourse} onChange={setSelectCourse}>
+            Select after creating
+          </Switch>
+
+          <Button
+            size="sm"
+            variant="primary"
+            type="submit"
+            form="course-form"
+            isPending={createCourse.isPending}
+          >
+            <BookOpen size={15} /> Create course
+          </Button>
+        </div>
+      </footer>
+    </form>
   );
 }

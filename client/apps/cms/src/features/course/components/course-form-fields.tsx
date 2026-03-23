@@ -86,7 +86,7 @@ export function CourseFormFields({ defaultValues }: CourseFormFieldsProps) {
         placeholder="Pick a type"
         label="Type"
         name="type"
-        defaultSelectedKey={defaultValues?.type ?? 'F2F'}
+        defaultValue={defaultValues?.type ?? 'F2F'}
         isRequired
       >
         {(item) => <SelectItem>{item.name}</SelectItem>}
@@ -94,3 +94,4 @@ export function CourseFormFields({ defaultValues }: CourseFormFieldsProps) {
     </section>
   );
 }
+
