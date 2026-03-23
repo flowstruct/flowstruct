@@ -27,7 +27,6 @@ export function UserPasswordFormFields({
 
       {showCurrentPassword && (
         <TextField
-          autoFocus
           name="currentPassword"
           label="Current password"
           type="password"
@@ -56,4 +55,3 @@ export function UserPasswordFormFields({
     </section>
   );
 }
-
