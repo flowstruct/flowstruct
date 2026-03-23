@@ -1,5 +1,5 @@
 import { courseApi } from '@/features/course/api';
-import { CourseType, CourseSummary } from '@/features/course/domain/course';
+import { CourseSummary } from '@/features/course/domain/course';
 import { usePermission } from '@/features/user/hooks/usePermission';
 import { userQueries } from '@/features/user/queries';
 import {
@@ -14,11 +14,11 @@ import { Breadcrumb, Breadcrumbs } from '@/shared/components/ui/breadcrumbs';
 import { Button } from '@/shared/components/ui/Button';
 import { Menu, MenuItem, MenuTrigger } from '@/shared/components/ui/Menu';
 import { Popover } from '@/shared/components/ui/Popover';
-import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
-import { Archive, ArchiveRestore, BookOpen, Ellipsis, Folder, Pencil, User } from 'lucide-react';
+import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import { Archive, ArchiveRestore, Ellipsis, Folder, Pencil, User } from 'lucide-react';
 import React from 'react';
 import { CourseFormFields } from './course-form-fields';
-import { courseKeys } from '@/features/course/queries';
+import { courseKeys, courseQueries } from '@/features/course/queries';
 import styles from './course-action-menu.module.css';
 import { formatTimeAgo } from '@/shared/utils/formatTimeAgo';
 import { SearchOptions } from '@/shared/types';
@@ -36,6 +36,11 @@ export function CourseActionsMenu({ course, searchOptions }: CourseActionsMenuPr
 
   const [editOpen, setEditOpen] = React.useState(false);
   const queryClient = useQueryClient();
+
+  const { data: fullCourse, isPending: isCoursePending } = useQuery({
+    ...courseQueries.detail(course.id),
+    enabled: editOpen,
+  });
 
   const editCourse = useMutation({
     mutationFn: (data: Partial<CourseSummary>) => courseApi.editCourse(course.id, data),
@@ -85,7 +90,7 @@ export function CourseActionsMenu({ course, searchOptions }: CourseActionsMenuPr
           </FormModalHeader>
 
           <FormModalContent>
-            <CourseFormFields defaultValues={{ ...course }} />
+            <CourseFormFields isLoading={isCoursePending} defaultValues={fullCourse} />
           </FormModalContent>
 
           <FormModalFooter>

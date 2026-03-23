@@ -3,3 +3,30 @@
   flex-direction: column;
   gap: var(--space-4);
 }
+
+.skeleton {
+  height: 2rem;
+  border-radius: var(--radius-1);
+  background: linear-gradient(90deg, #f1f1f1 25%, #f4f4f4 50%, #f1f1f1 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite;
+}
+
+.skeletonGroup {
+  display: flex;
+  gap: var(--space-4);
+}
+
+.skeletonGroup .skeleton {
+  flex: 1;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+

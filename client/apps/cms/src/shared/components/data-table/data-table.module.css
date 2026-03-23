@@ -159,9 +159,9 @@
 }
 
 .skeletonCell {
-  padding: var(--space-3) var(--space-8);
+  padding: var(--space-4) var(--space-10);
   width: 100%;
-  border-radius: var(--radius-2);
+  border-radius: var(--radius-1);
   background: linear-gradient(90deg, var(--gray-2) 25%, var(--gray-3) 50%, var(--gray-2) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.2s infinite;

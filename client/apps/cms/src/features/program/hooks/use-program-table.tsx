@@ -46,6 +46,7 @@ export const useProgramTable = ({ programs }: UseProgramTableProps) => {
           renderFilterName: (value: string) => value,
           renderColumnDisplayName: () => 'Program',
         },
+        enableColumnFilter: false,
         sortingFn: (rowA, rowB) => rowA.original.name.localeCompare(rowB.original.name),
       }),
 
@@ -57,6 +58,7 @@ export const useProgramTable = ({ programs }: UseProgramTableProps) => {
           renderFilterName: (value: string) => value,
           renderColumnDisplayName: () => 'Code',
         },
+        enableColumnFilter: false,
         sortingFn: (rowA, rowB) => rowA.original.code.localeCompare(rowB.original.code),
       }),
 
@@ -100,4 +102,3 @@ export const useProgramTable = ({ programs }: UseProgramTableProps) => {
     getPaginationRowModel: getPaginationRowModel(),
   });
 };
-

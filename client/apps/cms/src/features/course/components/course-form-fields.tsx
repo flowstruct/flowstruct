@@ -16,9 +16,14 @@ type CourseFormFieldsProps = {
     practicalHours?: number;
     type?: string;
   };
+  isLoading?: boolean;
 };
 
-export function CourseFormFields({ defaultValues }: CourseFormFieldsProps) {
+export function CourseFormFields({ defaultValues, isLoading }: CourseFormFieldsProps) {
+  if (isLoading) {
+    return <CourseFormFieldsSkeleton />;
+  }
+
   return (
     <section className={styles.form}>
       <TextField
@@ -95,3 +100,24 @@ export function CourseFormFields({ defaultValues }: CourseFormFieldsProps) {
   );
 }
 
+function CourseFormFieldsSkeleton() {
+  return (
+    <section className={styles.form}>
+      <div className={styles.skeleton} />
+
+      <div className={styles.skeleton} />
+
+      <div className={styles.skeletonGroup}>
+        <div className={styles.skeleton} />
+        <div className={styles.skeleton} />
+      </div>
+
+      <div className={styles.skeletonGroup}>
+        <div className={styles.skeleton} />
+        <div className={styles.skeleton} />
+      </div>
+
+      <div className={styles.skeleton} />
+    </section>
+  );
+}
