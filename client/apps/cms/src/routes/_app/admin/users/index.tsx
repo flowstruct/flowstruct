@@ -6,7 +6,7 @@ import { useSuspenseQuery, useMutation, useQueryClient } from '@tanstack/react-q
 import { userQueries, userKeys } from '@/features/user/queries';
 import { useUserTable } from '@/features/user/hooks/use-user-table';
 import { Scrollable } from '@/shared/components/scrollable';
-import { User, PlusSquare, Plus, Save, Users } from 'lucide-react';
+import { User, PlusSquare, Plus, Save, Users, UserIcon } from 'lucide-react';
 import {
   FormModal,
   FormModalBody,
@@ -115,7 +115,7 @@ function CreateUserModal() {
 
         <FormModalFooter>
           <FormModalSubmit isPending={createUser.isPending}>
-            <Save size={15} /> Create
+            <UserIcon size={15} /> Create
           </FormModalSubmit>
         </FormModalFooter>
       </FormModalBody>
