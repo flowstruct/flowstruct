@@ -97,7 +97,7 @@ function CreateUserModal() {
         <FormModalHeader>
           <Breadcrumbs>
             <Breadcrumb base>
-              <User size={15} /> Users
+              <Users size={15} /> Users
             </Breadcrumb>
 
             <Breadcrumb>
