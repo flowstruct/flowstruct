@@ -63,7 +63,7 @@ export function MenuItem(props: MenuItemProps) {
       {({ hasSubmenu }) => (
         <>
           {props.children}
-          {hasSubmenu && <ChevronRight size={16} className="chevron" aria-hidden />}
+          {hasSubmenu && <ChevronRight size={15} className="chevron" aria-hidden />}
         </>
       )}
     </AriaMenuItem>

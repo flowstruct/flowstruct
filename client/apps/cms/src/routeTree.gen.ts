@@ -15,11 +15,13 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppProgramsRouteRouteImport } from './routes/_app/programs/route'
 import { Route as AppFlowsheetsRouteRouteImport } from './routes/_app/flowsheets/route'
 import { Route as AppCoursesRouteRouteImport } from './routes/_app/courses/route'
+import { Route as AppAdminRouteRouteImport } from './routes/_app/admin/route'
 import { Route as AppSiteGenerationsIndexRouteImport } from './routes/_app/site-generations/index'
 import { Route as AppProgramsIndexRouteImport } from './routes/_app/programs/index'
 import { Route as AppFlowsheetsIndexRouteImport } from './routes/_app/flowsheets/index'
 import { Route as AppCoursesIndexRouteImport } from './routes/_app/courses/index'
 import { Route as AppFlowsheetsFlowsheetIdRouteImport } from './routes/_app/flowsheets/$flowsheetId'
+import { Route as AppAdminUsersIndexRouteImport } from './routes/_app/admin/users/index'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -50,6 +52,11 @@ const AppCoursesRouteRoute = AppCoursesRouteRouteImport.update({
   path: '/courses',
   getParentRoute: () => AppRouteRoute,
 } as any)
+const AppAdminRouteRoute = AppAdminRouteRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 const AppSiteGenerationsIndexRoute = AppSiteGenerationsIndexRouteImport.update({
   id: '/site-generations/',
   path: '/site-generations/',
@@ -76,10 +83,16 @@ const AppFlowsheetsFlowsheetIdRoute =
     path: '/$flowsheetId',
     getParentRoute: () => AppFlowsheetsRouteRoute,
   } as any)
+const AppAdminUsersIndexRoute = AppAdminUsersIndexRouteImport.update({
+  id: '/users/',
+  path: '/users/',
+  getParentRoute: () => AppAdminRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/admin': typeof AppAdminRouteRouteWithChildren
   '/courses': typeof AppCoursesRouteRouteWithChildren
   '/flowsheets': typeof AppFlowsheetsRouteRouteWithChildren
   '/programs': typeof AppProgramsRouteRouteWithChildren
@@ -88,21 +101,25 @@ export interface FileRoutesByFullPath {
   '/flowsheets/': typeof AppFlowsheetsIndexRoute
   '/programs/': typeof AppProgramsIndexRoute
   '/site-generations/': typeof AppSiteGenerationsIndexRoute
+  '/admin/users/': typeof AppAdminUsersIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/admin': typeof AppAdminRouteRouteWithChildren
   '/flowsheets/$flowsheetId': typeof AppFlowsheetsFlowsheetIdRoute
   '/courses': typeof AppCoursesIndexRoute
   '/flowsheets': typeof AppFlowsheetsIndexRoute
   '/programs': typeof AppProgramsIndexRoute
   '/site-generations': typeof AppSiteGenerationsIndexRoute
+  '/admin/users': typeof AppAdminUsersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_app': typeof AppRouteRouteWithChildren
   '/login': typeof LoginRoute
+  '/_app/admin': typeof AppAdminRouteRouteWithChildren
   '/_app/courses': typeof AppCoursesRouteRouteWithChildren
   '/_app/flowsheets': typeof AppFlowsheetsRouteRouteWithChildren
   '/_app/programs': typeof AppProgramsRouteRouteWithChildren
@@ -111,12 +128,14 @@ export interface FileRoutesById {
   '/_app/flowsheets/': typeof AppFlowsheetsIndexRoute
   '/_app/programs/': typeof AppProgramsIndexRoute
   '/_app/site-generations/': typeof AppSiteGenerationsIndexRoute
+  '/_app/admin/users/': typeof AppAdminUsersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/login'
+    | '/admin'
     | '/courses'
     | '/flowsheets'
     | '/programs'
@@ -125,20 +144,24 @@ export interface FileRouteTypes {
     | '/flowsheets/'
     | '/programs/'
     | '/site-generations/'
+    | '/admin/users/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/login'
+    | '/admin'
     | '/flowsheets/$flowsheetId'
     | '/courses'
     | '/flowsheets'
     | '/programs'
     | '/site-generations'
+    | '/admin/users'
   id:
     | '__root__'
     | '/'
     | '/_app'
     | '/login'
+    | '/_app/admin'
     | '/_app/courses'
     | '/_app/flowsheets'
     | '/_app/programs'
@@ -147,6 +170,7 @@ export interface FileRouteTypes {
     | '/_app/flowsheets/'
     | '/_app/programs/'
     | '/_app/site-generations/'
+    | '/_app/admin/users/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -199,6 +223,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCoursesRouteRouteImport
       parentRoute: typeof AppRouteRoute
     }
+    '/_app/admin': {
+      id: '/_app/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AppAdminRouteRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
     '/_app/site-generations/': {
       id: '/_app/site-generations/'
       path: '/site-generations'
@@ -234,8 +265,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppFlowsheetsFlowsheetIdRouteImport
       parentRoute: typeof AppFlowsheetsRouteRoute
     }
+    '/_app/admin/users/': {
+      id: '/_app/admin/users/'
+      path: '/users'
+      fullPath: '/admin/users/'
+      preLoaderRoute: typeof AppAdminUsersIndexRouteImport
+      parentRoute: typeof AppAdminRouteRoute
+    }
   }
 }
+
+interface AppAdminRouteRouteChildren {
+  AppAdminUsersIndexRoute: typeof AppAdminUsersIndexRoute
+}
+
+const AppAdminRouteRouteChildren: AppAdminRouteRouteChildren = {
+  AppAdminUsersIndexRoute: AppAdminUsersIndexRoute,
+}
+
+const AppAdminRouteRouteWithChildren = AppAdminRouteRoute._addFileChildren(
+  AppAdminRouteRouteChildren,
+)
 
 interface AppCoursesRouteRouteChildren {
   AppCoursesIndexRoute: typeof AppCoursesIndexRoute
@@ -274,6 +324,7 @@ const AppProgramsRouteRouteWithChildren =
   AppProgramsRouteRoute._addFileChildren(AppProgramsRouteRouteChildren)
 
 interface AppRouteRouteChildren {
+  AppAdminRouteRoute: typeof AppAdminRouteRouteWithChildren
   AppCoursesRouteRoute: typeof AppCoursesRouteRouteWithChildren
   AppFlowsheetsRouteRoute: typeof AppFlowsheetsRouteRouteWithChildren
   AppProgramsRouteRoute: typeof AppProgramsRouteRouteWithChildren
@@ -281,6 +332,7 @@ interface AppRouteRouteChildren {
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
+  AppAdminRouteRoute: AppAdminRouteRouteWithChildren,
   AppCoursesRouteRoute: AppCoursesRouteRouteWithChildren,
   AppFlowsheetsRouteRoute: AppFlowsheetsRouteRouteWithChildren,
   AppProgramsRouteRoute: AppProgramsRouteRouteWithChildren,

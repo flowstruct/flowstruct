@@ -1,0 +1,19 @@
+.userActivity {
+  display: flex;
+  flex-direction: column;
+  max-width: 200px;
+  font-weight: 450;
+  border-top: 1px solid var(--border-color);
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-xs);
+  color: var(--text-color-secondary);
+}
+
+.userActivityUser {
+  font-weight: 400;
+  color: var(--text-color-dimmed);
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+

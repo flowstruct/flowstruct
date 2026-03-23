@@ -1,5 +1,6 @@
 import { queryOptions } from '@tanstack/react-query';
 import { userApi } from '@/features/user/api';
+import { User } from './domain/user';
 
 export const userKeys = {
   all: ['users'] as const,
@@ -14,7 +15,7 @@ export const userQueries = {
     queryKey: userKeys.list(),
     queryFn: userApi.getUsers,
     select: (data) => ({
-      list: Object.values(data),
+      list: Object.values(data) as User[],
       map: data,
     }),
   }),

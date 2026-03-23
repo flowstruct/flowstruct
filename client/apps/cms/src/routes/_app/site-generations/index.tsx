@@ -14,6 +14,7 @@ import { CurrentGenerationIndicator } from '@/features/site-generator/components
 import { FolderPlus, FolderUp, Plus } from 'lucide-react';
 import styles from './index.module.css';
 import { DataTableToolbar } from '@/shared/components/data-table/data-table-toolbar';
+import { Title } from '@/shared/components/title';
 
 function TriggerGenerationButton() {
   const triggerGeneration = useMutation({
@@ -50,10 +51,10 @@ export const Route = createFileRoute('/_app/site-generations/')({
       <>
         <Header>
           <HeaderMain>
-            <p className={styles.header}>
+            <Title>
               <FolderUp size={14} />
               Site generations
-            </p>
+            </Title>
           </HeaderMain>
 
           <HeaderActions>

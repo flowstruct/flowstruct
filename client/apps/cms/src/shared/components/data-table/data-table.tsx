@@ -14,10 +14,10 @@ import { DataTablePagination } from '@/shared/components/data-table/data-table-p
 
 type DataTableProps<TData> = {
   table: TanStackTable<TData>;
-  isLoading: boolean;
+  isLoading?: boolean;
 };
 
-export function DataTable<TData>({ table, isLoading }: DataTableProps<TData>) {
+export function DataTable<TData>({ table, isLoading = false }: DataTableProps<TData>) {
   return (
     <>
       <table className={styles.table}>

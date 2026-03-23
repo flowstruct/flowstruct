@@ -18,69 +18,72 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Service
 public class UserManagementService {
-    private final UserRepository userRepository;
-    private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
 
-    @Transactional
-    public UserDto createUser(NewUserDetailsDto details) {
-        String password = details.password().trim();
-        String confirmPassword = details.confirmPassword().trim();
+  private final UserRepository userRepository;
 
-        if (!confirmPassword.equals(password)) {
-            throw new InvalidPasswordException("New and confirmed passwords must be the same.");
-        }
+  private final UserService userService;
 
-        var user = new User(
-                null,
-                details.username().trim(),
-                details.email().trim(),
-                details.role(),
-                passwordEncoder.encode(details.password().trim()),
-                null,
-                null,
-                null
-        );
+  private final PasswordEncoder passwordEncoder;
 
-        return userService.saveAndMap(user);
+  @Transactional
+  public UserDto createUser(NewUserDetailsDto details) {
+    String password = details.password().trim();
+    String confirmPassword = details.confirmPassword().trim();
+
+    if (!confirmPassword.equals(password)) {
+      throw new InvalidPasswordException("New and confirmed passwords must be the same.");
     }
 
-    @Transactional
-    public UserDto editUserDetails(long userId, UserDetailsDto details) {
-        var user = userService.findOrThrow(userId);
+    var user =
+        new User(
+            null,
+            details.username().trim(),
+            details.email().trim(),
+            details.role(),
+            passwordEncoder.encode(details.password().trim()),
+            null,
+            null,
+            null);
 
-        user.setUsername(details.username().trim());
-        user.setEmail(details.email().trim());
+    return userService.saveAndMap(user);
+  }
 
-        return userService.saveAndMap(user);
+  @Transactional
+  public UserDto editUserDetails(long userId, UserDetailsDto details) {
+    var user = userService.findOrThrow(userId);
+
+    user.setUsername(details.username().trim());
+    user.setEmail(details.email().trim());
+
+    return userService.saveAndMap(user);
+  }
+
+  @Transactional
+  public void changeUserPassword(long userId, AdminPasswordResetDto passwordReset) {
+    String newPassword = passwordReset.newPassword().trim();
+    String confirmPassword = passwordReset.confirmPassword().trim();
+
+    if (!confirmPassword.equals(newPassword)) {
+      throw new InvalidPasswordException("New and confirmed passwords must be the same.");
     }
 
-    @Transactional
-    public void changeUserPassword(long userId, AdminPasswordResetDto passwordReset) {
-        String newPassword = passwordReset.newPassword().trim();
-        String confirmPassword = passwordReset.confirmPassword().trim();
+    var user = userService.findOrThrow(userId);
 
-        if (!confirmPassword.equals(newPassword)) {
-            throw new InvalidPasswordException("New and confirmed passwords must be the same.");
-        }
+    user.setPassword(passwordEncoder.encode(newPassword));
+    userRepository.save(user);
+  }
 
-        var user = userService.findOrThrow(userId);
+  @Transactional
+  public UserDto changeUserRole(long userId, Role newRole) {
+    var user = userService.findOrThrow(userId);
 
-        user.setPassword(passwordEncoder.encode(newPassword));
-        userRepository.save(user);
-    }
+    user.setRole(newRole);
 
-    @Transactional
-    public UserDto changeUserRole(long userId, Role newRole) {
-        var user = userService.findOrThrow(userId);
+    return userService.saveAndMap(user);
+  }
 
-        user.setRole(newRole);
-
-        return userService.saveAndMap(user);
-    }
-
-    @Transactional
-    public void deleteUser(long userId) {
-        userRepository.deleteById(userId);
-    }
+  @Transactional
+  public void deleteUser(long userId) {
+    userRepository.deleteById(userId);
+  }
 }

@@ -23,6 +23,7 @@ import { ProgressCircle } from '@/shared/components/ui/ProgressCircle';
 import {
   FormModal,
   FormModalBody,
+  FormModalContent,
   FormModalFooter,
   FormModalHeader,
   FormModalSubmit,
@@ -30,6 +31,8 @@ import {
 import React from 'react';
 import { Breadcrumb, Breadcrumbs } from '@/shared/components/ui/breadcrumbs';
 import { UserDetailsFormFields } from '@/features/user/components/user-details-form-fields';
+import { UserPasswordFormFields } from '@/features/user/components/user-password-form-fields';
+import { FormFields } from '@/shared/components/form-fields';
 
 const sidebarSections = [
   {
@@ -204,7 +207,12 @@ export function UserProfile() {
             </Breadcrumbs>
           </FormModalHeader>
 
-          <UserDetailsFormFields defaultValues={{ username: me.username, email: me.email }} />
+          <FormModalContent>
+            <FormFields>
+              <UserDetailsFormFields defaultValues={{ username: me.username, email: me.email }} />
+              <UserPasswordFormFields showCurrentPassword />
+            </FormFields>
+          </FormModalContent>
 
           <FormModalFooter>
             <FormModalSubmit isPending={isPending}>
