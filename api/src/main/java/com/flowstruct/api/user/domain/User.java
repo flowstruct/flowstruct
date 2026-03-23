@@ -1,5 +1,6 @@
 package com.flowstruct.api.user.domain;
 
+import java.time.Instant;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,8 +11,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.time.Instant;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -19,23 +18,19 @@ import java.time.Instant;
 @Table("user")
 public class User {
 
-    @Id
-    private Long id;
+  @Id private Long id;
 
-    private String username;
+  private String username;
 
-    private String email;
+  private String email;
 
-    private Role role;
+  private Role role;
 
-    private String password;
+  private String password;
 
-    @Version
-    private Long version;
+  @Version private Long version;
 
-    @CreatedDate
-    private Instant createdAt;
+  @CreatedDate private Instant createdAt;
 
-    @LastModifiedDate
-    private Instant updatedAt;
+  @LastModifiedDate private Instant updatedAt;
 }

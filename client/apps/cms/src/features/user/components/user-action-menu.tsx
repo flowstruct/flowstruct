@@ -33,6 +33,7 @@ import { UserDetailsFormFields } from './user-details-form-fields';
 import { UserPasswordFormFields } from './user-password-form-fields';
 import { ConfirmationModal } from '@/shared/components/confirmation-modal';
 import { formatTimeAgo } from '@/shared/utils/formatTimeAgo';
+import { formatDate } from '@/shared/utils/formatDate';
 
 type UserActionMenuProps = {
   user: User;
@@ -41,6 +42,8 @@ type UserActionMenuProps = {
 export function UserActionMenu({ user }: UserActionMenuProps) {
   const { data: users } = useSuspenseQuery(userQueries.collection);
 
+  console.log(users);
+  console.log(user);
   const updatedBy = users.map[user.updatedBy];
 
   const [editOpen, setEditOpen] = React.useState(false);
@@ -211,10 +214,7 @@ export function UserActionMenu({ user }: UserActionMenuProps) {
 
           <section className={styles.userActivity}>
             <p>Edited {formatTimeAgo(new Date(user.updatedAt))}</p>
-            <div className={styles.userActivityUser}>
-              <UserIcon size={12} />
-              <p>{updatedBy?.username ?? 'Unknown user'}</p>
-            </div>
+            <p className={styles.createdAt}>Created {formatDate(new Date(user.createdAt))}</p>
           </section>
         </Popover>
       </MenuTrigger>
