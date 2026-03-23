@@ -57,9 +57,9 @@ function CoursesPage() {
   const showSkeleton = useDebounce(isFetching, 350);
   const searchOptions = { filter, page, size };
   const table = useCourseTable({
-    courses: coursesPage.content,
-    pageCount: coursesPage.totalPages,
-    rowCount: coursesPage.totalCourses,
+    courses: coursesPage?.content ?? [],
+    pageCount: coursesPage?.totalPages,
+    rowCount: coursesPage?.totalCourses,
     searchOptions,
   });
 
