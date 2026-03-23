@@ -30,6 +30,8 @@ import {
   CircleCheck,
   CircleX,
   Pencil,
+  CopyPlus,
+  Save,
 } from 'lucide-react';
 import React from 'react';
 import styles from './flowsheet-action-menu.module.css';
@@ -147,7 +149,7 @@ export function FlowsheetActionsMenu({ flowsheet }: ActionsMenuProps) {
             </Switch>
 
             <FormModalSubmit isPending={cloneFlowsheet.isPending}>
-              <SquarePlus size={15} /> Clone
+              <CopyPlus size={15} /> Clone
             </FormModalSubmit>
           </FormModalFooter>
         </FormModalBody>
@@ -188,7 +190,7 @@ export function FlowsheetActionsMenu({ flowsheet }: ActionsMenuProps) {
 
           <FormModalFooter>
             <FormModalSubmit isPending={editFlowsheet.isPending}>
-              <Pencil size={15} /> Save
+              <Save size={15} /> Save
             </FormModalSubmit>
           </FormModalFooter>
         </FormModalBody>

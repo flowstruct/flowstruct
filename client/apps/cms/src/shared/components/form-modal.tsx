@@ -29,6 +29,8 @@ type FormModalProps = {
   children: React.ReactNode;
 };
 
+const MODAL_FORM_ID = 'MODAL_FORM';
+
 export function FormModal({
   open: controlledOpen,
   onOpenChange,
@@ -49,11 +51,14 @@ export function FormModal({
     isControlled ? onOpenChange?.(false) : setInternalOpen(false);
   }, [isControlled, onOpenChange]);
 
-  const onFormSubmit = handleSubmit((formData) => {
-    onSubmit(formData);
-    close();
-  });
+  const onFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    if ((e.target as HTMLElement).id !== MODAL_FORM_ID) return;
 
+    handleSubmit((formData) => {
+      onSubmit(formData);
+      close();
+    })(e);
+  };
   const childArray = React.Children.toArray(children);
 
   const trigger = childArray.find(
@@ -74,7 +79,9 @@ export function FormModal({
     >
       {trigger}
       <Modal isOpen={isOpen} onOpenChange={(val) => (val ? open() : close())} size={size}>
-        <Form onSubmit={onFormSubmit}>{modalChildren}</Form>
+        <Form id={MODAL_FORM_ID} onSubmit={onFormSubmit}>
+          {modalChildren}
+        </Form>
       </Modal>
     </FormModalContext.Provider>
   );

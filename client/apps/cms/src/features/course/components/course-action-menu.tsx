@@ -15,7 +15,7 @@ import { Button } from '@/shared/components/ui/Button';
 import { Menu, MenuItem, MenuTrigger } from '@/shared/components/ui/Menu';
 import { Popover } from '@/shared/components/ui/Popover';
 import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
-import { Archive, ArchiveRestore, Ellipsis, Folder, Pencil, User } from 'lucide-react';
+import { Archive, ArchiveRestore, Ellipsis, Folder, Pencil, Save, User } from 'lucide-react';
 import React from 'react';
 import { CourseFormFields } from './course-form-fields';
 import { courseKeys, courseQueries } from '@/features/course/queries';
@@ -95,7 +95,7 @@ export function CourseActionsMenu({ course, searchOptions }: CourseActionsMenuPr
 
           <FormModalFooter>
             <FormModalSubmit isPending={editCourse.isPending}>
-              <Pencil size={15} /> Save
+              <Save size={15} /> Save
             </FormModalSubmit>
           </FormModalFooter>
         </FormModalBody>

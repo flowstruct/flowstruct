@@ -102,6 +102,7 @@ function DataTableSettings<TData>({ table }: DataTableSettingsProps<TData>) {
         <div className={styles.option}>
           <RowsPerPageOptions table={table} />
         </div>
+
         <Divider />
 
         <div className={styles.option}>

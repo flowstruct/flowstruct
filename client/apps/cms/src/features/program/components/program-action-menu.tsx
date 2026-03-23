@@ -1,5 +1,5 @@
 import { programApi } from '@/features/program/api';
-import { Degree, Program } from '@/features/program/domain/program';
+import { Program } from '@/features/program/domain/program';
 import { usePermission } from '@/features/user/hooks/usePermission';
 import { userQueries } from '@/features/user/queries';
 import {
@@ -15,7 +15,7 @@ import { Button } from '@/shared/components/ui/Button';
 import { Menu, MenuItem, MenuTrigger } from '@/shared/components/ui/Menu';
 import { Popover } from '@/shared/components/ui/Popover';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
-import { Ellipsis, Pencil, Archive, ArchiveRestore, User, Folder } from 'lucide-react';
+import { Ellipsis, Pencil, Archive, ArchiveRestore, User, Folder, Save } from 'lucide-react';
 import React from 'react';
 import { ProgramFormFields } from './program-form-fields';
 import { programKeys } from '@/features/program/queries';
@@ -87,7 +87,7 @@ export function ProgramActionsMenu({ program }: ProgramActionsMenuProps) {
 
           <FormModalFooter>
             <FormModalSubmit isPending={editProgram.isPending}>
-              <Pencil size={15} /> Save
+              <Save size={15} /> Save
             </FormModalSubmit>
           </FormModalFooter>
         </FormModalBody>
