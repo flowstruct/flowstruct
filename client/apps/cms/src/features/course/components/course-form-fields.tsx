@@ -31,6 +31,7 @@ export function CourseFormFields({ defaultValues, isLoading }: CourseFormFieldsP
         placeholder="A unique identifier (CS101, MATH201, etc.)..."
         isRequired
         icon={<Hash size={15} />}
+        autoComplete="off"
         name="code"
         label="Code"
         defaultValue={defaultValues?.code}
@@ -40,6 +41,7 @@ export function CourseFormFields({ defaultValues, isLoading }: CourseFormFieldsP
         isRequired
         icon={<Tag size={15} />}
         name="name"
+        autoComplete="off"
         label="Name"
         defaultValue={defaultValues?.name}
       />

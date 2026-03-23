@@ -146,14 +146,14 @@ export const useCourseTable = ({
         id: 'actions',
         cell: ({ row }) => (
           <div className={styles.actionsMenu}>
-            <CourseActionsMenu course={row.original} searchOptions={searchOptions} />
+            <CourseActionsMenu course={row.original} />
           </div>
         ),
         enableHiding: false,
         size: 50,
       }),
     ],
-    [searchOptions]
+    []
   );
 
   return useReactTable({

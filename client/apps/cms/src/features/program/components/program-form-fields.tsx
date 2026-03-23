@@ -22,6 +22,7 @@ export function ProgramFormFields({ defaultValues }: ProgramFormFieldsProps) {
         icon={<Hash size={15} />}
         name="code"
         label="Code"
+        autoComplete="off"
         defaultValue={defaultValues?.code}
       />
 
@@ -30,6 +31,7 @@ export function ProgramFormFields({ defaultValues }: ProgramFormFieldsProps) {
         icon={<Tag size={15} />}
         name="name"
         label="Name"
+        autoComplete="off"
         defaultValue={defaultValues?.name}
       />
 

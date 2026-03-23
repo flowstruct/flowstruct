@@ -14,28 +14,25 @@ import { Breadcrumb, Breadcrumbs } from '@/shared/components/ui/breadcrumbs';
 import { Button } from '@/shared/components/ui/Button';
 import { Menu, MenuItem, MenuTrigger } from '@/shared/components/ui/Menu';
 import { Popover } from '@/shared/components/ui/Popover';
-import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { Archive, ArchiveRestore, Ellipsis, Folder, Pencil, Save, User } from 'lucide-react';
 import React from 'react';
 import { CourseFormFields } from './course-form-fields';
-import { courseKeys, courseQueries } from '@/features/course/queries';
+import { courseQueries } from '@/features/course/queries';
 import styles from './course-action-menu.module.css';
 import { formatTimeAgo } from '@/shared/utils/formatTimeAgo';
-import { SearchOptions } from '@/shared/types';
 
 type CourseActionsMenuProps = {
   course: CourseSummary;
-  searchOptions: SearchOptions;
 };
 
-export function CourseActionsMenu({ course, searchOptions }: CourseActionsMenuProps) {
+export function CourseActionsMenu({ course }: CourseActionsMenuProps) {
   const { data: users } = useSuspenseQuery(userQueries.collection);
   const updatedBy = users.map[course.updatedBy];
   const { hasPermission } = usePermission();
   const isOutdated = course.outdatedAt != null;
 
   const [editOpen, setEditOpen] = React.useState(false);
-  const queryClient = useQueryClient();
 
   const { data: fullCourse, isPending: isCoursePending } = useQuery({
     ...courseQueries.detail(course.id),
@@ -44,25 +41,16 @@ export function CourseActionsMenu({ course, searchOptions }: CourseActionsMenuPr
 
   const editCourse = useMutation({
     mutationFn: (data: Partial<CourseSummary>) => courseApi.editCourse(course.id, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: courseKeys.page(searchOptions) });
-    },
     meta: { successMessage: 'Course updated.' },
   });
 
   const markOutdated = useMutation({
     mutationFn: () => courseApi.markOutdated(course.id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: courseKeys.page(searchOptions) });
-    },
     meta: { successMessage: 'Course marked as outdated.' },
   });
 
   const markActive = useMutation({
     mutationFn: () => courseApi.markActive(course.id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: courseKeys.page(searchOptions) });
-    },
     meta: { successMessage: 'Course marked as active.' },
   });
 
