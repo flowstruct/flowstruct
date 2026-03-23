@@ -6,6 +6,7 @@ import {
   getFacetedUniqueValues,
   getFilteredRowModel,
   getGroupedRowModel,
+  getPaginationRowModel,
   getSortedRowModel,
   Row,
   useReactTable,
@@ -130,6 +131,7 @@ export const useFlowsheetTable = ({ flowsheets }: UseFlowsheetTableProps) => {
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
     getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
     meta: {
       rowAction: (row: Row<FlowsheetSummary>) => {
         navigate({

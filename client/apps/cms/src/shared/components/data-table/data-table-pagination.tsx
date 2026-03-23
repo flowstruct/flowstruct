@@ -13,7 +13,8 @@ export function DataTablePagination<TData>({ table, isLoading }: DataTablePagina
   const { pageSize, pageIndex } = table.getState().pagination;
   const PAGE_SIZES = ['5', '10', '20', '50'];
 
-  const pageCount = table.getPageCount();
+  const rowCount = table.options.rowCount ?? table.getRowCount();
+  const pageCount = table.options.pageCount ?? table.getPageCount();
 
   return (
     <section className={styles.pagination}>
@@ -38,7 +39,7 @@ export function DataTablePagination<TData>({ table, isLoading }: DataTablePagina
           </Select>
         </div>
 
-        <span className={styles.rowCount}>{table.getRowCount()} row(s) total</span>
+        <span className={styles.rowCount}>{rowCount} row(s) total</span>
       </div>
 
       <div className={styles.right}>

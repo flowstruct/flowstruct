@@ -5,6 +5,7 @@ import {
   getFacetedRowModel,
   getFacetedUniqueValues,
   getFilteredRowModel,
+  getPaginationRowModel,
   getSortedRowModel,
 } from '@tanstack/react-table';
 import { SiteGenerationSummary } from '@/features/site-generator/domain/site-generator';
@@ -82,5 +83,6 @@ export function useSiteGeneratorTable({ generations }: UseSiteGeneratorTableProp
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
     getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
   });
 }
