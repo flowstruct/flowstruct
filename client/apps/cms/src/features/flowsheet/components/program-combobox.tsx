@@ -6,7 +6,7 @@ import { ComboBoxState, useComboBoxState } from '@/shared/hooks/use-combobox-sta
 import { getProgramDisplayName } from '@/features/program/domain/getProgramDisplayName';
 import { ComboBox } from '@/shared/components/ui/ComboBox';
 import { ListBox, ListBoxItem, ListEmptyState } from '@/shared/components/ui/ListBox';
-import styles from '@/features/flowsheet/components/create-flowsheet-modal/program-combobox.module.css';
+import styles from '@/features/flowsheet/components/program-combobox.module.css';
 import { createPortal } from 'react-dom';
 import { UnstyledButton } from '@/shared/components/ui/UnstyledButton';
 import { Program } from '@/features/program/domain/program';

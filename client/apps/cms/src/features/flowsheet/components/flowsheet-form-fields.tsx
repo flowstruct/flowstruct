@@ -3,7 +3,7 @@ import { TextField } from '@/shared/components/ui/TextField';
 import { Switch } from '@/shared/components/ui/Switch';
 import { CalendarDays, Tag } from 'lucide-react';
 import styles from './flowsheet-form-fields.module.css';
-import { ProgramComboBox } from '@/features/flowsheet/components/create-flowsheet-modal/program-combobox';
+import { ProgramComboBox } from '@/features/flowsheet/components/program-combobox';
 import { DisclosureState } from '@/shared/types';
 
 export type FlowsheetFormFieldsProps = {
@@ -65,3 +65,4 @@ export function NavigateToFlowsheetSwitch({ value, onChange }) {
     </Switch>
   );
 }
+
