@@ -5,7 +5,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -25,12 +24,21 @@ public class AstroBuildService {
   @Value("${site-generator.dir}")
   private String siteGeneratorDir;
 
+  @Value("${site-generator.script}")
+  private String siteGeneratorScript;
+
+  public AstroBuildService(String apiKey, String siteGeneratorDir, String siteGeneratorScript) {
+    this.apiKey = apiKey;
+    this.siteGeneratorDir = siteGeneratorDir;
+    this.siteGeneratorScript = siteGeneratorScript;
+  }
+
   public BuildResult executeBuild() throws BuildException {
-    Path contentPath = Paths.get(siteGeneratorDir);
+    Path contentPath = Path.of(siteGeneratorDir);
     Path distPath = contentPath.resolve(DIST_DIR);
 
     try {
-      ProcessBuilder processBuilder = new ProcessBuilder("pnpm", "build");
+      ProcessBuilder processBuilder = new ProcessBuilder(siteGeneratorScript.split(" "));
       processBuilder.directory(contentPath.toFile());
       processBuilder.environment().put("API_KEY", apiKey);
       processBuilder.redirectErrorStream(true);

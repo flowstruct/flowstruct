@@ -10,6 +10,7 @@
     "baseUrl": "."
   },
   "references": [
-    { "path": "./apps/cms" }
+    { "path": "./apps/cms" },
+    { "path": "./apps/content" },
   ]
 }

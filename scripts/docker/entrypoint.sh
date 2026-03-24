@@ -1,9 +1,6 @@
 #!/usr/bin/env sh
 set -eu
 
-# ----------------------------
-# non-root user handling
-# ----------------------------
 PUID=${PUID:-1000}
 PGID=${PGID:-1000}
 
@@ -24,9 +21,6 @@ if [ "$(id -u)" = "0" ]; then
     exec gosu "$PUID:$PGID" "$0" "$@"
 fi
 
-# ----------------------------
-# application startup
-# ----------------------------
 echo ""
 echo "  🚀  Starting Flowstruct..."
 echo ""
@@ -34,7 +28,7 @@ echo ""
 export API_KEY=$(openssl rand -hex 32)
 
 if [ -f /app/app.jar ]; then
-    echo "  Starting backend service..."
+    echo "  Starting service..."
     java -jar /app/app.jar &
     SPRING_PID=$!
 else
@@ -64,13 +58,10 @@ if [ -f /app/app.jar ]; then
 fi
 
 echo ""
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "  ✅  Flowstruct is running!"
-echo ""
-echo "  Content → http://localhost:3000"
-echo "  CMS     → http://localhost:3000/cms"
-echo "  API     → http://localhost:3000/api"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "    → http://localhost:3000"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 
 wait

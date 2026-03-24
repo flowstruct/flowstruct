@@ -1,0 +1,11 @@
+spring:
+  config:
+    activate:
+      on-profile: staging
+
+logging:
+  level:
+    root: DEBUG
+    org:
+      apache:
+        tomcat: WARN

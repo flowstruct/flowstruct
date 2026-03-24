@@ -53,8 +53,8 @@ public class SecurityConfig {
                         "/api/users/logout",
                         "/error",
                         "/actuator/health",
-                        "/cms",
-                        "/cms/**")
+                        "/",
+                        "/**")
                     .permitAll()
                     .anyRequest()
                     .authenticated())

@@ -76,13 +76,13 @@ const sidebarSections = [
   },
 ];
 
-const footerItems = [
-  // {
-  //   icon: Settings2,
-  //   label: 'Settings',
-  //   route: '/settings',
-  // },
-];
+// const footerItems = [
+//   {
+//     icon: Settings2,
+//     label: 'Settings',
+//     route: '/settings',
+//   },
+// ];
 
 export function Sidebar() {
   const navigate = useNavigate();
@@ -121,20 +121,20 @@ export function Sidebar() {
         ))}
       </section>
 
-      <footer className={styles.footer}>
-        {footerItems.map((item) => {
-          return (
-            <UnstyledButton
-              key={item.route}
-              className={styles.sidebarMenuItem}
-              onPress={() => navigate({ to: item.route })}
-            >
-              <item.icon size={16} />
-              {item.label}
-            </UnstyledButton>
-          );
-        })}
-      </footer>
+      {/* <footer className={styles.footer}> */}
+      {/*   {footerItems.map((item) => { */}
+      {/*     return ( */}
+      {/*       <UnstyledButton */}
+      {/*         key={item.route} */}
+      {/*         className={styles.sidebarMenuItem} */}
+      {/*         onPress={() => navigate({ to: item.route })} */}
+      {/*       > */}
+      {/*         <item.icon size={16} /> */}
+      {/*         {item.label} */}
+      {/*       </UnstyledButton> */}
+      {/*     ); */}
+      {/*   })} */}
+      {/* </footer> */}
     </aside>
   );
 }

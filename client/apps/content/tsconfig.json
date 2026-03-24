@@ -1,7 +1,6 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    // Astro’s strict config merged in:
     "experimentalDecorators": true,
     "jsx": "preserve",
     "jsxImportSource": "astro",
