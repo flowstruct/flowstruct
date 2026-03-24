@@ -1,15 +1,23 @@
 import { DisclosureState } from '@/shared/types';
 import React from 'react';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { programQueries } from '@/features/program/queries';
-import { useComboBoxState } from '@/shared/hooks/use-combobox-state';
+import { ComboBoxState, useComboBoxState } from '@/shared/hooks/use-combobox-state';
 import { getProgramDisplayName } from '@/features/program/domain/getProgramDisplayName';
 import { ComboBox } from '@/shared/components/ui/ComboBox';
 import { ListBox, ListBoxItem, ListEmptyState } from '@/shared/components/ui/ListBox';
 import styles from '@/features/flowsheet/components/create-flowsheet-modal/program-combobox.module.css';
 import { createPortal } from 'react-dom';
-import { CreateProgramForm } from './create-program-form';
 import { UnstyledButton } from '@/shared/components/ui/UnstyledButton';
+import { Program } from '@/features/program/domain/program';
+import { programApi } from '@/features/program/api';
+import { handleSubmit } from '@/shared/utils/handle-submit';
+import { ProgramFormFields } from '@/features/program/components/program-form-fields';
+import { Form } from '@/shared/components/ui/Form';
+import { Divider } from '@/shared/components/ui/divider';
+import { Button } from '@/shared/components/ui/Button';
+import { ChevronLeft, GraduationCap } from 'lucide-react';
+import { Switch } from '@/shared/components/ui/Switch';
 
 type ProgramComboBoxProps = {
   isDisabled?: boolean;
@@ -60,8 +68,8 @@ export function ProgramComboBox({
         allowsEmptyCollection
         inputValue={comboBoxState.inputValue}
         onInputChange={comboBoxState.onInputChange}
-        selectedKey={comboBoxState.selectedKey}
-        onSelectionChange={comboBoxState.onSelectionChange}
+        value={comboBoxState.selectedKey}
+        onChange={comboBoxState.onSelectionChange}
         onOpenChange={(isOpen) => {
           if (isOpen && programFormState.isOpen) programFormState.close();
         }}
@@ -101,5 +109,65 @@ export function ProgramComboBox({
           programFormRef.current
         )}
     </>
+  );
+}
+
+function CreateProgramForm({
+  programFormState,
+  programComboboxState,
+}: {
+  programFormState: DisclosureState;
+  programComboboxState: ComboBoxState<Program>;
+}) {
+  const [selectProgram, setSelectProgram] = React.useState<boolean>(true);
+
+  const createProgram = useMutation({
+    mutationFn: programApi.createProgram,
+  });
+
+  const onSubmit = handleSubmit((formData, e) => {
+    e.stopPropagation();
+
+    createProgram.mutate(formData, {
+      onSuccess: (data) => {
+        if (selectProgram) {
+          programComboboxState.onCreateItem(data);
+        }
+
+        programFormState.close();
+      },
+    });
+  });
+
+  return (
+    <Form id="program-form" onSubmit={onSubmit}>
+      <div className={styles.programFormFields}>
+        <ProgramFormFields />
+      </div>
+
+      <Divider />
+
+      <footer className={styles.programFormFooter}>
+        <Button size="sm" variant="transparent" type="reset" onPress={programFormState.close}>
+          <ChevronLeft size={14} /> Cancel
+        </Button>
+
+        <div className={styles.programFormSubmit}>
+          <Switch isSelected={selectProgram} onChange={setSelectProgram}>
+            Select after creating
+          </Switch>
+
+          <Button
+            size="sm"
+            variant="primary"
+            type="submit"
+            form="program-form"
+            isPending={createProgram.isPending}
+          >
+            <GraduationCap size={15} /> Create program
+          </Button>
+        </div>
+      </footer>
+    </Form>
   );
 }

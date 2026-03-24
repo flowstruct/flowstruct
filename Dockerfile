@@ -1,24 +1,25 @@
 # -------------------------
-# node pnpm workspace (build cms & content)
+# node pnpm workspace
 # -------------------------
-FROM node:20-slim AS client-base
+FROM node:21-slim AS client-base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
-
-FROM client-base AS client-build
 WORKDIR /build/client
 
 COPY /client .
 
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+FROM client-base AS cms
+RUN --mount=type=cache,id=deps-cms,target=/pnpm/store pnpm --filter cms install --frozen-lockfile
 
-RUN pnpm run -r build
+RUN pnpm --filter cms run build
+
+FROM client-base AS content
 
 # -------------------------
 # api build
 # -------------------------
-FROM eclipse-temurin:21-jdk AS api-base
+FROM eclipse-temurin:21-jdk AS api
 WORKDIR /build/api
 
 COPY --chmod=755 api/mvnw ./
@@ -27,11 +28,8 @@ COPY /api/.mvn .mvn
 COPY /api/pom.xml ./
 RUN ./mvnw dependency:go-offline -B
 
-FROM api-base AS api-build
-WORKDIR /build/api
-
 COPY /api/src ./src
-COPY --from=client-build /build/client/apps/cms/dist/ ./src/main/resources/cms/
+COPY --from=cms /build/client/apps/cms/dist/ ./src/main/resources/static/
 
 RUN ./mvnw clean package -DskipTests -B
 

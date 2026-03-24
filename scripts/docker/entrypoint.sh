@@ -41,14 +41,6 @@ else
     echo "  ⚠️  Warning: /app/app.jar not found"
 fi
 
-if [ -f /app/content/server/entry.mjs ]; then
-    echo "  Starting content service..."
-    node /app/content/server/entry.mjs &
-    NODE_PID=$!
-else
-    echo "  ⚠️  Warning: /app/content/server/entry.mjs not found"
-fi
-
 TRUST_PROXY=${TRUST_PROXY:-false}
 
 echo "  Starting reverse proxy service..."
