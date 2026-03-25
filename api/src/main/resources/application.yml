@@ -40,8 +40,7 @@ server:
 
 secure: true
 
-api:
-  key: ${API_KEY:super-secret-api-key}
-
 site-generator:
   dir: ${SITE_GENERATOR_DIR}
+  api-key: ${SITE_GENERATOR_API_KEY}
+  script: ${SITE_GENERATOR_SCRIPT}

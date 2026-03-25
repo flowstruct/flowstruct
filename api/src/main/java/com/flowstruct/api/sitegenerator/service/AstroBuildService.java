@@ -8,7 +8,6 @@ import java.nio.file.Path;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -18,13 +17,10 @@ public class AstroBuildService {
 
   private static final String DIST_DIR = "dist";
 
-  @Value("${api.key}")
   private String apiKey;
 
-  @Value("${site-generator.dir}")
   private String siteGeneratorDir;
 
-  @Value("${site-generator.script}")
   private String siteGeneratorScript;
 
   public AstroBuildService(String apiKey, String siteGeneratorDir, String siteGeneratorScript) {
@@ -40,7 +36,7 @@ public class AstroBuildService {
     try {
       ProcessBuilder processBuilder = new ProcessBuilder(siteGeneratorScript.split(" "));
       processBuilder.directory(contentPath.toFile());
-      processBuilder.environment().put("API_KEY", apiKey);
+      processBuilder.environment().put("SITE_GENERATOR_API_KEY", apiKey);
       processBuilder.redirectErrorStream(true);
 
       Process process = processBuilder.start();

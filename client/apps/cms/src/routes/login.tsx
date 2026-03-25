@@ -7,6 +7,7 @@ import { TextField } from '@/shared/components/ui/TextField';
 import { Button } from '@/shared/components/ui/Button';
 import { LogIn } from 'lucide-react';
 import { Text } from '@/shared/components/layout/text';
+import Logo from '@/assets/navy_logo.png';
 
 export const Route = createFileRoute('/login')({
   validateSearch: (search) => ({
@@ -42,7 +43,7 @@ function LoginPage() {
     <main className={styles.page}>
       <form className={styles.form} onSubmit={onSubmit}>
         <div className={styles.header}>
-          <img src="src/assets/navy_logo.png" width="50" />
+          <img src={Logo} width="50" />
 
           <h1 className={styles.title}>Flowstruct</h1>
         </div>

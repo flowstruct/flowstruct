@@ -52,6 +52,7 @@ const queryClient = new QueryClient({
           icon: <Loader size={18} />,
           loading: true,
           autoClose: false,
+          withBorder: true,
         });
       }
     },
@@ -74,6 +75,7 @@ const queryClient = new QueryClient({
           icon: <Check size={18} />,
           loading: false,
           autoClose: 4000,
+          withBorder: true,
         });
       }
     },
@@ -101,6 +103,7 @@ const queryClient = new QueryClient({
             message: message,
             color: 'red',
             icon: <X size={18} />,
+            withBorder: true,
           });
         });
       } else {
@@ -110,6 +113,7 @@ const queryClient = new QueryClient({
             message: message || 'An unknown error occurred',
             color: 'red',
             icon: <X size={18} />,
+            withBorder: true,
           });
         });
       }

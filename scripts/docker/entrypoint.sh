@@ -25,7 +25,7 @@ echo ""
 echo "  🚀  Starting Flowstruct..."
 echo ""
 
-export API_KEY=$(openssl rand -hex 32)
+export SITE_GENERATOR_API_KEY=$(openssl rand -hex 32)
 
 if [ -f /app/app.jar ]; then
     echo "  Starting service..."

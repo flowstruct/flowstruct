@@ -48,16 +48,12 @@ public class SecurityConfig {
         .authorizeHttpRequests(
             request ->
                 request
-                    .requestMatchers(
-                        "/api/users/login",
-                        "/api/users/logout",
-                        "/error",
-                        "/actuator/health",
-                        "/",
-                        "/**")
+                    .requestMatchers("/api/users/login", "/api/users/logout", "/actuator/health")
                     .permitAll()
+                    .requestMatchers("/api/**")
+                    .authenticated()
                     .anyRequest()
-                    .authenticated())
+                    .permitAll())
         .exceptionHandling(
             exceptions ->
                 exceptions

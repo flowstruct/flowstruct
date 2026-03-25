@@ -1,11 +1,11 @@
-const API_KEY = process.env.API_KEY || 'super-secret-api-key';
+const SITE_GENERATOR_API_KEY = process.env.SITE_GENERATOR_API_KEY || 'super-secret-api-key';
 
 export const api = async <T>(endpoint: string) => {
   const url = `http://localhost:8080/api${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
 
   const response = await fetch(url, {
     headers: {
-      'X-Api-Key': API_KEY,
+      'X-Site-Generator-Api-Key': SITE_GENERATOR_API_KEY,
     },
     credentials: 'include',
   });
