@@ -39,6 +39,8 @@ COPY --from=api /api/target/*.jar ./app.jar
 
 COPY --from=content /client/apps/content/package.json ./content/
 COPY --from=content /client/apps/content/src/ ./content/src/
+COPY --from=content /client/apps/content/astro.config.mjs ./content/
+COPY --from=content /client/apps/content/tailwind.config.mjs ./content/
 COPY --from=content /client/node_modules/ ./content/node_modules/
 
 COPY /scripts/docker/entrypoint.sh .

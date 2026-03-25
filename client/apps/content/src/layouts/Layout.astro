@@ -1,12 +1,14 @@
 ---
 import BaseHead from "../components/BaseHead.astro";
+import icon from "../assets/icon.png";
+
 const {title} = Astro.props;
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
-	  <link rel="icon" type="image/svg+xml" href="/beige_icon.png" />
+	  <link rel="icon" type="image/png" href={icon.src}/>
 	  <meta charset="UTF-8"/>
 	  <meta name="viewport" content="width=device-width"/>
 	  <meta name="generator" content={Astro.generator}/>
