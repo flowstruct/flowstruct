@@ -58,11 +58,11 @@ export function DataTable<TData>({ table, isLoading = false }: DataTableProps<TD
               </tr>
             ))
           ) : table.getRowModel().rows.length ? (
-            table
-              .getRowModel()
-              .rows.map((row) => (
+            table.getRowModel().rows.map((row) => {
+              return (
                 <Tr key={row.id} onPress={() => table.options.meta?.rowAction(row)} row={row} />
-              ))
+              );
+            })
           ) : (
             <tr className={styles.emptyRow}>
               <td colSpan={table.getLeafHeaders().length} className={styles.emptyCell}>

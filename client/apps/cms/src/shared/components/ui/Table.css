@@ -1,4 +1,4 @@
-@import "./theme.css";
+@import './theme.css';
 
 .react-aria-Table {
   padding: 0.25025rem;
@@ -29,7 +29,7 @@
 
     & tr:last-child .react-aria-Column {
       border-bottom: 1px solid var(--border-color);
-      cursor: default;
+      cursor: pointer;
     }
   }
 
@@ -40,7 +40,7 @@
     border-radius: var(--radius);
     clip-path: inset(0 round var(--radius)); /* firefox */
     outline: none;
-    cursor: default;
+    cursor: pointer;
     color: var(--text-color);
     font-size: 0.9380000000000001rem;
     position: relative;
@@ -103,7 +103,7 @@
     }
 
     .react-aria-Row[data-selected] + [data-selected],
-    .react-aria-Row[data-selected] + .react-aria-DropIndicator + [data-selected]{
+    .react-aria-Row[data-selected] + .react-aria-DropIndicator + [data-selected] {
       --radius-top: 0px;
     }
   }
@@ -194,15 +194,15 @@
     border-color: transparent;
     background-clip: content-box;
 
-    &[data-resizable-direction=both] {
+    &[data-resizable-direction='both'] {
       cursor: ew-resize;
     }
 
-    &[data-resizable-direction=left] {
+    &[data-resizable-direction='left'] {
       cursor: e-resize;
     }
 
-    &[data-resizable-direction=right] {
+    &[data-resizable-direction='right'] {
       cursor: w-resize;
     }
 
@@ -230,7 +230,7 @@
     transform: translateZ(0);
   }
 
-  [slot=drag] {
+  [slot='drag'] {
     all: unset;
     width: 15px;
     text-align: center;
@@ -250,12 +250,12 @@
 .react-aria-Table[data-drop-target] {
   outline: 2px solid var(--highlight-background);
   outline-offset: -1px;
-  background: var(--highlight-overlay)
+  background: var(--highlight-overlay);
 }
 
 .react-aria-Row[data-drop-target] {
   outline: 2px solid var(--highlight-background);
-  background: var(--highlight-overlay)
+  background: var(--highlight-overlay);
 }
 
 .react-aria-DropIndicator[data-drop-target] {

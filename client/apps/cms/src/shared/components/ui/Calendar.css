@@ -1,4 +1,4 @@
-@import "./theme.css";
+@import './theme.css';
 
 .react-aria-Calendar {
   width: fit-content;
@@ -24,7 +24,7 @@
     padding: 0;
   }
 
-  [slot=errorMessage] {
+  [slot='errorMessage'] {
     font-size: 12px;
     color: var(--invalid-color);
   }
@@ -35,7 +35,7 @@
   line-height: 2.00025rem;
   text-align: center;
   border-radius: 6px;
-  cursor: default;
+  cursor: pointer;
   outline: none;
   forced-color-adjust: none;
 
@@ -71,3 +71,4 @@
     color: var(--highlight-foreground);
   }
 }
+

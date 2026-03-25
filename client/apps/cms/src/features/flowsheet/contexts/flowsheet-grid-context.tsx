@@ -24,6 +24,7 @@ const initialState: FlowsheetGridState = {
   linkType: null,
 };
 
+// TODO: declare previous state, and manually manage throughout fsm
 function reducer(state: FlowsheetGridState, action: FlowsheetGridAction): FlowsheetGridState {
   switch (action.type) {
     case 'TOGGLE_SELECT_MODE': {

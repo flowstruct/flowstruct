@@ -1,4 +1,4 @@
-@import "./theme.css";
+@import './theme.css';
 
 .react-aria-Tree {
   display: flex;
@@ -29,13 +29,13 @@
     --padding: 16px;
     border-radius: 6px;
     outline: none;
-    cursor: default;
+    cursor: pointer;
     color: var(--text-color);
     font-size: 0.9380000000000001rem;
     position: relative;
     transform: translateZ(0);
 
-    .react-aria-Button[slot=chevron] {
+    .react-aria-Button[slot='chevron'] {
       all: unset;
       display: flex;
       visibility: hidden;
@@ -54,11 +54,11 @@
       }
     }
 
-    &[data-has-child-items] .react-aria-Button[slot=chevron] {
+    &[data-has-child-items] .react-aria-Button[slot='chevron'] {
       visibility: visible;
     }
 
-    &[data-expanded] .react-aria-Button[slot=chevron] svg {
+    &[data-expanded] .react-aria-Button[slot='chevron'] svg {
       rotate: 90deg;
     }
 
@@ -162,7 +162,7 @@
     background: var(--highlight-overlay);
   }
 
-  [slot=drag] {
+  [slot='drag'] {
     all: unset;
     width: 15px;
     text-align: center;
@@ -175,7 +175,7 @@
 }
 
 .react-aria-Tree {
-  &[data-selection-mode=multiple] {
+  &[data-selection-mode='multiple'] {
     --checkbox-width: 28px;
   }
 
@@ -186,7 +186,10 @@
   .react-aria-DropIndicator {
     &[data-drop-target] {
       outline: 1px solid var(--highlight-background);
-      margin-left: calc(8px + var(--checkbox-width, 0px) + var(--drag-button-width, 0px) + 26px + (var(--tree-item-level) - 1) * 16px);
+      margin-left: calc(
+        8px + var(--checkbox-width, 0px) + var(--drag-button-width, 0px) + 26px +
+          (var(--tree-item-level) - 1) * 16px
+      );
     }
   }
 }

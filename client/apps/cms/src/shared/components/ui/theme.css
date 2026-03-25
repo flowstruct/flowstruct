@@ -156,7 +156,7 @@
   --border-color: var(--gray-3);
   --border-color-hover: var(--gray-4);
   --border-color-pressed: var(--gray-5);
-  --border-color-disabled: var(--gray-3);
+  --border-color-disabled: var(--gray-4);
   --field-background: var(--background-color);
   --field-text-color: var(--background-color);
   --overlay-background: var(--background-color);
@@ -179,7 +179,7 @@
   --highlight-background: var(--gray-2);
   --highlight-background-hovered: var(--gray-2);
   --highlight-background-pressed: var(--gray-3);
-  --highlight-background-active: var(--gray-2);
+  --highlight-background-active: var(--gray-3);
   --highlight-background-invalid: #cc2000;
   --highlight-foreground: var(--text-color);
   --highlight-foreground-pressed: var(--text-color);

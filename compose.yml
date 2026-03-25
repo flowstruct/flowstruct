@@ -1,6 +1,6 @@
 services:
   app:
-    image: ghcr.io/flowstruct/flowstruct:latest
+    image: ghcr.io/flowstruct/flowstruct:main
     ports:
       - "3000:3000"
     depends_on:
