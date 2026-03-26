@@ -55,14 +55,12 @@ public class FlowsheetTermController {
         flowsheetTermService.resizePlacement(flowsheetId, courseId, span), HttpStatus.OK);
   }
 
-  @DeleteMapping("/{termId}")
-  public ResponseEntity<FlowsheetDto> deleteTerm(
-      @PathVariable long flowsheetId, @PathVariable long termId) {
-    return new ResponseEntity<>(
-        flowsheetTermService.deleteTerm(flowsheetId, termId), HttpStatus.OK);
+  @DeleteMapping
+  public ResponseEntity<FlowsheetDto> deleteLastTerm(@PathVariable long flowsheetId) {
+    return new ResponseEntity<>(flowsheetTermService.deleteLastTerm(flowsheetId), HttpStatus.OK);
   }
 
-  @DeleteMapping
+  @DeleteMapping("/placements")
   public ResponseEntity<FlowsheetDto> removePlacements(
       @PathVariable long flowsheetId,
       @RequestParam(value = "courseIds", defaultValue = "") List<Long> courseIds) {

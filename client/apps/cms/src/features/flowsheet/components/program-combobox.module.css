@@ -19,8 +19,13 @@
   display: flex;
   justify-content: center;
   font-size: var(--font-size-xs);
+  font-style: normal;
   align-items: center;
   color: var(--text-color-secondary);
+
+  &[data-no-results] {
+    border: none;
+  }
 }
 
 .footer {
@@ -47,4 +52,3 @@
   gap: var(--space-4);
   padding: var(--space-4) var(--space-5);
 }
-

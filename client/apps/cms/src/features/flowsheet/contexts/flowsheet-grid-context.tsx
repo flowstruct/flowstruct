@@ -2,77 +2,79 @@ import React from 'react';
 
 export type LinkType = 'PREREQ' | 'COREQ';
 
-export type FlowsheetGridState = {
-  selected: Set<number>;
-  moving: number | null;
-  linkSource: number | null;
-  linkType: LinkType | null;
+type IDLE = {
+  current: 'IDLE';
+};
+type SELECT = {
+  current: 'SELECT';
+  courseIds: Set<number>;
+};
+type MOVE = {
+  current: 'MOVE';
+  courseId: number;
+};
+type LINK = {
+  current: 'LINK';
+  courseId: number;
+  type: LinkType;
+};
+export type FlowsheetGridState = IDLE | SELECT | MOVE | LINK;
+
+type Action =
+  | { type: 'SELECT'; courseId: number; remember?: boolean }
+  | { type: 'MOVE'; courseId: number; remember?: boolean }
+  | { type: 'LINK'; courseId: number; linkType: LinkType; remember?: boolean }
+  | { type: 'STOP' }
+  | { type: 'RESET' };
+
+type ReducerState = {
+  current: FlowsheetGridState;
+  previous: FlowsheetGridState;
 };
 
-type FlowsheetGridAction =
-  | { type: 'TOGGLE_SELECT_MODE'; payload: { courseId: number } }
-  | { type: 'CLEAR_SELECTED' }
-  | { type: 'TOGGLE_LINK_MODE'; payload: { courseId: number; type: LinkType | null } }
-  | { type: 'MOVE_START'; payload: { courseId: number } }
-  | { type: 'MOVE_END' }
-  | { type: 'RESET_STATE' };
+const IDLE_STATE: IDLE = { current: 'IDLE' };
 
-const initialState: FlowsheetGridState = {
-  selected: new Set(),
-  moving: null,
-  linkSource: null,
-  linkType: null,
-};
-
-// TODO: declare previous state, and manually manage throughout fsm
-function reducer(state: FlowsheetGridState, action: FlowsheetGridAction): FlowsheetGridState {
+function reducer(state: ReducerState, action: Action): ReducerState {
   switch (action.type) {
-    case 'TOGGLE_SELECT_MODE': {
-      const id = action.payload.courseId;
-      const next = new Set(state.selected);
+    case 'SELECT': {
+      if (state.current.current === 'SELECT') {
+        const nextSet = new Set(state.current.courseIds);
 
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
+        nextSet.has(action.courseId)
+          ? nextSet.delete(action.courseId)
+          : nextSet.add(action.courseId);
 
-      return {
-        ...state,
-        selected: next,
-        linkSource: null,
-      };
-    }
-
-    case 'CLEAR_SELECTED':
-      return { ...state, selected: new Set() };
-
-    case 'TOGGLE_LINK_MODE': {
-      const id = action.payload.courseId;
-      const type = action.payload.type;
+        return {
+          current: { current: 'SELECT', courseIds: nextSet },
+          previous: state.previous,
+        };
+      }
 
       return {
-        ...state,
-        linkType: state.linkSource === id ? null : type,
-        linkSource: state.linkSource === id ? null : id,
-        selected: new Set(),
+        current: { current: 'SELECT', courseIds: new Set([action.courseId]) },
+        previous: state.current,
       };
     }
-
-    case 'MOVE_START': {
-      const id = action.payload.courseId;
-
+    case 'MOVE':
       return {
-        ...initialState,
-        moving: id,
+        current: { current: 'MOVE', courseId: action.courseId },
+        previous: state.current,
       };
-    }
-
-    case 'MOVE_END': {
-      return initialState;
-    }
-
-    case 'RESET_STATE': {
-      return initialState;
-    }
-
+    case 'LINK':
+      return {
+        current: { current: 'LINK', courseId: action.courseId, type: action.linkType },
+        previous: state.current,
+      };
+    case 'STOP':
+      return {
+        current: state.previous,
+        previous: IDLE_STATE,
+      };
+    case 'RESET':
+      return {
+        current: IDLE_STATE,
+        previous: IDLE_STATE,
+      };
     default:
       return state;
   }
@@ -80,16 +82,19 @@ function reducer(state: FlowsheetGridState, action: FlowsheetGridAction): Flowsh
 
 type FlowsheetGridContextValues = {
   state: FlowsheetGridState;
-  dispatch: React.Dispatch<FlowsheetGridAction>;
+  dispatch: React.Dispatch<Action>;
 };
 
 const FlowsheetGridContext = React.createContext<FlowsheetGridContextValues | undefined>(undefined);
 
 export function FlowsheetGridProvider({ children }: { children: React.ReactNode }) {
-  const [state, dispatch] = React.useReducer(reducer, initialState);
+  const [{ current }, dispatch] = React.useReducer(reducer, {
+    current: IDLE_STATE,
+    previous: IDLE_STATE,
+  });
 
   return (
-    <FlowsheetGridContext.Provider value={{ state, dispatch }}>
+    <FlowsheetGridContext.Provider value={{ state: current, dispatch }}>
       {children}
     </FlowsheetGridContext.Provider>
   );
@@ -97,8 +102,6 @@ export function FlowsheetGridProvider({ children }: { children: React.ReactNode 
 
 export function useFlowsheetGridContext() {
   const context = React.useContext(FlowsheetGridContext);
-
   if (!context) throw new Error('useFlowsheetGridContext must be used inside provider');
-
   return context;
 }

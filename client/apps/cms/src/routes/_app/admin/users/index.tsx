@@ -1,12 +1,11 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, stripSearchParams, useNavigate } from '@tanstack/react-router';
 import { Header, HeaderActions, HeaderMain } from '@/shared/components/header';
 import { DataTable } from '@/shared/components/data-table/data-table';
-import { DataTableToolbar } from '@/shared/components/data-table/data-table-toolbar';
 import { useSuspenseQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { userQueries, userKeys } from '@/features/user/queries';
 import { useUserTable } from '@/features/user/hooks/use-user-table';
 import { Scrollable } from '@/shared/components/scrollable';
-import { User, PlusSquare, Plus, Save, Users, UserIcon } from 'lucide-react';
+import { PlusSquare, Plus, UserIcon, Users, Layers2 } from 'lucide-react';
 import {
   FormModal,
   FormModalBody,
@@ -24,15 +23,34 @@ import { UserPasswordFormFields } from '@/features/user/components/user-password
 import React from 'react';
 import { Title } from '@/shared/components/title';
 import { FormFields } from '@/shared/components/form-fields';
+import { TabOption } from '@/shared/types';
+
+type UserTab = 'all';
+
+const tabs: TabOption<UserTab>[] = [
+  { value: 'all', label: 'All users', icon: <Layers2 size={14} /> },
+];
+
+type UsersSearch = {
+  tab: UserTab;
+};
 
 export const Route = createFileRoute('/_app/admin/users/')({
+  validateSearch: (search): UsersSearch => ({
+    tab: (search.tab as UserTab) || 'all',
+  }),
   loader: async ({ context: { queryClient } }) => {
     queryClient.ensureQueryData(userQueries.collection);
+  },
+  search: {
+    middlewares: [stripSearchParams({ tab: 'all' })],
   },
   component: UsersPage,
 });
 
 function UsersPage() {
+  const { tab } = Route.useSearch();
+  const navigate = useNavigate();
   const { data: users } = useSuspenseQuery(userQueries.collection);
   const { data: currentUser } = useSuspenseQuery(userQueries.me);
   const table = useUserTable({ users: users.list, currentUser });
@@ -41,20 +59,21 @@ function UsersPage() {
     <>
       <Header>
         <HeaderMain>
-          <Title>
-            <Users size={14} />
-            Users
-          </Title>
+          <Title>Users</Title>
         </HeaderMain>
 
         <HeaderActions>
-          <DataTableToolbar enableSearch table={table} />
           <CreateUserModal />
         </HeaderActions>
       </Header>
 
       <Scrollable>
-        <DataTable table={table} isLoading={false} />
+        <DataTable
+          table={table}
+          tabs={tabs}
+          currentTab={tab}
+          onTabChange={(next) => navigate({ to: '.', search: { tab: next } })}
+        />
       </Scrollable>
     </>
   );

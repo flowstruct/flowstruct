@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, stripSearchParams, useNavigate } from '@tanstack/react-router';
 import { Header, HeaderActions, HeaderMain } from '@/shared/components/header';
 import { siteGeneratorQueries } from '@/features/site-generator/queries';
 import { siteGeneratorApi } from '@/features/site-generator/api';
@@ -11,10 +11,15 @@ import {
 } from '@/shared/components/confirmation-modal';
 import { Button } from '@/shared/components/ui/Button';
 import { CurrentGenerationIndicator } from '@/features/site-generator/components/current-generation-indicator';
-import { FolderPlus, FolderUp, Plus } from 'lucide-react';
-import styles from './index.module.css';
-import { DataTableToolbar } from '@/shared/components/data-table/data-table-toolbar';
+import { FolderPlus, Plus, Layers2 } from 'lucide-react';
 import { Title } from '@/shared/components/title';
+import { TabOption } from '@/shared/types';
+
+type SiteGenerationTab = 'all';
+
+const tabs: TabOption<SiteGenerationTab>[] = [
+  { value: 'all', label: 'All generations', icon: <Layers2 size={14} /> },
+];
 
 function TriggerGenerationButton() {
   const triggerGeneration = useMutation({
@@ -39,11 +44,23 @@ function TriggerGenerationButton() {
   );
 }
 
+type SiteGenerationsSearch = {
+  tab: SiteGenerationTab;
+};
+
 export const Route = createFileRoute('/_app/site-generations/')({
+  validateSearch: (search): SiteGenerationsSearch => ({
+    tab: (search.tab as SiteGenerationTab) || 'all',
+  }),
   loader: async ({ context: { queryClient } }) => {
     queryClient.ensureQueryData(siteGeneratorQueries.collection);
   },
+  search: {
+    middlewares: [stripSearchParams({ tab: 'all' })],
+  },
   component: () => {
+    const { tab } = Route.useSearch();
+    const navigate = useNavigate();
     const { data: generations } = useSuspenseQuery(siteGeneratorQueries.collection);
     const table = useSiteGeneratorTable({ generations: generations.list });
 
@@ -51,20 +68,21 @@ export const Route = createFileRoute('/_app/site-generations/')({
       <>
         <Header>
           <HeaderMain>
-            <Title>
-              <FolderUp size={14} />
-              Site generations
-            </Title>
+            <Title>Site generations</Title>
+            <CurrentGenerationIndicator />
           </HeaderMain>
 
           <HeaderActions>
-            <CurrentGenerationIndicator />
-            <DataTableToolbar table={table} />
             <TriggerGenerationButton />
           </HeaderActions>
         </Header>
 
-        <DataTable table={table} />
+        <DataTable
+          table={table}
+          tabs={tabs}
+          currentTab={tab}
+          onTabChange={(next) => navigate({ to: '.', search: { tab: next } })}
+        />
       </>
     );
   },

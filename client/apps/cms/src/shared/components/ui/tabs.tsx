@@ -1,6 +1,6 @@
-import { Button } from '@/shared/components/ui/Button';
 import styles from './tabs.module.css';
 import { TabOption } from '@/shared/types';
+import { UnstyledButton } from '@/shared/components/ui/UnstyledButton';
 
 type TabsProps<T extends string> = {
   tabs: TabOption<T>[];
@@ -12,17 +12,15 @@ export function Tabs<T extends string>({ tabs, currentTab, onTabChange }: TabsPr
   return (
     <nav className={styles.tabs}>
       {tabs.map(({ value, label, icon }) => (
-        <Button
+        <UnstyledButton
           key={value}
           data-active={currentTab === value || undefined}
-          variant="flat"
-          size="xs"
           className={styles.tab}
           onPress={() => onTabChange(value)}
         >
           {icon}
           {label}
-        </Button>
+        </UnstyledButton>
       ))}
     </nav>
   );

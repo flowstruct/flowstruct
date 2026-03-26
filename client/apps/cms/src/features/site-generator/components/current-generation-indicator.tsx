@@ -1,5 +1,5 @@
 import { useCurrentGeneration } from '@/features/site-generator/hooks/use-current-generation';
-import { Loader2, FolderClock } from 'lucide-react';
+import { Loader2, FolderClock, FolderUp } from 'lucide-react';
 import styles from './current-generation-indicator.module.css';
 
 export function CurrentGenerationIndicator() {
@@ -16,7 +16,7 @@ export function CurrentGenerationIndicator() {
 
   return (
     <div className={styles.indicator}>
-      {isActive ? <Loader2 size={14} className={styles.spinner} /> : <FolderClock size={14} />}
+      {isActive ? <FolderUp size={14} /> : <FolderClock size={14} />}
       <span className={styles.text}>
         Generation #{current.id} - {statusText[current.status]}
       </span>

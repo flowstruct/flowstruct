@@ -4,17 +4,34 @@
 }
 
 .tab {
-  padding: 0 var(--space-2);
-  font-size: var(--font-size-sm);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-1);
+  all: unset;
+  position: relative;
+  background-color: var(--background-color);
   color: var(--text-color-base);
+  appearance: none;
+  vertical-align: middle;
+  font-size: var(--font-size-sm);
+  border-radius: var(--radius-2);
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--border-color);
+  text-align: center;
+  margin: 0;
+  outline: none;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-weight: 400;
+  cursor: pointer;
+  box-sizing: border-box;
 
   > svg {
     color: var(--text-color-secondary);
   }
 
   &[data-active] {
+    font-weight: 500;
     background-color: var(--highlight-background-active);
     border: 1px solid var(--gray-4);
   }
@@ -27,4 +44,3 @@
     background-color: var(--highlight-background-pressed);
   }
 }
-

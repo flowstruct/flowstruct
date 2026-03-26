@@ -1,5 +1,5 @@
 import styles from './flowsheet-grid.module.css';
-import { Ellipsis, Grid2X2Plus, Trash, X } from 'lucide-react';
+import { Grid2X2Plus, Trash } from 'lucide-react';
 import { Button } from '@/shared/components/ui/Button';
 import { Tooltip, TooltipTrigger } from '@/shared/components/ui/Tooltip';
 import { FlowsheetToolbar } from '@/features/flowsheet/components/flowsheet-grid/flowsheet-toolbar';
@@ -21,8 +21,6 @@ import { Placement } from '@/features/flowsheet/domain/flowsheet';
 import { useDelayedSkeleton } from '@/shared/hooks/use-delayed-skeleton';
 import { flowsheetQueries } from '@/features/flowsheet/queries';
 import { CourseCard } from '@/features/flowsheet/components/flowsheet-grid/course-card';
-import { Menu, MenuItem, MenuTrigger } from '@/shared/components/ui/Menu';
-import { Popover } from '@/shared/components/ui/Popover';
 
 export function FlowsheetGrid() {
   const { dispatch } = useFlowsheetGridContext();
@@ -32,7 +30,7 @@ export function FlowsheetGrid() {
   const { keyboardProps } = useKeyboard({
     onKeyDown: (e) => {
       if (e.key === 'Escape') {
-        dispatch({ type: 'RESET_STATE' });
+        dispatch({ type: 'RESET' });
       }
     },
   });
@@ -50,7 +48,10 @@ export function FlowsheetGrid() {
           </TermProvider>
         ))}
 
-        <AddTermButton />
+        <Stack>
+          <AddTermButton />
+          <RemoveTermButton />
+        </Stack>
       </Group>
 
       {createPortal(<FlowsheetToolbar />, document.body)}
@@ -78,7 +79,35 @@ function AddTermButton() {
           <Grid2X2Plus size={15} />
         </Button>
 
-        <Tooltip>Add term</Tooltip>
+        <Tooltip placement="right">Add term</Tooltip>
+      </TooltipTrigger>
+    </Box>
+  );
+}
+
+function RemoveTermButton() {
+  const { flowsheet } = useFlowsheetContext();
+  const removeTerm = useMutation({
+    mutationFn: () => flowsheetApi.deleteLastTerm({ flowsheetId: flowsheet.id }),
+  });
+
+  if (flowsheet.terms.length === 0) return null;
+
+  return (
+    <Box position="relative">
+      <TooltipTrigger>
+        <Button
+          variant="ghost"
+          size="xs"
+          shape="icon"
+          className={styles.addTermButton}
+          onPress={() => removeTerm.mutate()}
+          isPending={removeTerm.isPending}
+        >
+          <Trash size={15} />
+        </Button>
+
+        <Tooltip placement="right">Delete term</Tooltip>
       </TooltipTrigger>
     </Box>
   );
@@ -90,13 +119,9 @@ export function Term() {
   return (
     <Stack gap={1}>
       <Box px={1}>
-        <Group justify="between">
-          <Text tone="dimmed" weight="medium" size="xs">
-            {getTermDisplayName(term)}
-          </Text>
-
-          <TermOptions />
-        </Group>
+        <Text tone="dimmed" weight="medium" size="xs">
+          {getTermDisplayName(term)}
+        </Text>
       </Box>
 
       <div className={styles.placements}>
@@ -149,31 +174,5 @@ function PlacementCard({ placement }: PlacementCardProps) {
       <DropIndicator position={placement.position} />
       <CourseCard key={course.id} course={course} placement={placement} />
     </div>
-  );
-}
-
-function TermOptions() {
-  const { term } = useTermContext();
-  const { flowsheet } = useFlowsheetContext();
-
-  const deleteTerm = useMutation({
-    mutationFn: () => flowsheetApi.deleteTerm({ flowsheetId: flowsheet.id, termId: term.id }),
-  });
-
-  return (
-    <MenuTrigger>
-      <Button variant="ghost" size="none" isPending={deleteTerm.isPending}>
-        <Ellipsis size={15} />
-      </Button>
-
-      <Popover placement="bottom">
-        <Menu>
-          <MenuItem onAction={() => deleteTerm.mutate()}>
-            <Trash color="red" size={14} />
-            <span>Delete</span>
-          </MenuItem>
-        </Menu>
-      </Popover>
-    </MenuTrigger>
   );
 }

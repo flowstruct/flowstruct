@@ -1,18 +1,28 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { flowsheetQueries } from '@/features/flowsheet/queries';
-import { Header } from '@/shared/components/header';
+import { Header, HeaderMain } from '@/shared/components/header';
 import {
   FlowsheetProvider,
   useFlowsheetContext,
 } from '@/features/flowsheet/contexts/flowsheet-context';
 import { FlowsheetGrid } from '@/features/flowsheet/components/flowsheet-grid/flowsheet-grid';
 import styles from './$flowsheetId.module.css';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useSuspenseQuery, useMutation } from '@tanstack/react-query';
 import { programQueries } from '@/features/program/queries';
 import { userQueries } from '@/features/user/queries';
 import { Breadcrumb, Breadcrumbs } from '@/shared/components/ui/breadcrumbs';
 import { UnstyledButton } from '@/shared/components/ui/UnstyledButton';
-import { Dot, Layers2, Archive } from 'lucide-react';
+import {
+  Dot,
+  Layers2,
+  Archive,
+  CircleX,
+  MoveLeft,
+  MoveRight,
+  CircleCheck,
+  X,
+  Undo,
+} from 'lucide-react';
 import { FlowsheetStatusIcon } from '@/features/flowsheet/components/flowsheet-status-icon';
 import { getProgramDisplayName } from '@/features/program/domain/getProgramDisplayName';
 import { getFlowsheetDisplayName } from '@/features/flowsheet/domain/getFlowsheetDisplayName';
@@ -22,6 +32,15 @@ import { FlowsheetCoursesGraphProvider } from '@/features/flowsheet/contexts/cou
 import { PlacementMoveProvider } from '@/features/flowsheet/contexts/placement-move-context';
 import { FlowsheetActionsMenu } from '@/features/flowsheet/components/flowsheet-action-menu';
 import { formatDate } from '@/shared/utils/formatDate';
+import { usePermission } from '@/features/user/hooks/usePermission';
+import { flowsheetApi } from '@/features/flowsheet/api';
+import { FlowsheetSummary } from '@/features/flowsheet/domain/flowsheet';
+import React from 'react';
+import { Button } from '@/shared/components/ui/Button';
+import {
+  ConfirmationModal,
+  ConfirmationModalTrigger,
+} from '@/shared/components/confirmation-modal';
 
 export const Route = createFileRoute('/_app/flowsheets/$flowsheetId')({
   loader: ({ context: { queryClient }, params: { flowsheetId } }) => {
@@ -31,6 +50,7 @@ export const Route = createFileRoute('/_app/flowsheets/$flowsheetId')({
   },
   component: () => {
     const { flowsheetId } = Route.useParams();
+    const gridContainerRef = React.useRef<HTMLDivElement>(null);
 
     return (
       <FlowsheetProvider flowsheetId={Number(flowsheetId)}>
@@ -38,7 +58,8 @@ export const Route = createFileRoute('/_app/flowsheets/$flowsheetId')({
           <RouteHeader />
           <div className={styles.content}>
             <ArchiveAlert />
-            <div className={styles.gridContainer}>
+            <GridNavigation scrollableRef={gridContainerRef} />
+            <div className={styles.grid} ref={gridContainerRef}>
               <FlowsheetGridProvider>
                 <PlacementMoveProvider>
                   <FlowsheetGrid />
@@ -52,15 +73,101 @@ export const Route = createFileRoute('/_app/flowsheets/$flowsheetId')({
   },
 });
 
+function GridNavigation({ scrollableRef }: { scrollableRef: React.RefObject<HTMLDivElement> }) {
+  const SCROLL_AMOUNT = 400;
+
+  const scroll = (amount: number) => {
+    scrollableRef.current?.scrollBy({ left: amount, behavior: 'smooth' });
+  };
+
+  return (
+    <Group justify="center" className={styles.gridNavigation}>
+      <UnstyledButton className={styles.navigationButton} onPress={() => scroll(-SCROLL_AMOUNT)}>
+        <MoveLeft size={18} />
+      </UnstyledButton>
+
+      <UnstyledButton className={styles.navigationButton} onPress={() => scroll(SCROLL_AMOUNT)}>
+        <MoveRight size={18} />
+      </UnstyledButton>
+    </Group>
+  );
+}
+
+function StatusBadge({ status }: { status: string }) {
+  return (
+    <span className={styles.statusBadge} data-status={status}>
+      {status}
+    </span>
+  );
+}
+
+function FlowsheetStatusActions({ flowsheet }: { flowsheet: FlowsheetSummary }) {
+  const { hasPermission } = usePermission();
+
+  const approveChanges = useMutation({
+    mutationFn: () => flowsheetApi.approveChanges(flowsheet.id),
+    meta: { successMessage: 'Changes approved.' },
+  });
+
+  const discardChanges = useMutation({
+    mutationFn: () => flowsheetApi.discardChanges(flowsheet.id),
+    meta: { successMessage: 'Changes discarded.' },
+  });
+
+  if (flowsheet.status === 'APPROVED') return null;
+
+  const canApprove = hasPermission?.('study-plans:approve');
+
+  return (
+    <Group>
+      {canApprove && (
+        <>
+          <ConfirmationModal
+            header="Approve changes"
+            text="Approving these changes will make them visible during site generation. Are you sure you want to proceed?"
+            submitLabel="Approve"
+            submitIcon={<CircleCheck size={15} />}
+            onConfirm={() => approveChanges.mutate()}
+          >
+            <ConfirmationModalTrigger>
+              <Button size="sm" variant="primary">
+                <CircleCheck size={15} /> Approve changes
+              </Button>
+            </ConfirmationModalTrigger>
+          </ConfirmationModal>
+
+          {flowsheet.status !== 'NEW' && (
+            <ConfirmationModal
+              header="Discard changes"
+              text="This will revert the flowsheet back to the last approved state. This action cannot be undone."
+              submitLabel="Discard"
+              submitIcon={<Undo size={15} />}
+              theme="danger"
+              onConfirm={() => discardChanges.mutate()}
+            >
+              <ConfirmationModalTrigger>
+                <Button size="sm" variant="ghost">
+                  <Undo size={15} /> Discard changes
+                </Button>
+              </ConfirmationModalTrigger>
+            </ConfirmationModal>
+          )}
+        </>
+      )}
+    </Group>
+  );
+}
+
 function RouteHeader() {
   const { flowsheet } = useFlowsheetContext();
 
   return (
-    <Header>
-      <Group>
+    <Header showBorder={false}>
+      <HeaderMain>
         <RouteBreadcrumbs />
         <FlowsheetActionsMenu flowsheet={flowsheet} />
-      </Group>
+        <FlowsheetStatusActions flowsheet={flowsheet} />
+      </HeaderMain>
     </Header>
   );
 }
@@ -83,6 +190,8 @@ export function RouteBreadcrumbs() {
 
       <Breadcrumb>
         <FlowsheetStatusIcon flowsheet={flowsheet} />
+
+        <StatusBadge status={flowsheet.status} />
 
         <p className={styles.flowsheetBreadcrumb}>
           {getProgramDisplayName(program)}

@@ -1,15 +1,18 @@
 .header {
-  position: sticky;
+  position: relative;
   top: 0;
   height: 50px;
   display: grid;
   grid-template-columns: 1fr auto;
-  align-items: center;
-  padding: var(--space-3) var(--space-8);
+  padding: var(--space-3) var(--space-5);
   gap: var(--space-3);
   background: var(--background-color);
+  align-items: center;
   z-index: 2;
-  /* border-bottom: 1px solid var(--border-color); */
+
+  &[data-show-border] {
+    border-bottom: 1px solid var(--border-color);
+  }
 }
 
 .headerSlot {
@@ -19,10 +22,12 @@
 }
 
 .main {
+  align-items: center;
   justify-content: flex-start;
 }
 
 .actions {
+  align-items: center;
   justify-content: flex-end;
 }
 

@@ -22,7 +22,7 @@ export type Section = {
   courses: number[];
 };
 
-export const TERM_NAMES = ['First Semester', 'Second Semester', 'Summer Semester'] as const;
+export const TERM_NAMES = ['First term', 'Second term', 'Summer term'] as const;
 
 export type Term = {
   id: number;

@@ -3,8 +3,6 @@ import { Header, HeaderActions, HeaderMain } from '@/shared/components/header';
 import { courseQueries } from '@/features/course/queries';
 import { DataTable } from '@/shared/components/data-table/data-table';
 import { useCourseTable } from '@/features/course/hooks/use-course-table';
-import { DataTableToolbar } from '@/shared/components/data-table/data-table-toolbar';
-import { Tabs } from '@/shared/components/ui/tabs';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { CourseStatus } from '@/features/course/domain/getCourseStatusFilter';
 import { TabOption } from '@/shared/types';
@@ -26,6 +24,13 @@ import { Course } from '@/features/course/domain/course';
 import { courseKeys } from '@/features/course/queries';
 import { Scrollable } from '@/shared/components/scrollable';
 import { useDebounce } from '@/shared/hooks/use-debounce';
+import { Title } from '@/shared/components/title';
+
+const tabs: TabOption<CourseStatus>[] = [
+  { value: 'all', label: 'All courses', icon: <Layers2 size={14} /> },
+  { value: 'active', label: 'Active', icon: <CircleDot size={14} /> },
+  { value: 'outdated', label: 'Outdated', icon: <CircleDashed size={14} /> },
+];
 
 export const Route = createFileRoute('/_app/courses/')({
   loaderDeps: ({ search: { filter, page, size, tab } }) => ({
@@ -46,6 +51,7 @@ export const Route = createFileRoute('/_app/courses/')({
 
 function CoursesPage() {
   const { tab, filter, page, size } = Route.useSearch();
+  const navigate = useNavigate();
   const { data: coursesPage, isFetching } = useQuery(
     courseQueries.page({
       filter,
@@ -67,38 +73,24 @@ function CoursesPage() {
     <>
       <Header>
         <HeaderMain>
-          <RouteTabs />
+          <Title>Courses</Title>
         </HeaderMain>
 
         <HeaderActions>
-          <DataTableToolbar enableSearch table={table} isLoading={isFetching && filter !== ''} />
           <CreateCourseModal />
         </HeaderActions>
       </Header>
 
       <Scrollable>
-        <DataTable table={table} isLoading={showSkeleton} />
+        <DataTable
+          table={table}
+          isLoading={showSkeleton}
+          tabs={tabs}
+          currentTab={tab}
+          onTabChange={(next) => navigate({ to: '.', search: { tab: next } })}
+        />
       </Scrollable>
     </>
-  );
-}
-
-function RouteTabs() {
-  const { tab } = Route.useSearch();
-  const navigate = useNavigate();
-
-  const tabs: TabOption<CourseStatus>[] = [
-    { value: 'all', label: 'All courses', icon: <Layers2 size={14} /> },
-    { value: 'active', label: 'Active', icon: <CircleDot size={14} /> },
-    { value: 'outdated', label: 'Outdated', icon: <CircleDashed size={14} /> },
-  ];
-
-  return (
-    <Tabs
-      tabs={tabs}
-      currentTab={tab}
-      onTabChange={(next) => navigate({ to: '.', search: { tab: next } })}
-    />
   );
 }
 

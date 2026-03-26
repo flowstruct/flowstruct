@@ -70,7 +70,7 @@ export function ConfirmationModal({
           <h2 className={styles.header}>{header}</h2>
           <p className={styles.text}>{text}</p>
           <div className={styles.footer}>
-            <Button variant="flat" size="sm" onPress={close}>
+            <Button variant="transparent" size="sm" onPress={close}>
               {cancelLabel}
             </Button>
             <Button theme={theme} autoFocus variant="primary" size="sm" onPress={handleConfirm}>

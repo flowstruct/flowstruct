@@ -10,6 +10,7 @@ import com.flowstruct.api.flowsheet.exception.InvalidCoursePlacement;
 import com.flowstruct.api.flowsheet.exception.InvalidSpanException;
 import com.flowstruct.api.flowsheet.utils.CourseGraphUtils;
 import com.flowstruct.api.flowsheet.utils.TermUtils;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -194,17 +195,13 @@ public class FlowsheetTermService {
   }
 
   @Transactional
-  public FlowsheetDto deleteTerm(long flowsheetId, long termId) {
+  public FlowsheetDto deleteLastTerm(long flowsheetId) {
     Flowsheet flowsheet = flowsheetService.findOrThrow(flowsheetId);
 
     Term term =
         flowsheet.getTerms().stream()
-            .filter(t -> t.getId() == termId)
-            .findFirst()
-            .orElseThrow(
-                () -> {
-                  throw new NoSuchElementException("Term was not found.");
-                });
+            .max(Comparator.comparingInt(Term::getTermNumber))
+            .orElseThrow(() -> new NoSuchElementException("No terms to delete."));
 
     List<Long> courseIds =
         term.getPlacements().stream().map(p -> p.getCourse().getId()).collect(Collectors.toList());

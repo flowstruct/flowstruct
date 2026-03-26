@@ -15,35 +15,37 @@ export function FlowsheetToolbar() {
   const { flowsheet } = useFlowsheetContext();
   const { state, dispatch } = useFlowsheetGridContext();
   const removeCourses = useMutation({
-    mutationFn: () =>
+    mutationFn: (courseIds: number[]) =>
       flowsheetApi.removeCourses({
         flowsheetId: flowsheet.id,
-        courseIds: Array.from(state.selected),
+        courseIds,
       }),
     onSuccess: () => {
-      dispatch({ type: 'RESET_STATE' });
+      dispatch({ type: 'STOP' });
     },
   });
   const triggerRef = React.useRef<HTMLDivElement | null>(null);
+
+  if (state.current !== 'SELECT') return null;
 
   return (
     <div className={styles.wrapper} ref={triggerRef}>
       <Popover
         triggerRef={triggerRef}
         isNonModal
-        isOpen={state.selected.size > 0}
+        isOpen={state.courseIds.size > 0}
         className={styles.toolbar}
       >
         <Group gap={3}>
           <div className={styles.selectionCounter}>
             <Group>
-              <p>{state.selected.size} selected</p>
+              <p>{state.courseIds.size} selected</p>
 
               <Button
                 variant="ghost"
                 shape="icon"
                 size="none"
-                onPress={() => dispatch({ type: 'CLEAR_SELECTED' })}
+                onPress={() => dispatch({ type: 'STOP' })}
               >
                 <X size={14} />
               </Button>
@@ -59,7 +61,7 @@ export function FlowsheetToolbar() {
                 size="sm"
                 variant="flat"
                 isPending={removeCourses.isPending}
-                onPress={() => removeCourses.mutate()}
+                onPress={() => removeCourses.mutate(Array.from(state.courseIds))}
               >
                 <Trash color="red" size={14} />
               </Button>

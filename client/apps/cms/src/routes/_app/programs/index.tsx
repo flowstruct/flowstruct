@@ -3,8 +3,6 @@ import { Header, HeaderActions, HeaderMain } from '@/shared/components/header';
 import { programQueries } from '@/features/program/queries';
 import { DataTable } from '@/shared/components/data-table/data-table';
 import { useProgramTable } from '@/features/program/hooks/use-program-table';
-import { DataTableToolbar } from '@/shared/components/data-table/data-table-toolbar';
-import { Tabs } from '@/shared/components/ui/tabs';
 import { useSuspenseQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getProgramsByStatus, ProgramStatus } from '@/features/program/domain/getProgramsByStatus';
 import { TabOption } from '@/shared/types';
@@ -33,6 +31,13 @@ import { programApi } from '@/features/program/api';
 import { Program } from '@/features/program/domain/program';
 import { programKeys } from '@/features/program/queries';
 import { Scrollable } from '@/shared/components/scrollable';
+import { Title } from '@/shared/components/title';
+
+const tabs: TabOption<ProgramStatus>[] = [
+  { value: 'all', label: 'All programs', icon: <Layers2 size={14} /> },
+  { value: 'active', label: 'Active', icon: <CircleDot size={14} /> },
+  { value: 'outdated', label: 'Outdated', icon: <CircleDashed size={14} /> },
+];
 
 type ProgramsSearch = {
   tab: ProgramStatus;
@@ -50,6 +55,7 @@ export const Route = createFileRoute('/_app/programs/')({
 
 function ProgramsPage() {
   const { tab } = Route.useSearch();
+  const navigate = useNavigate();
   const { data: programs } = useSuspenseQuery({
     ...programQueries.collection,
     select: (data) => getProgramsByStatus(data, tab),
@@ -61,38 +67,23 @@ function ProgramsPage() {
     <>
       <Header>
         <HeaderMain>
-          <RouteTabs />
+          <Title>Programs</Title>
         </HeaderMain>
 
         <HeaderActions>
-          <DataTableToolbar enableSearch table={table} />
           <CreateProgramModal />
         </HeaderActions>
       </Header>
 
       <Scrollable>
-        <DataTable table={table} />
+        <DataTable
+          table={table}
+          tabs={tabs}
+          currentTab={tab}
+          onTabChange={(next) => navigate({ to: '.', search: { tab: next } })}
+        />
       </Scrollable>
     </>
-  );
-}
-
-function RouteTabs() {
-  const { tab } = Route.useSearch();
-  const navigate = useNavigate();
-
-  const tabs: TabOption<ProgramStatus>[] = [
-    { value: 'all', label: 'All programs', icon: <Layers2 size={14} /> },
-    { value: 'active', label: 'Active', icon: <CircleDot size={14} /> },
-    { value: 'outdated', label: 'Outdated', icon: <CircleDashed size={14} /> },
-  ];
-
-  return (
-    <Tabs
-      tabs={tabs}
-      currentTab={tab}
-      onTabChange={(next) => navigate({ to: '.', search: { tab: next } })}
-    />
   );
 }
 

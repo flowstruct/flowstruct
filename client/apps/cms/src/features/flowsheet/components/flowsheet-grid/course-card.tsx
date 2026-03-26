@@ -34,37 +34,37 @@ export function CourseCard({ course, placement, ...props }: CourseCardProps) {
   const [optionsIsOpen, setOptionsOpen] = React.useState(false);
 
   const linkPrerequisite = useMutation({
-    mutationFn: () =>
+    mutationFn: (courseId: number) =>
       flowsheetApi.linkPrerequisites({
         flowsheetId: flowsheet.id,
-        courseId: state.linkSource as number,
+        courseId,
         prerequisiteIds: [course.id],
       }),
   });
 
   const unlinkPrerequisite = useMutation({
-    mutationFn: () =>
+    mutationFn: (courseId: number) =>
       flowsheetApi.unlinkPrerequisites({
         flowsheetId: flowsheet.id,
-        courseId: state.linkSource as number,
+        courseId,
         prerequisiteIds: [course.id],
       }),
   });
 
   const linkCorequisite = useMutation({
-    mutationFn: () =>
+    mutationFn: (courseId: number) =>
       flowsheetApi.linkCorequisites({
         flowsheetId: flowsheet.id,
-        courseId: state.linkSource as number,
+        courseId,
         corequisiteIds: [course.id],
       }),
   });
 
   const unlinkCorequisite = useMutation({
-    mutationFn: () =>
+    mutationFn: (courseId: number) =>
       flowsheetApi.unlinkCorequisites({
         flowsheetId: flowsheet.id,
-        courseId: state.linkSource as number,
+        courseId,
         corequisiteIds: [course.id],
       }),
   });
@@ -77,43 +77,45 @@ export function CourseCard({ course, placement, ...props }: CourseCardProps) {
   const { pressProps, isPressed } = usePress({
     onPress: (e) => {
       if ((e.ctrlKey || e.shiftKey) && placementState === 'NORMAL') {
-        dispatch({ type: 'TOGGLE_SELECT_MODE', payload: { courseId: course.id } });
+        dispatch({ type: 'SELECT', courseId: course.id });
         return;
       }
 
       if (placementState === 'SELECTABLE') {
-        dispatch({ type: 'TOGGLE_SELECT_MODE', payload: { courseId: course.id } });
+        dispatch({ type: 'SELECT', courseId: course.id });
         return;
       }
 
       if (placementState === 'SELECTED') {
-        dispatch({ type: 'TOGGLE_SELECT_MODE', payload: { courseId: course.id } });
+        dispatch({ type: 'SELECT', courseId: course.id });
         return;
       }
 
-      if (placementState === 'PREREQ_LINK') {
-        unlinkPrerequisite.mutate();
-        return;
-      }
+      if (state.current === 'LINK') {
+        if (placementState === 'PREREQ_LINK') {
+          unlinkPrerequisite.mutate(state.courseId);
+          return;
+        }
 
-      if (placementState === 'AVAILABLE_LINK' && state.linkType === 'PREREQ') {
-        linkPrerequisite.mutate();
-        return;
-      }
+        if (placementState === 'AVAILABLE_LINK' && state.type === 'PREREQ') {
+          linkPrerequisite.mutate(state.courseId);
+          return;
+        }
 
-      if (placementState === 'COREQ_LINK') {
-        unlinkCorequisite.mutate();
-        return;
-      }
+        if (placementState === 'COREQ_LINK') {
+          unlinkCorequisite.mutate(state.courseId);
+          return;
+        }
 
-      if (placementState === 'AVAILABLE_LINK' && state.linkType === 'COREQ') {
-        linkCorequisite.mutate();
-        return;
-      }
+        if (placementState === 'AVAILABLE_LINK' && state.type === 'COREQ') {
+          linkCorequisite.mutate(state.courseId);
+          return;
+        }
 
-      if (placementState === 'LINK_SOURCE') {
-        dispatch({ type: 'TOGGLE_LINK_MODE', payload: { courseId: course.id, type: null } });
-        return;
+        if (placementState === 'LINK_SOURCE') {
+          dispatch({ type: 'STOP' });
+          return;
+        }
       }
 
       setOptionsOpen(true);
@@ -146,10 +148,8 @@ export function CourseCard({ course, placement, ...props }: CourseCardProps) {
 
             {showCheckbox && (
               <Checkbox
-                onChange={() =>
-                  dispatch({ type: 'TOGGLE_SELECT_MODE', payload: { courseId: course.id } })
-                }
-                isSelected={state.selected.has(course.id)}
+                onChange={() => dispatch({ type: 'SELECT', courseId: course.id })}
+                isSelected={state.current === 'SELECT' && state.courseIds.has(course.id)}
               />
             )}
 
@@ -174,8 +174,9 @@ export function CourseCard({ course, placement, ...props }: CourseCardProps) {
               variant="transparent"
               onPress={() => {
                 dispatch({
-                  type: 'TOGGLE_LINK_MODE',
-                  payload: { courseId: course.id, type: 'PREREQ' },
+                  type: 'LINK',
+                  courseId: course.id,
+                  linkType: 'PREREQ',
                 });
                 setOptionsOpen(false);
               }}
@@ -188,8 +189,9 @@ export function CourseCard({ course, placement, ...props }: CourseCardProps) {
               variant="transparent"
               onPress={() => {
                 dispatch({
-                  type: 'TOGGLE_LINK_MODE',
-                  payload: { courseId: course.id, type: 'COREQ' },
+                  type: 'LINK',
+                  courseId: course.id,
+                  linkType: 'COREQ',
                 });
                 setOptionsOpen(false);
               }}

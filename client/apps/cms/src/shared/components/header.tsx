@@ -2,8 +2,18 @@ import { ReactNode } from 'react';
 import styles from './header.module.css';
 import clsx from 'clsx';
 
-export function Header({ children }: { children?: ReactNode }) {
-  return <header className={styles.header}>{children}</header>;
+export function Header({
+  children,
+  showBorder = true,
+}: {
+  children?: ReactNode;
+  showBorder?: boolean;
+}) {
+  return (
+    <header data-show-border={showBorder ? true : undefined} className={styles.header}>
+      {children}
+    </header>
+  );
 }
 
 export function HeaderMain({ children }: { children?: ReactNode }) {

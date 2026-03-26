@@ -78,7 +78,12 @@ export function ProgramComboBox({
           <>
             <ListBox
               items={comboBoxState.filteredItems}
-              renderEmptyState={() => <ListEmptyState>{createProgramButton}</ListEmptyState>}
+              renderEmptyState={() => (
+                <section data-no-results className={styles.createHint}>
+                  Can't find what you're looking for?
+                  {createProgramButton}
+                </section>
+              )}
             >
               {(item) => (
                 <ListBoxItem key={item.id} textValue={getProgramDisplayName(item)}>

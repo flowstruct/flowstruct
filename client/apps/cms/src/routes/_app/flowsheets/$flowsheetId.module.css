@@ -13,25 +13,104 @@
 .content {
   display: flex;
   flex-direction: column;
-  gap: var(--space-8);
+  gap: var(--space-4);
   padding: 1.5rem 6rem;
-  flex: 1;
-  min-height: 0;
   width: 100%;
+  flex: 1;
 }
 
-.gridContainer {
+.gridNavigation {
+  position: sticky;
+  top: var(--space-3);
+  display: flex;
+  justify-content: center;
+  gap: var(--space-3);
+  z-index: 10;
+}
+
+.grid {
   display: flex;
   flex-direction: column;
   flex: 1;
-  min-height: 0;
-  overflow: hidden;
+  overflow-x: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.grid::-webkit-scrollbar {
+  display: none;
+}
+
+.statusActionButton {
+  border: 1px solid var(--border-color);
+  padding: var(--space-2);
+  border-radius: 2rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  > svg {
+    color: var(--text-color-base);
+  }
+}
+
+.navigationButton {
+  padding: var(--space-1) var(--space-8);
+  all: unset;
+  position: relative;
+  background-color: var(--background-color);
+  color: var(--text-color-base);
+  font-size: var(--font-size-sm);
+  padding: var(--space-1) var(--space-8);
+  border-radius: 1rem;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+  outline: none;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-sizing: border-box;
+
+  &[data-hovered] {
+    background-color: var(--highlight-background-hovered);
+  }
+
+  &[data-pressed] {
+    background-color: var(--highlight-background-pressed);
+  }
+}
+
+.statusBadge {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-xs);
+  font-weight: 450;
+  color: var(--text-color-secondary);
+}
+
+.statusDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.statusBadge[data-status='DRAFT'] {
+  color: var(--primary-color);
+}
+
+.statusBadge[data-status='NEW'] {
+  color: goldenrod;
 }
 
 .archiveAlert {
   background: rgba(255, 165, 0, 0.06);
-  border: 1px solid rgba(255, 165, 0, 0.15);
-  border-radius: var(--radius-1);
+  /* border: 1px solid rgba(255, 165, 0, 0.15); */
+  border-radius: var(--radius-2);
   padding: var(--space-3);
   font-size: var(--font-size-xs);
   color: var(--text-color-secondary);

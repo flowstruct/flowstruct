@@ -11,15 +11,34 @@ import { AriaButtonProps, useButton, useFilter, useFocusRing, useHover } from 'r
 import { ListEmptyState } from '@/shared/components/ui/ListBox';
 import { SearchField } from '@/shared/components/ui/SearchField';
 import { DataTablePagination } from '@/shared/components/data-table/data-table-pagination';
+import { DataTableToolbar } from '@/shared/components/data-table/data-table-toolbar';
+import { Tabs } from '@/shared/components/ui/tabs';
+import { TabOption } from '@/shared/types';
 
-type DataTableProps<TData> = {
+type DataTableProps<TData, TTab extends string = string> = {
   table: TanStackTable<TData>;
   isLoading?: boolean;
+  tabs?: TabOption<TTab>[];
+  currentTab?: TTab;
+  onTabChange?: (tab: TTab) => void;
 };
 
-export function DataTable<TData>({ table, isLoading = false }: DataTableProps<TData>) {
+export function DataTable<TData, TTab extends string = string>({
+  table,
+  isLoading = false,
+  tabs,
+  currentTab,
+  onTabChange,
+}: DataTableProps<TData, TTab>) {
   return (
-    <>
+    <div>
+      <section className={styles.actionBar}>
+        {tabs && currentTab && onTabChange && (
+          <Tabs tabs={tabs} currentTab={currentTab} onTabChange={onTabChange} />
+        )}
+        <DataTableToolbar enableSearch table={table} />
+      </section>
+
       <table className={styles.table}>
         <thead className={styles.thead}>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -75,7 +94,7 @@ export function DataTable<TData>({ table, isLoading = false }: DataTableProps<TD
         </tbody>
       </table>
       <DataTablePagination table={table} isLoading={isLoading} />
-    </>
+    </div>
   );
 }
 
