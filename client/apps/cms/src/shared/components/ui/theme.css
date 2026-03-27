@@ -189,7 +189,7 @@
 
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.03);
 
-  --sidebar-background: var(--gray-1);
+  --sidebar-background: var(--gray-2);
   --sidebar-background-active: var(--gray-3);
   --sidebar-background-hovered: var(--gray-3);
   --sidebar-background-pressed: var(--gray-5);

@@ -1,9 +1,12 @@
 package com.flowstruct.api.sitegenerator.controller;
 
 import com.flowstruct.api.sitegenerator.dto.SiteGenerationDto;
+import com.flowstruct.api.sitegenerator.dto.SiteGenerationSettingsDto;
 import com.flowstruct.api.sitegenerator.dto.SiteGenerationSummaryDto;
 import com.flowstruct.api.sitegenerator.service.SiteGenerationService;
+import com.flowstruct.api.sitegenerator.service.SiteGenerationSettingsService;
 import com.flowstruct.api.sitegenerator.service.SiteGeneratorManagerService;
+import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
@@ -12,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/site-generations")
@@ -21,6 +25,8 @@ public class SiteGeneratorController {
   private final SiteGenerationService siteGenerationService;
 
   private final SiteGeneratorManagerService siteGeneratorManagerService;
+
+  private final SiteGenerationSettingsService settingsService;
 
   @PostMapping
   public ResponseEntity<SiteGenerationDto> triggerGeneration() {
@@ -67,5 +73,24 @@ public class SiteGeneratorController {
   public ResponseEntity<SiteGenerationDto> retryGeneration(@PathVariable long id) {
     return new ResponseEntity<>(
         siteGeneratorManagerService.retryGeneration(id), HttpStatus.CREATED);
+  }
+
+  @GetMapping("/settings")
+  public ResponseEntity<SiteGenerationSettingsDto> getSettings() {
+    var settings = settingsService.get();
+    return ResponseEntity.ok(new SiteGenerationSettingsDto(settings.title()));
+  }
+
+  @PutMapping("/settings/title")
+  public ResponseEntity<Void> updateTitle(@RequestBody String title) {
+    settingsService.updateTitle(title);
+    return ResponseEntity.noContent().build();
+  }
+
+  @PutMapping("/settings/icon")
+  public ResponseEntity<Void> uploadIcon(@RequestParam("file") MultipartFile file)
+      throws IOException {
+    settingsService.updateIcon(file);
+    return ResponseEntity.noContent().build();
   }
 }

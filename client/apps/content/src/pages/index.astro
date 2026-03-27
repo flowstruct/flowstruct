@@ -6,19 +6,20 @@ import FlowsheetSearchBar from "../components/FlowsheetSearchBar.astro";
 import AboutDialog from "../components/AboutDialog.astro";
 import AllProgramsDialog from "../components/AllProgramsDialog.astro";
 import { api } from "../utils/api";
+import { SITE_TITLE } from "astro:env/client";
 
-const programs = await api<Program[]>('/programs');
+const programs = await api<Program[]>("/programs");
 const date = new Date();
 ---
 
-<Layout title="Flowstruct">
+<Layout title={SITE_TITLE}>
   <div class="flex flex-col gap-6 p-6 min-h-screen border text-gray-800">
     <header class="flex items-center gap-6 pb-6 w-full justify-center relative">
       <AboutDialog />
     </header>
     <div class="flex flex-col gap-6 items-center my-auto">
       <header class="space-y-2 text-center mb-6">
-        <h1 class="text-6xl md:text-8xl font-bold">Flowstruct</h1>
+        <h1 class="text-6xl md:text-8xl font-bold">{SITE_TITLE}</h1>
         <h3>An Interactive Flowsheet Visualizer</h3>
       </header>
       <div class="flex flex-col-reverse gap-2 md:flex-row">
@@ -28,7 +29,7 @@ const date = new Date();
       <VisitedFlowsheetCard />
     </div>
     <footer class="w-full text-xs text-center opacity-60 mt-auto">
-      <p>Powered by Flowstruct &bull; © {date.getFullYear()}</p>
+      <p>Powered by {SITE_TITLE} &bull; © {date.getFullYear()}</p>
     </footer>
   </div>
 </Layout>

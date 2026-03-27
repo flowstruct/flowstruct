@@ -11,6 +11,7 @@ import {
   User,
   FolderUp,
   Folder,
+  Settings2,
 } from 'lucide-react';
 import { Role } from '@/features/user/domain/user';
 import { Popover } from '@/shared/components/ui/Popover';
@@ -76,13 +77,13 @@ const sidebarSections = [
   },
 ];
 
-// const footerItems = [
-//   {
-//     icon: Settings2,
-//     label: 'Settings',
-//     route: '/settings',
-//   },
-// ];
+const footerItems = [
+  {
+    icon: Settings2,
+    label: 'Settings',
+    route: '/settings',
+  },
+];
 
 export function Sidebar() {
   const navigate = useNavigate();
@@ -121,20 +122,21 @@ export function Sidebar() {
         ))}
       </section>
 
-      {/* <footer className={styles.footer}> */}
-      {/*   {footerItems.map((item) => { */}
-      {/*     return ( */}
-      {/*       <UnstyledButton */}
-      {/*         key={item.route} */}
-      {/*         className={styles.sidebarMenuItem} */}
-      {/*         onPress={() => navigate({ to: item.route })} */}
-      {/*       > */}
-      {/*         <item.icon size={16} /> */}
-      {/*         {item.label} */}
-      {/*       </UnstyledButton> */}
-      {/*     ); */}
-      {/*   })} */}
-      {/* </footer> */}
+      <footer className={styles.footer}>
+        {footerItems.map((item) => {
+          return (
+            <UnstyledButton
+              key={item.route}
+              className={styles.sidebarMenuItem}
+              data-active={isActive(item.route) || undefined}
+              onPress={() => navigate({ to: item.route })}
+            >
+              <item.icon size={16} />
+              {item.label}
+            </UnstyledButton>
+          );
+        })}
+      </footer>
     </aside>
   );
 }
@@ -148,7 +150,7 @@ export function UserProfile() {
     mutationFn: userApi.logout,
     onSuccess: () => {
       queryClient.cancelQueries();
-      navigate({ to: '/login' });
+      navigate({ to: '/login', search: { redirect: '/' } });
     },
     meta: {
       invalidate: false,

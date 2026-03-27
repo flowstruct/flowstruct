@@ -64,8 +64,8 @@ function CoursesPage() {
   const searchOptions = { filter, page, size };
   const table = useCourseTable({
     courses: coursesPage?.content ?? [],
-    pageCount: coursesPage?.totalPages,
-    rowCount: coursesPage?.totalCourses,
+    pageCount: coursesPage?.totalPages ?? 0,
+    rowCount: coursesPage?.totalCourses ?? 0,
     searchOptions,
   });
 

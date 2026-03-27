@@ -45,10 +45,10 @@ type ProgramsSearch = {
 
 export const Route = createFileRoute('/_app/programs/')({
   validateSearch: (search): ProgramsSearch => ({
-    tab: (search.tab as ProgramStatus) || 'active',
+    tab: (search.tab as ProgramStatus) || 'all',
   }),
   search: {
-    middlewares: [stripSearchParams({ tab: 'active' })],
+    middlewares: [stripSearchParams({ tab: 'all' })],
   },
   component: ProgramsPage,
 });

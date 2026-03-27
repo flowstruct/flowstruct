@@ -15,9 +15,13 @@ public class SiteGeneratorProperties {
 
   public static final String DEFAULT_SCRIPT = "npm run build";
 
+  public static final String DEFAULT_ICON_PATH = "/app/content/src/assets/logo.png";
+
   private String dir = DEFAULT_DIR;
 
   private String script = DEFAULT_SCRIPT;
+
+  private String iconPath = DEFAULT_ICON_PATH;
 
   private String apiKey;
 }

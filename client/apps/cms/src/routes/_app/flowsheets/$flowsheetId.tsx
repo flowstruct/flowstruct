@@ -12,17 +12,7 @@ import { programQueries } from '@/features/program/queries';
 import { userQueries } from '@/features/user/queries';
 import { Breadcrumb, Breadcrumbs } from '@/shared/components/ui/breadcrumbs';
 import { UnstyledButton } from '@/shared/components/ui/UnstyledButton';
-import {
-  Dot,
-  Layers2,
-  Archive,
-  CircleX,
-  MoveLeft,
-  MoveRight,
-  CircleCheck,
-  X,
-  Undo,
-} from 'lucide-react';
+import { Dot, Layers2, Archive, MoveLeft, MoveRight, CircleCheck, Undo } from 'lucide-react';
 import { FlowsheetStatusIcon } from '@/features/flowsheet/components/flowsheet-status-icon';
 import { getProgramDisplayName } from '@/features/program/domain/getProgramDisplayName';
 import { getFlowsheetDisplayName } from '@/features/flowsheet/domain/getFlowsheetDisplayName';
@@ -182,7 +172,7 @@ export function RouteBreadcrumbs() {
 
   return (
     <Breadcrumbs>
-      <UnstyledButton onPress={() => navigate({ to: '/flowsheets', search: { tab: 'active' } })}>
+      <UnstyledButton onPress={() => navigate({ to: '/flowsheets', search: { tab: 'all' } })}>
         <Breadcrumb base>
           <Layers2 size={14} /> Flowsheets
         </Breadcrumb>

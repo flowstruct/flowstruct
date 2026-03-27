@@ -12,31 +12,31 @@ spring:
     baseline-version: 0
     user: ${DB_USER:flowstruct}
     password: ${DB_PASSWORD:flowstruct}
-
-management:
-  endpoint:
-    health:
-      show-details: always
-  endpoints:
-    web:
-      exposure:
-        include: health
+  servlet:
+    multipart:
+      max-file-size: -1
+  management:
+    endpoint:
+      health:
+        show-details: always
+    endpoints:
+      web:
+        exposure:
+          include: health
+  web:
+    resources:
+      cache:
+        cachecontrol:
+          max-age: 31536000s
+          public: true
+          must-revalidate: true
+          no-transform: true
+  server:
+    forward-headers-strategy: native
 
 jwt:
   cookie:
     expiry: 1800
-
-web:
-  resources:
-    cache:
-      cachecontrol:
-        max-age: 31536000s
-        public: true
-        must-revalidate: true
-        no-transform: true
-
-server:
-  forward-headers-strategy: native
 
 secure: true
 
@@ -44,3 +44,4 @@ site-generator:
   dir: ${SITE_GENERATOR_DIR}
   api-key: ${SITE_GENERATOR_API_KEY}
   script: ${SITE_GENERATOR_SCRIPT}
+  icon-path: ${SITE_GENERATOR_ICON_PATH}

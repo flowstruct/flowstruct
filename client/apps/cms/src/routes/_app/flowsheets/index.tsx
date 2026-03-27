@@ -40,13 +40,13 @@ type FlowsheetSearch = {
 
 export const Route = createFileRoute('/_app/flowsheets/')({
   validateSearch: (search): FlowsheetSearch => ({
-    tab: (search.tab as ArchiveStatus) || 'active',
+    tab: (search.tab as ArchiveStatus) || 'all',
   }),
   loader: async ({ context: { queryClient } }) => {
     queryClient.ensureQueryData(flowsheetQueries.collection);
   },
   search: {
-    middlewares: [stripSearchParams({ tab: 'active' })],
+    middlewares: [stripSearchParams({ tab: 'all' })],
   },
   component: () => {
     const { tab } = Route.useSearch();

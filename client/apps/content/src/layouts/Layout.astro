@@ -1,20 +1,29 @@
 ---
 import BaseHead from "../components/BaseHead.astro";
-import icon from "../assets/icon.png";
+import type { ImageMetadata } from "astro";
 
-const {title} = Astro.props;
+const { title } = Astro.props;
+
+const images = import.meta.glob<{ default: ImageMetadata }>(
+  "../assets/*.png",
+  { eager: true }
+);
+
+const icon =
+  images["../assets/icon.png"]?.default ??
+  images["../assets/default-icon.png"].default;
 ---
 
 <!doctype html>
 <html lang="en">
-	<head>
-	  <link rel="icon" type="image/png" href={icon.src}/>
-	  <meta charset="UTF-8"/>
-	  <meta name="viewport" content="width=device-width"/>
-	  <meta name="generator" content={Astro.generator}/>
-	  <BaseHead title={title} />
-	</head>
-	<body class="text-gray-800 max-w-screen-2xl mx-auto">
-	  <slot/>
-	</body>
+  <head>
+    <link rel="icon" type="image/png" href={icon.src} />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <BaseHead title={title} />
+  </head>
+  <body class="text-gray-800 max-w-screen-2xl mx-auto">
+    <slot />
+  </body>
 </html>

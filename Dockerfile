@@ -51,6 +51,7 @@ COPY /reverse-proxy/ ./reverse-proxy/
 ENV SPRING_PROFILES_ACTIVE=prod
 ENV SITE_GENERATOR_DIR=content
 ENV SITE_GENERATOR_SCRIPT="npm run build"
+ENV SITE_GENERATOR_ICON_PATH=/app/content/src/assets/logo.png
 
 EXPOSE 3000
 

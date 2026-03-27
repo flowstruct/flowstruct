@@ -149,5 +149,10 @@ CREATE INDEX idx_course_prerequisite_flowsheet ON course_prerequisite (flowsheet
 CREATE INDEX idx_course_corequisite_flowsheet ON course_corequisite (flowsheet);
 CREATE INDEX idx_site_generation_status ON site_generation (status);
 
+CREATE TABLE site_generation_settings
+(
+    title VARCHAR(255) NOT NULL DEFAULT 'Flowstruct'
+);
+
 INSERT INTO "user" (username, email, role, password)
 VALUES ('flowstruct', 'admin@flowstruct.com', 'ADMIN', '$2a$12$Pny61LESAXFDjnkgczhJ8eIC3HbEnlQyvW8FQ5mpoJc5ODks1zG.i');

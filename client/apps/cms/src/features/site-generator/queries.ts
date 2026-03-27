@@ -8,6 +8,7 @@ export const siteGeneratorKeys = {
   details: () => [...siteGeneratorKeys.all, 'detail'] as const,
   detail: (id: number) => [...siteGeneratorKeys.details(), id] as const,
   current: () => [...siteGeneratorKeys.all, 'current'] as const,
+  settings: () => [...siteGeneratorKeys.all, 'settings'] as const,
 };
 
 export const siteGeneratorQueries = {
@@ -38,5 +39,10 @@ export const siteGeneratorQueries = {
 
       return false;
     },
+  }),
+
+  settings: queryOptions({
+    queryKey: siteGeneratorKeys.settings(),
+    queryFn: () => siteGeneratorApi.getSettings(),
   }),
 };

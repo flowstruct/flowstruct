@@ -3,7 +3,7 @@ import { CoursesSearch } from '@/features/course/domain/course';
 import { CourseStatus } from '@/features/course/domain/getCourseStatusFilter';
 
 const defaultSearch: CoursesSearch = {
-  tab: 'active',
+  tab: 'all',
   filter: '',
   page: 0,
   size: 10,

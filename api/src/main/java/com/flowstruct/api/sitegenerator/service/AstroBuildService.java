@@ -10,23 +10,28 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Service;
 
-@Service
 public class AstroBuildService {
 
   private static final String DIST_DIR = "dist";
 
-  private String apiKey;
+  private final String apiKey;
 
-  private String siteGeneratorDir;
+  private final String siteGeneratorDir;
 
-  private String siteGeneratorScript;
+  private final String siteGeneratorScript;
 
-  public AstroBuildService(String apiKey, String siteGeneratorDir, String siteGeneratorScript) {
+  private final SiteGenerationSettingsService settingsService;
+
+  public AstroBuildService(
+      String apiKey,
+      String siteGeneratorDir,
+      String siteGeneratorScript,
+      SiteGenerationSettingsService settingsService) {
     this.apiKey = apiKey;
     this.siteGeneratorDir = siteGeneratorDir;
     this.siteGeneratorScript = siteGeneratorScript;
+    this.settingsService = settingsService;
   }
 
   public BuildResult executeBuild() throws BuildException {
@@ -37,6 +42,7 @@ public class AstroBuildService {
       ProcessBuilder processBuilder = new ProcessBuilder(siteGeneratorScript.split(" "));
       processBuilder.directory(contentPath.toFile());
       processBuilder.environment().put("SITE_GENERATOR_API_KEY", apiKey);
+      processBuilder.environment().put("SITE_TITLE", settingsService.get().title());
       processBuilder.redirectErrorStream(true);
 
       Process process = processBuilder.start();

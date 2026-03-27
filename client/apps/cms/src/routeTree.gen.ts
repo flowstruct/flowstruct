@@ -17,6 +17,7 @@ import { Route as AppFlowsheetsRouteRouteImport } from './routes/_app/flowsheets
 import { Route as AppCoursesRouteRouteImport } from './routes/_app/courses/route'
 import { Route as AppAdminRouteRouteImport } from './routes/_app/admin/route'
 import { Route as AppSiteGenerationsIndexRouteImport } from './routes/_app/site-generations/index'
+import { Route as AppSettingsIndexRouteImport } from './routes/_app/settings/index'
 import { Route as AppProgramsIndexRouteImport } from './routes/_app/programs/index'
 import { Route as AppFlowsheetsIndexRouteImport } from './routes/_app/flowsheets/index'
 import { Route as AppCoursesIndexRouteImport } from './routes/_app/courses/index'
@@ -62,6 +63,11 @@ const AppSiteGenerationsIndexRoute = AppSiteGenerationsIndexRouteImport.update({
   path: '/site-generations/',
   getParentRoute: () => AppRouteRoute,
 } as any)
+const AppSettingsIndexRoute = AppSettingsIndexRouteImport.update({
+  id: '/settings/',
+  path: '/settings/',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 const AppProgramsIndexRoute = AppProgramsIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -100,6 +106,7 @@ export interface FileRoutesByFullPath {
   '/courses/': typeof AppCoursesIndexRoute
   '/flowsheets/': typeof AppFlowsheetsIndexRoute
   '/programs/': typeof AppProgramsIndexRoute
+  '/settings/': typeof AppSettingsIndexRoute
   '/site-generations/': typeof AppSiteGenerationsIndexRoute
   '/admin/users/': typeof AppAdminUsersIndexRoute
 }
@@ -111,6 +118,7 @@ export interface FileRoutesByTo {
   '/courses': typeof AppCoursesIndexRoute
   '/flowsheets': typeof AppFlowsheetsIndexRoute
   '/programs': typeof AppProgramsIndexRoute
+  '/settings': typeof AppSettingsIndexRoute
   '/site-generations': typeof AppSiteGenerationsIndexRoute
   '/admin/users': typeof AppAdminUsersIndexRoute
 }
@@ -127,6 +135,7 @@ export interface FileRoutesById {
   '/_app/courses/': typeof AppCoursesIndexRoute
   '/_app/flowsheets/': typeof AppFlowsheetsIndexRoute
   '/_app/programs/': typeof AppProgramsIndexRoute
+  '/_app/settings/': typeof AppSettingsIndexRoute
   '/_app/site-generations/': typeof AppSiteGenerationsIndexRoute
   '/_app/admin/users/': typeof AppAdminUsersIndexRoute
 }
@@ -143,6 +152,7 @@ export interface FileRouteTypes {
     | '/courses/'
     | '/flowsheets/'
     | '/programs/'
+    | '/settings/'
     | '/site-generations/'
     | '/admin/users/'
   fileRoutesByTo: FileRoutesByTo
@@ -154,6 +164,7 @@ export interface FileRouteTypes {
     | '/courses'
     | '/flowsheets'
     | '/programs'
+    | '/settings'
     | '/site-generations'
     | '/admin/users'
   id:
@@ -169,6 +180,7 @@ export interface FileRouteTypes {
     | '/_app/courses/'
     | '/_app/flowsheets/'
     | '/_app/programs/'
+    | '/_app/settings/'
     | '/_app/site-generations/'
     | '/_app/admin/users/'
   fileRoutesById: FileRoutesById
@@ -235,6 +247,13 @@ declare module '@tanstack/react-router' {
       path: '/site-generations'
       fullPath: '/site-generations/'
       preLoaderRoute: typeof AppSiteGenerationsIndexRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/settings/': {
+      id: '/_app/settings/'
+      path: '/settings'
+      fullPath: '/settings/'
+      preLoaderRoute: typeof AppSettingsIndexRouteImport
       parentRoute: typeof AppRouteRoute
     }
     '/_app/programs/': {
@@ -328,6 +347,7 @@ interface AppRouteRouteChildren {
   AppCoursesRouteRoute: typeof AppCoursesRouteRouteWithChildren
   AppFlowsheetsRouteRoute: typeof AppFlowsheetsRouteRouteWithChildren
   AppProgramsRouteRoute: typeof AppProgramsRouteRouteWithChildren
+  AppSettingsIndexRoute: typeof AppSettingsIndexRoute
   AppSiteGenerationsIndexRoute: typeof AppSiteGenerationsIndexRoute
 }
 
@@ -336,6 +356,7 @@ const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppCoursesRouteRoute: AppCoursesRouteRouteWithChildren,
   AppFlowsheetsRouteRoute: AppFlowsheetsRouteRouteWithChildren,
   AppProgramsRouteRoute: AppProgramsRouteRouteWithChildren,
+  AppSettingsIndexRoute: AppSettingsIndexRoute,
   AppSiteGenerationsIndexRoute: AppSiteGenerationsIndexRoute,
 }
 

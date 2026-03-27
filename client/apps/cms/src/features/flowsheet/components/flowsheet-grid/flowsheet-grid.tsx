@@ -119,7 +119,7 @@ export function Term() {
   return (
     <Stack gap={1}>
       <Box px={1}>
-        <Text tone="dimmed" weight="medium" size="xs">
+        <Text tone="dimmed" align="center" weight="medium" size="xs">
           {getTermDisplayName(term)}
         </Text>
       </Box>

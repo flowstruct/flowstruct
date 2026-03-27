@@ -17,3 +17,4 @@ site-generator:
   api-key: super-secret-api-key
   dir: ../client/apps/content
   script: "pnpm run build"
+  iconPath: ../client/apps/content/src/assets/icon.png
