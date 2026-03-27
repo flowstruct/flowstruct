@@ -25,8 +25,31 @@ export const siteGeneratorApi = {
 
   getSettings: () => api.get<SiteGenerationSettings>([SITE_GENERATOR_ENDPOINT, 'settings']),
 
+  getIcon: async (): Promise<Blob> => {
+    const endpoint = [SITE_GENERATOR_ENDPOINT, 'settings', 'icon']
+      .map((segment) => String(segment))
+      .join('/');
+    const url = `/api${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
+
+    const response = await fetch(url, {
+      method: 'GET',
+      credentials: 'include',
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw {
+        statusCode: response.status,
+        messages: errorData.messages || [errorData.message || 'Unknown error'],
+        timestamp: errorData.timestamp || new Date().toISOString(),
+      };
+    }
+
+    return response.blob();
+  },
+
   updateTitle: (title: string) =>
-    api.put<void>([SITE_GENERATOR_ENDPOINT, 'settings', 'title'], { body: title }),
+    api.put<void>([SITE_GENERATOR_ENDPOINT, 'settings', 'title'], { body: { title } }),
 
   uploadIcon: async (file: File) => {
     const endpoint = [SITE_GENERATOR_ENDPOINT, 'settings', 'icon']
@@ -41,6 +64,29 @@ export const siteGeneratorApi = {
       method: 'PUT',
       credentials: 'include',
       body: formData,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw {
+        statusCode: response.status,
+        messages: errorData.messages || [errorData.message || 'Unknown error'],
+        timestamp: errorData.timestamp || new Date().toISOString(),
+      };
+    }
+
+    return;
+  },
+
+  removeIcon: async () => {
+    const endpoint = [SITE_GENERATOR_ENDPOINT, 'settings', 'icon']
+      .map((segment) => String(segment))
+      .join('/');
+    const url = `/api${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
+
+    const response = await fetch(url, {
+      method: 'DELETE',
+      credentials: 'include',
     });
 
     if (!response.ok) {

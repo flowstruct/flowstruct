@@ -9,17 +9,20 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class SiteGenerationSettingsService {
 
+  public static final String CUSTOM_ICON = "icon.png";
+
+  public static final String DEFAULT_ICON = "default-icon.png";
+
   private SiteGenerationSettingsRepository siteGenerationSettingsRepository;
 
-  private String siteGeneratorIconPath;
+  private String iconsPath;
 
   private SiteGenerationSettings cached;
 
   public SiteGenerationSettingsService(
-      SiteGenerationSettingsRepository siteGenerationSettingsRepository,
-      String siteGeneratorIconPath) {
+      SiteGenerationSettingsRepository siteGenerationSettingsRepository, String iconsPath) {
     this.siteGenerationSettingsRepository = siteGenerationSettingsRepository;
-    this.siteGeneratorIconPath = siteGeneratorIconPath;
+    this.iconsPath = iconsPath;
     init();
   }
 
@@ -44,8 +47,35 @@ public class SiteGenerationSettingsService {
     siteGenerationSettingsRepository.save(cached);
   }
 
+  public byte[] getIconBytes() throws IOException {
+    Path customIconPath = getCustomIconPath();
+    if (Files.exists(customIconPath)) {
+      return Files.readAllBytes(customIconPath);
+    }
+    return Files.readAllBytes(getDefaultIconPath());
+  }
+
+  public boolean iconUsesDefault() {
+    return !Files.exists(getCustomIconPath());
+  }
+
   public void updateIcon(MultipartFile file) throws IOException {
-    Files.createDirectories(Path.of(siteGeneratorIconPath).getParent());
-    Files.write(Path.of(siteGeneratorIconPath), file.getBytes());
+    Files.createDirectories(Path.of(iconsPath));
+    Files.write(getCustomIconPath(), file.getBytes());
+  }
+
+  public void deleteIcon() throws IOException {
+    Path customIconPath = getCustomIconPath();
+    if (Files.exists(customIconPath)) {
+      Files.delete(customIconPath);
+    }
+  }
+
+  private Path getCustomIconPath() {
+    return Path.of(iconsPath, CUSTOM_ICON);
+  }
+
+  private Path getDefaultIconPath() {
+    return Path.of(iconsPath, DEFAULT_ICON);
   }
 }

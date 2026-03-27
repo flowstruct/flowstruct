@@ -1,3 +1,3 @@
 package com.flowstruct.api.sitegenerator.dto;
 
-public record SiteGenerationSettingsDto(String title) {}
+public record SiteGenerationSettingsDto(String title, boolean iconIsDefault) {}

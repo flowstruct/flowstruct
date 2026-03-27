@@ -4,22 +4,28 @@ import { siteGeneratorQueries } from '@/features/site-generator/queries';
 import { siteGeneratorApi } from '@/features/site-generator/api';
 import { TextField } from '@/shared/components/ui/TextField';
 import React from 'react';
-import { siteGeneratorApi as api } from '@/features/site-generator/api';
 import styles from './index.module.css';
-import { Menu, MenuTrigger } from '@/shared/components/ui/Menu';
-import logo from '@/assets/logo.png';
+import { Menu, MenuTrigger, MenuItem } from '@/shared/components/ui/Menu';
+import { Popover } from '@/shared/components/ui/Popover';
 import { UnstyledButton } from '@/shared/components/ui/UnstyledButton';
+import { Pencil, X } from 'lucide-react';
 
 export const Route = createFileRoute('/_app/settings/')({
   loader: async ({ context: { queryClient } }) => {
     queryClient.ensureQueryData(siteGeneratorQueries.settings);
+    queryClient.ensureQueryData(siteGeneratorQueries.settingsIcon);
   },
   component: SiteGenerationSettingsPage,
 });
 
 function SiteGenerationSettingsPage() {
   const { data: settings } = useSuspenseQuery(siteGeneratorQueries.settings);
-  const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
+  const { data: iconBlob } = useSuspenseQuery(siteGeneratorQueries.settingsIcon);
+
+  const iconUrl = React.useMemo(() => {
+    return iconBlob ? URL.createObjectURL(iconBlob) : null;
+  }, [iconBlob]);
+
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const updateTitle = useMutation({
@@ -29,10 +35,9 @@ function SiteGenerationSettingsPage() {
 
   const uploadIcon = useMutation({
     mutationFn: async (file: File) => {
-      await api.uploadIcon(file);
+      await siteGeneratorApi.uploadIcon(file);
     },
     onSuccess: () => {
-      setSelectedFile(null);
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
@@ -40,8 +45,12 @@ function SiteGenerationSettingsPage() {
     meta: { successMessage: 'Icon uploaded.' },
   });
 
+  const removeIcon = useMutation({
+    mutationFn: () => siteGeneratorApi.removeIcon(),
+    meta: { successMessage: 'Icon removed. Using default icon.' },
+  });
+
   const handleTitleBlur = (title: string) => {
-    console.log(title);
     if (title !== settings.title && title.trim()) {
       updateTitle.mutate(title.trim());
     }
@@ -50,14 +59,16 @@ function SiteGenerationSettingsPage() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setSelectedFile(file);
+      uploadIcon.mutate(file);
     }
   };
 
-  const handleUploadClick = () => {
-    if (selectedFile) {
-      uploadIcon.mutate(selectedFile);
-    }
+  const handleChangeIconClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleRemoveIconClick = () => {
+    removeIcon.mutate();
   };
 
   return (
@@ -73,15 +84,39 @@ function SiteGenerationSettingsPage() {
               <p className={styles.settingsFieldDescription}>
                 Upload a PNG file to use as the site icon. Recommended size: 512x512px.
               </p>
-
-              <Menu>
-                <MenuTrigger>
-                  <UnstyledButton>
-                    <img src={logo} />
-                  </UnstyledButton>
-                </MenuTrigger>
-              </Menu>
             </div>
+
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/png"
+              onChange={handleFileChange}
+              style={{ display: 'none' }}
+            />
+
+            <MenuTrigger>
+              <UnstyledButton className={styles.iconButton}>
+                {iconUrl && <img width={50} src={iconUrl} alt="Site icon" />}
+                <div className={styles.iconButtonOverlay}>
+                  <Pencil size={16} />
+                </div>
+              </UnstyledButton>
+
+              <Popover hideArrow>
+                <Menu width={150}>
+                  <MenuItem onAction={handleChangeIconClick} textValue="change">
+                    <Pencil size={14} />
+                    Change icon
+                  </MenuItem>
+                  {!settings.iconIsDefault && (
+                    <MenuItem onAction={handleRemoveIconClick} textValue="remove">
+                      <X size={14} />
+                      Remove icon
+                    </MenuItem>
+                  )}
+                </Menu>
+              </Popover>
+            </MenuTrigger>
           </div>
 
           <div className={styles.settingsField}>
@@ -96,30 +131,6 @@ function SiteGenerationSettingsPage() {
             />
           </div>
         </section>
-
-        {/* <div> */}
-        {/*   <h2 className="text-lg font-semibold mb-4">Icon</h2> */}
-        {/*   <div className="flex items-center gap-4"> */}
-        {/*     <input */}
-        {/*       ref={fileInputRef} */}
-        {/*       type="file" */}
-        {/*       accept="image/png" */}
-        {/*       onChange={handleFileChange} */}
-        {/*       className="text-sm" */}
-        {/*     /> */}
-        {/*     <Button */}
-        {/*       size="sm" */}
-        {/*       variant="default" */}
-        {/*       onPress={handleUploadClick} */}
-        {/*       isDisabled={!selectedFile} */}
-        {/*     > */}
-        {/*       Upload Icon */}
-        {/*     </Button> */}
-        {/*   </div> */}
-        {/*   <p className="text-xs text-gray-500 mt-2"> */}
-        {/*     Upload a PNG file to use as the site icon. Recommended size: 512x512px. */}
-        {/*   </p> */}
-        {/* </div> */}
       </main>
     </div>
   );

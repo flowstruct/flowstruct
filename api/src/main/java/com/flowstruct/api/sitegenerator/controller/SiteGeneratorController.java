@@ -78,12 +78,21 @@ public class SiteGeneratorController {
   @GetMapping("/settings")
   public ResponseEntity<SiteGenerationSettingsDto> getSettings() {
     var settings = settingsService.get();
-    return ResponseEntity.ok(new SiteGenerationSettingsDto(settings.title()));
+    boolean iconIsDefault = settingsService.iconUsesDefault();
+    return ResponseEntity.ok(new SiteGenerationSettingsDto(settings.title(), iconIsDefault));
   }
 
+  @GetMapping("/settings/icon")
+  public ResponseEntity<byte[]> getIcon() throws IOException {
+    byte[] iconBytes = settingsService.getIconBytes();
+    return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(iconBytes);
+  }
+
+  public record TitleUpdateRequest(String title) {}
+
   @PutMapping("/settings/title")
-  public ResponseEntity<Void> updateTitle(@RequestBody String title) {
-    settingsService.updateTitle(title);
+  public ResponseEntity<Void> updateTitle(@RequestBody TitleUpdateRequest request) {
+    settingsService.updateTitle(request.title());
     return ResponseEntity.noContent().build();
   }
 
@@ -91,6 +100,12 @@ public class SiteGeneratorController {
   public ResponseEntity<Void> uploadIcon(@RequestParam("file") MultipartFile file)
       throws IOException {
     settingsService.updateIcon(file);
+    return ResponseEntity.noContent().build();
+  }
+
+  @DeleteMapping("/settings/icon")
+  public ResponseEntity<Void> deleteIcon() throws IOException {
+    settingsService.deleteIcon();
     return ResponseEntity.noContent().build();
   }
 }

@@ -42,6 +42,6 @@ secure: true
 
 site-generator:
   dir: ${SITE_GENERATOR_DIR}
-  api-key: ${SITE_GENERATOR_API_KEY}
+  icon-dir: ${SITE_GENERATOR_ICON_DIR:}
   script: ${SITE_GENERATOR_SCRIPT}
-  icon-path: ${SITE_GENERATOR_ICON_PATH}
+  api-key: ${SITE_GENERATOR_API_KEY}

@@ -14,7 +14,7 @@ spring:
 secure: false
 
 site-generator:
-  api-key: super-secret-api-key
   dir: ../client/apps/content
+  icon-dir: src/assets
   script: "pnpm run build"
-  iconPath: ../client/apps/content/src/assets/icon.png
+  api-key: super-secret-api-key
