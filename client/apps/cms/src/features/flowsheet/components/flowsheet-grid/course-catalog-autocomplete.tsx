@@ -104,7 +104,8 @@ export function CourseCatalogAutocomplete() {
                   }}
                   selectionMode="multiple"
                   renderEmptyState={() => (
-                    <ListEmptyState>
+                    <section data-no-results className={styles.createHint}>
+                      Can't find what you're looking for?
                       <Button
                         size="xs"
                         variant="ghost"
@@ -113,7 +114,7 @@ export function CourseCatalogAutocomplete() {
                       >
                         <span className={styles.createLinkText}>Create "{debouncedSearch}"</span>
                       </Button>
-                    </ListEmptyState>
+                    </section>
                   )}
                 >
                   <Collection items={catalogCourses?.results}>

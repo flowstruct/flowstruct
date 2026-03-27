@@ -5,7 +5,7 @@ import { programQueries } from '@/features/program/queries';
 import { ComboBoxState, useComboBoxState } from '@/shared/hooks/use-combobox-state';
 import { getProgramDisplayName } from '@/features/program/domain/getProgramDisplayName';
 import { ComboBox } from '@/shared/components/ui/ComboBox';
-import { ListBox, ListBoxItem, ListEmptyState } from '@/shared/components/ui/ListBox';
+import { ListBox, ListBoxItem } from '@/shared/components/ui/ListBox';
 import styles from '@/features/flowsheet/components/program-combobox.module.css';
 import { createPortal } from 'react-dom';
 import { UnstyledButton } from '@/shared/components/ui/UnstyledButton';
@@ -70,9 +70,6 @@ export function ProgramComboBox({
         onInputChange={comboBoxState.onInputChange}
         value={comboBoxState.selectedKey}
         onChange={comboBoxState.onSelectionChange}
-        onOpenChange={(isOpen) => {
-          if (isOpen && programFormState.isOpen) programFormState.close();
-        }}
       >
         {!programFormState.isOpen && (
           <>

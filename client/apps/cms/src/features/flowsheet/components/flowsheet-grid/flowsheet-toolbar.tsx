@@ -10,6 +10,10 @@ import Group from '@/shared/components/layout/group';
 import { Divider } from '@/shared/components/ui/divider';
 import { Popover } from '@/shared/components/ui/Popover';
 import React from 'react';
+import {
+  ConfirmationModal,
+  ConfirmationModalTrigger,
+} from '@/shared/components/confirmation-modal';
 
 export function FlowsheetToolbar() {
   const { flowsheet } = useFlowsheetContext();
@@ -55,19 +59,20 @@ export function FlowsheetToolbar() {
           <Divider orientation="vertical" />
 
           <Group>
-            <TooltipTrigger>
-              <Button
-                shape="icon"
-                size="sm"
-                variant="flat"
-                isPending={removeCourses.isPending}
-                onPress={() => removeCourses.mutate(Array.from(state.courseIds))}
-              >
-                <Trash color="red" size={14} />
-              </Button>
-
-              <Tooltip>Remove courses</Tooltip>
-            </TooltipTrigger>
+            <ConfirmationModal
+              header={`Remove ${state.courseIds.size} course${state.courseIds.size > 1 ? 's' : ''}`}
+              text="Prerequisite and corequisite links will also be removed. Courses can be added back later."
+              onConfirm={() => removeCourses.mutate(Array.from(state.courseIds))}
+              submitLabel="Remove"
+              submitIcon={<Trash size={14} />}
+              theme="danger"
+            >
+              <ConfirmationModalTrigger>
+                <Button shape="icon" size="sm" variant="flat" isPending={removeCourses.isPending}>
+                  <Trash color="red" size={14} />
+                </Button>
+              </ConfirmationModalTrigger>
+            </ConfirmationModal>
           </Group>
         </Group>
       </Popover>

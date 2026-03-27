@@ -114,7 +114,7 @@ function FlowsheetStatusActions({ flowsheet }: { flowsheet: FlowsheetSummary }) 
         <>
           <ConfirmationModal
             header="Approve changes"
-            text="Approving these changes will make them visible during site generation. Are you sure you want to proceed?"
+            text="These changes will be included in future site generations. Are you sure you want to proceed?"
             submitLabel="Approve"
             submitIcon={<CircleCheck size={15} />}
             onConfirm={() => approveChanges.mutate()}

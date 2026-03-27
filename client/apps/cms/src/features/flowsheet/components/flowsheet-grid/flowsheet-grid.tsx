@@ -115,12 +115,18 @@ function RemoveTermButton() {
 
 export function Term() {
   const { term } = useTermContext();
+  const { flowsheetCourses } = useFlowsheetContext();
+
+  const totalCredits = term.placements.reduce(
+    (sum, p) => sum + (flowsheetCourses.byIds[p.course]?.creditHours ?? 0),
+    0
+  );
 
   return (
     <Stack gap={1}>
       <Box px={1}>
         <Text tone="dimmed" align="center" weight="medium" size="xs">
-          {getTermDisplayName(term)}
+          {getTermDisplayName(term)}{totalCredits > 0 ? ` - ${totalCredits} Cr.` : ''}
         </Text>
       </Box>
 

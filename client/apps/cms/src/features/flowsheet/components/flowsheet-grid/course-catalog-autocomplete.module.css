@@ -15,8 +15,13 @@
   gap: var(--space-1);
   justify-content: center;
   font-size: var(--font-size-xs);
+  font-style: normal;
   align-items: center;
   color: var(--text-color-secondary);
+
+  &[data-no-results] {
+    border: none;
+  }
 }
 
 .createLinkText {

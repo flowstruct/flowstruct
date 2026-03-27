@@ -141,6 +141,10 @@ export function CourseCard({ course, placement, ...props }: CourseCardProps) {
         draggable
         onDragStart={(e) => dragHandlers.onDragStart(e, course.id)}
         onDragEnd={dragHandlers.onDragEnd}
+        onContextMenu={(e) => {
+          e.preventDefault();
+          setOptionsOpen(true);
+        }}
       >
         <Stack fill gap={1}>
           <Group justify="between">
