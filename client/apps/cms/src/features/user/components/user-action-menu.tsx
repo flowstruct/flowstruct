@@ -1,8 +1,7 @@
 import styles from './user-action-menu.module.css';
 import { userApi } from '@/features/user/api';
-import { Role, User } from '@/features/user/domain/user';
-import { userKeys, userQueries } from '@/features/user/queries';
-import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
+import { User } from '@/features/user/domain/user';
+import { useMutation } from '@tanstack/react-query';
 import {
   Ellipsis,
   Pencil,
@@ -40,12 +39,6 @@ type UserActionMenuProps = {
 };
 
 export function UserActionMenu({ user }: UserActionMenuProps) {
-  const { data: users } = useSuspenseQuery(userQueries.collection);
-
-  console.log(users);
-  console.log(user);
-  const updatedBy = users.map[user.updatedBy];
-
   const [editOpen, setEditOpen] = React.useState(false);
   const [changePasswordOpen, setChangePasswordOpen] = React.useState(false);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = React.useState(false);

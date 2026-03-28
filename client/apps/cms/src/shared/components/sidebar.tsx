@@ -1,66 +1,13 @@
 import styles from './sidebar.module.css';
 import { UnstyledButton } from '@/shared/components/ui/UnstyledButton';
-import { Menu, MenuItem, MenuTrigger } from '@/shared/components/ui/Menu';
-import { ChevronsUpDown, Crown, Layers2, LogOut, User, FolderUp, Folder, Settings2 } from 'lucide-react';
+import { ChevronsUpDown, Crown } from 'lucide-react';
 import { Role } from '@/features/user/domain/user';
-import { Popover } from '@/shared/components/ui/Popover';
 import { getUserInitials } from '@/features/user/domain/getUserInitials';
 import { useMatches, useNavigate } from '@tanstack/react-router';
-import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { userQueries } from '@/features/user/queries';
-import { userApi } from '@/features/user/api';
-import { ProgressCircle } from '@/shared/components/ui/ProgressCircle';
-import React from 'react';
-
-const sidebarSections = [
-  {
-    items: [
-      {
-        icon: FolderUp,
-        label: 'Generate site',
-        route: '/site-generations',
-      },
-      {
-        icon: Layers2,
-        label: 'Flowsheets',
-        route: '/flowsheets',
-      },
-    ],
-  },
-  {
-    header: 'Catalog',
-    items: [
-      {
-        icon: Folder,
-        label: 'Programs',
-        route: '/programs',
-      },
-      {
-        icon: Folder,
-        label: 'Courses',
-        route: '/courses',
-      },
-    ],
-  },
-  {
-    header: 'Admin',
-    items: [
-      {
-        icon: User,
-        label: 'Manage users',
-        route: '/admin/users',
-      },
-    ],
-  },
-];
-
-const footerItems = [
-  {
-    icon: Settings2,
-    label: 'Settings',
-    route: '/settings',
-  },
-];
+import { sidebarSections, footerItems } from './sidebar-items';
+import { UserAvatarMenu } from '@/features/user/components/user-avatar-menu';
 
 export function Sidebar() {
   const navigate = useNavigate();
@@ -118,23 +65,11 @@ export function Sidebar() {
   );
 }
 
-export function UserProfile() {
+function UserProfile() {
   const { data: me } = useSuspenseQuery(userQueries.me);
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
-  const logout = useMutation({
-    mutationFn: userApi.logout,
-    onSuccess: () => {
-      queryClient.cancelQueries();
-      navigate({ to: '/login', search: { redirect: '/' } });
-    },
-    meta: {
-      invalidate: false,
-    },
-  });
 
   return (
-    <MenuTrigger>
+    <UserAvatarMenu>
       <UnstyledButton className={styles.userProfile}>
         <div className={styles.userInitials}>{getUserInitials(me.username)}</div>
 
@@ -147,21 +82,8 @@ export function UserProfile() {
           </div>
         </div>
 
-        {logout.isPending ? (
-          <ProgressCircle className={styles.userProfileChevron} isIndeterminate />
-        ) : (
-          <ChevronsUpDown className={styles.userProfileChevron} size={15} />
-        )}
+        <ChevronsUpDown className={styles.userProfileChevron} size={15} />
       </UnstyledButton>
-
-      <Popover hideArrow>
-        <Menu width={200}>
-          <MenuItem onPress={() => logout.mutate()} textValue="logout">
-            <LogOut size={14} />
-            <span>Log out</span>
-          </MenuItem>
-        </Menu>
-      </Popover>
-    </MenuTrigger>
+    </UserAvatarMenu>
   );
 }

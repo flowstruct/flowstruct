@@ -38,7 +38,7 @@
     --radius-bottom: 6px;
     --radius: var(--radius-top) var(--radius-top) var(--radius-bottom) var(--radius-bottom);
     border-radius: var(--radius);
-    clip-path: inset(0 round var(--radius)); /* firefox */
+    clip-path: inset(0 round var(--radius));
     outline: none;
     cursor: pointer;
     color: var(--text-color);
