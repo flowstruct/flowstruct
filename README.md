@@ -1,4 +1,4 @@
-# <div align="center"><img src="/assets/logo.svg" width="100"><br/>Flowstruct</div>
+# <div align="center"><img src="/assets/logo.png" width="750"></div>
 
 <p align="center">
   <a href="https://github.com/flowstruct/flowstruct/releases">
@@ -13,44 +13,35 @@
   <img src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg" alt="Contributions welcome">
 </p>
 
-Flowstruct is a self-hosted visualization tool that transforms university course catalogs into interactive flowsheets, making curriculum structures beautifully clear and navigable. 
+Flowstruct is a self-hosted content management system that transforms university course catalogs into interactive flowsheets, making curriculum structures clear and navigable. 
 Click any course to instantly see its full prerequisite chain and what it unlocks. Down with the long, complicated PDFs! 
 <br/>
 
-→ Try out the [Demo](https://gjuplans.com/study-plans/1)
-
-## ✨ Features
-
-### Curriculum visualization (content pages)
-
-Generate dynamic pages that highlight course dependency chains (automatically) with clear visual markers:
+→ Try out a [page](https://gjuplans.com/study-plans/1)
 
 ![Content Demo](/assets/content-demo.png)
 
 | Color           | Meaning                 | Indicator |
 |-----------------|-------------------------|-----------|
-| 🟨 (yellow)     | Indirect prerequisites  | 🡸 🡸     |
-| 🟧 (orange)     | Direct prerequisites    | 🡸        |
-| 🔷 (light blue) | Selected course         |           |
-| 🔵 (dark blue)  | Indirect postrequisites | 🡺 🡺     |
+| 🟨      | Indirect prerequisites  | ⬅️⬅️     |
+| 🟧     | Direct prerequisites    | ⬅️        |
+| 🔷  | Selected course         |           |
+| 🔵   | Indirect postrequisites | ➡️➡️     |
 
-### Content Editor (CMS)
+## Features
+- Self-hostable content management system to generate curriculum flowsheets
+- Mobile-friendly flowsheet pages (customizable icon + title)
+- Flowsheets automatically calculate their indirect pre/postrequisites, you only define direct prerequisites
+- Automatic correction of prerequisite ordering when moving, adding, or removing courses
+- Easily rollback changes (draft/approve workflow)
+- Different levels of access (Editor, Publisher, Guest, Admin)
 
-A content management system designed to manage the structure of the generated pages:
+## Gallery
+![CMS demo 1](/assets/cms-demo-1.png)
+![CMS demo 2](/assets/cms-demo-2.png)
+![CMS demo 3](/assets/cms-demo-3.png)
 
-![CMS Demo 1](/assets/cms-demo-1.png)
-
-Automatic prerequisite validation checks when moving, adding, or removing courses from the content page:
-
-![CMS Demo 2](/assets/cms-demo-2.png)
-
-### Additional features
-
-- Easily rollback content changes (changes are not shown publicly unless approved by a publisher)
-- Built-in RBAC with specific privileges to streamline workflows (Editor, Publisher, Guest, Admin)
-- Content pages automatically calculate their indirect pre/postrequisites, you only define direct prerequisites
-
-## ⌨️ Getting Started
+## Getting started
 
 > **IMPORTANT!** Flowstruct is currently in beta, expect breaking changes before v1.0
 
@@ -58,27 +49,24 @@ Automatic prerequisite validation checks when moving, adding, or removing course
 
 1. Download the `compose.yml` file
 2. Run `docker compose up -d`
+3. Access the app through [http://localhost:3000](http://localhost:3000)
 
-### Accessing the application
-
-The application is accessible through the following URLs:
-
-| Service | URL                                                |
-|---------|----------------------------------------------------|
-| Content | [http://localhost:3000](http://localhost:4321)     |
-| CMS     | [http://localhost:3000/cms](http://localhost:5173) |
-| API     | [http://localhost:3000/api](http://localhost:8080) |
-
-#### CMS login  
+#### CMS login
 
 An **admin account** is available for accessing the CMS:  
 
 - **Username:** `flowstruct`  
 - **Password:** `flowstruct`  
 
+#### Generating pages
+
+1. Create a flowsheet
+2. head to `Generate site`, and download the website you generated
+3. Host the downloaded folder on Cloudflare, Netlify, Vercel (or any platform that supports static website hosting)
+
 That's all. Have fun with Flowstruct! 🌊
 
-## ⚙️ Configuration
+## Configuration
 
 Flowstruct can be configured using the following environment variables:
 
