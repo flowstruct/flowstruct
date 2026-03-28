@@ -64,7 +64,7 @@ export function ProgramComboBox({
         isRequired
         autoFocus
         formValue="key"
-        placeholder="Pick a program"
+        placeholder="Search a program"
         allowsEmptyCollection
         inputValue={comboBoxState.inputValue}
         onInputChange={comboBoxState.onInputChange}

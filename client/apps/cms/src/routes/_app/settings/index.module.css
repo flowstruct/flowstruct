@@ -6,9 +6,21 @@
 .content {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-6);
   width: fit-content;
   margin: 4.5rem auto;
+}
+
+.top {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.settings {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
 }
 
 .title {
@@ -17,38 +29,6 @@
   font-size: 1.75rem;
   margin-left: var(--space-2);
   margin-bottom: var(--space-3);
-}
-
-.settingsSectionHeader {
-  margin-left: var(--space-2);
-  color: var(--text-color-base);
-  font-weight: 450;
-  font-size: var(--font-size-md);
-}
-
-.settingsSection {
-  background: var(--background-color);
-  border: 1px solid var(--gray-4);
-  border-radius: var(--radius-2);
-}
-
-.settingsField {
-  display: flex;
-  align-items: center;
-  gap: var(--space-6);
-  padding: var(--space-4) var(--space-4);
-  justify-content: space-between;
-}
-
-.settingsFieldLabel {
-  font-size: var(--font-size-base);
-  font-weight: 450;
-  color: var(--text-color-base);
-}
-
-.settingsFieldDescription {
-  color: var(--text-color-secondary);
-  font-size: var(--font-size-xs);
 }
 
 .iconButton {
@@ -81,3 +61,4 @@
 .iconButton[data-hovered] .iconButtonOverlay {
   opacity: 1;
 }
+

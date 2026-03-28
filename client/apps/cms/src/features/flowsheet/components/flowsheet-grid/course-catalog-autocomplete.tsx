@@ -2,7 +2,6 @@ import { Button } from '@/shared/components/ui/Button';
 import { BetweenHorizonalStart, BookOpen, ChevronDown, ChevronLeft, Plus } from 'lucide-react';
 import { Popover } from '@/shared/components/ui/Popover';
 import { GridList, GridListItem } from '@/shared/components/ui/GridList';
-import { ListEmptyState } from '@/shared/components/ui/ListBox';
 import { InfiniteData, useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import React from 'react';
 import { useDebounce } from '@/shared/hooks/use-debounce';
@@ -56,7 +55,7 @@ export function CourseCatalogAutocomplete() {
     fetchNextPage,
   } = useInfiniteQuery(courseQueries.catalog({ filter: debouncedSearch }));
 
-  const suggestCreateCourse = debouncedSearch && (catalogCourses?.results.length ?? 0) > 0;
+  const suggestCreateCourse = debouncedSearch !== '' && (catalogCourses?.results.length ?? 0) > 0;
 
   const handleCourseCreated = (course: Course) => {
     setSelectedKeys((prev) => new Set([...prev, course.id]));
@@ -112,7 +111,9 @@ export function CourseCatalogAutocomplete() {
                         className={styles.createHintButton}
                         onPress={courseFormState.open}
                       >
-                        <span className={styles.createLinkText}>Create "{debouncedSearch}"</span>
+                        <span className={styles.createLinkText}>
+                          Create {debouncedSearch === '' ? 'course' : `"${debouncedSearch}"`}
+                        </span>
                       </Button>
                     </section>
                   )}

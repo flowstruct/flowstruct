@@ -36,7 +36,7 @@ export function TextField({
       {label && <Label>{label}</Label>}
       <Group style={{ width: width ? '' : '100%' }}>
         {icon}
-        <Input style={{ width: width ?? '' }} placeholder={placeholder} />
+        <Input spellCheck="false" style={{ width: width ?? '' }} placeholder={placeholder} />
       </Group>
       {description && <Text slot="description">{description}</Text>}
       <FieldError>{errorMessage}</FieldError>
