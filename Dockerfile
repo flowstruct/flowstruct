@@ -54,6 +54,6 @@ ENV SITE_GENERATOR_ICON_DIR=src/assets
 EXPOSE 3000
 
 HEALTHCHECK --interval=10s --timeout=3s --start-period=60s \
-	CMD curl -f http://localhost:8080/actuator/health || exit 1
+	CMD curl -f http://localhost:3000/actuator/health || exit 1
 
 CMD ["/bin/sh", "-c", "/app/entrypoint.sh"]

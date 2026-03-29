@@ -2,6 +2,8 @@ spring:
   config:
     activate:
       on-profile: prod
+server:
+  port: 3000
 
 logging:
   level:

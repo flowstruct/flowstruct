@@ -31,8 +31,9 @@ spring:
           public: true
           must-revalidate: true
           no-transform: true
-  server:
-    forward-headers-strategy: native
+
+server:
+  forward-headers-strategy: native
 
 jwt:
   cookie:

@@ -32,7 +32,7 @@ java -jar /app/app.jar &
 SPRING_PID=$!
 
 echo "  ⌛️  Waiting for backend health..."
-until curl -sSf http://localhost:8080/actuator/health >/dev/null 2>&1; do
+until curl -sSf http://localhost:3000/actuator/health >/dev/null 2>&1; do
     echo "."
     sleep 1
 done

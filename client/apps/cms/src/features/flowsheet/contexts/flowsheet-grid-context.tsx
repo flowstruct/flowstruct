@@ -44,6 +44,10 @@ function reducer(state: ReducerState, action: Action): ReducerState {
           ? nextSet.delete(action.courseId)
           : nextSet.add(action.courseId);
 
+        if (nextSet.size === 0) {
+          return { current: IDLE_STATE, previous: IDLE_STATE };
+        }
+
         return {
           current: { current: 'SELECT', courseIds: nextSet },
           previous: state.previous,
