@@ -17,5 +17,6 @@ export const RolePermissions: Record<keyof typeof Role, () => UserAction[]> = {
 
 export const computeHasPermission = (user: User, action: UserAction) => {
   const myPermissions = RolePermissions[user.role as keyof typeof Role];
+  if (user.role === 'GUEST') return true;
   return myPermissions().includes(action);
 };

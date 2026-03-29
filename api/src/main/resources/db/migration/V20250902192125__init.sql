@@ -155,4 +155,6 @@ CREATE TABLE site_generation_settings
 );
 
 INSERT INTO "user" (username, email, role, password)
-VALUES ('flowstruct', 'admin@flowstruct.com', 'ADMIN', '$2a$12$Pny61LESAXFDjnkgczhJ8eIC3HbEnlQyvW8FQ5mpoJc5ODks1zG.i');
+VALUES ('admin', 'admin@flowstruct.com', 'ADMIN', '$2a$12$8tMPi1Zt3BuG5ryLKXuHy.UqNWc/9IlhxaMNjsweBUtqdww9Mp5QO'),
+       ('guest', 'guest@flowstruct.com', 'GUEST', '$2a$12$XDQIGsR4491BL/2im8PJxer4nzoPxRCNJU1SfB2GNw.CsJqbyZHIW');
+

@@ -1,6 +1,6 @@
 services:
   flowstruct:
-    image: ghcr.io/flowstruct/flowstruct:latest
+    image: ghcr.io/yousefalfoqaha/flowstruct:latest
     ports:
       - "3000:3000"
     depends_on:

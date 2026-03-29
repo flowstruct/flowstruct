@@ -5,6 +5,7 @@ import com.flowstruct.api.sitegenerator.repository.SiteGenerationSettingsReposit
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.multipart.MultipartFile;
 
 public class SiteGenerationSettingsService {
@@ -42,6 +43,7 @@ public class SiteGenerationSettingsService {
     return cached;
   }
 
+  @PreAuthorize("hasRole('ROLE_APPROVER')")
   public void updateTitle(String title) {
     cached = new SiteGenerationSettings(title);
     siteGenerationSettingsRepository.save(cached);
@@ -59,11 +61,13 @@ public class SiteGenerationSettingsService {
     return !Files.exists(getCustomIconPath());
   }
 
+  @PreAuthorize("hasRole('ROLE_APPROVER')")
   public void updateIcon(MultipartFile file) throws IOException {
     Files.createDirectories(Path.of(iconsPath));
     Files.write(getCustomIconPath(), file.getBytes());
   }
 
+  @PreAuthorize("hasRole('ROLE_APPROVER')")
   public void deleteIcon() throws IOException {
     Path customIconPath = getCustomIconPath();
     if (Files.exists(customIconPath)) {

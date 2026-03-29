@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('EDITOR')")
+@PreAuthorize("hasRole('ROLE_EDITOR')")
 public class SiteGeneratorManagerService {
 
   private final SiteGenerationRepository siteGenerationRepository;
