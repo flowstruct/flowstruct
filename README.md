@@ -31,7 +31,7 @@ Click any course to instantly see its full prerequisite chain and what it unlock
 ## Features
 - Self-hostable content management system to generate curriculum flowsheets
 - Mobile-friendly flowsheet pages (customizable icon + title)
-- Flowsheets automatically calculate their indirect pre/postrequisites, you only define direct prerequisites
+- Flowsheets automatically calculate indirect pre/postrequisites, you only define direct prerequisites
 - Automatic correction of prerequisite ordering when moving, adding, or removing courses
 - Easily rollback changes (draft/approve workflow)
 - Different levels of access (editor, publisher, guest, admin)
@@ -60,7 +60,7 @@ An **admin account** is available for accessing the CMS:
 
 #### Generating pages
 
-1. Create a flowsheet
+1. Create a flowsheet (make sure to click `Approve changes` after you are done)
 2. head to `Generate site`, and download the website you generated
 3. Host the downloaded folder on Cloudflare, Netlify, Vercel (or any platform that supports static website hosting)
 
