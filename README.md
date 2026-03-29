@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg" alt="Contributions welcome">
 </p>
 
-Flowstruct is a self-hosted content management system that transforms university course catalogs into interactive flowsheets, making curriculum structures clear and navigable. 
+Flowstruct is a self-hosted content management system that transforms university curriculums into interactive flowsheets, making curriculum structures clear and navigable. 
 Click any course to instantly see its full prerequisite chain and what it unlocks. Down with the long, complicated PDFs! 
 <br/>
 
@@ -34,7 +34,7 @@ Click any course to instantly see its full prerequisite chain and what it unlock
 - Flowsheets automatically calculate their indirect pre/postrequisites, you only define direct prerequisites
 - Automatic correction of prerequisite ordering when moving, adding, or removing courses
 - Easily rollback changes (draft/approve workflow)
-- Different levels of access (Editor, Publisher, Guest, Admin)
+- Different levels of access (editor, publisher, guest, admin)
 
 ## Gallery
 ![CMS demo 1](/assets/cms-demo-1.png)
