@@ -49,14 +49,14 @@ Click any course to instantly see its full prerequisite chain and what it unlock
 
 1. Download the `compose.yml` file
 2. Run `docker compose up -d`
-3. Access the app through [http://localhost:3000](http://localhost:3000)
+3. Access the app locally through [http://localhost:3000](http://localhost:3000)
 
 #### CMS login
 
-An **admin account** is available for accessing the CMS:  
+An `admin` account is available for accessing the CMS:  
 
-- **Username:** `flowstruct`  
-- **Password:** `flowstruct`  
+- **Username:** `admin`  
+- **Password:** `admin`  
 
 #### Generating pages
 
