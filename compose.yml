@@ -1,12 +1,11 @@
 services:
-  app:
+  flowstruct:
     image: ghcr.io/flowstruct/flowstruct:latest
     ports:
-      - "3000:3000"
+      - "3000:8080"
     depends_on:
       - database
     environment:
-      - TRUST_PROXY
       - PUID
       - PGID
       - DB_NAME

@@ -33,7 +33,7 @@ RUN --mount=type=cache,id=maven-deps,target=/root/.m2/repository \
 FROM eclipse-temurin:21-jre-alpine AS runtime
 WORKDIR /app
 
-RUN apk add --no-cache npm caddy curl openssl gosu bash
+RUN apk add --no-cache npm curl openssl gosu bash
 
 COPY --from=api /api/target/*.jar ./app.jar
 
@@ -45,8 +45,6 @@ COPY --from=content /client/node_modules/ ./content/node_modules/
 
 COPY /scripts/docker/entrypoint.sh .
 RUN chmod +x ./entrypoint.sh
-
-COPY /reverse-proxy/ ./reverse-proxy/
 
 ENV SPRING_PROFILES_ACTIVE=prod
 ENV SITE_GENERATOR_DIR=content
