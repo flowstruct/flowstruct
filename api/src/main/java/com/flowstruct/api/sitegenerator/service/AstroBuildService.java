@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 
@@ -22,6 +23,9 @@ public class AstroBuildService {
   private final String siteGeneratorScript;
 
   private final SiteGenerationSettingsService settingsService;
+
+  @Value("${server.port}")
+  private String serverPort;
 
   public AstroBuildService(
       String apiKey,
@@ -43,6 +47,7 @@ public class AstroBuildService {
       processBuilder.directory(contentPath.toFile());
       processBuilder.environment().put("SITE_GENERATOR_API_KEY", apiKey);
       processBuilder.environment().put("SITE_TITLE", settingsService.get().title());
+      processBuilder.environment().put("SERVER_PORT", serverPort);
       processBuilder.redirectErrorStream(true);
 
       Process process = processBuilder.start();
