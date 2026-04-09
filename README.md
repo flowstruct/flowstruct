@@ -17,7 +17,7 @@ Flowstruct is a self-hosted content management system that transforms university
 Click any course to instantly see its full prerequisite chain and what it unlocks. Down with the long, complicated PDFs! 
 <br/>
 
-<span>&#8594;</span> Try out [a page](https://gjuplans.com/study-plans/1)  
+<span>&#8594;</span> Try out [a page](https://gjuplans.pages.dev/study-plans/1)  
 <span>&#8594;</span> Try out [the CMS](https://flowstruct.alfoqaha.dev) (login: `guest` / `guest`)
 
 ![Content Demo](/assets/content-demo.png)
