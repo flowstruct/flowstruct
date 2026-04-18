@@ -1,9 +1,6 @@
 services:
   flowstruct:
-    # image: ghcr.io/yousefalfoqaha/flowstruct:latest
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ghcr.io/yousefalfoqaha/flowstruct:latest
     ports:
       - "3000:3000"
     depends_on:
